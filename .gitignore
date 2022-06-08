@@ -24,8 +24,6 @@
 # Compiled Static libraries
 *.lai
 *.la
-*.a
-*.lib
 
 # Executables
 *.exe
@@ -43,7 +41,7 @@
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
-!.vscode/launch.json
+!.vscode/task.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 
