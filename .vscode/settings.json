@@ -2,6 +2,5 @@
     "files.associations": {
         "*.html": "html",
         "iostream": "cpp",
-        "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe"
     }
 }
