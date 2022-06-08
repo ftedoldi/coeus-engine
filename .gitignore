@@ -40,7 +40,7 @@
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
-!.vscode/task.json
+!.vscode/tasks.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 
