@@ -16,6 +16,8 @@
                 "-lglfw3dll",
                 "-lassimp-vc142-mt",
                 "-lglm_static",
+                "-lcuda",
+                "-lcudart",
                 "-o",
                 "${workspaceFolder}\\Build\\CoeusEngine.exe",
                 "-Wno-deprecated",
