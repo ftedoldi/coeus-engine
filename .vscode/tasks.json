@@ -10,7 +10,11 @@
                 "-fdiagnostics-color=always",
                 "-Wall",
                 "-I${workspaceFolder}/Includes",
+                "-I${workspaceFolder}/Includes/CUDA",
+                "-I${workspaceFolder}/CUDA",
+                "-I${workspaceFolder}/CUDA/Shared",
                 "-L${workspaceFolder}/Includes/Libraries",
+                "-L${workspaceFolder}/CUDA/Shared",
                 "${workspaceFolder}/\\*.cpp",
                 "${workspaceFolder}/Includes/src/glad.c",
                 "-lglfw3dll",
@@ -34,7 +38,7 @@
                 "-fno-rtti",
                 "-fvisibility=hidden",
                 "-Bsymbolic",
-                "-lpthread"
+                "-lpthread",
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
