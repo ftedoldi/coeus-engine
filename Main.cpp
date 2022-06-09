@@ -9,6 +9,8 @@
 
 #include <iostream>
 
+//#include <Test.cuh>
+
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
@@ -28,6 +30,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 }
 
 int main() {
+	//call();
     glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
