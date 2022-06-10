@@ -38,7 +38,7 @@
                 "-fno-rtti",
                 "-fvisibility=hidden",
                 "-Bsymbolic",
-                "-lpthread",
+                "-lpthread"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
