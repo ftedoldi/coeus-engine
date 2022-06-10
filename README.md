@@ -9,4 +9,4 @@ Once the .lib and the .dll files are generated you might add the flag -l{NameOfT
 
 # Compilation
 
-Just simply press Ctrl + Shift + V in order to compile and run the project.
+Just simply press Ctrl + Shift + B in order to compile and run the project.
