@@ -135,5 +135,4 @@ namespace Athena {
     void Vector2::print() const {
         std::cout << "( " << this->coordinates.x << ", " << this->coordinates.y << " )" << std::endl;
     }
-
 }
