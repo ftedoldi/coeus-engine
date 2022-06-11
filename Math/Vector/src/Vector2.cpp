@@ -1,4 +1,4 @@
-#include "../Vector2.hpp"
+#include <Vector2.hpp>
 
 namespace Athena {
     Vector2::Vector2() {
@@ -24,10 +24,10 @@ namespace Athena {
                 this->coordinates.y * vector.coordinates.y;
     }
 
-    Vector3 Vector2::cross(const Vector2& vector) const {
-        return Vector3(this->coordinates.x, this->coordinates.y, (Scalar) 0.0)
-                .cross(Vector3(vector.coordinates.x, vector.coordinates.y, (Scalar) 0.0));
-    }
+    // Vector3 Vector2::cross(const Vector2& vector) const {
+    //     return Vector3(this->coordinates.x, this->coordinates.y, (Scalar) 0.0)
+    //             .cross(Vector3(vector.coordinates.x, vector.coordinates.y, (Scalar) 0.0));
+    // }
 
     Scalar Vector2::magnitude() const {
         return std::sqrt(this->squareMagnitude());

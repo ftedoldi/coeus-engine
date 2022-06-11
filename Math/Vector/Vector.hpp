@@ -3,7 +3,7 @@
 
 namespace Athena
 {
-    template<typename S, class T, typename K>
+    template<typename S, typename T, typename K>
     class Vector
     {
         public:
@@ -21,36 +21,36 @@ namespace Athena
 
             virtual K dot(const T& vector);
 
-            virtual K magnitude() const;
-            virtual K squareMagnitude() const;
+            virtual K magnitude();
+            virtual K squareMagnitude();
 
-            virtual T normalized() const;
+            virtual T normalized();
             virtual void normalize();
 
-            virtual K operator [] (const short& i) const;
-            virtual K& operator [] (const short& i);
-            virtual K operator * (const T& vector) const;
-            virtual T operator + (const T& vector) const;
-            virtual T operator - (const T& vector) const;
-            virtual bool operator == (const T& vector) const;
+            virtual K operator [] (const short& i);
+            //virtual K& operator [] (const short& i);
+            virtual K operator * (const T& vector);
+            virtual T operator + (const T& vector);
+            virtual T operator - (const T& vector);
+            virtual bool operator == (const T& vector);
 
-            virtual T operator - () const;
-            virtual T operator * (const K& k) const;
-            virtual T operator / (const K& k) const;
+            virtual T operator - ();
+            virtual T operator * (const K& k);
+            virtual T operator / (const K& k);
 
             virtual void operator += (const T& vector);
             virtual void operator -= (const T& vector);
             virtual void operator *= (const K& k);
             virtual void operator /= (const K& k);
 
-            virtual K angleBetween (const T& vector) const;
+            virtual K angleBetween (const T& vector);
 
-            virtual T lerp(const T& vector, const K& t) const;
+            virtual T lerp(const T& vector, const K& t);
 
-            virtual bool isZero() const;
-            virtual bool areEquals(const T& vector) const;
+            virtual bool isZero();
+            virtual bool areEquals(const T& vector);
 
-            virtual void print() const;
+            virtual void print();
     };
 }
 

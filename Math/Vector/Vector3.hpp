@@ -1,8 +1,14 @@
 #ifndef VECTOR3_HPP
 #define VECTOR3_HPP
 
+#include "./Vector2.hpp"
+
 namespace Athena
 {
+    typedef float Scalar;
+
+    class Vector2;
+
     class Vector3
     {
         public:

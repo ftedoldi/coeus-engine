@@ -7,6 +7,8 @@
 
 #include <glm/vec2.hpp>
 
+#include <Vector2.hpp>
+
 #include <iostream>
 
 //#include <Test.cuh>
@@ -31,6 +33,9 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 
 int main() {
 	//call();
+	Athena::Vector2 vec = Athena::Vector2();
+	vec.print();
+
     glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

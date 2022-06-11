@@ -13,10 +13,14 @@
                 "-I${workspaceFolder}/Includes/CUDA",
                 "-I${workspaceFolder}/CUDA",
                 "-I${workspaceFolder}/CUDA/Shared",
+                "-I${workspaceFolder}/Math",
+                "-I${workspaceFolder}/Math/Vector",
                 "-L${workspaceFolder}/Includes/Libraries",
                 "-L${workspaceFolder}/CUDA/Shared",
-                "${workspaceFolder}/\\*.cpp",
                 "${workspaceFolder}/Includes/src/glad.c",
+                "${workspaceFolder}/\\*.cpp",
+                "${workspaceFolder}/Math/Vector/src/\\*.cpp",
+                //"${workspaceFolder}/Math/Matrix/src/\\*.cpp",
                 "-lglfw3dll",
                 "-lassimp-vc142-mt",
                 "-lglm_static",
@@ -41,7 +45,7 @@
                 "-lpthread"
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}",
             },
             "problemMatcher": [
                 "$gcc"
