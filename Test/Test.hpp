@@ -1,7 +1,6 @@
 #ifndef TEST_HPP
 #define TEST_HPP
 
-#include "../Math/Matrix/Matrix2.hpp"
 #include "assert.h"
 
 class Test 
