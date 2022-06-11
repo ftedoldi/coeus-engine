@@ -3,10 +3,7 @@
 
 namespace Athena
 {
-    class Scalar
-    {
-
-    };
+    typedef float Scalar;
 }
 
 #endif
