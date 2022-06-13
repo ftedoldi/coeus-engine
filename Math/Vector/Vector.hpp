@@ -27,8 +27,9 @@ namespace Athena
             virtual T normalized();
             virtual void normalize();
 
-            virtual K operator [] (const short& i);
-            //virtual K& operator [] (const short& i);
+            virtual K operator [] (const short& i) const;
+            virtual K& operator [] (const short& i);
+            
             virtual K operator * (const T& vector);
             virtual T operator + (const T& vector);
             virtual T operator - (const T& vector);
