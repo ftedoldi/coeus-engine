@@ -1,8 +1,8 @@
 #ifndef VECTOR2_HPP
 #define VECTOR2_HPP
 
-#include "./Vector.hpp"
-#include "./Vector3.hpp"
+#include <Vector.hpp>
+#include <Vector3.hpp>
 
 #include <iostream>
 #include <cmath>
@@ -21,9 +21,9 @@ namespace Athena
     };
 
     // Forward declaration
-    class Vector2;
+    class Vector3;
 
-    class Vector2
+    class Vector2 : Vector<Vector2Coordinates<Scalar>, Vector2, Scalar>
     {
         public:
             Vector2Coordinates<Scalar> coordinates;
@@ -31,10 +31,6 @@ namespace Athena
             Vector2();
             Vector2(Scalar x, Scalar y);
             Vector2(const Vector2& vector);
-
-            static Vector3 cross(const Vector2& firstVector, const Vector2& secondVector) {
-                return firstVector.cross(secondVector);
-            }
 
             Scalar dot(const Vector2& vector) const;
             Vector3 cross(const Vector2& vector) const;
@@ -45,7 +41,6 @@ namespace Athena
             void normalize();
 
             Scalar operator [] (const short& i) const; // Readonly acess to coordinates
-
             Scalar& operator [] (const short& i); // Read & Write acess to coordinates
 
             Scalar operator * (const Vector2& vector) const;
