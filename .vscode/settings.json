@@ -61,5 +61,12 @@
         "__nullptr": "cpp",
         "__bit_reference": "cpp",
         "filesystem": "cpp"
-    }
+    },
+    "terminal.integrated.profiles.windows": {
+        "my-pwsh": {
+          "source": "PowerShell",
+          "args": ["-NoProfile"]
+        }
+      },
+      "terminal.integrated.defaultProfile.windows": "my-pwsh"
 }
