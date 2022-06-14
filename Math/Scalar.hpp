@@ -4,6 +4,7 @@
 namespace Athena
 {
     typedef float Scalar;
+    typedef float Degree;
 }
 
 #endif
