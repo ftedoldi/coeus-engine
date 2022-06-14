@@ -68,5 +68,6 @@
           "args": ["-NoProfile"]
         }
       },
-      "terminal.integrated.defaultProfile.windows": "my-pwsh"
+      "terminal.integrated.defaultProfile.windows": "my-pwsh",
+      "C_Cpp.errorSquiggles": "Disabled"
 }

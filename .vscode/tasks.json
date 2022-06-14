@@ -27,6 +27,8 @@
                 "-I${workspaceFolder}/CUDA/Shared",
                 "-I${workspaceFolder}/Math",
                 "-I${workspaceFolder}/Math/Vector",
+                "-I${workspaceFolder}/Math/Rotation",
+                "-I${workspaceFolder}/Math/Matrix",
                 "-L${workspaceFolder}/Includes/Libraries",
                 "-L${workspaceFolder}/CUDA/Shared",
                 "${workspaceFolder}/Includes/src/glad.c",
