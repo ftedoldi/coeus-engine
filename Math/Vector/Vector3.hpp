@@ -4,6 +4,8 @@
 #include <Vector.hpp>
 #include <Vector2.hpp>
 
+#include <stdexcept>
+
 namespace Athena
 {
     typedef float Scalar;
@@ -35,6 +37,17 @@ namespace Athena
                     vector1.coordinates.x * vector2.coordinates.y - vector1.coordinates.y * vector2.coordinates.x
                 );
             }
+
+            static Scalar dot(const Vector3& vector1, const Vector3& vector2) {
+                return vector1.dot(vector2);
+            }
+
+            static Vector3 up() { return Vector3(0, +1, 0); }
+            static Vector3 down() { return Vector3(0, -1, 0); }
+            static Vector3 right() { return Vector3(+1, 0, 0); }
+            static Vector3 left() { return Vector3(-1, 0, 0); }
+            static Vector3 forward() { return Vector3(0, 0, +1); }
+            static Vector3 backward() { return Vector3(0, 0, -1); }
 
             Vector3 cross(const Vector3& vector) const;
             Scalar dot(const Vector3& vector) const;
@@ -69,6 +82,8 @@ namespace Athena
             bool areEquals(const Vector3& vector) const;
             void print() const;
     };
+
+    Vector3 operator * (const Scalar& k, const Vector3& vector);
 }
 
 #endif

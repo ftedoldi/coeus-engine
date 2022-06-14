@@ -157,4 +157,8 @@ namespace Athena {
     void Vector3::print() const {
         std::cout << "( " << this->coordinates.x << ", " << this->coordinates.y << ", " << this->coordinates.z << " )" << std::endl;
     }
+
+    Vector3 operator * (const Scalar& k, const Vector3& vector) {
+        return vector * k;
+    }
 }
