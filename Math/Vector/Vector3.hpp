@@ -38,11 +38,13 @@ namespace Athena
 
             Vector3 cross(const Vector3& vector) const;
             Scalar dot(const Vector3& vector) const;
+            static Scalar dot(const Vector3& vector1, const Vector3& vector2);
 
             Scalar magnitude() const;
             Scalar squareMagnitude() const;
             Vector3 normalized() const;
             void normalize();
+            static Vector3 normalize(const Vector3& vec);
 
             Scalar operator [] (const short& i) const;
             Scalar& operator [] (const short& i);
