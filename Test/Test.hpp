@@ -1,12 +1,16 @@
 #ifndef TEST_HPP
 #define TEST_HPP
 
-#include "assert.h"
+#include <assert.h>
 
 class Test 
 {
 public: 
-    virtual void test() = 0;
+    Test();
+
+    static void Test(bool expression) {
+        assert(expression);
+    }
 };
 
 #endif
