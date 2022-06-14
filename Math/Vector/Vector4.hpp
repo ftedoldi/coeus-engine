@@ -4,6 +4,8 @@
 #include <Vector.hpp>
 #include <Vector3.hpp>
 
+#include <stdexcept>
+
 namespace Athena 
 {
     typedef float Scalar;
