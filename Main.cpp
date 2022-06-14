@@ -8,6 +8,7 @@
 #include <glm/vec2.hpp>
 
 #include <Vector2.hpp>
+#include <Quaternion.hpp>
 
 #include <iostream>
 
@@ -33,6 +34,8 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 
 int main() {
 	//call();
+	Athena::Quaternion quat = Athena::Quaternion();
+	quat.print();
 	Athena::Vector2 vec = Athena::Vector2();
 	vec.print();
 
