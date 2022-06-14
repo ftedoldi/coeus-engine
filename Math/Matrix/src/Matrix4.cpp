@@ -1,4 +1,5 @@
 #include "../Matrix4.hpp"
+
 namespace Athena
 {
     Matrix4::Matrix4()

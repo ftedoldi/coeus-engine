@@ -1,9 +1,11 @@
 #ifndef MATRIX2_HPP
 #define MATRIX2_HPP
 
-#include "../Scalar.hpp"
-#include "Matrix.hpp"
-#include "../Vector/Vector2.hpp"
+#include <Scalar.hpp>
+#include <Matrix.hpp>
+#include <Vector2.hpp>
+
+#include <iostream>
 
 namespace Athena 
 {

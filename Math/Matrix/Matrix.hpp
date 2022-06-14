@@ -1,5 +1,6 @@
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
+
 #include "../Scalar.hpp"
 
 namespace Athena 
@@ -21,7 +22,7 @@ namespace Athena
         virtual T operator+(const T& mat);
         virtual T operator-(const T& mat);
 
-        virtual bool T operator==(const T& mat);
+        virtual bool operator==(const T& mat);
 
         virtual void setInverse(const T& mat);
         virtual T inverse() const;

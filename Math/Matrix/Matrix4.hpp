@@ -1,10 +1,12 @@
 #ifndef MATRIX4_HPP
 #define MATRIX4_HPP
+
 #define _USE_MATH_DEFINES
-#include "Matrix3.hpp"
-#include "../Vector/Vector3.hpp"
-#include "../Vector/Vector4.hpp"
-#include "../Scalar.hpp"
+#include <Matrix3.hpp>
+
+#include <Vector3.hpp>
+#include <Vector/Vector4.hpp>
+#include <Scalar.hpp>
 
 namespace Athena 
 {

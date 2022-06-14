@@ -1,5 +1,4 @@
 #include "../Matrix2.hpp"
-#include <iostream>
 
 namespace Athena{
     Matrix2::Matrix2()

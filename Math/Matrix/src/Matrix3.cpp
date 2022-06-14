@@ -1,4 +1,4 @@
-#include "../Matrix3.hpp"
+#include <Matrix3.hpp>
 
 namespace Athena
 {
@@ -197,9 +197,8 @@ namespace Athena
                       temp4 * mat.data[7] + temp5 * mat.data[5] - temp6 * mat.data[4]);
         
         if(det == (Scalar)0.0f)
-        {
             throw std::invalid_argument("Determinant is zero, therefore inverse matrix doesn't exist");
-        }; 
+
         Scalar inverseDet = 1 / det;
 
         data[0] = (mat.data[4] * mat.data[8] - mat.data[5] * mat.data[7])* inverseDet;
@@ -225,6 +224,10 @@ namespace Athena
         Matrix3 result;
         result.setInverse(mat);
         return result;
+    }
+
+    ArrayOfVector3Matrix Matrix3::asVector3Array() const {
+        return Matrix3::AsVector3Array(*this);
     }
 
     void Matrix3::print() const
