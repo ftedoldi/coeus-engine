@@ -1,6 +1,7 @@
 #ifndef VECTOR3_HPP
 #define VECTOR3_HPP
 
+#include <Scalar.hpp>
 #include <Vector.hpp>
 #include <Vector2.hpp>
 
@@ -8,8 +9,6 @@
 
 namespace Athena
 {
-    typedef float Scalar;
-
     template<typename K>
     struct Vector3Coordinates
     {
@@ -51,7 +50,6 @@ namespace Athena
 
             Vector3 cross(const Vector3& vector) const;
             Scalar dot(const Vector3& vector) const;
-            static Scalar dot(const Vector3& vector1, const Vector3& vector2);
 
             Scalar magnitude() const;
             Scalar squareMagnitude() const;

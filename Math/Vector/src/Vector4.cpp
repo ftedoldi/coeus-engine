@@ -71,8 +71,10 @@ namespace Athena {
             return this->coordinates.y;
         if (i == 2)
             return this->coordinates.z;
+        if (i == 3)
+            return this->coordinates.w;
 
-        throw std::invalid_argument("INDEX_OUT_OF_RANGE::in Vector4 the index might be either 0 or 1");
+        throw std::invalid_argument("INDEX_OUT_OF_RANGE::in Vector4 the index might be either 0, 1, 2 or 3");
     }
 
     Scalar& Vector4::operator [] (const short& i) {
@@ -82,6 +84,8 @@ namespace Athena {
             return this->coordinates.y;
         if (i == 2)
             return this->coordinates.z;
+        if (i == 3)
+            return this->coordinates.w;
         
         throw std::invalid_argument("INDEX_OUT_OF_RANGE::in Vector4 the index might be either 0 or 1");
     }

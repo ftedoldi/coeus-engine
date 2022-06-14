@@ -35,12 +35,6 @@ namespace Athena {
                 this->coordinates.z * vector.coordinates.z;
     }
 
-    Scalar Vector3::dot(const Vector3& vector1, const Vector3& vector2) {
-        return vector1.coordinates.x * vector2.coordinates.x +
-                vector1.coordinates.y * vector2.coordinates.y +
-                vector1.coordinates.z * vector2.coordinates.z;
-    }
-
     Vector3 Vector3::cross(const Vector3& vector) const {
         return Vector3::cross(*this, vector);
     }

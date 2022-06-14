@@ -1,6 +1,7 @@
 #ifndef VECTOR2_HPP
 #define VECTOR2_HPP
 
+#include <Scalar.hpp>
 #include <Vector.hpp>
 #include <Vector3.hpp>
 
@@ -11,8 +12,6 @@
 
 namespace Athena
 {
-    typedef float Scalar;
-
     template<typename K>
     struct Vector2Coordinates
     {
