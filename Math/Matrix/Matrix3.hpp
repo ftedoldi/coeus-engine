@@ -1,10 +1,10 @@
 #ifndef MATRIX3_HPP
 #define MATRIX3_HPP
 
-#include <Vector3.hpp>
-#include <Matrix.hpp>
-#include <Matrix2.hpp>
-#include <Scalar.hpp>
+#include "../Scalar.hpp"
+#include "../Vector/Vector3.hpp"
+#include "Matrix.hpp"
+#include "Matrix2.hpp"
 
 namespace Athena 
 {
@@ -16,9 +16,10 @@ namespace Athena
 
     class Matrix2;
 
-    class Matrix3 : public Matrix<3, 3, Matrix3, Scalar>
+    class Matrix3
     {
     public:
+        Scalar data[3 * 3];
         Matrix3();
         Matrix3(const Matrix2& mat);
         Matrix3(const Matrix3& mat);

@@ -2,19 +2,19 @@
 #define MATRIX4_HPP
 
 #define _USE_MATH_DEFINES
-#include <Matrix3.hpp>
-
-#include <Vector3.hpp>
-#include <Vector/Vector4.hpp>
-#include <Scalar.hpp>
+#include "../Scalar.hpp"
+#include "../Vector/Vector3.hpp"
+#include "../Vector/Vector4.hpp"
+#include "Matrix3.hpp"
 
 namespace Athena 
 {
     class Matrix4;
 
-    class Matrix4 : public Matrix<4, 4, Matrix4, Scalar>
+    class Matrix4
     {
     public:
+        Scalar data[4 * 4];
 
         Matrix4();
         Matrix4(const Vector4& vec1, const Vector4& vec2, const Vector4& vec3, const Vector4& vec4);

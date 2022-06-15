@@ -1,10 +1,12 @@
 #ifndef VECTOR4_HPP
 #define VECTOR4_HPP
 
-#include <Scalar.hpp>
-#include <Vector.hpp>
-#include <Vector3.hpp>
+#include "../Scalar.hpp"
+#include "../Vector/Vector.hpp"
+#include "../Vector/Vector3.hpp"
 
+#include <iostream>
+#include <cmath>
 #include <stdexcept>
 
 namespace Athena 
@@ -18,7 +20,9 @@ namespace Athena
         K w;
     };
 
-    class Vector4 : Vector<Vector4Coordinates<Scalar>, Vector4, Scalar>
+    class Vector4;
+
+    class Vector4
     {
         public:
             Vector4Coordinates<Scalar> coordinates;

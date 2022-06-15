@@ -81,6 +81,8 @@ namespace Athena
                 Vector3 result = Vector3();
                 Vector4 quat = Vector4(quaternion.getImmaginaryPart(), quaternion.getRealPart());
 
+                result.print();
+
                 auto q = quat.coordinates;
                 auto pos = result.coordinates;
 
@@ -88,12 +90,12 @@ namespace Athena
                 pos.x = Math::radiansToDegreeAngle(std::asin(2.f * (q.x * q.z - q.w * q.y)));
                 pos.z = Math::radiansToDegreeAngle(std::atan2(2.f * q.x * q.y + 2.f * q.z * q.w, 1 - 2.f * (q.y * q.y + q.z * q.z)));
 
-                pos.x = pos.x > 360 ? pos.x - 360 : pos.x;
-                pos.x = pos.x < 0 ? pos.x + 360 : pos.x;
-                pos.y = pos.y > 360 ? pos.y - 360 : pos.y;
-                pos.y = pos.y < 0 ? pos.y + 360 : pos.y;
-                pos.z = pos.z > 360 ? pos.z - 360 : pos.z;
-                pos.z = pos.z < 0 ? pos.z + 360 : pos.z;
+                pos.x = pos.x > 360.f ? pos.x - 360.f : pos.x;
+                pos.x = pos.x < 0.f ? pos.x + 360.f : pos.x;
+                pos.y = pos.y > 360.f ? pos.y - 360.f : pos.y;
+                pos.y = pos.y < 0.f ? pos.y + 360.f : pos.y;
+                pos.z = pos.z > 360.f ? pos.z - 360.f : pos.z;
+                pos.z = pos.z < 0.f ? pos.z + 360.f : pos.z;
 
                 return result;
             }
@@ -116,9 +118,9 @@ namespace Athena
             }
 
             static Matrix3 QuaternionToMatrx3(const Quaternion& quaternion) {
-                Vector4 quat = Quaternion::AsVector4(quaternion);
+                Vector4* quat = Quaternion::AsVector4(quaternion);
 
-                auto q = quat.coordinates;
+                auto q = quat->coordinates;
 
                 return Matrix3 (
                     1 - 2.f * q.y * q.y - 2.f * q.z * q.z, 2.f * q.x * q.y - 2.f * q.z * q.w, 2.f * q.x * q.z + 2.f * q.y * q.w,
@@ -127,8 +129,8 @@ namespace Athena
                 );
             }
 
-            static Vector4 AsVector4(const Quaternion& quaternion) {
-                return Vector4(quaternion.getImmaginaryPart(), quaternion.getRealPart());
+            static Vector4* AsVector4(const Quaternion& quaternion) {
+                return new Vector4(quaternion.getImmaginaryPart(), quaternion.getRealPart());
             }
 
             Vector3 getImmaginaryPart() const;
@@ -165,7 +167,7 @@ namespace Athena
             // Rotate the vector passed as input by this quaternion
             Vector3 rotateVectorByThisQuaternion(const Vector3& vectorToRotate);
 
-            Vector4 asVector4() const;
+            Vector4* asVector4() const;
 
             void print() const;
 

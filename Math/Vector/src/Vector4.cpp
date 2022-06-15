@@ -1,4 +1,4 @@
-#include <Vector4.hpp>
+#include "../Vector4.hpp"
 
 namespace Athena {
     Vector4::Vector4() {

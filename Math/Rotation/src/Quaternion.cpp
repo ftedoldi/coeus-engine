@@ -128,7 +128,7 @@ namespace Athena {
         return result.getImmaginaryPart();
     }
 
-    Vector4 Quaternion::asVector4() const {
+    Vector4* Quaternion::asVector4() const {
         return Quaternion::AsVector4(*this);
     }
 

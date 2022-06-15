@@ -19,7 +19,7 @@ namespace Athena
 
     class Vector2;
 
-    class Vector3 : Vector<Vector3Coordinates<Scalar>, Vector3, Scalar>
+    class Vector3
     {
         public:
             Vector3Coordinates<Scalar> coordinates;

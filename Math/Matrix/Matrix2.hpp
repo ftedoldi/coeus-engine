@@ -1,9 +1,9 @@
 #ifndef MATRIX2_HPP
 #define MATRIX2_HPP
 
-#include <Scalar.hpp>
-#include <Matrix.hpp>
-#include <Vector2.hpp>
+#include "../Scalar.hpp"
+#include "Matrix.hpp"
+#include "../Vector/Vector2.hpp"
 
 #include <iostream>
 
@@ -11,10 +11,10 @@ namespace Athena
 {
     class Vector2;
     
-    class Matrix2 : public Matrix<2, 2, Matrix2, Scalar>
+    class Matrix2
     {
     public:
-
+        Scalar data[2 * 2];
         Matrix2();
         Matrix2(Scalar v1, Scalar v2, Scalar v3, Scalar v4);
         Matrix2(const Vector2& vec1, const Vector2& vec2);

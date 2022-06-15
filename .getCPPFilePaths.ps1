@@ -1,0 +1,1 @@
+get-childitem . -recurse | where {($_.extension -eq ".cpp") -and ($_.name -ne "glm.cpp" )} | % { $_.FullName }

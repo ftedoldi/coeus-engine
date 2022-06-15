@@ -2,13 +2,11 @@
 #define VECTOR2_HPP
 
 #include <Scalar.hpp>
-#include <Vector.hpp>
 #include <Vector3.hpp>
 
 #include <iostream>
 #include <cmath>
 #include <stdexcept>
-#include <memory>
 
 namespace Athena
 {
@@ -22,7 +20,7 @@ namespace Athena
     // Forward declaration
     class Vector3;
 
-    class Vector2 : Vector<Vector2Coordinates<Scalar>, Vector2, Scalar>
+    class Vector2
     {
         public:
             Vector2Coordinates<Scalar> coordinates;
