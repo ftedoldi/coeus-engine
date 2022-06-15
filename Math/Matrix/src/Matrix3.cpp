@@ -4,28 +4,18 @@ namespace Athena
 {
     Matrix3::Matrix3()
     {
-        data[0] = 1;
-        data[4] = 1;
-        data[8] = 1;
-        data[1] = 0;
-        data[2] = 0;
-        data[3] = 0;
-        data[5] = 0;
-        data[6] = 0;
-        data[7] = 0;
+        data[0] = 1; data[4] = 1; data[8] = 1;
+        data[1] = 0; data[2] = 0; data[3] = 0;
+        data[5] = 0; data[6] = 0; data[7] = 0;
     }
 
-    Matrix3::Matrix3(Scalar v1, Scalar v2, Scalar v3, Scalar v4, Scalar v5, Scalar v6, Scalar v7, Scalar v8, Scalar v9)
+    Matrix3::Matrix3(const Scalar& v1, const Scalar& v2, const Scalar& v3,
+                     const Scalar& v4, const Scalar& v5, const Scalar& v6,
+                     const Scalar& v7, const Scalar& v8, const Scalar& v9)
     {
-        data[0] = v1;
-        data[1] = v2;
-        data[2] = v3;
-        data[3] = v4;
-        data[4] = v5;
-        data[5] = v6;
-        data[6] = v7;
-        data[7] = v8;
-        data[8] = v9;
+        data[0] = v1; data[1] = v2; data[2] = v3;
+        data[3] = v4; data[4] = v5; data[5] = v6;
+        data[6] = v7; data[7] = v8; data[8] = v9;
     }
 
     Matrix3::Matrix3(const Matrix2& mat)
@@ -79,7 +69,7 @@ namespace Athena
         data[8] = temp3;
     }
 
-    void Matrix3::operator*=(const Scalar value)
+    void Matrix3::operator*=(const Scalar& value)
     {
         for(unsigned int i = 0; i < 9; ++i)
         {
@@ -87,21 +77,21 @@ namespace Athena
         }
     }
 
-    Matrix3 Matrix3::operator*(const Matrix3& mat)
+    Matrix3 Matrix3::operator*(const Matrix3& mat) const
     {
         Matrix3 result = Matrix3(*this);
         result *= mat;
         return result;
     }
 
-    Matrix3 Matrix3::operator*(const Scalar value)
+    Matrix3 Matrix3::operator*(const Scalar& value) const
     {
         Matrix3 result = Matrix3(*this);
         result *= value;
         return result;
     }
 
-    Vector3 Matrix3::operator*(const Vector3& vec)
+    Vector3 Matrix3::operator*(const Vector3& vec) const
     {
         return Vector3(
             (data[0] * vec.coordinates.x) + (data[1] * vec.coordinates.y) + (data[2] * vec.coordinates.z),
@@ -118,7 +108,7 @@ namespace Athena
         }
     }
 
-    Matrix3 Matrix3::operator+(const Matrix3& mat)
+    Matrix3 Matrix3::operator+(const Matrix3& mat) const
     {
         Matrix3 result = Matrix3(*this);
         result += mat;
@@ -133,21 +123,21 @@ namespace Athena
         }
     }
 
-    Matrix3 Matrix3::operator-(const Matrix3& mat)
+    Matrix3 Matrix3::operator-(const Matrix3& mat) const
     {
         Matrix3 result = Matrix3(*this);
         result -= mat;
         return result;
     }
 
-    Matrix3 Matrix3::operator-()
+    Matrix3 Matrix3::operator-() const
     {
         return Matrix3(-data[0], -data[1], -data[2],
                        -data[3], -data[4], -data[5],
                        -data[6], -data[7], -data[8]);
     }
 
-    bool Matrix3::operator==(const Matrix3& mat)
+    bool Matrix3::operator==(const Matrix3& mat) const
     {
         for(unsigned int i = 0; i < 9; ++i)
         {
@@ -170,7 +160,7 @@ namespace Athena
         data[8] = mat.data[8];
     }
 
-    Matrix3 Matrix3::transpose()
+    Matrix3 Matrix3::transpose() const
     {
         Matrix3 result;
         result.setTranspose(*this);
