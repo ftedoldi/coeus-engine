@@ -23,7 +23,9 @@ namespace Athena
         Matrix3();
         Matrix3(const Matrix2& mat);
         Matrix3(const Matrix3& mat);
-        Matrix3(Scalar v1, Scalar v2, Scalar v3, Scalar v4, Scalar v5, Scalar v6, Scalar v7, Scalar v8, Scalar v9);
+        Matrix3(const Scalar& v1, const Scalar& v2, const Scalar& v3,
+                const Scalar& v4, const Scalar& v5, const Scalar& v6,
+                const Scalar& v7, const Scalar& v8, const Scalar& v9);
 
         static ArrayOfVector3Matrix AsVector3Array(const Matrix3& matrix) {
             ArrayOfVector3Matrix vectorMatrix;
@@ -37,26 +39,26 @@ namespace Athena
             return vectorMatrix;
         }
         
-        Matrix3 operator*(const Matrix3& mat);
-        Matrix3 operator*(const Scalar value);
-        Vector3 operator*(const Vector3& vec);
-        Matrix3 operator-(const Matrix3& mat);
-        Matrix3 operator+(const Matrix3& mat);
-        Matrix3 operator-();
+        Matrix3 operator*(const Matrix3& mat) const;
+        Matrix3 operator*(const Scalar& value) const;
+        Vector3 operator*(const Vector3& vec) const;
+        Matrix3 operator-(const Matrix3& mat) const;
+        Matrix3 operator+(const Matrix3& mat) const;
+        Matrix3 operator-() const;
 
         void operator+=(const Matrix3& mat);
         void operator*=(const Matrix3& mat);
-        void operator*=(const Scalar value);
+        void operator*=(const Scalar& value);
         void operator-=(const Matrix3& mat);
 
-        bool operator==(const Matrix3& mat);
+        bool operator==(const Matrix3& mat) const;
         
         void setInverse(const Matrix3& mat);
         Matrix3 inverse() const;
         static Matrix3 inverse(const Matrix3& mat);
 
         void setTranspose(const Matrix3& mat);
-        Matrix3 transpose();
+        Matrix3 transpose() const;
         static Matrix3 transpose(const Matrix3& mat);
 
         ArrayOfVector3Matrix asVector3Array() const;

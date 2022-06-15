@@ -6,11 +6,7 @@
 class Test 
 {
 public: 
-    Test();
-
-    static void Test(bool expression) {
-        assert(expression);
-    }
+    virtual void test() = 0;
 };
 
 #endif

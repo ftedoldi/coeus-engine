@@ -1,7 +1,7 @@
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
 
-#include "../Scalar.hpp"
+#include <Scalar.hpp>
 
 namespace Athena 
 {
@@ -12,27 +12,27 @@ namespace Athena
         K data[R * C];
         virtual ~Matrix(){};
 
-        virtual T operator*(const T& mat);
-        virtual T operator*(const K& value);
+        virtual T operator*(const T& mat) const;
+        virtual T operator*(const K& value) const;
         virtual void operator*=(const T& mat);
         virtual void operator*=(const K& value);
 
         virtual void operator+=(const T& mat);
         virtual void operator-=(const T& mat);
-        virtual T operator+(const T& mat);
-        virtual T operator-(const T& mat);
+        virtual T operator+(const T& mat) const;
+        virtual T operator-(const T& mat) const;
 
-        virtual bool operator==(const T& mat);
+        virtual bool operator==(const T& mat) const;
 
         virtual void setInverse(const T& mat);
         virtual T inverse() const;
         static T inverse(const T& mat);
 
         virtual void setTranspose(const T& mat);
-        virtual T transpose();
+        virtual T transpose() const;
         static T transpose(const T& mat);
 
-        virtual void print();
+        virtual void print() const;
 
     };
 }

@@ -1,13 +1,24 @@
-#include "../Matrix4.hpp"
+#include <Matrix4.hpp>
 
 namespace Athena
 {
     Matrix4::Matrix4()
     {
-        data[0] = 1, data[1] = 0, data[2] = 0, data[3] = 0, data[4] = 0,
-        data[5] = 1, data[6] = 0; data[7] = 0; data[8] = 0; data[9] = 0,
-        data[10] = 1, data[11] = 0, data[12] = 0, data[13] = 0, data[14] = 0,
-        data[15] = 1;
+        data[0] = 1, data[1] = 0, data[2] = 0, data[3] = 0,
+        data[4] = 0, data[5] = 1, data[6] = 0, data[7] = 0,
+        data[8] = 0, data[9] = 0, data[10] = 1, data[11] = 0,
+        data[12] = 0, data[13] = 0, data[14] = 0, data[15] = 1;
+    }
+
+    Matrix4::Matrix4(const Scalar& v1, const Scalar& v2, const Scalar& v3, const Scalar& v4,
+                    const Scalar& v5, const Scalar& v6, const Scalar& v7, const Scalar& v8,
+                    const Scalar& v9, const Scalar& v10, const Scalar& v11, const Scalar& v12,
+                    const Scalar& v13, const Scalar& v14, const Scalar& v15, const Scalar& v16)
+    {
+        data[0] = v1, data[1] = v2, data[2] = v3, data[3] = v4,
+        data[4] = v5, data[5] = v6, data[6] = v7, data[7] = v8,
+        data[8] = v9, data[9] = v10, data[10] = v11, data[11] = v12,
+        data[12] = v13, data[13] = v14, data[14] = v15, data[15] = v16;
     }
 
     Matrix4::Matrix4(const Vector4& vec1, const Vector4& vec2, const Vector4& vec3, const Vector4& vec4)
@@ -101,32 +112,40 @@ namespace Athena
         }
     }
 
-    Matrix4 Matrix4::operator*(const Matrix4& mat)
+    Matrix4 Matrix4::operator*(const Matrix4& mat) const
     {
         Matrix4 result = Matrix4(*this);
         result *= mat;
         return result;
     }
 
-    Matrix4 Matrix4::operator*(const Scalar& value)
+    Matrix4 Matrix4::operator*(const Scalar& value) const
     {
         Matrix4 result = Matrix4(*this);
         result *= value;
         return result;
     }
 
-    Matrix4 Matrix4::operator+(const Matrix4& mat)
+    Matrix4 Matrix4::operator+(const Matrix4& mat) const
     {
         Matrix4 result = Matrix4(*this);
         result += mat;
         return result;
     }
 
-    Matrix4 Matrix4::operator-(const Matrix4& mat)
+    Matrix4 Matrix4::operator-(const Matrix4& mat) const
     {
         Matrix4 result = Matrix4(*this);
         result -= mat;
         return result;
+    }
+
+    Matrix4 Matrix4::operator-() const
+    {
+        return Matrix4(-data[0], -data[1], -data[2], -data[3],
+                       -data[4], -data[5], -data[6], -data[7],
+                       -data[8], -data[9], -data[10], -data[11],
+                       -data[12], -data[13], -data[14], -data[15]);
     }
 
     void Matrix4::setInverse(const Matrix4& mat)
@@ -257,7 +276,7 @@ namespace Athena
             data[i] = inv[i] * det;
     }
 
-    Matrix4 Matrix4::inverse()
+    Matrix4 Matrix4::inverse() const
     {
         Matrix4 result;
         result.setInverse(*this);
@@ -321,9 +340,7 @@ namespace Athena
         return Matrix4(vec1, vec2, vec3, vec4);
     }
 
-
-    //TODO when vector4 class is created
-    Vector4 Matrix4::operator*(const Vector4& vec)
+    Vector4 Matrix4::operator*(const Vector4& vec) const
     {
         return Vector4(data[0] * vec[0] + data[1] * vec[1] + data[2] * vec[2] + data[3] * vec[3],
                        data[4] * vec[0] + data[5] * vec[1] + data[6] * vec[2] + data[7] * vec[3],

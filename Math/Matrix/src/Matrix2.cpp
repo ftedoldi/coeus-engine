@@ -1,4 +1,4 @@
-#include "../Matrix2.hpp"
+#include <Matrix2.hpp>
 
 namespace Athena{
     Matrix2::Matrix2()
@@ -7,7 +7,8 @@ namespace Athena{
         data[1] = data[3] = 0;
     }
 
-    Matrix2::Matrix2(Scalar v1, Scalar v2, Scalar v3, Scalar v4)
+    Matrix2::Matrix2(const Scalar& v1, const Scalar& v2,
+                     const Scalar& v3, const Scalar& v4)
     {
         data[0] = v1;
         data[1] = v2;
@@ -40,12 +41,12 @@ namespace Athena{
         temp4 = (data[2] * mat.data[1]) + (data[3] * mat.data[3]);
         data[0] = temp1;
         data[1] = temp2;
-        data[3] = temp3;
-        data[4] = temp4;
+        data[2] = temp3;
+        data[3] = temp4;
 
     }
 
-    void Matrix2::operator*=(const Scalar value)
+    void Matrix2::operator*=(const Scalar& value)
     {
         for(unsigned int i = 0; i < 4; ++i)
         {
@@ -69,7 +70,7 @@ namespace Athena{
         }
     }
 
-    Vector2 Matrix2::operator*(const Vector2& vec)
+    Vector2 Matrix2::operator*(const Vector2& vec) const
     {
         return Vector2(
             (data[0] * vec.coordinates.x) + (data[1] * vec.coordinates.y),
@@ -77,40 +78,40 @@ namespace Athena{
         );
     }
 
-    Matrix2 Matrix2::operator*(const Matrix2& mat)
+    Matrix2 Matrix2::operator*(const Matrix2& mat) const
     {
         Matrix2 result = Matrix2(*this);
         result *= mat;
         return result;
     }
 
-    Matrix2 Matrix2::operator*(const Scalar value)
+    Matrix2 Matrix2::operator*(const Scalar& value) const
     {
         Matrix2 result = Matrix2(*this);
         result *= value;
         return result;
     }
 
-    Matrix2 Matrix2::operator+(const Matrix2& mat)
+    Matrix2 Matrix2::operator+(const Matrix2& mat) const
     {
         Matrix2 result = Matrix2(*this);
         result += mat;
         return result;
     }
 
-    Matrix2 Matrix2::operator-(const Matrix2& mat)
+    Matrix2 Matrix2::operator-(const Matrix2& mat) const
     {
         Matrix2 result = Matrix2(*this);
         result -= mat;
         return result;
     }
 
-    Matrix2 Matrix2::operator-()
+    Matrix2 Matrix2::operator-() const
     {
         return Matrix2(-data[0], -data[1], -data[2], -data[3]);
     }
 
-    bool Matrix2::operator==(const Matrix2& mat)
+    bool Matrix2::operator==(const Matrix2& mat) const
     {
         for(unsigned int i = 0; i < 4; ++i)
         {
@@ -139,7 +140,7 @@ namespace Athena{
         data[3] = tmp * inverseDet;
     }
 
-    Matrix2 Matrix2::inverse()
+    Matrix2 Matrix2::inverse() const
     {
         Matrix2 result;
         result.setInverse(*this);
@@ -161,14 +162,13 @@ namespace Athena{
         data[3] = mat.data[3];
     }
 
-    Matrix2 Matrix2::transpose()
+    Matrix2 Matrix2::transpose() const
     {
         Matrix2 result;
         result.setTranspose(*this);
         return result;
     }
 
-    //static
     Matrix2 Matrix2::transpose(const Matrix2& mat)
     {
         Matrix2 result;
@@ -176,7 +176,7 @@ namespace Athena{
         return result;
     }
 
-    void Matrix2::print()
+    void Matrix2::print() const
     {
         for(unsigned int i = 0; i < 4; ++i)
         {

@@ -18,20 +18,25 @@ namespace Athena
 
         Matrix4();
         Matrix4(const Vector4& vec1, const Vector4& vec2, const Vector4& vec3, const Vector4& vec4);
+        Matrix4(const Scalar& v1, const Scalar& v2, const Scalar& v3, const Scalar& v4,
+                const Scalar& v5, const Scalar& v6, const Scalar& v7, const Scalar& v8,
+                const Scalar& v9, const Scalar& v10, const Scalar& v11, const Scalar& v12,
+                const Scalar& v13, const Scalar& v14, const Scalar& v15, const Scalar& v16);
 
         void operator*=(const Matrix4& mat);
         void operator*=(const Scalar& value);
         void operator+=(const Matrix4& mat);
         void operator-=(const Matrix4& mat);
 
-        Matrix4 operator*(const Matrix4& mat);
-        Vector4 operator*(const Vector4& vec);
-        Matrix4 operator*(const Scalar& value);
-        Matrix4 operator+(const Matrix4& mat);
-        Matrix4 operator-(const Matrix4& mat);
+        Matrix4 operator*(const Matrix4& mat) const;
+        Vector4 operator*(const Vector4& vec) const;
+        Matrix4 operator*(const Scalar& value) const;
+        Matrix4 operator+(const Matrix4& mat) const;
+        Matrix4 operator-(const Matrix4& mat) const;
+        Matrix4 operator-() const;
 
         void setInverse(const Matrix4& mat);
-        Matrix4 inverse();
+        Matrix4 inverse() const;
         static Matrix4 inverse(const Matrix4& mat);
 
         static Matrix4 scale(const Vector3& scale);
