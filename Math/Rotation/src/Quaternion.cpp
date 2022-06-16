@@ -26,6 +26,116 @@ namespace Athena {
         this->real = quaternion.getRealPart();
     }
 
+    Quaternion Quaternion::Identity() { return Quaternion(0, 0, 0, 1); }
+
+    Quaternion Quaternion::AxisAngleToQuaternion(const Degree& angle, const Vector3& axis) {
+        Scalar angleRad = Math::degreeToRandiansAngle(angle);
+
+        return Quaternion(
+            axis * std::sin(angleRad * 0.5f),
+            std::cos(angleRad * 0.5f)
+        );
+    }
+    
+    void Quaternion::QuaternionToAxisAngle(const Quaternion& quaternion, Scalar& angle, Vector3& axis) {
+        Vector3 immm = quaternion.getImmaginaryPart();
+        Scalar real = quaternion.getRealPart();
+
+        auto im = immm.coordinates;
+
+        angle = 2.f * std::acos(real);
+
+        axis.coordinates.x = im.x / std::sqrt(1.f - real * real);
+        axis.coordinates.y = im.y / std::sqrt(1.f - real * real);
+        axis.coordinates.z = im.z / std::sqrt(1.f - real * real);
+    }
+
+    Quaternion Quaternion::EulerAnglesToQuaternion(const Vector3& eulerAngles) {
+        Vector3 angles = Vector3(eulerAngles);
+
+        angles.coordinates.x = Math::degreeToRandiansAngle(eulerAngles.coordinates.x);
+        angles.coordinates.y = Math::degreeToRandiansAngle(eulerAngles.coordinates.y);
+        angles.coordinates.z = Math::degreeToRandiansAngle(eulerAngles.coordinates.z);
+
+        Scalar c1 = std::cos(angles.coordinates.y * 0.5);
+        Scalar s1 = std::sin(angles.coordinates.y * 0.5);
+        Scalar c2 = std::cos(angles.coordinates.z * 0.5);
+        Scalar s2 = std::sin(angles.coordinates.z * 0.5);
+        Scalar c3 = std::cos(angles.coordinates.x * 0.5);
+        Scalar s3 = std::sin(angles.coordinates.x * 0.5);
+
+        Scalar c1c2 = c1 * c2;
+        Scalar s1s2 = s1 * s2;
+
+        return Quaternion(
+            c1c2 * s3 + s1s2 * c3,
+            s1 * c2 * c3 + c1 * s2 * s3,
+            c1 * s2 * c3 - s1 * c2 * s3,
+            c1c2 * c3 - s1s2 * s3
+        );
+    }
+
+    Vector3 Quaternion::QuaternionToEulerAngles(const Quaternion& quaternion) {
+        Vector3 result = Vector3();
+        Vector4 quat = Vector4(quaternion.getImmaginaryPart().coordinates.x, quaternion.getImmaginaryPart().coordinates.y, quaternion.getImmaginaryPart().coordinates.z, quaternion.getRealPart());
+
+        auto q = quat.coordinates;
+        
+        Scalar singularityAtNorthPole = 0.499;
+        Scalar singularityAtSouthPole = -0.499;
+
+        Scalar test = q.x * q.y + q.z * q.w;
+
+        if (test > singularityAtNorthPole)
+            return Vector3(Math::radiansToDegreeAngle(0), Math::radiansToDegreeAngle(2 * std::atan2(q.x, q.w)), Math::radiansToDegreeAngle(M_PI / 2));
+        
+        if (test < singularityAtSouthPole)
+            return Vector3(Math::radiansToDegreeAngle(0), Math::radiansToDegreeAngle(-2 * std::atan2(q.x, q.w)), Math::radiansToDegreeAngle(-M_PI / 2));
+
+        double squaredX = q.x * q.x;
+        double squaredY = q.y * q.y;
+        double squaredZ = q.z * q.z;
+
+        result.coordinates.y = Math::radiansToDegreeAngle(std::atan2(2.f * q.y * q.w - 2.f * q.x * q.z, 1 - 2.f * (squaredY * squaredZ)));
+        result.coordinates.z = Math::radiansToDegreeAngle(std::asin(2.f * test));
+        result.coordinates.x = Math::radiansToDegreeAngle(std::atan2(2.f * q.x * q.w - 2.f * q.y * q.z, 1 - 2.f * (squaredX * squaredZ)));
+
+        return result;
+    }
+
+    Quaternion Quaternion::Matrix3ToQuaternion(const Matrix3& matrix) {
+        auto vecMatrix = matrix.asVector3Array();
+
+        auto r0 = vecMatrix.row0;
+        auto r1 = vecMatrix.row1;
+        auto r2 = vecMatrix.row2;
+
+        float realPart = std::sqrt(1 + r0[0] + r1[1] + r2[2]) / 2.f;
+
+        return Quaternion(
+            (r2[1] - r1[2]) / (4.f * realPart),
+            (r0[2] - r2[0]) / (4.f * realPart),
+            (r1[0] - r0[1]) / (4.f * realPart),
+            realPart
+        );
+    }
+
+    Matrix3 Quaternion::QuaternionToMatrx3(const Quaternion& quaternion) {
+        Vector4 quat = Quaternion::AsVector4(quaternion);
+
+        auto q = quat.coordinates;
+
+        return Matrix3 (
+            1 - 2.f * q.y * q.y - 2.f * q.z * q.z, 2.f * q.x * q.y - 2.f * q.z * q.w, 2.f * q.x * q.z + 2.f * q.y * q.w,
+            2.f * q.x * q.y + 2.f * q.z * q.w, 1 - 2.f * q.x  * q.x - 2.f * q.z * q.z, 2.f * q.y * q.z - 2.f * q.x * q.w,
+            2.f * q.x * q.z - 2.f * q.y * q.w, 2.f * q.y * q.z + 2.f * q.x * q.w, 1 - 2.f * q.x * q.x - 2.f * q.y * q.y
+        );
+    }
+
+    Vector4 Quaternion::AsVector4(const Quaternion& quaternion) {
+        return Vector4(quaternion.getImmaginaryPart(), quaternion.getRealPart());
+    }
+
     Vector3 Quaternion::getImmaginaryPart() const {
         return this->immaginary;
     }
@@ -128,7 +238,7 @@ namespace Athena {
         return result.getImmaginaryPart();
     }
 
-    Vector4* Quaternion::asVector4() const {
+    Vector4 Quaternion::asVector4() const {
         return Quaternion::AsVector4(*this);
     }
 

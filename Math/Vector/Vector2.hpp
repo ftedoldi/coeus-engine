@@ -2,6 +2,7 @@
 #define VECTOR2_HPP
 
 #include <Scalar.hpp>
+#include <Math.hpp>
 #include <Vector3.hpp>
 
 #include <iostream>

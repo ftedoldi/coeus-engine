@@ -115,9 +115,8 @@ namespace Athena {
         this->coordinates.y /= k;
     }
 
-    // TODO: Convert cosine from radians to degree
     Scalar Vector2::angleBetween (const Vector2& vector) const {
-        return std::acos(this->normalized() * vector.normalized());
+        return Math::radiansToDegreeAngle(std::acos(this->normalized() * vector.normalized()));
     }
 
     Vector2 Vector2::lerp(const Vector2& vector, const Scalar& t) const {

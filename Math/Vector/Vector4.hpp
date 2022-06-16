@@ -1,9 +1,12 @@
+#pragma once
+
 #ifndef VECTOR4_HPP
 #define VECTOR4_HPP
 
-#include "../Scalar.hpp"
-#include "../Vector/Vector.hpp"
-#include "../Vector/Vector3.hpp"
+#include <Scalar.hpp>
+#include <Vector3.hpp>
+#include <Quaternion.hpp>
+#include <Math.hpp>
 
 #include <iostream>
 #include <cmath>
@@ -20,7 +23,7 @@ namespace Athena
         K w;
     };
 
-    class Vector4;
+    class Quaternion;
 
     class Vector4
     {
@@ -61,6 +64,8 @@ namespace Athena
             Scalar angleBetween (const Vector4& vector) const;
 
             Vector4 lerp(const Vector4& vector, const Scalar& t) const;
+
+            Quaternion toQuaternion() const;
 
             bool isZero() const;
             bool areEquals(const Vector4& vector) const;
