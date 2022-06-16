@@ -2,7 +2,6 @@
 #define MATRIX2_HPP
 
 #include "../Scalar.hpp"
-#include "Matrix.hpp"
 #include "../Vector/Vector2.hpp"
 
 #include <iostream>
@@ -27,6 +26,7 @@ namespace Athena
         Matrix2 operator+(const Matrix2& mat) const;
         Matrix2 operator-(const Matrix2& mat) const;
         Matrix2 operator-() const;
+        void operator=(const Matrix2& mat);
 
         void operator*=(const Matrix2& mat);
         void operator*=(const Scalar& value);
