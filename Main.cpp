@@ -12,6 +12,10 @@
 #include <Vector4.hpp>
 #include <Quaternion.hpp>
 
+#include <TestVector2.hpp>
+#include <TestVector3.hpp>
+#include <TestVector4.hpp>
+
 #include <iostream>
 
 //#include <Test.cuh>
@@ -36,17 +40,12 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 
 int main() {
 	//call();
-	Athena::Quaternion::TestClass();
-	Athena::Quaternion quat = Athena::Quaternion::EulerAnglesToQuaternion(Athena::Vector3(1, 2, 3));
-	Athena::Quaternion::QuaternionToEulerAngles(quat).print();
-	Athena::Vector4(Athena::Vector3(2, 1, 2), 1.0f).print();
-	std::cout << Athena::Vector4().dot(Athena::Vector4()) << std::endl;
-	Athena::Vector4(Athena::Vector3(2, 1, 2), 1.0f).print();
-	std::cout << (Athena::Vector4(1, 2, 3, 4) == Athena::Vector4(1, 2, 3, 4));
-	Athena::Vector2 vec = Athena::Vector2(1, 2);
-	vec.lerp(Athena::Vector2(), 0.5f).print();
-
-	vec.cross(Athena::Vector2(2, 30)).print();
+	TestVector2 v2 = TestVector2();
+	v2.test();
+	TestVector3 v3 = TestVector3();
+	v3.test();
+	TestVector4 v4 = TestVector4();
+	v4.test();
 
     glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

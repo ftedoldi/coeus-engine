@@ -11,7 +11,7 @@
                 "-std=c++17",
                 "-fdiagnostics-color=always",
                 "-Wall",
-                "-Wextra",
+                //"-Wextra",
                 "-I${workspaceFolder}/Includes",
                 "-I${workspaceFolder}/Includes/CUDA",
                 "-I${workspaceFolder}/CUDA",

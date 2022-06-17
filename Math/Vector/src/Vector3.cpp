@@ -22,11 +22,30 @@ namespace Athena {
         this->coordinates.z = z;
     }
 
+    Vector3 Vector3::up() { return Vector3(0, +1, 0); }
+    Vector3 Vector3::down() { return Vector3(0, -1, 0); }
+    Vector3 Vector3::right() { return Vector3(+1, 0, 0); }
+    Vector3 Vector3::left() { return Vector3(-1, 0, 0); }
+    Vector3 Vector3::forward() { return Vector3(0, 0, +1); }
+    Vector3 Vector3::backward() { return Vector3(0, 0, -1); }
+
     Vector3::Vector3(const Vector3& vector) {
         coordinates = Vector3Coordinates<Scalar>();
         this->coordinates.x = vector.coordinates.x;
         this->coordinates.y = vector.coordinates.y;
         this->coordinates.z = vector.coordinates.z;
+    }
+
+    Vector3 Vector3::cross(const Vector3& vector1, const Vector3& vector2) {
+                return Vector3(
+                    vector1.coordinates.y * vector2.coordinates.z - vector1.coordinates.z * vector2.coordinates.y,
+                    vector1.coordinates.z * vector2.coordinates.x - vector1.coordinates.z * vector2.coordinates.z,
+                    vector1.coordinates.x * vector2.coordinates.y - vector1.coordinates.y * vector2.coordinates.x
+                );
+    }
+
+    Scalar Vector3::dot(const Vector3& vector1, const Vector3& vector2) {
+        return vector1.dot(vector2);
     }
 
     Scalar Vector3::dot(const Vector3& vector) const {
@@ -67,7 +86,7 @@ namespace Athena {
         if (i == 2)
             return this->coordinates.z;
 
-        throw std::invalid_argument("INDEX_OUT_OF_RANGE::in Vector3 the index might be either 0 or 1");
+        throw std::invalid_argument("INDEX_OUT_OF_RANGE::in Vector3 the index might be either 0, 1 or 2");
     }
 
     Scalar& Vector3::operator [] (const short& i) {
@@ -78,7 +97,7 @@ namespace Athena {
         if (i == 2)
             return this->coordinates.z;
         
-        throw std::invalid_argument("INDEX_OUT_OF_RANGE::in Vector3 the index might be either 0 or 1");
+        throw std::invalid_argument("INDEX_OUT_OF_RANGE::in Vector3 the index might be either 0, 1 or 2");
     }
 
     Scalar Vector3::operator * (const Vector3& vector) const {
@@ -141,9 +160,8 @@ namespace Athena {
         this->coordinates.z /= k;
     }
 
-    // TODO: Convert cosine from radians to degree
     Scalar Vector3::angleBetween (const Vector3& vector) const {
-        return std::acos(this->normalized() * vector.normalized());
+        return Math::radiansToDegreeAngle(std::acos(this->normalized() * vector.normalized()));
     }
 
     Vector3 Vector3::lerp(const Vector3& vector, const Scalar& t) const {

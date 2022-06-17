@@ -4,6 +4,7 @@
 #include <Scalar.hpp>
 #include <Vector.hpp>
 #include <Vector2.hpp>
+#include <Math.hpp>
 
 #include <stdexcept>
 
@@ -29,24 +30,16 @@ namespace Athena
             Vector3(const Vector2& vector, const Scalar& z);
             Vector3(const Vector3& vector);
         
-            static Vector3 cross(const Vector3& vector1, const Vector3& vector2) {
-                return Vector3(
-                    vector1.coordinates.y * vector2.coordinates.z - vector1.coordinates.z * vector2.coordinates.y,
-                    vector1.coordinates.z * vector2.coordinates.x - vector1.coordinates.z * vector2.coordinates.z,
-                    vector1.coordinates.x * vector2.coordinates.y - vector1.coordinates.y * vector2.coordinates.x
-                );
-            }
+            static Vector3 cross(const Vector3& vector1, const Vector3& vector2);
 
-            static Scalar dot(const Vector3& vector1, const Vector3& vector2) {
-                return vector1.dot(vector2);
-            }
+            static Scalar dot(const Vector3& vector1, const Vector3& vector2);
 
-            static Vector3 up() { return Vector3(0, +1, 0); }
-            static Vector3 down() { return Vector3(0, -1, 0); }
-            static Vector3 right() { return Vector3(+1, 0, 0); }
-            static Vector3 left() { return Vector3(-1, 0, 0); }
-            static Vector3 forward() { return Vector3(0, 0, +1); }
-            static Vector3 backward() { return Vector3(0, 0, -1); }
+            static Vector3 up();
+            static Vector3 down();
+            static Vector3 right();
+            static Vector3 left();
+            static Vector3 forward();
+            static Vector3 backward();
 
             Vector3 cross(const Vector3& vector) const;
             Scalar dot(const Vector3& vector) const;

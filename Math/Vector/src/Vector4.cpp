@@ -1,4 +1,4 @@
-#include "../Vector4.hpp"
+#include <Vector4.hpp>
 
 namespace Athena {
     Vector4::Vector4() {
@@ -44,7 +44,8 @@ namespace Athena {
     Scalar Vector4::dot(const Vector4& vector) const {
         return this->coordinates.x * vector.coordinates.x +
                 this->coordinates.y * vector.coordinates.y +
-                this->coordinates.z * vector.coordinates.z;
+                this->coordinates.z * vector.coordinates.z +
+                this->coordinates.w * vector.coordinates.w;
     }
 
     Scalar Vector4::magnitude() const {
@@ -154,13 +155,16 @@ namespace Athena {
         this->coordinates.z /= k;
     }
 
-    // TODO: Convert cosine from radians to degree
     Scalar Vector4::angleBetween (const Vector4& vector) const {
-        return std::acos(this->normalized() * vector.normalized());
+        return Math::radiansToDegreeAngle(std::acos(this->normalized() * vector.normalized()));
     }
 
     Vector4 Vector4::lerp(const Vector4& vector, const Scalar& t) const {
         return *this * (1 - t) + vector * t;
+    }
+
+    Quaternion Vector4::toQuaternion() const {
+        return Quaternion(this->coordinates.x, this->coordinates.y, this->coordinates.z, this->coordinates.w);
     }
 
     bool Vector4::isZero() const {
