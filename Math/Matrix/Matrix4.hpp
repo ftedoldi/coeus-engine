@@ -6,11 +6,12 @@
 #include "../Vector/Vector3.hpp"
 #include "../Vector/Vector4.hpp"
 #include "Matrix3.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Athena 
 {
-    class Matrix4;
-
     class Matrix4
     {
     public:
@@ -18,6 +19,7 @@ namespace Athena
 
         Matrix4();
         Matrix4(const Vector4& vec1, const Vector4& vec2, const Vector4& vec3, const Vector4& vec4);
+        Matrix4(const Matrix4& mat);
         Matrix4(const Scalar& v1, const Scalar& v2, const Scalar& v3, const Scalar& v4,
                 const Scalar& v5, const Scalar& v6, const Scalar& v7, const Scalar& v8,
                 const Scalar& v9, const Scalar& v10, const Scalar& v11, const Scalar& v12,
@@ -34,15 +36,16 @@ namespace Athena
         Matrix4 operator+(const Matrix4& mat) const;
         Matrix4 operator-(const Matrix4& mat) const;
         Matrix4 operator-() const;
+        void operator=(const Matrix4& mat);
 
         void setInverse(const Matrix4& mat);
         Matrix4 inverse() const;
         static Matrix4 inverse(const Matrix4& mat);
 
-        static Matrix4 scale(const Vector3& scale);
-        static Matrix4 translate(const Vector3& translate);
+        static Matrix4 scale(const Matrix4& mat, const Vector3& scale);
+        static Matrix4 translate(const Matrix4& mat, const Vector3& translate);
         static Matrix4 lookAt(const Vector3& position, const Vector3& forward, const Vector3& up);
-        static Matrix4 perspective(const float& fieldOfView, const float& nearPlane, const float& farPlane);
+        static Matrix4 perspective(const float& fieldOfView, const float& aspectRatio, const float& nearPlane, const float& farPlane);
 
         void print() const;
     };

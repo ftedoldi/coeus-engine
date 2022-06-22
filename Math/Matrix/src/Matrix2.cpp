@@ -1,4 +1,4 @@
-#include <Matrix2.hpp>
+#include "../Matrix2.hpp"
 
 namespace Athena{
     Matrix2::Matrix2()
@@ -109,6 +109,14 @@ namespace Athena{
     Matrix2 Matrix2::operator-() const
     {
         return Matrix2(-data[0], -data[1], -data[2], -data[3]);
+    }
+
+    void Matrix2::operator=(const Matrix2& mat)
+    {
+        for(unsigned int i = 0; i < 4; ++i)
+        {
+            data[i] = mat.data[i];
+        }
     }
 
     bool Matrix2::operator==(const Matrix2& mat) const

@@ -3,7 +3,6 @@
 
 #include "../Scalar.hpp"
 #include "../Vector/Vector3.hpp"
-#include "Matrix.hpp"
 #include "Matrix2.hpp"
 
 namespace Athena 
@@ -45,6 +44,7 @@ namespace Athena
         Matrix3 operator-(const Matrix3& mat) const;
         Matrix3 operator+(const Matrix3& mat) const;
         Matrix3 operator-() const;
+        void operator=(const Matrix3& mat);
 
         void operator+=(const Matrix3& mat);
         void operator*=(const Matrix3& mat);

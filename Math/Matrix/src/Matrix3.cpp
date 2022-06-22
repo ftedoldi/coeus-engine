@@ -147,6 +147,14 @@ namespace Athena
         return true;
     }
 
+    void Matrix3::operator=(const Matrix3& mat)
+    {
+        for(unsigned int i = 0; i < 9; ++i)
+        {
+            data[i] = mat.data[i];
+        }
+    }
+
    void Matrix3::setTranspose(const Matrix3& mat)
     {
         data[0] = mat.data[0];

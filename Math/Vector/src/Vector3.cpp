@@ -37,11 +37,19 @@ namespace Athena {
     }
 
     Vector3 Vector3::cross(const Vector3& vector1, const Vector3& vector2) {
+<<<<<<< HEAD
         return Vector3(
             vector1.coordinates.y * vector2.coordinates.z - vector1.coordinates.z * vector2.coordinates.y,
             vector1.coordinates.z * vector2.coordinates.x - vector1.coordinates.x * vector2.coordinates.z,
             vector1.coordinates.x * vector2.coordinates.y - vector1.coordinates.y * vector2.coordinates.x
         );
+=======
+                return Vector3(
+                    vector1.coordinates.y * vector2.coordinates.z - vector1.coordinates.z * vector2.coordinates.y,
+                    vector1.coordinates.z * vector2.coordinates.x - vector1.coordinates.x * vector2.coordinates.z,
+                    vector1.coordinates.x * vector2.coordinates.y - vector1.coordinates.y * vector2.coordinates.x
+                );
+>>>>>>> 8b6a5c980d281f5be7dd8dcf179e82ea5eb455eb
     }
 
     Scalar Vector3::dot(const Vector3& vector1, const Vector3& vector2) {
