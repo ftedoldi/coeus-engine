@@ -67,12 +67,14 @@ namespace Athena {
         Scalar c1c2 = c1 * c2;
         Scalar s1s2 = s1 * s2;
 
-        return Quaternion(
+        Quaternion q = Quaternion(
             c1c2 * s3 + s1s2 * c3,
             s1 * c2 * c3 + c1 * s2 * s3,
             c1 * s2 * c3 - s1 * c2 * s3,
             c1c2 * c3 - s1s2 * s3
         );
+
+        return q.normalized();
     }
 
     Vector3 Quaternion::QuaternionToEulerAngles(const Quaternion& quaternion) {
@@ -121,14 +123,28 @@ namespace Athena {
     }
 
     Matrix3 Quaternion::QuaternionToMatrx3(const Quaternion& quaternion) {
-        Vector4 quat = Quaternion::AsVector4(quaternion);
+        Vector4 quat = Quaternion::AsVector4(quaternion.normalized());
 
         auto q = quat.coordinates;
 
+        Scalar sqw = q.w * q.w;
+        Scalar sqx = q.x * q.x;
+        Scalar sqy = q.y * q.y;
+        Scalar sqz = q.z * q.z;
+
+        Scalar tmp1 = q.x * q.y;
+        Scalar tmp2 = q.z * q.w;
+        Scalar tmp11 = q.x * q.z;
+        Scalar tmp21 = q.y * q.w;
+        Scalar tmp12 = q.y * q.z;
+        Scalar tmp22 = q.x * q.w;
+
+        Scalar inverse = 1 / (sqx + sqy + sqz + sqw);
+
         return Matrix3 (
-            1 - 2.f * q.y * q.y - 2.f * q.z * q.z, 2.f * q.x * q.y - 2.f * q.z * q.w, 2.f * q.x * q.z + 2.f * q.y * q.w,
-            2.f * q.x * q.y + 2.f * q.z * q.w, 1 - 2.f * q.x  * q.x - 2.f * q.z * q.z, 2.f * q.y * q.z - 2.f * q.x * q.w,
-            2.f * q.x * q.z - 2.f * q.y * q.w, 2.f * q.y * q.z + 2.f * q.x * q.w, 1 - 2.f * q.x * q.x - 2.f * q.y * q.y
+            (sqx - sqy - sqz + sqw) * inverse, 2.f * (tmp1 - tmp2) * inverse, 2.f * (tmp11 + tmp21) * inverse,
+            2.f * (tmp1 + tmp2) * inverse, (-sqx + sqy - sqz + sqw) * inverse, 2.f * (tmp12 - tmp22) * inverse,
+            2.f * (tmp11 - tmp21) * inverse, 2.f * (tmp12 + tmp22) * inverse, (-sqx - sqy + sqz + sqw) * inverse
         );
     }
 
@@ -236,6 +252,10 @@ namespace Athena {
             throw std::invalid_argument("ERROR::in QUATERNION rotateVectorByThisQuaternion function, the real part is not 0!");
 
         return result.getImmaginaryPart();
+    }
+
+    Quaternion Quaternion::normalized() const {
+        return Quaternion(this->immaginary / this->magnitude(), this->real / this->magnitude());
     }
 
     Vector4 Quaternion::asVector4() const {

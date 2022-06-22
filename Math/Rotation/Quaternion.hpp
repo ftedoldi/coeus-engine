@@ -83,6 +83,8 @@ namespace Athena
 
             Vector4 asVector4() const;
 
+            Quaternion normalized() const;
+
             void print() const;
     };
 
