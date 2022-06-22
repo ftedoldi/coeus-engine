@@ -15,6 +15,7 @@
 #include <TestVector2.hpp>
 #include <TestVector3.hpp>
 #include <TestVector4.hpp>
+#include <TestQuaternion.hpp>
 
 #include <iostream>
 
@@ -46,6 +47,8 @@ int main() {
 	v3.test();
 	TestVector4 v4 = TestVector4();
 	v4.test();
+	TestQuaternion q = TestQuaternion();
+	q.test();
 
     glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
