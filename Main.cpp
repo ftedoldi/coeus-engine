@@ -17,6 +17,8 @@
 #include <TestVector4.hpp>
 #include <TestQuaternion.hpp>
 
+#include <Transform.hpp>
+
 #include <iostream>
 
 //#include <Test.cuh>
@@ -40,6 +42,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 }
 
 int main() {
+	Assimp::Importer imp;
 	//call();
 	TestVector2 v2 = TestVector2();
 	v2.test();
