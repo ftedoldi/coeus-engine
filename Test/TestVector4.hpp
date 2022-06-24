@@ -140,8 +140,8 @@ class TestVector4 : public Test {
 
         void testToQuaternion() {
             Vector4 a = Vector4(0, 0, 0, 1);
-            assert(a.toQuaternion().getImmaginaryPart() == Vector3());
-            assert(a.toQuaternion().getRealPart() == 1);
+            assert(a.toQuaternion().immaginary == Vector3());
+            assert(a.toQuaternion().real == 1);
         }
 
     public:

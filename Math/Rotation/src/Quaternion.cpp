@@ -1,29 +1,29 @@
 #include <Quaternion.hpp>
 
 namespace Athena {
-    Quaternion::Quaternion() {
-        this->immaginary = Vector3(0, 0, 0);
-        this->real = 1.0;
+    Quaternion::Quaternion() : immaginary(_immaginary), real(_real) {
+        this->_immaginary = Vector3(0, 0, 0);
+        this->_real = 1.0;
     }
 
-    Quaternion::Quaternion(const Scalar& a, const Scalar& b, const Scalar& c, const Scalar& d) {
-        this->immaginary = Vector3(a, b, c);
-        this->real = d;
+    Quaternion::Quaternion(const Scalar& a, const Scalar& b, const Scalar& c, const Scalar& d) : immaginary(_immaginary), real(_real)  {
+        this->_immaginary = Vector3(a, b, c);
+        this->_real = d;
     }
 
-    Quaternion::Quaternion(const Vector3& immaginary, const Scalar& real) {
-        this->immaginary = Vector3(immaginary);
-        this->real = real;
+    Quaternion::Quaternion(const Vector3& immaginary, const Scalar& real) : immaginary(_immaginary), real(_real)  {
+        this->_immaginary = Vector3(immaginary);
+        this->_real = real;
     }
 
-    Quaternion::Quaternion(const Vector4& quaternion) {
-        this->immaginary = Vector3(quaternion.coordinates.x, quaternion.coordinates.y, quaternion.coordinates.z);
-        this->real = quaternion.coordinates.w;
+    Quaternion::Quaternion(const Vector4& quaternion) : immaginary(_immaginary), real(_real)  {
+        this->_immaginary = Vector3(quaternion.coordinates.x, quaternion.coordinates.y, quaternion.coordinates.z);
+        this->_real = quaternion.coordinates.w;
     }
 
-    Quaternion::Quaternion(const Quaternion& quaternion) {
-        this->immaginary = quaternion.getImmaginaryPart();
-        this->real = quaternion.getRealPart();
+    Quaternion::Quaternion(const Quaternion& quaternion) : immaginary(_immaginary), real(_real)  {
+        this->_immaginary = quaternion.immaginary;
+        this->_real = quaternion.real;
     }
 
     Quaternion Quaternion::Identity() { return Quaternion(0, 0, 0, 1); }
@@ -38,8 +38,8 @@ namespace Athena {
     }
     
     void Quaternion::QuaternionToAxisAngle(const Quaternion& quaternion, Scalar& angle, Vector3& axis) {
-        Vector3 immm = quaternion.getImmaginaryPart();
-        Scalar real = quaternion.getRealPart();
+        Vector3 immm = quaternion.immaginary;
+        Scalar real = quaternion.real;
 
         auto im = immm.coordinates;
 
@@ -79,7 +79,7 @@ namespace Athena {
 
     Vector3 Quaternion::QuaternionToEulerAngles(const Quaternion& quaternion) {
         Vector3 result = Vector3();
-        Vector4 quat = Vector4(quaternion.getImmaginaryPart().coordinates.x, quaternion.getImmaginaryPart().coordinates.y, quaternion.getImmaginaryPart().coordinates.z, quaternion.getRealPart());
+        Vector4 quat = Vector4(quaternion.immaginary.coordinates.x, quaternion.immaginary.coordinates.y, quaternion.immaginary.coordinates.z, quaternion.real);
 
         auto q = quat.coordinates;
         
@@ -149,15 +149,7 @@ namespace Athena {
     }
 
     Vector4 Quaternion::AsVector4(const Quaternion& quaternion) {
-        return Vector4(quaternion.getImmaginaryPart(), quaternion.getRealPart());
-    }
-
-    Vector3 Quaternion::getImmaginaryPart() const {
-        return this->immaginary;
-    }
-
-    Scalar Quaternion::getRealPart() const {
-        return this->real;
+        return Vector4(quaternion.immaginary, quaternion.real);
     }
 
     Quaternion Quaternion::fromMatrix(const Matrix3& matrix) const {
@@ -185,7 +177,7 @@ namespace Athena {
     }
 
     void Quaternion::conjugate() {
-        this->immaginary = -this->immaginary;
+        this->_immaginary = -this->_immaginary;
     }
 
     Quaternion Quaternion::conjugated() const {
@@ -193,7 +185,7 @@ namespace Athena {
     }
 
     Scalar Quaternion::squareMagnitude() const {
-        return this->immaginary.squareMagnitude() + this->real * this->real;
+        return this->immaginary.squareMagnitude() + this->_real * this->_real;
     }
 
     Scalar Quaternion::magnitude() const {
@@ -218,27 +210,27 @@ namespace Athena {
     }
 
     void Quaternion::operator /=(const Scalar& k) {
-        this->immaginary /= k;
-        this->real /= k;
+        this->_immaginary /= k;
+        this->_real /= k;
     }
 
     void Quaternion::operator *=(const Scalar& k) {
-        this->immaginary *= k;
-        this->real *= k;
+        this->_immaginary *= k;
+        this->_real *= k;
     }
 
     void Quaternion::operator +=(const Quaternion& quaternion) {
-        this->immaginary += quaternion.getImmaginaryPart();
-        this->real += quaternion.getRealPart();
+        this->_immaginary += quaternion._immaginary;
+        this->_real += quaternion._real;
     }
 
     void Quaternion::operator -=(const Quaternion& quaternion) {
-        this->immaginary -= quaternion.getImmaginaryPart();
-        this->real -= quaternion.getRealPart();
+        this->_immaginary -= quaternion._immaginary;
+        this->_real -= quaternion._real;
     }
 
     bool Quaternion::operator ==(const Quaternion& quaternion) const {
-        return (this->immaginary == quaternion.getImmaginaryPart() && this->real == quaternion.getRealPart());
+        return (this->_immaginary == quaternion.immaginary && this->_real == quaternion.real);
     }
 
     bool Quaternion::operator !=(const Quaternion& quaternion) const {
@@ -248,10 +240,10 @@ namespace Athena {
     Vector3 Quaternion::rotateVectorByThisQuaternion(const Vector3& vectorToRotate) {
         Quaternion result = this->conjugated() * Quaternion(vectorToRotate, 0.0) * (*this);
 
-        if (result.getRealPart() != 0)
-            throw std::invalid_argument("ERROR::in QUATERNION rotateVectorByThisQuaternion function, the real part is not 0!");
+        if (result.real != 0)
+            throw std::invalid_argument("ERROR::in QUATERNION rotateVectorByThisQuaternion function, the _real part is not 0!");
 
-        return result.getImmaginaryPart();
+        return result.immaginary;
     }
 
     Quaternion Quaternion::normalized() const {
@@ -263,14 +255,14 @@ namespace Athena {
     }
 
     void Quaternion::print() const {
-        std::cout << "( " << this->immaginary.coordinates.x << ", " << this->immaginary.coordinates.y << ", " 
-            << this->immaginary.coordinates.z << ", " << this->real << " )" << std::endl;
+        std::cout << "( " << this->_immaginary.coordinates.x << ", " << this->_immaginary.coordinates.y << ", " 
+            << this->_immaginary.coordinates.z << ", " << this->_real << " )" << std::endl;
     }
 
     Quaternion operator *(const Quaternion& a, const Quaternion& b) {
         return Quaternion(
-            a.getRealPart() * b.getImmaginaryPart() + a.getImmaginaryPart() * b.getRealPart() + Vector3::cross(a.getImmaginaryPart(), b.getImmaginaryPart()),  // imaginary part
-            a.getRealPart() * b.getRealPart() - Vector3::dot(a.getImmaginaryPart(), b.getImmaginaryPart()) // real part
+            a.real * b.immaginary + a.immaginary * b.real + Vector3::cross(a.immaginary, b.immaginary),  // imaginary part
+            a.real * b.real - Vector3::dot(a.immaginary, b.immaginary) // _real part
         );
     }
 }

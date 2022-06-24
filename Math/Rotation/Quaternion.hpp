@@ -21,10 +21,13 @@ namespace Athena
     class Quaternion
     {
         private:
-            Vector3 immaginary;
-            Scalar real;
+            Vector3 _immaginary;
+            Scalar _real;
         
         public:
+            const Vector3& immaginary;
+            const Scalar& real;
+
             Quaternion();
             Quaternion(const Scalar& a, const Scalar& b, const Scalar& c, const Scalar& d);
             Quaternion(const Vector3& immaginary, const Scalar& real);
@@ -46,9 +49,6 @@ namespace Athena
             static Matrix3 QuaternionToMatrx3(const Quaternion& quaternion);
 
             static Vector4 AsVector4(const Quaternion& quaternion);
-
-            Vector3 getImmaginaryPart() const;
-            Scalar getRealPart() const;
 
             Quaternion fromMatrix(const Matrix3& matrix) const;
             Quaternion fromEulerAngles(const Vector3& eulerAngles) const;
