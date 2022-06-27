@@ -13,20 +13,20 @@
 #include <string>
 #include <memory>
 
+namespace Zeus {
+    struct Node;
+    class Tree;
+}
+
 namespace Odysseus
 {
-    namespace Zeus {
-        struct Node;
-        class Tree;
-    }
-
     class Transform
     {
         private:
             Athena::Quaternion _rotation;
             Athena::Matrix4 _worldToLocalMatrix;
             Athena::Matrix4 _localToWorldMatrix;
-            std::unique_ptr<Zeus::Tree> _childrenTree;
+            Zeus::Tree* _childrenTree;
 
         public:
             Athena::Vector3 position;
@@ -38,12 +38,19 @@ namespace Odysseus
 
             std::string name;
 
-            Transform(Athena::Vector3 position, Athena::Quaternion rotation, Athena::Vector3 scale);
-            Transform(Athena::Vector3 position, Athena::Vector3 eulerAnglesRotation, Athena::Vector3 scale);
-            Transform(Athena::Vector3 position, Athena::Vector3 eulerAnglesRotation);
-            Transform(Athena::Vector3 position);
-            Transform(Athena::Quaternion rotation);
+            Transform(const Athena::Vector3& pos, const Athena::Quaternion& rot, const Athena::Vector3& scale);
+            Transform(const Athena::Vector3& pos, const Athena::Vector3& eulerAnglesRotation, const Athena::Vector3& scale);
+            Transform(const Athena::Vector3& pos, const Athena::Vector3& eulerAnglesRotation);
+            Transform(const Athena::Vector3& pos);
+            Transform(const Athena::Quaternion& rot);
+            Transform(const Transform& t);
             Transform();
+
+            Zeus::Tree* childrenTree() const;
+
+            Athena::Vector3 up();
+            Athena::Vector3 forward();
+            Athena::Vector3 right();
 
             Transform translate(const Athena::Vector3& destination) const;
             Transform nonUniformScaleBy(const Athena::Vector3& scale) const;
@@ -54,7 +61,7 @@ namespace Odysseus
             Transform rotateOfMatrix3(const Athena::Matrix3 matrix) const;
             Transform rotate(const Athena::Quaternion& rotationQuaternion) const;
 
-            Transform lookAt(const Athena::Vector3& position) const;
+            Transform lookAt(const Athena::Vector3& pos) const;
             Transform lookAt(const Transform& target) const;
 
             void translate(const Athena::Vector3& destination);
@@ -66,7 +73,7 @@ namespace Odysseus
             void rotateOfMatrix3(const Athena::Matrix3 matrix);
             void rotate(const Athena::Quaternion& rotationQuaternion);
 
-            void lookAt(const Athena::Vector3& position);
+            void lookAt(const Athena::Vector3& pos);
             void lookAt(const Transform& target);
 
             Transform transformDirection() const; // TODO Class Versor
@@ -80,11 +87,11 @@ namespace Odysseus
             Transform inverseTransformVector(const Athena::Vector4& vector) const;
             Transform inverseTransformPoint() const; // TODO class Point
 
-            void addChild(Transform child);
-            Zeus::Node getChild(int index);
-            Zeus::Node getChild(std::string name);
-            Transform getChildTransform(int index) const;
-            Transform getChildTransform(std::string name) const;
+            void addChild(const Transform& child);
+            Zeus::Node* getChild(const int& index);
+            Zeus::Node* getChild(const std::string& name);
+            Transform getChildTransform(const int& index) const;
+            Transform getChildTransform(const std::string& name) const;
 
             bool operator == (const Transform& b) const;
             bool operator != (const Transform& b) const;
