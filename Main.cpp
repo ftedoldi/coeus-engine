@@ -21,6 +21,8 @@
 
 #include <iostream>
 
+//#include <Tree.hpp>
+
 //#include <Test.cuh>
 
 const unsigned int SCR_WIDTH = 800;
@@ -52,6 +54,11 @@ int main() {
 	v4.test();
 	TestQuaternion q = TestQuaternion();
 	q.test();
+
+	Odysseus::Transform* transform = new Odysseus::Transform();
+	transform->position.print();
+	Zeus::Tree* t = new Zeus::Tree(transform);
+	t->root->transform->position.print();
 
     glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
