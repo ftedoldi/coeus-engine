@@ -43,12 +43,12 @@ namespace Athena
 
         data[2] = vec3[0];
         data[6] = vec3[1];
-        data[9] = vec3[2];
+        data[10] = vec3[2];
         data[14] = vec3[3];
 
         data[3] = vec4[0];
         data[7] = vec4[1];
-        data[10] = vec4[2];
+        data[11] = vec4[2];
         data[15] = vec4[3];
     }
 
