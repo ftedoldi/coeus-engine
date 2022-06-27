@@ -209,6 +209,12 @@ namespace Athena {
         return Quaternion(this->immaginary * k, this->real * k);
     }
 
+    void Quaternion::operator = (const Quaternion& quaternion)
+    {
+        this->_immaginary = quaternion.immaginary;
+        this->_real = quaternion.real;
+    }
+
     void Quaternion::operator /=(const Scalar& k) {
         this->_immaginary /= k;
         this->_real /= k;
@@ -237,7 +243,7 @@ namespace Athena {
         return !((*this) == quaternion);
     }
 
-    Vector3 Quaternion::rotateVectorByThisQuaternion(const Vector3& vectorToRotate) {
+    Vector3 Quaternion::rotateVectorByThisQuaternion(const Vector3& vectorToRotate) const {
         Quaternion result = this->conjugated() * Quaternion(vectorToRotate, 0.0) * (*this);
 
         if (result.real != 0)

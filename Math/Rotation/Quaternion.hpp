@@ -75,11 +75,13 @@ namespace Athena
             void operator +=(const Quaternion& quaternion);
             void operator -=(const Quaternion& quaternion);
 
+            void operator = (const Quaternion& quaternion);
+
             bool operator ==(const Quaternion& quaternion) const;
             bool operator !=(const Quaternion& quaternion) const;
 
             // Rotate the vector passed as input by this quaternion
-            Vector3 rotateVectorByThisQuaternion(const Vector3& vectorToRotate);
+            Vector3 rotateVectorByThisQuaternion(const Vector3& vectorToRotate) const;
 
             Vector4 asVector4() const;
 
