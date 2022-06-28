@@ -2,8 +2,9 @@
 #define VECTOR3_HPP
 
 #include <Scalar.hpp>
-#include <Vector.hpp>
 #include <Vector2.hpp>
+#include <Versor3.hpp>
+#include <Point3.hpp>
 #include <Math.hpp>
 
 #include <stdexcept>
@@ -19,6 +20,8 @@ namespace Athena
     };
 
     class Vector2;
+    class Versor3;
+    class Point3;
 
     class Vector3
     {
@@ -71,6 +74,9 @@ namespace Athena
             Vector3 lerp(const Vector3& vector, const Scalar& t) const;
             
             bool isZero() const;
+
+            Versor3 asVersor3() const;
+            Point3 asPoint3() const;
 
             bool areEquals(const Vector3& vector) const;
             void print() const;
