@@ -52,6 +52,17 @@
 # Built Visual Studio Code Extensions
 *.vsix
 
+# Images
+*.png
+*.jpg
+*.jpeg
+
+# Assets
+*.mtl
+*.obj
+*.fbx
+*.dae
+
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history
