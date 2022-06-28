@@ -17,13 +17,13 @@ namespace Odysseus
         Athena::Vector3 Bitangent;
     };
 
-    /*struct Material
+    struct Material
     {
-        Athena::Vector3 Diffuse;
-        Athena::Vector3 Specular;
-        Athena::Vector3 Ambient;
+        Athena::Vector4 Diffuse;
+        Athena::Vector4 Specular;
+        Athena::Vector4 Ambient;
         float Shininess;
-    };*/
+    };
 
     class Mesh
     {
@@ -32,13 +32,14 @@ namespace Odysseus
         std::vector<Vertex> vertices;
         std::vector<GLuint> indices;
         std::vector<Texture2D> textures;
+        Material material;
         GLuint VAO;
 
         //Using move semantics, we delete the copy constructor and copy operator=
         Mesh(const Mesh& mesh) = delete;
         Mesh& operator=(const Mesh& mesh) = delete;
 
-        Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, std::vector<Texture2D>& textures) noexcept;
+        Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, std::vector<Texture2D>& textures, Material& mat) noexcept;
 
         //Creating the move constructor and move assignment
         Mesh(Mesh&& move) noexcept;
@@ -53,6 +54,8 @@ namespace Odysseus
     private:
 
         GLuint VBO, EBO;
+
+        bool hasTexture;
 
         //Inizialize VAO, VBO, EBO
         void setupMesh();
