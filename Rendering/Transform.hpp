@@ -17,7 +17,10 @@
 #include <Quaternion.hpp>
 #include <Scalar.hpp>
 
+#include <SceneObject.hpp>
+
 #include <string>
+#include <stdexcept>
 
 namespace Zeus {
     struct Node;
@@ -34,6 +37,8 @@ namespace Odysseus
             Athena::Matrix4 _localToWorldMatrix;
             Zeus::Tree* _childrenTree;
 
+            const Athena::Vector3& _position;
+
         public:
             Athena::Vector3 position;
             const Athena::Quaternion& rotation;
@@ -43,6 +48,8 @@ namespace Odysseus
             const Athena::Matrix4& localToWorldMatrix;
 
             std::string name;
+
+            SceneObject* sceneObject;
 
             Transform(const Athena::Vector3& pos, const Athena::Quaternion& rot, const Athena::Vector3& scale);
             Transform(const Athena::Vector3& pos, const Athena::Vector3& eulerAnglesRotation, const Athena::Vector3& scale);
@@ -82,30 +89,31 @@ namespace Odysseus
             void lookAt(const Athena::Vector3& pos);
             void lookAt(const Transform& target);
 
-            Transform transformDirection(const Athena::Versor2& versor) const;
-            Transform transformDirection(const Athena::Versor3& versor) const;
-            Transform transformDirection(const Athena::Versor4& versor) const;
-            Transform transformVector(const Athena::Vector2& vector) const;
-            Transform transformVector(const Athena::Vector3& vector) const;
-            Transform transformVector(const Athena::Vector4& vector) const;
-            Transform transformPoint(const Athena::Point2& point) const;
-            Transform transformPoint(const Athena::Point3& point) const;
-            Transform transformPoint(const Athena::Point4& point) const;
-            Transform inverseTransformDirection(const Athena::Versor2& versor) const;
-            Transform inverseTransformDirection(const Athena::Versor3& versor) const;
-            Transform inverseTransformDirection(const Athena::Versor4& versor) const;
-            Transform inverseTransformVector(const Athena::Vector2& vector) const;
-            Transform inverseTransformVector(const Athena::Vector3& vector) const;
-            Transform inverseTransformVector(const Athena::Vector4& vector) const;
-            Transform inverseTransformPoint(const Athena::Point2& point) const;
-            Transform inverseTransformPoint(const Athena::Point3& point) const;
-            Transform inverseTransformPoint(const Athena::Point4& point) const;
+            Athena::Versor2 transformDirection(const Athena::Versor2& versor) const;
+            Athena::Versor3 transformDirection(const Athena::Versor3& versor) const;
+            Athena::Versor4 transformDirection(const Athena::Versor4& versor) const;
+            Athena::Vector2 transformVector(const Athena::Vector2& vector) const;
+            Athena::Vector3 transformVector(const Athena::Vector3& vector) const;
+            Athena::Vector4 transformVector(const Athena::Vector4& vector) const;
+            Athena::Point2 transformPoint(const Athena::Point2& point) const;
+            Athena::Point3 transformPoint(const Athena::Point3& point) const;
+            Athena::Point4 transformPoint(const Athena::Point4& point) const;
+            Athena::Versor2 inverseTransformDirection(const Athena::Versor2& versor) const;
+            Athena::Versor3 inverseTransformDirection(const Athena::Versor3& versor) const;
+            Athena::Versor4 inverseTransformDirection(const Athena::Versor4& versor) const;
+            Athena::Vector2 inverseTransformVector(const Athena::Vector2& vector) const;
+            Athena::Vector3 inverseTransformVector(const Athena::Vector3& vector) const;
+            Athena::Vector4 inverseTransformVector(const Athena::Vector4& vector) const;
+            Athena::Point2 inverseTransformPoint(const Athena::Point2& point) const;
+            Athena::Point3 inverseTransformPoint(const Athena::Point3& point) const;
+            Athena::Point4 inverseTransformPoint(const Athena::Point4& point) const;
 
-            void addChild(const Transform& child);
+            void addChild(Transform& child);
+            void setFather(Transform& father);
             Zeus::Node* getChild(const int& index);
             Zeus::Node* getChild(const std::string& name);
-            Transform getChildTransform(const int& index) const;
-            Transform getChildTransform(const std::string& name) const;
+            Transform* getChildTransform(const int& index) const;
+            Transform* getChildTransform(const std::string& name) const;
 
             bool operator == (const Transform& b) const;
             bool operator != (const Transform& b) const;

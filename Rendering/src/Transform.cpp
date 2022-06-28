@@ -3,7 +3,7 @@
 namespace Odysseus {
 
     Transform::Transform(const Athena::Vector3& pos, const Athena::Quaternion& rot, const Athena::Vector3& scale) 
-    : rotation(_rotation), worldToLocalMatrix(_worldToLocalMatrix), localToWorldMatrix(_localToWorldMatrix) {
+    : rotation(_rotation), worldToLocalMatrix(_worldToLocalMatrix), localToWorldMatrix(_localToWorldMatrix), _position(position) {
         this->position = pos;
         this->_rotation = rot;
         this->localScale = scale;
@@ -11,19 +11,24 @@ namespace Odysseus {
         this->_childrenTree = new Zeus::Tree(this);
 
         this->_localToWorldMatrix = Athena::Matrix4(
-            Athena::Vector4(1, 0, 0, position.coordinates.x), 
-            Athena::Vector4(0, 1, 0, position.coordinates.y),
-            Athena::Vector4(0, 0, 1, position.coordinates.z), 
+            Athena::Vector4(1, 0, 0, _position.coordinates.x), 
+            Athena::Vector4(0, 1, 0, _position.coordinates.y),
+            Athena::Vector4(0, 0, 1, _position.coordinates.z), 
             Athena::Vector4(0, 0, 0, 1)
         );
 
-        this->_worldToLocalMatrix = this->_localToWorldMatrix.inverse();
+        this->_worldToLocalMatrix = Athena::Matrix4(
+            Athena::Vector4(1, 0, 0, -_position.coordinates.x), 
+            Athena::Vector4(0, 1, 0, -_position.coordinates.y),
+            Athena::Vector4(0, 0, 1, -_position.coordinates.z), 
+            Athena::Vector4(0, 0, 0, 1)
+        );
 
         this->name = "Scene Object";
     }
 
     Transform::Transform(const Athena::Vector3& pos, const Athena::Vector3& eulerAnglesRotation, const Athena::Vector3& scale) 
-    : rotation(_rotation), worldToLocalMatrix(_worldToLocalMatrix), localToWorldMatrix(_localToWorldMatrix) {
+    : rotation(_rotation), worldToLocalMatrix(_worldToLocalMatrix), localToWorldMatrix(_localToWorldMatrix), _position(position) {
         this->position = pos;
         this->_rotation = Athena::Quaternion::EulerAnglesToQuaternion(eulerAnglesRotation);
         this->localScale = scale;
@@ -31,19 +36,24 @@ namespace Odysseus {
         this->_childrenTree = new Zeus::Tree(this);
 
         this->_localToWorldMatrix = Athena::Matrix4(
-            Athena::Vector4(1, 0, 0, position.coordinates.x), 
-            Athena::Vector4(0, 1, 0, position.coordinates.y),
-            Athena::Vector4(0, 0, 1, position.coordinates.z), 
+            Athena::Vector4(1, 0, 0, _position.coordinates.x), 
+            Athena::Vector4(0, 1, 0, _position.coordinates.y),
+            Athena::Vector4(0, 0, 1, _position.coordinates.z), 
             Athena::Vector4(0, 0, 0, 1)
         );
 
-        this->_worldToLocalMatrix = this->_localToWorldMatrix.inverse();
+        this->_worldToLocalMatrix = Athena::Matrix4(
+            Athena::Vector4(1, 0, 0, -_position.coordinates.x), 
+            Athena::Vector4(0, 1, 0, -_position.coordinates.y),
+            Athena::Vector4(0, 0, 1, -_position.coordinates.z), 
+            Athena::Vector4(0, 0, 0, 1)
+        );
 
         this->name = "Scene Object";
     }
 
     Transform::Transform(const Athena::Vector3& pos, const Athena::Vector3& eulerAnglesRotation) 
-    : rotation(_rotation), worldToLocalMatrix(_worldToLocalMatrix), localToWorldMatrix(_localToWorldMatrix)  {
+    : rotation(_rotation), worldToLocalMatrix(_worldToLocalMatrix), localToWorldMatrix(_localToWorldMatrix), _position(position)  {
         this->position = pos;
         this->_rotation = Athena::Quaternion::EulerAnglesToQuaternion(eulerAnglesRotation);
         this->localScale = Athena::Vector3(1, 1, 1);
@@ -57,13 +67,18 @@ namespace Odysseus {
             Athena::Vector4(0, 0, 0, 1)
         );
 
-        this->_worldToLocalMatrix = this->_localToWorldMatrix.inverse();
+        this->_worldToLocalMatrix = Athena::Matrix4(
+            Athena::Vector4(1, 0, 0, -_position.coordinates.x), 
+            Athena::Vector4(0, 1, 0, -_position.coordinates.y),
+            Athena::Vector4(0, 0, 1, -_position.coordinates.z), 
+            Athena::Vector4(0, 0, 0, 1)
+        );
 
         this->name = "Scene Object";
     }
 
     Transform::Transform(const Athena::Vector3& pos) 
-    : rotation(_rotation), worldToLocalMatrix(_worldToLocalMatrix), localToWorldMatrix(_localToWorldMatrix) {
+    : rotation(_rotation), worldToLocalMatrix(_worldToLocalMatrix), localToWorldMatrix(_localToWorldMatrix), _position(position) {
         this->position = pos;
         this->_rotation = Athena::Quaternion::Identity();
         this->localScale = Athena::Vector3(1, 1, 1);
@@ -77,13 +92,18 @@ namespace Odysseus {
             Athena::Vector4(0, 0, 0, 1)
         );
 
-        this->_worldToLocalMatrix = this->_localToWorldMatrix.inverse();
+        this->_worldToLocalMatrix = Athena::Matrix4(
+            Athena::Vector4(1, 0, 0, -_position.coordinates.x), 
+            Athena::Vector4(0, 1, 0, -_position.coordinates.y),
+            Athena::Vector4(0, 0, 1, -_position.coordinates.z), 
+            Athena::Vector4(0, 0, 0, 1)
+        );
 
         this->name = "Scene Object";
     }
 
     Transform::Transform(const Athena::Quaternion& rot) 
-    : rotation(_rotation), worldToLocalMatrix(_worldToLocalMatrix), localToWorldMatrix(_localToWorldMatrix) {
+    : rotation(_rotation), worldToLocalMatrix(_worldToLocalMatrix), localToWorldMatrix(_localToWorldMatrix), _position(position) {
         this->position = Athena::Vector3(0, 0, 0);
         this->_rotation = rot;
         this->localScale = Athena::Vector3(1, 1, 1);
@@ -97,13 +117,18 @@ namespace Odysseus {
             Athena::Vector4(0, 0, 0, 1)
         );
 
-        this->_worldToLocalMatrix = this->_localToWorldMatrix.inverse();
+        this->_worldToLocalMatrix = Athena::Matrix4(
+            Athena::Vector4(1, 0, 0, -_position.coordinates.x), 
+            Athena::Vector4(0, 1, 0, -_position.coordinates.y),
+            Athena::Vector4(0, 0, 1, -_position.coordinates.z), 
+            Athena::Vector4(0, 0, 0, 1)
+        );
 
         this->name = "Scene Object";
     }
 
     Transform::Transform(const Transform& t) 
-    : rotation(_rotation), worldToLocalMatrix(_worldToLocalMatrix), localToWorldMatrix(_localToWorldMatrix) {
+    : rotation(_rotation), worldToLocalMatrix(_worldToLocalMatrix), localToWorldMatrix(_localToWorldMatrix), _position(position) {
         this->position = t.position;
         this->_rotation = t.rotation;
         this->localScale = t.localScale;
@@ -112,15 +137,13 @@ namespace Odysseus {
 
         this->_localToWorldMatrix = t.localToWorldMatrix;
 
-        this->_localToWorldMatrix.print();
-
         this->_worldToLocalMatrix = t.worldToLocalMatrix;
 
         this->name = t.name;
     }
 
     Transform::Transform() 
-    : rotation(_rotation), worldToLocalMatrix(_worldToLocalMatrix), localToWorldMatrix(_localToWorldMatrix) {
+    : rotation(_rotation), worldToLocalMatrix(_worldToLocalMatrix), localToWorldMatrix(_localToWorldMatrix), _position(position) {
         this->position = Athena::Vector3(0, 0, 0);
         this->_rotation = Athena::Quaternion::Identity();
         this->localScale = Athena::Vector3(1, 1, 1);
@@ -134,9 +157,12 @@ namespace Odysseus {
             Athena::Vector4(0, 0, 0, 1)
         );
 
-        this->_localToWorldMatrix.print();
-
-        this->_worldToLocalMatrix = this->_localToWorldMatrix.inverse();
+        this->_worldToLocalMatrix = Athena::Matrix4(
+            Athena::Vector4(1, 0, 0, -_position.coordinates.x), 
+            Athena::Vector4(0, 1, 0, -_position.coordinates.y),
+            Athena::Vector4(0, 0, 1, -_position.coordinates.z), 
+            Athena::Vector4(0, 0, 0, 1)
+        );
 
         this->name = "Scene Object";
     }
@@ -326,104 +352,213 @@ namespace Odysseus {
         this->_rotation = finalRotation;
     }
 
-    Transform Transform::transformDirection(const Athena::Versor2& versor) const
+    Athena::Versor2 Transform::transformDirection(const Athena::Versor2& versor) const
     {
-        return Transform();
+        auto tmp = localToWorldMatrix * Athena::Vector4(versor.asVector2(), 0, 1);
+        return Athena::Versor2(tmp.coordinates.x, tmp.coordinates.y);
     }
 
-    Transform Transform::transformVector(const Athena::Vector2& vector) const
+    Athena::Versor3 Transform::transformDirection(const Athena::Versor3& versor) const
     {
-        return Transform();
+        auto tmp = localToWorldMatrix * Athena::Vector4(versor.asVector3(), 1);
+        return Athena::Versor3(tmp.coordinates.x, tmp.coordinates.y, tmp.coordinates.z);
     }
 
-    Transform Transform::transformVector(const Athena::Vector3& vector) const
+    Athena::Versor4 Transform::transformDirection(const Athena::Versor4& versor) const
     {
-        return Transform();
+        if (versor.coordinates.w != 1.f)
+            throw std::invalid_argument("INVALID_VERSOR::in order to transform a Versor4 to World Coordinates the last component might be 1");
+
+        return Athena::Versor4(localToWorldMatrix * Athena::Vector4(versor.asVector4()));
     }
 
-    Transform Transform::transformVector(const Athena::Vector4& vector) const
+    Athena::Vector2 Transform::transformVector(const Athena::Vector2& vector) const
     {
-        return Transform();
+        auto tmp = localToWorldMatrix * Athena::Vector4(vector, 0, 1);
+        return Athena::Vector2(tmp.coordinates.x, tmp.coordinates.y);
     }
 
-    Transform Transform::transformPoint(const Athena::Point2& point) const
+    Athena::Vector3 Transform::transformVector(const Athena::Vector3& vector) const
     {
-        return Transform();
+        auto tmp = localToWorldMatrix * Athena::Vector4(vector, 1);
+        return Athena::Vector3(tmp.coordinates.x, tmp.coordinates.y, tmp.coordinates.z);
     }
 
-    Transform Transform::inverseTransformDirection(const Athena::Versor2& versor) const
+    Athena::Vector4 Transform::transformVector(const Athena::Vector4& vector) const
     {
-        return Transform();
+        if (vector.coordinates.w != 1.f)
+            throw std::invalid_argument("INVALID_VECTOR::in order to transform a Vector4 to World Coordinates the last component might be 1");
+
+        return localToWorldMatrix * Athena::Vector4(vector);
     }
 
-    Transform Transform::inverseTransformVector(const Athena::Vector2& vector) const
+    Athena::Point2 Transform::transformPoint(const Athena::Point2& point) const
     {
-        return Transform();
+        auto tmp = localToWorldMatrix * Athena::Vector4(point.asVector2(), 0, 1);
+        return Athena::Point2(tmp.coordinates.x, tmp.coordinates.y);
     }
 
-    Transform Transform::inverseTransformVector(const Athena::Vector3& vector) const
+    Athena::Point3 Transform::transformPoint(const Athena::Point3& point) const
     {
-        return Transform();
+        auto tmp = localToWorldMatrix * Athena::Vector4(point.asVector3(), 1);
+        return Athena::Point3(tmp.coordinates.x, tmp.coordinates.y, tmp.coordinates.z);
     }
 
-    Transform Transform::inverseTransformVector(const Athena::Vector4& vector) const
+    Athena::Point4 Transform::transformPoint(const Athena::Point4& point) const
     {
-        return Transform();
+        if (point.coordinates.w != 1.f)
+            throw std::invalid_argument("INVALID_POINT::in order to transform a Point4 to World Coordinates the last component might be 1");
+
+        return localToWorldMatrix * Athena::Vector4(point.asVector4());
     }
 
-    Transform Transform::inverseTransformPoint(const Athena::Point2& point) const
+    Athena::Versor2 Transform::inverseTransformDirection(const Athena::Versor2& versor) const
     {
-        return Transform();
+        auto tmp = worldToLocalMatrix * Athena::Vector4(versor.asVector2(), 0, 1);
+        return Athena::Versor2(tmp.coordinates.x, tmp.coordinates.y);
     }
 
-    void Transform::addChild(const Transform& child)
+    Athena::Versor3 Transform::inverseTransformDirection(const Athena::Versor3& versor) const
     {
+        auto tmp = worldToLocalMatrix * Athena::Vector4(versor.asVector3(), 1);
+        return Athena::Versor3(tmp.coordinates.x, tmp.coordinates.y, tmp.coordinates.z);
+    }
 
+    Athena::Versor4 Transform::inverseTransformDirection(const Athena::Versor4& versor) const
+    {
+        if (versor.coordinates.w != 1.f)
+            throw std::invalid_argument("INVALID_VERSOR::in order to transform a Versor4 to Local Coordinates the last component might be 1");
+
+        return Athena::Versor4(worldToLocalMatrix * Athena::Vector4(versor.asVector4()));
+    }
+
+    Athena::Vector2 Transform::inverseTransformVector(const Athena::Vector2& vector) const
+    {
+        auto tmp = worldToLocalMatrix * Athena::Vector4(vector, 0, 1);
+        return Athena::Vector2(tmp.coordinates.x, tmp.coordinates.y);
+    }
+
+    Athena::Vector3 Transform::inverseTransformVector(const Athena::Vector3& vector) const
+    {
+        auto tmp = worldToLocalMatrix * Athena::Vector4(vector, 1);
+        return Athena::Vector3(tmp.coordinates.x, tmp.coordinates.y, tmp.coordinates.z);
+    }
+
+    Athena::Vector4 Transform::inverseTransformVector(const Athena::Vector4& vector) const
+    {
+        if (vector.coordinates.w != 1.f)
+            throw std::invalid_argument("INVALID_VECTOR::in order to transform a Vector4 to Local Coordinates the last component might be 1");
+
+        return worldToLocalMatrix * Athena::Vector4(vector);
+    }
+
+    Athena::Point2 Transform::inverseTransformPoint(const Athena::Point2& point) const
+    {
+        auto tmp = worldToLocalMatrix * Athena::Vector4(point.asVector2(), 0, 1);
+        return Athena::Point2(tmp.coordinates.x, tmp.coordinates.y);
+    }
+
+    Athena::Point3 Transform::inverseTransformPoint(const Athena::Point3& point) const
+    {
+        auto tmp = worldToLocalMatrix * Athena::Vector4(point.asVector3(), 1);
+        return Athena::Point3(tmp.coordinates.x, tmp.coordinates.y, tmp.coordinates.z);
+    }
+
+    Athena::Point4 Transform::inverseTransformPoint(const Athena::Point4& point) const
+    {
+        if (point.coordinates.w != 1.f)
+            throw std::invalid_argument("INVALID_POINT::in order to transform a Point4 to Local Coordinates the last component might be 1");
+
+        return worldToLocalMatrix * Athena::Vector4(point.asVector4());
+    }
+
+    void Transform::addChild(Transform& child)
+    {
+        this->_childrenTree->addChild(child);
+    }
+
+    void Transform::setFather(Transform& father)
+    {
+        Zeus::Node* node = new Zeus::Node;
+        node->father = nullptr;
+        node->transform = &father;
+        node->father->children.push_back(this->_childrenTree->root);
+        
+        this->_childrenTree->root->father = node;
     }
 
     Zeus::Node* Transform::getChild(const int& index)
     {
-        return nullptr;
+        return this->_childrenTree->getChild(index);
     }
 
     Zeus::Node* Transform::getChild(const std::string& name)
     {
-        return nullptr;
+        return this->_childrenTree->getChild(name);
     }
 
-    Transform Transform::getChildTransform(const int& index) const
+    Transform* Transform::getChildTransform(const int& index) const
     {
-        return Transform();
+        return this->_childrenTree->getChild(index)->transform;
     }
 
-    Transform Transform::getChildTransform(const std::string& name) const
+    Transform* Transform::getChildTransform(const std::string& name) const
     {
-        return Transform();
+        return this->_childrenTree->getChild(name)->transform;
     }
 
     bool Transform::operator == (const Transform& b) const
     {
-        return false;
+        return (this->position == b.position && this->rotation == b.rotation && this->localScale == b.localScale);
     }
 
     bool Transform::operator != (const Transform& b) const
     {
-        return false;
+        return !(*(this) == b);
     }
 
     Transform Transform::operator * (const Transform& b) const
     {
-        return Transform();
+        Athena::Vector3 newScale = Athena::Vector3(
+            this->localScale.coordinates.x * b.localScale.coordinates.x,
+            this->localScale.coordinates.y * b.localScale.coordinates.y,
+            this->localScale.coordinates.z * b.localScale.coordinates.z
+        );
+
+        Athena::Quaternion newRotation = this->rotation * b.rotation;
+
+        Athena::Vector3 newPosition = this->position + this->rotation.rotateVectorByThisQuaternion(Athena::Vector3(
+            this->localScale.coordinates.x * b.position.coordinates.x,
+            this->localScale.coordinates.y * b.position.coordinates.y,
+            this->localScale.coordinates.z * b.position.coordinates.z
+        ));
+
+        return Transform(newPosition, newRotation, newScale);
     }
 
     Transform Transform::inverse() const
     {
-        return Transform();
+        Athena::Vector3 newScale = Athena::Vector3(
+            1/this->localScale.coordinates.x,
+            1/this->localScale.coordinates.y,
+            1/this->localScale.coordinates.z
+        );
+
+        Athena::Quaternion newRotation = this->rotation.inverse();
+
+        Athena::Vector3 newPosition = this->rotation.rotateVectorByThisQuaternion(Athena::Vector3(
+            -this->position.coordinates.x * this->localScale.coordinates.x,
+            -this->position.coordinates.y * this->localScale.coordinates.y,
+            -this->position.coordinates.z * this->localScale.coordinates.z
+        ));
+
+        return Transform(newPosition, newRotation, newScale);
     }
 
     Transform::~Transform()
     {
-        //delete this->_childrenTree;
+        // this->_childrenTree->deleteTree();
+        delete this->_childrenTree;
     }
 
 }
