@@ -84,7 +84,7 @@ int main()
     Odysseus::Shader modelShader("shader1.vert", "shader1.frag");
 
     //Create the model
-    Odysseus::Model backpackModel("Assets/Models/backpack/backpack.obj");
+    Odysseus::Model myModel("Assets/Models/matAndTex/matAndTex.obj");
 
     // render loop
     // -----------
@@ -125,7 +125,7 @@ int main()
 		modelShader.setMat4("model", model);
 
         //Model draw
-        backpackModel.Draw(modelShader);
+        myModel.Draw(modelShader);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         glfwSwapBuffers(window);

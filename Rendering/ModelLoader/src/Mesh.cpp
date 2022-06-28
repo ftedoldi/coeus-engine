@@ -2,13 +2,15 @@
 
 namespace Odysseus
 {
-    Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, std::vector<Texture2D>& textures) noexcept : vertices(vertices), indices(indices), textures(textures)
+
+    Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, std::vector<Texture2D>& textures, Material& mat) noexcept 
+    : vertices(vertices), indices(indices), textures(textures), hasTexture(true), material(mat)
     {
         Mesh::setupMesh();
     }
 
     Mesh::Mesh(Mesh&& move) noexcept :
-            vertices(std::move(move.vertices)), indices(std::move(move.indices)), textures(std::move(move.textures)),
+            vertices(std::move(move.vertices)), indices(std::move(move.indices)), textures(std::move(move.textures)), material(std::move(move.material)),
             VAO(move.VAO), VBO(move.VBO), EBO(move.EBO)
     {
         move.VAO = 0;
@@ -30,6 +32,7 @@ namespace Odysseus
             this->vertices = std::move(move.vertices);
             this->indices = std::move(move.indices);
             this->textures = std::move(move.textures);
+            this->material = std::move(move.material);
             this->VAO = move.VAO;
             this->VBO = move.VBO;
             this->EBO = move.EBO;
@@ -60,37 +63,48 @@ namespace Odysseus
         GLuint heightIdx = 0;
         GLuint ambientIdx = 0;
 
-        for(GLuint i = 0; i < textures.size(); ++i)
+        if(textures.size() > 0)
         {
-            //activate texture
-            glActiveTexture(GL_TEXTURE0 + i);
-
-            //retreive texture infos
-            std::string name;
-            switch(textures[i].type)
+            for(GLuint i = 0; i < textures.size(); ++i)
             {
-                case aiTextureType_DIFFUSE:
-                    name = "diffuse" + std::to_string(diffuseIdx++);
-                    break;
-                case aiTextureType_SPECULAR:
-                    name = "specular" + std::to_string(specularIdx++);
-                    break;
-                case aiTextureType_HEIGHT:
-                    name = "height" + std::to_string(heightIdx++);
-                    break;
-                case aiTextureType_AMBIENT:
-                    name = "ambient" + std::to_string(ambientIdx++);
-                    break;
-                default:
-                    break;
+                //activate texture
+                glActiveTexture(GL_TEXTURE0 + i);
+
+                //retreive texture infos
+                std::string name;
+                switch(textures[i].type)
+                {
+                    case aiTextureType_DIFFUSE:
+                        name = "diffuse" + std::to_string(diffuseIdx++);
+                        break;
+                    case aiTextureType_SPECULAR:
+                        name = "specular" + std::to_string(specularIdx++);
+                        break;
+                    case aiTextureType_HEIGHT:
+                        name = "height" + std::to_string(heightIdx++);
+                        break;
+                    case aiTextureType_AMBIENT:
+                        name = "ambient" + std::to_string(ambientIdx++);
+                        break;
+                    default:
+                        break;
+                }
+
+                //set shader uniform
+                shader.setInt(name.c_str(), i);
+                shader.setBool("hasTexture", true);
+                //bind texture
+                textures[i].BindTexture();
             }
-
-            //set shader uniform
-            shader.setInt(name.c_str(), i);
-
-            //bind texture
-            textures[i].BindTexture();
+        }else
+        {
+            shader.setVec4("materialDiff", material.Diffuse.coordinates.x, material.Diffuse.coordinates.y, material.Diffuse.coordinates.z, 1.0f);
+            shader.setVec4("materialSpec", material.Specular.coordinates.x, material.Specular.coordinates.y, material.Specular.coordinates.z, 1.0f);
+            shader.setVec4("materialAmb", material.Ambient.coordinates.x, material.Ambient.coordinates.y, material.Ambient.coordinates.z, 1.0f);
+            shader.setFloat("materialShin", material.Shininess);
+            shader.setBool("hasTexture", false);
         }
+        
         // draw mesh
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, static_cast<GLuint>(indices.size()), GL_UNSIGNED_INT, 0);
@@ -127,6 +141,12 @@ namespace Odysseus
         // vertex texture coords
         glEnableVertexAttribArray(2);	
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+        // vertex tangent
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+        // vertex bitangent
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
 
         glBindVertexArray(0);
     }

@@ -18,7 +18,7 @@ namespace Odysseus
     void Model::loadModel(const std::string& path)
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
+        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
         //checking for errors in the scene creation
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
@@ -48,27 +48,6 @@ namespace Odysseus
             processNode(node->mChildren[i], scene);
         }
     }
-
-    /*Material Model::loadMaterial(aiMaterial* mat)
-    {
-        Material material;
-        aiColor3D color(0.0f, 0.0f, 0.0f);
-        float shininess;
-
-        mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
-        material.Diffuse = Athena::Vector3(color.r, color.b, color.g);
-
-        mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
-        material.Ambient = Athena::Vector3(color.r, color.b, color.g);
-
-        mat->Get(AI_MATKEY_COLOR_SPECULAR, color);
-        material.Specular = Athena::Vector3(color.r, color.b, color.g);
-
-        mat->Get(AI_MATKEY_SHININESS, shininess);
-        material.Shininess = shininess;
-
-        return material;
-    }*/
 
     Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     {
@@ -117,9 +96,7 @@ namespace Odysseus
             }
             else{
                 vertex.TexCoords = Athena::Vector2(0.0f, 0.0f);
-                //Material mat = loadMaterial(material);
             }
-
             vertices.push_back(vertex);
         }
         //Getting the indices from each mesh face
@@ -128,29 +105,60 @@ namespace Odysseus
             aiFace face = mesh->mFaces[i];
             for(GLuint j = 0; j < face.mNumIndices; ++j)
                 indices.push_back(face.mIndices[j]);        
-        }
-        // process materials
-        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];   
+        } 
 
         //in the shaders, each texture must be named as 'texturetypeN' where N is a number ranging from 1 to the maximum number of the type of texture considered
         //and texturetype is the type of the texture e.g. diffuse, specular
         //for example, multiple diffuse textures will be written as diffuse1, diffuse2, diffuse3, ecc.
+        
+        // process materials
+        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
         //diffuse
-        std::vector<Texture2D> diffuseMaps = loadTexture(material, aiTextureType_DIFFUSE);
-        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+        if(material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+        {
+            std::vector<Texture2D> diffuseMaps = loadTexture(material, aiTextureType_DIFFUSE);
+            textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+        }
         //specular
-        std::vector<Texture2D> specularMaps = loadTexture(material, aiTextureType_SPECULAR);
-        textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+        if(material->GetTextureCount(aiTextureType_SPECULAR) > 0)
+        {
+            std::vector<Texture2D> specularMaps = loadTexture(material, aiTextureType_SPECULAR);
+            textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+        }
         //normal
-        std::vector<Texture2D> normalMaps = loadTexture(material, aiTextureType_HEIGHT);
-        textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+        if(material->GetTextureCount(aiTextureType_HEIGHT) > 0)
+        {
+            std::vector<Texture2D> normalMaps = loadTexture(material, aiTextureType_HEIGHT);
+            textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+        }
         //height
-        std::vector<Texture2D> heightMaps = loadTexture(material, aiTextureType_AMBIENT);
-        textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+        if(material->GetTextureCount(aiTextureType_AMBIENT) > 0)
+        {
+            std::vector<Texture2D> heightMaps = loadTexture(material, aiTextureType_AMBIENT);
+            textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+        }
+
+        std::cout <<"Textures size: "<< textures.size() << std::endl;
+
+        Material mat;
+        aiColor4D diffuse, ambient, specular;
+        float shininess;
+
+        if(AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diffuse))
+            mat.Diffuse = Athena::Vector4(diffuse.r, diffuse.g, diffuse.b, 1.0f);
+
+        if(AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_AMBIENT, &ambient))
+            mat.Ambient = Athena::Vector4(ambient.r, ambient.g, ambient.b, 1.0f);
+
+        if(AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_SPECULAR, &specular))
+            mat.Specular = Athena::Vector4(specular.r, specular.g, specular.b, 1.0f);
+
+        if(AI_SUCCESS == material->Get(AI_MATKEY_SHININESS, shininess))
+            mat.Shininess = shininess;
         
         // return a mesh object created from the extracted mesh data
-        return Mesh(vertices, indices, textures);
+        return Mesh(vertices, indices, textures, mat);
     }
 
     std::vector<Texture2D> Model::loadTexture(aiMaterial* mat, aiTextureType type)
