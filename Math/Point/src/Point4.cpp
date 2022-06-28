@@ -156,7 +156,7 @@ namespace Athena {
         this->coordinates.w = tmp.coordinates.w;
     }
 
-    Vector4 Point4::asVector3() const
+    Vector4 Point4::asVector4() const
     {
         return Vector4(this->coordinates.x, this->coordinates.y, this->coordinates.z, this->coordinates.w);
     }

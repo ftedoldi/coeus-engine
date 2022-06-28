@@ -45,7 +45,7 @@ namespace Athena
             Point4 lerp(const Point4& p, const Scalar& t) const;
             void lerp(const Point4& p, const Scalar& t);
 
-            Vector4 asVector3() const;
+            Vector4 asVector4() const;
 
             void print() const;
     };
