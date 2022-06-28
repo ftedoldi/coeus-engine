@@ -13,7 +13,8 @@
 
 #include <iostream>
 
-//#include <Tree.hpp>
+#include <Transform.hpp>
+#include <Tree.hpp>
 
 //#include <Test.cuh>
 
@@ -40,6 +41,11 @@ float lastFrame = 0.0f;
 
 int main()
 {
+    Odysseus::Transform* transform = new Odysseus::Transform();
+	transform->position.print();
+	Zeus::Tree* t = new Zeus::Tree(transform);
+	t->root->transform->position.print();
+
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -171,11 +177,6 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
     float xpos = static_cast<float>(xposIn);
     float ypos = static_cast<float>(yposIn);
-
-	Odysseus::Transform* transform = new Odysseus::Transform();
-	transform->position.print();
-	Zeus::Tree* t = new Zeus::Tree(transform);
-	t->root->transform->position.print();
 
     glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
