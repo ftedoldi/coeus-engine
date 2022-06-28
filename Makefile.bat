@@ -8,7 +8,7 @@ IF EXIST "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxi
 if [%1%]==[] (
     make all
 ) else (
-    nmake /f Makefile clean
+    make clean
 )
 
 

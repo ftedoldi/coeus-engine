@@ -19,6 +19,12 @@ namespace Athena {
         this->coordinates.y = vector.coordinates.y;
     }
 
+    Vector2::Vector2(const Versor2& versor)
+    {
+        this->coordinates.x = versor.coordinates.x;
+        this->coordinates.y = versor.coordinates.y;
+    }
+
     Scalar Vector2::dot(const Vector2& vector) const {
         return this->coordinates.x * vector.coordinates.x +
                 this->coordinates.y * vector.coordinates.y;
@@ -129,6 +135,16 @@ namespace Athena {
 
     bool Vector2::areEquals(const Vector2& vector) const{
         return (*this - vector).isZero();
+    }
+
+    Versor2 Vector2::asVersor2() const
+    {
+        return Versor2(*this);
+    }
+
+    Point2 Vector2::asPoint2() const
+    {
+        return Point2(*this);
     }
 
     void Vector2::print() const {

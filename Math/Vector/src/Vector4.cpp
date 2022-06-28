@@ -171,6 +171,15 @@ namespace Athena {
         return this->squareMagnitude() == 0;
     }
 
+    Versor4 Vector4::asVersor4() const {
+        return Versor4(coordinates.x, coordinates.y, coordinates.z, coordinates.w);
+    }
+
+    Point4 Vector4::asPoint4() const
+    {
+        return Point4(*this);
+    }
+
     bool Vector4::areEquals(const Vector4& vector) const{
         return (*this - vector).isZero();
     }

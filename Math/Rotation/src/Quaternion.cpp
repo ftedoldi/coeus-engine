@@ -152,6 +152,31 @@ namespace Athena {
         return Vector4(quaternion.immaginary, quaternion.real);
     }
 
+    Quaternion Quaternion::RotationBetweenVectors(const Vector3& start, const Vector3& destination) {
+        Vector3 s = start.normalized();
+        Vector3 d = destination.normalized();
+
+        Scalar cosTheta = s.dot(d);
+        Vector3 rotationAxis;
+
+        if (cosTheta < -1 + 0.001f) {
+            rotationAxis = Vector3::cross(Vector3::forward(), s);
+
+            if (rotationAxis.squareMagnitude() < 0.01)
+                rotationAxis = Vector3::cross(Vector3::right(), s);
+
+            rotationAxis.normalize();
+            return AxisAngleToQuaternion(Math::degreeToRandiansAngle(180.0f), rotationAxis);
+        }
+
+        rotationAxis = Vector3::cross(s, d);
+
+        float sqrt = std::sqrt( (1 + cosTheta) * 2);
+        float inverseSqrt = 1 / sqrt;
+
+        return Quaternion(rotationAxis.coordinates.x * inverseSqrt, rotationAxis.coordinates.y * inverseSqrt, rotationAxis.coordinates.z * inverseSqrt, sqrt * 0.5f);
+    }
+
     Quaternion Quaternion::fromMatrix(const Matrix3& matrix) const {
         return Quaternion::Matrix3ToQuaternion(matrix);
     }
@@ -209,6 +234,12 @@ namespace Athena {
         return Quaternion(this->immaginary * k, this->real * k);
     }
 
+    void Quaternion::operator = (const Quaternion& quaternion)
+    {
+        this->_immaginary = quaternion.immaginary;
+        this->_real = quaternion.real;
+    }
+
     void Quaternion::operator /=(const Scalar& k) {
         this->_immaginary /= k;
         this->_real /= k;
@@ -237,7 +268,7 @@ namespace Athena {
         return !((*this) == quaternion);
     }
 
-    Vector3 Quaternion::rotateVectorByThisQuaternion(const Vector3& vectorToRotate) {
+    Vector3 Quaternion::rotateVectorByThisQuaternion(const Vector3& vectorToRotate) const {
         Quaternion result = this->conjugated() * Quaternion(vectorToRotate, 0.0) * (*this);
 
         if (result.real != 0)

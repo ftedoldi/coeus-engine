@@ -5,6 +5,8 @@
 
 #include <Scalar.hpp>
 #include <Vector3.hpp>
+#include <Versor4.hpp>
+#include <Point4.hpp>
 #include <Quaternion.hpp>
 #include <Math.hpp>
 
@@ -24,6 +26,9 @@ namespace Athena
     };
 
     class Quaternion;
+    class Vector3;
+    class Versor4;
+    class Point4;
 
     class Vector4
     {
@@ -69,6 +74,9 @@ namespace Athena
 
             bool isZero() const;
             bool areEquals(const Vector4& vector) const;
+
+            Versor4 asVersor4() const;
+            Point4 asPoint4() const;
 
             void print() const;
     };
