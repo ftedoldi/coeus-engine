@@ -44,8 +44,9 @@ namespace Athena
             static Vector3 forward();
             static Vector3 backward();
 
-            Vector3 cross(const Vector3& vector) const;
             Scalar dot(const Vector3& vector) const;
+            Vector3 cross(const Vector3& vector) const;
+            Vector3 componentWise(const Vector3& vector) const;
 
             Scalar magnitude() const;
             Scalar squareMagnitude() const;

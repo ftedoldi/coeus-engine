@@ -58,6 +58,14 @@ namespace Athena {
         return Vector3::cross(*this, vector);
     }
 
+    Vector3 Vector3::componentWise(const Vector3& vector) const {
+        return Vector3(
+            this->coordinates.x * vector.coordinates.x,
+            this->coordinates.y * vector.coordinates.y,
+            this->coordinates.z * vector.coordinates.z
+        );
+    }
+
     Scalar Vector3::magnitude() const {
         return std::sqrt(this->squareMagnitude());
     }

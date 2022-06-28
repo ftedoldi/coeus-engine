@@ -42,6 +42,7 @@ namespace Athena
             Vector4(const Vector4& vector);
 
             Scalar dot(const Vector4& vector) const;
+            Vector4 componentWise(const Vector4& vector) const;
 
             Scalar magnitude() const;
             Scalar squareMagnitude() const;

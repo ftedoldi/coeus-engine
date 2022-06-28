@@ -35,6 +35,13 @@ namespace Athena {
                 .cross(Vector3(vector.coordinates.x, vector.coordinates.y, (Scalar) 0.0));
     }
 
+    Vector2 Vector2::componentWise(const Vector2& vector) const {
+        return Vector2(
+            this->coordinates.x * vector.coordinates.x,
+            this->coordinates.y * vector.coordinates.y
+        );
+    }
+
     Scalar Vector2::magnitude() const {
         return std::sqrt(this->squareMagnitude());
     }

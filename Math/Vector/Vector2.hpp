@@ -37,6 +37,7 @@ namespace Athena
 
             Scalar dot(const Vector2& vector) const;
             Vector3 cross(const Vector2& vector) const;
+            Vector2 componentWise(const Vector2& vector) const;
 
             Scalar magnitude() const;
             Scalar squareMagnitude() const;

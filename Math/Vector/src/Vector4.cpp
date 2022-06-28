@@ -48,6 +48,15 @@ namespace Athena {
                 this->coordinates.w * vector.coordinates.w;
     }
 
+    Vector4 Vector4::componentWise(const Vector4& vector) const {
+        return Vector4(
+            this->coordinates.x * vector.coordinates.x,
+            this->coordinates.y * vector.coordinates.y,
+            this->coordinates.z * vector.coordinates.z,
+            this->coordinates.w * vector.coordinates.w
+        );
+    }
+
     Scalar Vector4::magnitude() const {
         return std::sqrt(this->squareMagnitude());
     }
