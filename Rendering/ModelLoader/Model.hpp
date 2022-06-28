@@ -37,7 +37,7 @@ namespace Odysseus
         //Loading the model using assimp library, passing by copy the path, for the needs to be modified
         void loadModel(const std::string& path);
 
-        //Material loadMaterial(aiMaterial* mat);
+        Material loadMaterial(aiMaterial* mat);
 
         std::vector<Texture2D> loadTexture(aiMaterial *mat, aiTextureType type);
 
