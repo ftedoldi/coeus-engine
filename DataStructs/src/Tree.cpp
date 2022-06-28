@@ -25,54 +25,87 @@ namespace Zeus {
         root->children.push_back(node);
     }
 
+    void Tree::addChild(Odysseus::Transform& transform) {
+        Node* node = new Node;
+        node->father = root;
+        node->transform = &transform;
+
+        root->children.push_back(node);
+    }
+
     void Tree::addChildTree(Tree& t) {
         t.root->father = this->root;
         this->root->children.push_back(t.root);
     }
 
     void Tree::deleteChild(const int& i) {
-        // if (root.children.size() == 0)
-        //     throw std::invalid_argument("EMPTY_TREE::In Tree getChild(name) the tree is currently empty, please fill the Tree before asking for children.");
+        if (root->children.size() == 0)
+            return;
         
-        // if (i < 0 || i > root.children.size())
-        //     std::invalid_argument("INDEX_OUT_OF_RANGE::in Tree the index is out of range");
+        if (i < 0 || i > root->children.size())
+            return;
 
-        // delete getChild(i).father;
-        // delete getChild(i).transform;
-        // getChild(i).children.clear();
+        delete root->children[i];
 
-        // root.children.erase(root.children.begin() + i);
+        root->children.erase(root->children.begin() + i);
     }
 
     void Tree::deleteChild(const std::string& name) {
-        // if (root.children.size() == 0)
-        //     throw std::invalid_argument("EMPTY_TREE::In Tree getChild(name) the tree is currently empty, please fill the Tree before asking for children.");
+        for (int i = 0; i < root->children.size(); i++)
+            if (root->children[i]->transform->name == name) {
+                delete root->children[i];
+                root->children.erase(root->children.begin() + i);
+                return;
+            }
     }
 
-    // Node& Tree::getChild(const int& i) {
-    //     if (root.children.size() == 0)
-    //         throw std::invalid_argument("EMPTY_TREE::In Tree getChild(name) the tree is currently empty, please fill the Tree before asking for children.");
+    Node* Tree::getChild(const int& i) {
+        if (root->children.size() == 0)
+            return nullptr;
         
-    //     if (i < 0 || i > root.children.size())
-    //         std::invalid_argument("INDEX_OUT_OF_RANGE::in Tree the index is out of range");
+        if (i < 0 || i > root->children.size())
+            return nullptr;
 
-    //     return root.children[i];
-    // }
+        return root->children[i];
+    }
 
-    // Node& Tree::getChild(const std::string& name) {
-    //     if (root.children.size() == 0)
-    //         throw std::invalid_argument("EMPTY_TREE::In Tree getChild(name) the tree is currently empty, please fill the Tree before asking for children.");
+    Node* Tree::getChild(const std::string& name) {
+        if (root->children.size() == 0)
+            return nullptr;
 
-    //     // for (int i = 0; i < root.children.size(); i++)
-    //     //     if (root.children[i].transform->name == name)
-    //     //         return root.children[i];
+        for (int i = 0; i < root->children.size(); i++)
+            if (root->children[i]->transform->name == name)
+                return root->children[i];
         
-    //     throw std::invalid_argument("INDEX_OUT_OF_RANGE::In Tree getChild(name) could not find any child that has that specified name");
-    // }
+        return nullptr;
+    }
+
+    void Tree::deleteTree(Node* n)
+    {
+        if (n->children.size() == 0) {
+            delete n->father;
+            delete n->transform;
+            return;
+        }
+        
+        for (int i = 0; i < n->children.size(); i++) {
+            deleteTree(n->children[i]);
+            delete n->children[i];
+        }
+        
+        n->children.clear();
+        delete n->father;
+        delete n->transform;
+    }
+
+    void Tree::deleteTree()
+    {
+        deleteTree(this->root);
+    }
 
     Tree::~Tree()
     {
-        delete this->root;
+        deleteTree(this->root);
     }
 
 }
