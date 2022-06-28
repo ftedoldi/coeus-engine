@@ -50,6 +50,8 @@ namespace Athena
 
             static Vector4 AsVector4(const Quaternion& quaternion);
 
+            static Quaternion RotationBetweenVectors(const Vector3& start, const Vector3& destination);
+
             Quaternion fromMatrix(const Matrix3& matrix) const;
             Quaternion fromEulerAngles(const Vector3& eulerAngles) const;
             Quaternion fromAxisAngle(const Degree& angle, const Vector3& axis) const;
