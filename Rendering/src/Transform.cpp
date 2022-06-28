@@ -145,17 +145,17 @@ namespace Odysseus {
         return new Zeus::Tree(this->_childrenTree);
     }
 
-    Athena::Vector3 Transform::up()
+    Athena::Vector3 Transform::up() const
     {
         return this->_rotation.rotateVectorByThisQuaternion(Athena::Vector3::up());
     }
 
-    Athena::Vector3 Transform::forward()
+    Athena::Vector3 Transform::forward() const
     {
         return this->_rotation.rotateVectorByThisQuaternion(Athena::Vector3::forward());
     }
 
-    Athena::Vector3 Transform::right()
+    Athena::Vector3 Transform::right() const
     {
         return this->_rotation.rotateVectorByThisQuaternion(Athena::Vector3::right());
     }
@@ -219,14 +219,34 @@ namespace Odysseus {
         return Transform(this->position, rotationQuaternion, this->localScale);
     }
 
+    // TODO: Test this function
     Transform Transform::lookAt(const Athena::Vector3& position) const
     {
-        return Transform();
+        Athena::Vector3 direction = (position - this->position).normalized();
+        Athena::Quaternion newRotation = Athena::Quaternion::RotationBetweenVectors(forward(), direction);
+
+        Athena::Vector3 r = Athena::Vector3::cross(direction, up());
+        Athena::Vector3 desiredUp = Athena::Vector3::cross(r, direction);
+
+        Athena::Vector3 newUp = newRotation.rotateVectorByThisQuaternion(up());
+        Athena::Quaternion finalRotation = Athena::Quaternion::RotationBetweenVectors(newUp, desiredUp);
+
+        return Transform(this->position, finalRotation, this->localScale);
     }
 
+    // TODO: Test this function
     Transform Transform::lookAt(const Transform& target) const
     {
-        return Transform();
+        Athena::Vector3 direction = (target.position - this->position).normalized();
+        Athena::Quaternion newRotation = Athena::Quaternion::RotationBetweenVectors(forward(), direction);
+
+        Athena::Vector3 r = Athena::Vector3::cross(direction, up());
+        Athena::Vector3 desiredUp = Athena::Vector3::cross(r, direction);
+
+        Athena::Vector3 newUp = newRotation.rotateVectorByThisQuaternion(up());
+        Athena::Quaternion finalRotation = Athena::Quaternion::RotationBetweenVectors(newUp, desiredUp);
+
+        return Transform(this->position, finalRotation, this->localScale);
     }
 
     void Transform::translate(const Athena::Vector3& destination)
@@ -280,15 +300,33 @@ namespace Odysseus {
 
     void Transform::lookAt(const Athena::Vector3& position)
     {
+        Athena::Vector3 direction = (position - this->position).normalized();
+        Athena::Quaternion newRotation = Athena::Quaternion::RotationBetweenVectors(forward(), direction);
 
+        Athena::Vector3 r = Athena::Vector3::cross(direction, up());
+        Athena::Vector3 desiredUp = Athena::Vector3::cross(r, direction);
+
+        Athena::Vector3 newUp = newRotation.rotateVectorByThisQuaternion(up());
+        Athena::Quaternion finalRotation = Athena::Quaternion::RotationBetweenVectors(newUp, desiredUp);
+
+        this->_rotation = finalRotation;
     }
 
     void Transform::lookAt(const Transform& target)
     {
+        Athena::Vector3 direction = (target.position - this->position).normalized();
+        Athena::Quaternion newRotation = Athena::Quaternion::RotationBetweenVectors(forward(), direction);
 
+        Athena::Vector3 r = Athena::Vector3::cross(direction, up());
+        Athena::Vector3 desiredUp = Athena::Vector3::cross(r, direction);
+
+        Athena::Vector3 newUp = newRotation.rotateVectorByThisQuaternion(up());
+        Athena::Quaternion finalRotation = Athena::Quaternion::RotationBetweenVectors(newUp, desiredUp);
+
+        this->_rotation = finalRotation;
     }
 
-    Transform Transform::transformDirection() const
+    Transform Transform::transformDirection(const Athena::Versor2& versor) const
     {
         return Transform();
     }
@@ -308,12 +346,12 @@ namespace Odysseus {
         return Transform();
     }
 
-    Transform Transform::transformPoint() const
+    Transform Transform::transformPoint(const Athena::Point2& point) const
     {
         return Transform();
     }
 
-    Transform Transform::inverseTransformDirection() const
+    Transform Transform::inverseTransformDirection(const Athena::Versor2& versor) const
     {
         return Transform();
     }
@@ -333,7 +371,7 @@ namespace Odysseus {
         return Transform();
     }
 
-    Transform Transform::inverseTransformPoint() const
+    Transform Transform::inverseTransformPoint(const Athena::Point2& point) const
     {
         return Transform();
     }
