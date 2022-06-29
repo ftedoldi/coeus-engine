@@ -2,23 +2,24 @@
 #define __SCENEOBJECT_H__
 
 #include "Component.hpp"
+#include "Container.hpp"
 #include <Transform.hpp>
 
+#include <vector>
 #include <string>
 
 namespace Odysseus
 {
+    class Component;
+    class Container;
+    
     class SceneObject {
         private:
             bool _active;
             bool _static;
-            std::vector<Component> _components;
-
-            static std::vector<SceneObject*> objectsInScene;
 
         public:
             Transform* transform;
-            const std::vector<Component>& components;
 
             std::string tag;
             std::string layer;

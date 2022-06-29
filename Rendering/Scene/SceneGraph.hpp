@@ -7,14 +7,11 @@
 
 namespace Odysseus {
     class SceneGraph {
+        private:
+            static std::vector<SceneObject*> objectsInScene;
+
         public:
-            SceneGraph();
-
-            void drawScene();
-
-            ~SceneGraph();
-
-            friend SceneObject;
+            static void drawScene();
     };
 }
 
