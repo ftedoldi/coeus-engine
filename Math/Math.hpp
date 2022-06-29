@@ -18,7 +18,7 @@ namespace Athena
     {
         public:
             static Scalar radiansToDegreeAngle(const Scalar& angle) {
-                return angle *180 / (M_PI);
+                return angle * 180 / (M_PI);
             }
 
             static Scalar degreeToRandiansAngle(const Scalar& angle) {
