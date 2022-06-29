@@ -8,7 +8,7 @@ FILENAME = Main
 CC = cl.exe
 
 # Include path
-IDIR = /I./Includes /I./Includes/CUDA /I./Math /I./CUDA /I./CUDA/Shared /I./Math/Vector /I./Math/Versor /I./Math/Point /I./Math/Scene /I./Math/Rotation /I./Math/Matrix /I./Rendering /I./Rendering/ModelLoader /I./DataStructs /I./Test      
+IDIR = /I./Includes /I./Includes/CUDA /I./Math /I./CUDA /I./CUDA/Shared /I./Math/Vector /I./Math/Versor /I./Math/Point /I./Rendering/Scene /I./Math/Rotation /I./Math/Matrix /I./Rendering /I./Rendering/ModelLoader /I./DataStructs /I./Test      
 
 # compiler flags:
 CCFLAGS  = /Od /Zi /EHsc /MT
