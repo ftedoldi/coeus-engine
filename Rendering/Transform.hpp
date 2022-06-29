@@ -29,6 +29,8 @@ namespace Zeus {
 
 namespace Odysseus
 {
+    class SceneObject;
+    
     class Transform
     {
         private:
