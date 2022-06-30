@@ -1,17 +1,28 @@
 #ifndef __CONTAINTER_H__
 #define __CONTAINTER_H__
 
-#include "Component.hpp"
+#include <Component.hpp>
+#include <SceneObject.hpp>
+#include <Transform.hpp>
 
 #include <vector>
+#include <memory>
 
 namespace Odysseus {
+    class Component;
+    class SceneObject;
+    class Transform;
+
     class Container {
         private:
-            std::vector<Component *> components;
+            std::vector<Component*> _components;
+            SceneObject& _owner;
+            Transform& _ownerTransform;
 
         public:
-            Container();
+            const std::vector<Component*>& components;
+
+            Container(SceneObject& owner, Transform& ownerTransform);
 
             // template<class T> void addComponent() {
             //     components.push_back(new T());
@@ -25,8 +36,12 @@ namespace Odysseus {
             // }
 
             void addComponent(Component& component);
-            Component& getComponent(Component& component);
+            Component* getComponent(Component& component);
             void removeComponent(Component& component);
+
+            bool operator == (Container& b);
+
+            ~Container();
     };
 }
 

@@ -19,14 +19,14 @@ namespace Odysseus {
             SceneObject* sceneObject;
             Transform* transform;
 
-            Component();
+            virtual void start() = 0;
+            virtual void update() = 0;
 
-            void start();
-            void update();
+            virtual std::string getUniqueID() = 0;
 
-            std::string getUniqueID();
+            virtual std::string toString() = 0;
 
-            std::string toString();
+            virtual ~Component() {}
     };
 }
 

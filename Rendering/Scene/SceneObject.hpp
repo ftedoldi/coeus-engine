@@ -4,6 +4,7 @@
 #include "Component.hpp"
 #include "Container.hpp"
 #include <Transform.hpp>
+#include <SceneGraph.hpp>
 
 #include <vector>
 #include <string>
@@ -12,13 +13,15 @@ namespace Odysseus
 {
     class Component;
     class Container;
-    
+
     class SceneObject {
         private:
             bool _active;
             bool _static;
+            int ID;
 
         public:
+            Container* container;
             Transform* transform;
 
             std::string tag;

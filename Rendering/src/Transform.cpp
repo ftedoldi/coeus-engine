@@ -483,7 +483,7 @@ namespace Odysseus {
         node->father = nullptr;
         node->transform = &father;
         node->father->children.push_back(this->_childrenTree->root);
-        
+
         this->_childrenTree->root->father = node;
     }
 
@@ -557,7 +557,7 @@ namespace Odysseus {
 
     Transform::~Transform()
     {
-        // this->_childrenTree->deleteTree();
+        this->_childrenTree->deleteTree();
         delete this->_childrenTree;
     }
 
