@@ -11,6 +11,11 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <SceneObject.hpp>
+#include <SceneGraph.hpp>
+#include <Component.hpp>
+#include "Test/DummyComponent.hpp"
+
 #include <iostream>
 
 //#include <Test.cuh>
@@ -38,6 +43,16 @@ float lastFrame = 0.0f;
 
 int main()
 {
+    Odysseus::Component* c = new DummyComponent();
+    Odysseus::SceneObject* obj = new Odysseus::SceneObject();
+
+    obj->container->addComponent(*c);
+
+    // obj->container->components[0]->start();
+    // obj->container->components[0]->update();
+
+    Odysseus::SceneGraph::initializeScene();
+
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -90,6 +105,8 @@ int main()
     // -----------
     while (!glfwWindowShouldClose(window))
     {
+        Odysseus::SceneGraph::drawScene();
+
         // per-frame time logic
         // --------------------
         float currentFrame = static_cast<float>(glfwGetTime());
