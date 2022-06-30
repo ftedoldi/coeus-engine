@@ -4,11 +4,16 @@ out vec4 FragColor;
 //uniform vec3 objectColor;
 in vec2 TexCoords;
 
+struct Material
+{
+    vec4 diffuse;
+    vec4 specular;
+    vec4 ambient;
+    vec4 shininess;
+};
+
 uniform sampler2D diffuse1;
-uniform vec4 materialDiff;
-//uniform vec4 materialSpec;
-//uniform vec4 materialAmb;
-//uniform vec4 materialShin;
+uniform Material material;
 uniform bool hasTexture;
 
 void main()
@@ -17,7 +22,7 @@ void main()
         FragColor = texture(diffuse1, TexCoords);
     else
     {
-        vec4 result = materialDiff;
+        vec4 result = material.diffuse;
         FragColor = vec4(result);
     }
     
