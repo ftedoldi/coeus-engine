@@ -114,6 +114,8 @@ namespace Odysseus
         // process materials
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
+        Material mat;
+        //retrive textures info
         //diffuse
         if(material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
         {
@@ -139,9 +141,10 @@ namespace Odysseus
             textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
         }
 
+        mat.Textures = textures;
         std::cout <<"Textures size: "<< textures.size() << std::endl;
-
-        Material mat;
+        
+        //retrive material infos
         aiColor4D diffuse, ambient, specular;
         float shininess;
 
@@ -158,7 +161,7 @@ namespace Odysseus
             mat.Shininess = shininess;
         
         // return a mesh object created from the extracted mesh data
-        return Mesh(vertices, indices, textures, mat);
+        return Mesh(vertices, indices, mat);
     }
 
     std::vector<Texture2D> Model::loadTexture(aiMaterial* mat, aiTextureType type)
