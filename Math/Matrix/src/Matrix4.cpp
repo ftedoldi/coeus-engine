@@ -324,47 +324,6 @@ namespace Athena
         return result;
     }
 
-    Matrix4 Matrix4::perspective(const float& fieldOfView, const float& aspectRatio, const float& nearPlane, const float& farPlane)
-    {
-        Matrix4 result;
-        Scalar yScale = 1.0 / std::tan((M_PI/ 180.0f) * fieldOfView / 2);
-        Scalar xScale = yScale / aspectRatio;
-        result.data[0] = xScale;
-        result.data[5] = yScale;
-        result.data[10] = (farPlane + nearPlane) / (nearPlane - farPlane);
-        result.data[11] = -1;
-        result.data[14] = 2 * farPlane * nearPlane / (nearPlane - farPlane);
-        result.data[15] = 0;
-        return result;
-    }
-
-    //right handed system
-    Matrix4 Matrix4::lookAt(const Vector3& position, const Vector3& forward, const Vector3& up)
-    {
-        Vector3 zaxis = Vector3::normalize(forward - position);
-        Vector3 xaxis = Vector3::normalize(Vector3::cross(zaxis, up));
-        Vector3 yaxis = Vector3::cross(xaxis, zaxis);
-
-        Matrix4 result;
-        result.data[0] = xaxis.coordinates.x;
-        result.data[4] = xaxis.coordinates.y;
-        result.data[8] = xaxis.coordinates.z;
-
-        result.data[1] = yaxis.coordinates.x;
-        result.data[5] = yaxis.coordinates.y;
-        result.data[9] = yaxis.coordinates.z;
-
-        result.data[2] = -zaxis.coordinates.x;
-        result.data[6] = -zaxis.coordinates.y;
-        result.data[10] = -zaxis.coordinates.z;
-
-        result.data[12] = -(Vector3::dot(xaxis, position));
-        result.data[13] = -(Vector3::dot(yaxis, position));
-        result.data[14] = (Vector3::dot(zaxis, position));
-
-        return result;
-    }
-
     Vector4 Matrix4::operator*(const Vector4& vec) const
     {
         return Vector4(data[0] * vec[0] + data[1] * vec[1] + data[2] * vec[2] + data[3] * vec[3],

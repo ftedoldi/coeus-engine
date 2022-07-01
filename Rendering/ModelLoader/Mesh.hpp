@@ -5,6 +5,7 @@
 #include <shader.hpp>
 #include <vector>
 #include "../Texture/Texture2D.hpp"
+#include "../Material.hpp"
 
 namespace Odysseus
 {
@@ -16,22 +17,13 @@ namespace Odysseus
         Athena::Vector3 Tangent;
         Athena::Vector3 Bitangent;
     };
-
-    struct Material
-    {
-        Athena::Vector4 Diffuse;
-        Athena::Vector4 Specular;
-        Athena::Vector4 Ambient;
-        float Shininess;
-    };
-
+    
     class Mesh
     {
     public:
 
         std::vector<Vertex> vertices;
         std::vector<GLuint> indices;
-        std::vector<Texture2D> textures;
         Material material;
         GLuint VAO;
 
@@ -39,7 +31,7 @@ namespace Odysseus
         Mesh(const Mesh& mesh) = delete;
         Mesh& operator=(const Mesh& mesh) = delete;
 
-        Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, std::vector<Texture2D>& textures, Material& mat) noexcept;
+        Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, Material& mat) noexcept;
 
         //Creating the move constructor and move assignment
         Mesh(Mesh&& move) noexcept;

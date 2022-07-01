@@ -30,7 +30,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 //Creating camera
-Odysseus::Camera camera(Vector3(0.0f, 0.0f, 3.0f));
+Odysseus::Camera camera(Athena::Vector3(0.0f, 0.0f, 3.0f));
 
 //Utilities variables to mouse callback
 float lastX = SCR_WIDTH / 2.0f;
@@ -143,8 +143,8 @@ int main()
         modelShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
 
         //Camera trasformations
-		Athena::Matrix4 projection = Athena::Matrix4::perspective(45.0f, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        Athena::Matrix4 view = camera.GetViewMatrix();
+		Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        Athena::Matrix4 view = Odysseus::Camera::lookAt(camera.Position, camera.Position + camera.Front, camera.Up);
 
         modelShader.setMat4("projection", projection);
         modelShader.setMat4("view", view);
