@@ -5,9 +5,9 @@ namespace Odysseus {
     SceneObject::SceneObject() : isActive(_active), isStatic(_static)
     {
         this->transform = new Transform();
-        this->container = new Container(*this, *this->transform);
+        this->_container = new Container(*this, *this->transform);
 
-        this->ID = SceneGraph::objectsInScene.size() + 1;
+        this->ID = static_cast<short>(std::time(0));
 
         SceneGraph::objectsInScene.push_back(this);
     }
@@ -15,9 +15,9 @@ namespace Odysseus {
     SceneObject::SceneObject(const std::string& name) : isActive(_active), isStatic(_static)
     {
         this->transform = new Transform();
-        this->container = new Container(*this, *this->transform);
+        this->_container = new Container(*this, *this->transform);
 
-        this->ID = SceneGraph::objectsInScene.size() + 1;
+        this->ID = static_cast<short>(std::time(0));
 
         SceneGraph::objectsInScene.push_back(this);
     }
@@ -25,9 +25,9 @@ namespace Odysseus {
     SceneObject::SceneObject(const Transform& transform) : isActive(_active), isStatic(_static)
     {
         this->transform = new Transform(transform);
-        this->container = new Container(*this, *this->transform);
+        this->_container = new Container(*this, *this->transform);
 
-        this->ID = SceneGraph::objectsInScene.size() + 1;
+        this->ID = static_cast<short>(std::time(0));
 
         SceneGraph::objectsInScene.push_back(this);
     }
@@ -35,9 +35,9 @@ namespace Odysseus {
     SceneObject::SceneObject(const Transform& transform, const std::string& name) : isActive(_active), isStatic(_static)
     {
         this->transform = new Transform(transform);
-        this->container = new Container(*this, *this->transform);
+        this->_container = new Container(*this, *this->transform);
 
-        this->ID = SceneGraph::objectsInScene.size() + 1;
+        this->ID = static_cast<short>(std::time(0));
 
         SceneGraph::objectsInScene.push_back(this);
     }
@@ -45,16 +45,34 @@ namespace Odysseus {
     SceneObject::SceneObject(const SceneObject& sceneObject) : isActive(_active), isStatic(_static)
     {
         this->transform = new Transform(*sceneObject.transform);
-        this->container = new Container(*this, *this->transform);
+        this->_container = new Container(*this, *this->transform);
 
-        this->ID = SceneGraph::objectsInScene.size() + 1;
+        this->ID = static_cast<short>(std::time(0));
 
         SceneGraph::objectsInScene.push_back(this);
     }
 
+    SceneObject* SceneObject::FindSceneObjectWithName(const std::string& name) {
+        for (int i = 0; i < SceneGraph::objectsInScene.size(); i++) {
+            if (SceneGraph::objectsInScene[i]->transform->name == name)
+                return SceneGraph::objectsInScene[i];   
+        }
+
+        return nullptr;
+    }
+
+    SceneObject* SceneObject::FindSceneObjectWitTag(const std::string& tag) {
+        for (int i = 0; i < SceneGraph::objectsInScene.size(); i++) {
+            if (SceneGraph::objectsInScene[i]->tag == tag)
+                return SceneGraph::objectsInScene[i];   
+        }
+
+        return nullptr;
+    }
+
     bool SceneObject::operator == (const SceneObject& object) const
     {
-        return object.container == this->container;
+        return object._container == this->_container;
     }
 
     bool SceneObject::operator != (const SceneObject& object) const
@@ -85,7 +103,7 @@ namespace Odysseus {
 
     SceneObject::~SceneObject()
     {
-        delete container;
+        delete _container;
         delete transform;
     }
 
