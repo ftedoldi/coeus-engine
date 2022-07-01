@@ -17,6 +17,7 @@
 #include "Test/DummyComponent.hpp"
 
 #include <iostream>
+#include <vector>
 
 //#include <Test.cuh>
 
@@ -46,7 +47,22 @@ int main()
     Odysseus::Component* c = new DummyComponent();
     Odysseus::SceneObject* obj = new Odysseus::SceneObject();
 
-    obj->container->addComponent(*c);
+    // std:: cout << dynamic_cast<DummyComponent*>(c)->var; // WORKS
+
+    auto comp = obj->addComponent<DummyComponent>();
+    auto comp1 = obj->addComponent<DummyComponent>();
+    comp->var = 245;
+    comp1->var = 126;
+    auto comps = obj->getComponents<DummyComponent>();
+    for (int i = 0; i < comps.size(); i++)
+        std::cout << comps[i]->var << std::endl;
+    std::cout << obj->getComponent<DummyComponent>()->var << std::endl;
+    std::cout << obj->removeComponent<DummyComponent>() << std::endl;
+    std::cout << obj->getComponent<DummyComponent>()->var << std::endl;
+    for (int i = 0; i < comps.size(); i++)
+        std::cout << comps[i]->var << std::endl;
+    std::cout << obj->getComponents<DummyComponent>().size() << std::endl;
+    // obj->container->addComponent(*c);
 
     // obj->container->components[0]->start();
     // obj->container->components[0]->update();
