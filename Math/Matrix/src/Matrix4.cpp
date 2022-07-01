@@ -306,6 +306,22 @@ namespace Athena
         return result;
     }
     
+    Matrix3 Matrix4::toMatrix3()
+    {
+        Matrix3 result;
+        result.data[0] = data[0];
+        result.data[1] = data[1];
+        result.data[2] = data[2];
+        result.data[3] = data[4];
+        result.data[4] = data[5];
+        result.data[5] = data[6];
+        result.data[6] = data[8];
+        result.data[7] = data[9];
+        result.data[8] = data[10];
+
+        return result;
+    }
+    
     Matrix4 Matrix4::scale(const Matrix4& mat, const Vector3& scale)
     {
         Matrix4 result(mat);

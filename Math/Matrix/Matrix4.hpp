@@ -41,6 +41,7 @@ namespace Athena
         void setInverse(const Matrix4& mat);
         Matrix4 inverse() const;
         static Matrix4 inverse(const Matrix4& mat);
+        Matrix3 toMatrix3();
 
         static Matrix4 scale(const Matrix4& mat, const Vector3& scale);
         static Matrix4 translate(const Matrix4& mat, const Vector3& translate);
