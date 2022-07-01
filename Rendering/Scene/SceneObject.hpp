@@ -44,7 +44,7 @@ namespace Odysseus
             static SceneObject* FindSceneObjectWithName(const std::string& name);
             static SceneObject* FindSceneObjectWitTag(const std::string& tag);
 
-            template<class T> T* findObjectWithComponent() {
+            template<class T> T* findSceneObjectWithComponent() {
                 T instance = T();
 
                 for (int i = 0; i < SceneGraph::objectsInScene.size(); i++)
@@ -54,7 +54,7 @@ namespace Odysseus
                 return nullptr;
             }
 
-            template<class T> std::vector<T*> findObjectsWithComponent() {
+            template<class T> std::vector<T*> findSceneObjectsWithComponent() {
                 T instance = T();
                 std::vector<T*> objects;
 
