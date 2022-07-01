@@ -2,7 +2,7 @@
 
     DummyComponent::DummyComponent()
     {
-        
+        var = 10;
     }
 
     void DummyComponent::start()
@@ -12,7 +12,12 @@
 
     void DummyComponent::update()
     {
-        std:: cout << "Dummy component is running!";
+        std::cout << "Dummy component is running!";
+    }
+
+    void DummyComponent::setOrderOfExecution(const short& newOrderOfExecution)
+    {
+        _orderOfExecution = newOrderOfExecution;
     }
 
     std::string DummyComponent::getUniqueID()

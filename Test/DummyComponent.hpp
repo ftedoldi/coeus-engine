@@ -8,7 +8,11 @@
 
 class DummyComponent : public Odysseus::Component {
     public:
+        int var;
+        
         DummyComponent();
+
+        virtual void setOrderOfExecution(const short& newOrderOfExecution);
 
         virtual void start();
         virtual void update();
