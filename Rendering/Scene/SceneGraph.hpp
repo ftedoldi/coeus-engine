@@ -12,7 +12,6 @@ namespace Odysseus {
 
             static void initializeScene();
             static void drawScene();
-
     };
 }
 

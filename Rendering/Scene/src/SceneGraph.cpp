@@ -6,14 +6,14 @@ namespace Odysseus {
     void SceneGraph::initializeScene()
     {
         for (int i = 0; i < objectsInScene.size(); i++)
-            for (int j = 0; j < objectsInScene[i]->container->components.size(); j++)
-                objectsInScene[i]->container->components[j]->start();
+            for (int j = 0; j < objectsInScene[i]->_container->components.size(); j++)
+                objectsInScene[i]->_container->components[j]->start();
     }
 
     void SceneGraph::drawScene()
     {
         for (int i = 0; i < objectsInScene.size(); i++)
-            for (int j = 0; j < objectsInScene[i]->container->components.size(); j++)
-                objectsInScene[i]->container->components[j]->update();
+            for (int j = 0; j < objectsInScene[i]->_container->components.size(); j++)
+                objectsInScene[i]->_container->components[j]->update();
     }
 }
