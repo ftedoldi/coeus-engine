@@ -20,9 +20,9 @@
         _orderOfExecution = newOrderOfExecution;
     }
 
-    std::string DummyComponent::getUniqueID()
+    short DummyComponent::getUniqueID()
     {
-        return "DummyComponent";
+        return _uniqueID;
     }
 
     std::string DummyComponent::toString()

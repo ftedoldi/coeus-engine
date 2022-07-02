@@ -17,7 +17,7 @@ class DummyComponent : public Odysseus::Component {
         virtual void start();
         virtual void update();
 
-        virtual std::string getUniqueID();
+        virtual short getUniqueID();
 
         virtual std::string toString();
 
