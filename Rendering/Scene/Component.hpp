@@ -6,6 +6,7 @@
 
 #include <string>
 #include <vector>
+#include <ctime>
 
 namespace Odysseus {
     class SceneObject;
@@ -13,16 +14,19 @@ namespace Odysseus {
 
     class Component {
         protected:
-            std::string _uniqueID;
-            short _orderOfExecution;
+            short _uniqueID = 0;
+            short _orderOfExecution =  0;
 
         public:
+            SceneObject* sceneObject;
+            Transform* transform;
+            
             virtual void start() = 0;
             virtual void update() = 0;
 
             virtual void setOrderOfExecution(const short& newOrderOfExecution) = 0;
 
-            virtual std::string getUniqueID() = 0;
+            virtual short getUniqueID() = 0;
 
             virtual std::string toString() = 0;
 
