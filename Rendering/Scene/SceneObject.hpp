@@ -93,13 +93,21 @@ namespace Odysseus
                     return nullptr;
                 }
 
+                component.sceneObject = this;
+                component.transform = this->transform;
+
                 _container->_components.push_back(component);
 
                 return dynamic_cast<T*>(_container->_components[_container->_components.size() - 1]);
             }
 
             template<class T> T* addComponent() {
-                _container->_components.push_back(new T());
+                T* instance = new T();
+
+                instance.sceneObject = this;
+                instance.transform = this->transform;
+
+                _container->_components.push_back(instance);
 
                 return dynamic_cast<T*>(_container->_components[_container->_components.size() - 1]);
             }
