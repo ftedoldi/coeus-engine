@@ -1,6 +1,8 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
+#include <Component.hpp>
+
 #include <coeus.hpp>
 #include <vector>
 
@@ -21,40 +23,44 @@ namespace Odysseus
     const float SPEED = 2.5f;
     const float SENSITIVITY = 0.1f;
 
-    class Camera
+    class Camera : public Component
     {
-    public:
-        Athena::Vector3 Position;
-        Athena::Vector3 Front;
-        Athena::Vector3 Right;
-        Athena::Vector3 WorldUp;
-        Athena::Vector3 Up;
-        float yValue = 0.0f;
+        public:
+            Athena::Vector3 Front;
+            Athena::Vector3 Right;
+            Athena::Vector3 WorldUp;
+            Athena::Vector3 Up;
+            float yValue = 0.0f;
 
-        float Yaw;
-        float Pitch;
+            float Yaw;
+            float Pitch;
 
-        float MovementSpeed;
-        float MouseSensitivity;
+            float MovementSpeed;
+            float MouseSensitivity;
 
-        //costructor with vectors
-        Camera(Athena::Vector3 position = Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3 up = Athena::Vector3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
+            //costructor with vectors
+            Camera();
+            // Camera(Athena::Vector3 up = Athena::Vector3::up(), float yaw = YAW, float pitch = PITCH);
+            // Camera(float upX, float upY, float upZ, float yaw, float pitch);
 
-        Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
+            static Athena::Matrix4 lookAt(const Athena::Vector3& position, const Athena::Vector3& forward, const Athena::Vector3& up);
 
-        void ProcessKeyboard(Camera_Movement direction, float deltaTime);
+            static Athena::Matrix4 perspective(const float& fieldOfView, const float& aspectRatio, const float& nearPlane, const float& farPlane);
 
-        void ProcessMouseMovement(float xoffset, float yoffset);
+            Athena::Matrix4 GetViewMatrix() const;
 
-        static Athena::Matrix4 lookAt(const Athena::Vector3& position, const Athena::Vector3& forward, const Athena::Vector3& up);
+            virtual void start();
+            virtual void update();
 
-        static Athena::Matrix4 perspective(const float& fieldOfView, const float& aspectRatio, const float& nearPlane, const float& farPlane);
+            virtual void setOrderOfExecution(const short& newOrderOfExecution);
 
-        Athena::Matrix4 GetViewMatrix() const;
+            virtual short getUniqueID();
 
-    private:
+            virtual std::string toString();
 
-    void updateCameraVectors();
+        private:
+
+        void updateCameraVectors();
 
     };
 }

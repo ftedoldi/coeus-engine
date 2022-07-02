@@ -1,65 +1,73 @@
 #include "Camera.hpp"
 namespace Odysseus
 {
-    Camera::Camera(Athena::Vector3 position, Athena::Vector3 up, float yaw, float pitch) : Front(Athena::Vector3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY)
+
+    Camera::Camera()
     {
-        Position = position;
-        WorldUp = up;
-        Yaw = yaw;
-        Pitch = pitch;
-        updateCameraVectors();
+
     }
 
-    Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Front(Athena::Vector3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY)
-    {
-        Position = Athena::Vector3(posX, posY, posZ);
-        WorldUp = Athena::Vector3(upX, upY, upZ);
-        Yaw = yaw;
-        Pitch = pitch;
-        updateCameraVectors();
-    }
+    // Camera::Camera(Athena::Vector3 up, float yaw, float pitch) : Front(Athena::Vector3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY)
+    // {
+    //     WorldUp = up;
+    //     Yaw = yaw;
+    //     Pitch = pitch;
+    //     updateCameraVectors();
 
-    void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
-    {
-        const float velocity = static_cast<float>(MovementSpeed * deltaTime);
-        if(direction == FORWARD)
-            Position += Front * velocity;
-        if(direction == BACKWARD)
-            Position -= Front * velocity;
-        if(direction == LEFT)
-            Position -= Right * velocity;
-        if(direction == RIGHT)
-            Position += Right * velocity;
-        if(direction == UP)
-            {
-                Position += WorldUp * velocity;
-                yValue = Position.coordinates.y;
-            }
-        if(direction == DOWN)
-            {
-                Position -= WorldUp * velocity;
-                yValue = Position.coordinates.y;
-            }
+    //     this->_uniqueID = static_cast<short>(std::time(0));
+    // }
+
+    // Camera::Camera(float upX, float upY, float upZ, float yaw, float pitch) : Front(Athena::Vector3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY)
+    // {
+    //     WorldUp = Athena::Vector3(upX, upY, upZ);
+    //     Yaw = yaw;
+    //     Pitch = pitch;
+    //     updateCameraVectors();
+
+    //     this->_uniqueID = static_cast<short>(std::time(0));
+    // }
+
+    // void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
+    // {
+    //     const float velocity = static_cast<float>(MovementSpeed * deltaTime);
+    //     if(direction == FORWARD)
+    //         Position += Front * velocity;
+    //     if(direction == BACKWARD)
+    //         Position -= Front * velocity;
+    //     if(direction == LEFT)
+    //         Position -= Right * velocity;
+    //     if(direction == RIGHT)
+    //         Position += Right * velocity;
+    //     if(direction == UP)
+    //         {
+    //             Position += WorldUp * velocity;
+    //             yValue = Position.coordinates.y;
+    //         }
+    //     if(direction == DOWN)
+    //         {
+    //             Position -= WorldUp * velocity;
+    //             yValue = Position.coordinates.y;
+    //         }
         
-        Position.coordinates.y = yValue;
-    }
+    //     Position.coordinates.y = yValue;
+    // }
 
-    void Camera::ProcessMouseMovement(float xoffset, float yoffset)
-    {
-        xoffset *= MouseSensitivity;
-        yoffset *= MouseSensitivity;
+    // void Camera::ProcessMouseMovement(float xoffset, float yoffset)
+    // {
+    //     xoffset *= MouseSensitivity;
+    //     yoffset *= MouseSensitivity;
 
-        Yaw += xoffset;
-        Pitch += yoffset;
+    //     Yaw += xoffset;
+    //     Pitch += yoffset;
 
-        //make sure pitch is not out of bound
-        if(Pitch > 89.0f)
-            Pitch = 89.0f;
-        if(Pitch < -89.0f)
-            Pitch = -89.0f;
+    //     //make sure pitch is not out of bound
+    //     if(Pitch > 89.0f)
+    //         Pitch = 89.0f;
+    //     if(Pitch < -89.0f)
+    //         Pitch = -89.0f;
 
-        updateCameraVectors();
-    }
+    //     updateCameraVectors();
+    // }
 
     Athena::Matrix4 Camera::lookAt(const Athena::Vector3& position, const Athena::Vector3& forward, const Athena::Vector3& up)
     {
@@ -103,7 +111,7 @@ namespace Odysseus
 
     Athena::Matrix4 Camera::GetViewMatrix() const
     {
-        return Camera::lookAt(Position, Position + Front, Up);
+        return Camera::lookAt(this->transform->position, this->transform->position + Front, Up);
     }
 
     void Camera::updateCameraVectors()
@@ -116,6 +124,31 @@ namespace Odysseus
 
         Right = Athena::Vector3::normalize(Athena::Vector3::cross(Front, WorldUp));
         Up = Athena::Vector3::normalize(Athena::Vector3::cross(Right, Front));
+    }
+
+    void Camera::start()
+    {
+
+    }
+
+    void Camera::update()
+    {
+
+    }
+
+    void Camera::setOrderOfExecution(const short& newOrderOfExecution)
+    {
+        _orderOfExecution = newOrderOfExecution;
+    }
+
+    short Camera::getUniqueID()
+    {
+        return this->_uniqueID;
+    }
+
+    std::string Camera::toString()
+    {
+        return "Camera";
     }
 
 }
