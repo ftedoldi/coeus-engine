@@ -30,7 +30,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 //Creating camera
-Odysseus::Camera camera(Athena::Vector3(0.0f, 0.0f, 3.0f));
+Odysseus::Camera camera = Odysseus::Camera();
 
 //Utilities variables to mouse callback
 float lastX = SCR_WIDTH / 2.0f;
@@ -144,7 +144,7 @@ int main()
 
         //Camera trasformations
 		Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        Athena::Matrix4 view = Odysseus::Camera::lookAt(camera.Position, camera.Position + camera.Front, camera.Up);
+        Athena::Matrix4 view = Odysseus::Camera::lookAt(camera.transform->position, camera.transform->position + camera.Front, camera.Up);
 
         modelShader.setMat4("projection", projection);
         modelShader.setMat4("view", view);
@@ -176,18 +176,18 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(Odysseus::FORWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(Odysseus::BACKWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(Odysseus::LEFT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(Odysseus::RIGHT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-        camera.ProcessKeyboard(Odysseus::UP, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-        camera.ProcessKeyboard(Odysseus::DOWN, deltaTime);
+    // if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    //     camera.ProcessKeyboard(Odysseus::FORWARD, deltaTime);
+    // if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    //     camera.ProcessKeyboard(Odysseus::BACKWARD, deltaTime);
+    // if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    //     camera.ProcessKeyboard(Odysseus::LEFT, deltaTime);
+    // if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    //     camera.ProcessKeyboard(Odysseus::RIGHT, deltaTime);
+	// if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    //     camera.ProcessKeyboard(Odysseus::UP, deltaTime);
+	// if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    //     camera.ProcessKeyboard(Odysseus::DOWN, deltaTime);
 }
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -216,5 +216,5 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     lastX = xpos;
     lastY = ypos;
 
-    camera.ProcessMouseMovement(xoffset, yoffset);
+    // camera.ProcessMouseMovement(xoffset, yoffset);
 }
