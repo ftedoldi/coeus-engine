@@ -536,7 +536,7 @@ namespace Odysseus {
         return Transform(newPosition, newRotation, newScale);
     }
 
-    Transform Transform::inverse() const
+    Transform* Transform::inverse() const
     {
         Athena::Vector3 newScale = Athena::Vector3(
             1/this->localScale.coordinates.x,
@@ -552,7 +552,7 @@ namespace Odysseus {
             -this->position.coordinates.z * this->localScale.coordinates.z
         ));
 
-        return Transform(newPosition, newRotation, newScale);
+        return new Transform(newPosition, newRotation, newScale);
     }
 
     Transform::~Transform()

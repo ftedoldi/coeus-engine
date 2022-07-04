@@ -121,7 +121,7 @@ namespace Odysseus
             bool operator != (const Transform& b) const;
             Transform operator * (const Transform& b) const; // Transform composition
 
-            Transform inverse() const;
+            Transform* inverse() const;
 
             ~Transform();
     };    
