@@ -93,8 +93,8 @@ namespace Odysseus
                     return nullptr;
                 }
 
-                component.sceneObject = this;
-                component.transform = this->transform;
+                component->sceneObject = this;
+                component->transform = this->transform;
 
                 _container->_components.push_back(component);
 
@@ -104,8 +104,8 @@ namespace Odysseus
             template<class T> T* addComponent() {
                 T* instance = new T();
 
-                instance.sceneObject = this;
-                instance.transform = this->transform;
+                instance->sceneObject = this;
+                instance->transform = this->transform;
 
                 _container->_components.push_back(instance);
 
