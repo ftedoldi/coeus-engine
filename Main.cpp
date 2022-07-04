@@ -21,18 +21,15 @@
 
 //#include <Test.cuh>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void processInput(GLFWwindow *window);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-//Creating camera
-Odysseus::Camera camera = Odysseus::Camera();
-
-//Utilities variables to mouse callback
+// Utilities variables to mouse callback
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -41,13 +38,15 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-
 int main()
 {
-    Odysseus::Component* c = new DummyComponent();
-    Odysseus::SceneObject* obj = new Odysseus::SceneObject();
+    Odysseus::Component *c = new DummyComponent();
+    Odysseus::SceneObject *obj = new Odysseus::SceneObject();
 
     // std:: cout << dynamic_cast<DummyComponent*>(c)->var; // WORKS
+
+    Odysseus::SceneObject *cam = new Odysseus::SceneObject();
+    cam->addComponent<Odysseus::Camera>();
 
     auto comp = obj->addComponent<DummyComponent>();
     auto comp1 = obj->addComponent<DummyComponent>();
@@ -67,8 +66,6 @@ int main()
     // obj->container->components[0]->start();
     // obj->container->components[0]->update();
 
-    Odysseus::SceneGraph::initializeScene();
-
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -82,7 +79,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -108,21 +105,22 @@ int main()
 
     stbi_set_flip_vertically_on_load(true);
 
-    //Enable depth test
+    // Enable depth test
     glEnable(GL_DEPTH_TEST);
 
-    //Create the shader
+    // Create the shader
     Odysseus::Shader modelShader("shader1.vert", "shader1.frag");
 
-    //Create the model
-    Odysseus::Model myModel("Assets/Models/matAndTex/matAndTex.obj");
+    // Create the model
+    Odysseus::Model myModel("Assets/Models/backpack/backpack.obj");
+
+    // Where all the starts are runned
+    Odysseus::SceneGraph::initializeScene();
 
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
     {
-        Odysseus::SceneGraph::drawScene();
-
         // per-frame time logic
         // --------------------
         float currentFrame = static_cast<float>(glfwGetTime());
@@ -137,28 +135,30 @@ int main()
         // ------
         glClearColor(0.4f, 0.2f, 0.6f, 0.5f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+
         // be sure to activate shader when setting uniforms/drawing objects
         modelShader.use();
         modelShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
 
-        //Camera trasformations
-		Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        Athena::Matrix4 view = Odysseus::Camera::lookAt(camera.transform->position, camera.transform->position + camera.Front, camera.Up);
+        auto camera = cam->getComponent<Odysseus::Camera>();
+
+        // Camera trasformations
+        Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        Athena::Matrix4 view = Odysseus::Camera::lookAt(camera->transform->position, camera->transform->position + camera->Front, camera->Up);
+
+        Athena::Quaternion q = Athena::Quaternion::EulerAnglesToQuaternion(Athena::Vector3(0, 20, 50));
+
+        auto tmp = camera->GetViewTransform(new Odysseus::Transform(Athena::Vector3(0, 0, -3.5), q, Athena::Vector3(.5, .4, .5)));
 
         modelShader.setMat4("projection", projection);
-        modelShader.setMat4("view", view);
+        modelShader.setVec3("position", tmp->position);
+        modelShader.setVec4("rotation", tmp->rotation.asVector4());
+        modelShader.setVec3("scale", tmp->localScale);
 
-        //Model trasformations
-		Athena::Matrix4 model;
-		//model = Athena::Matrix4::translate(model, Athena::Vector3(0.2f, 0.2f, 0.2f));
-		//model = Athena::Matrix4::translate(model, Athena::Vector3(0.4f, 0.4f, 0.2f));
-		//model = Athena::Matrix4::scale(model, Athena::Vector3(0.4f, 0.4f, 0.4f));
-		model = Athena::Matrix4::scale(model, Athena::Vector3(0.4f, 0.4f, 0.4f));
-		modelShader.setMat4("model", model);
-
-        //Model draw
+        // Model draw
         myModel.Draw(modelShader);
+
+        Odysseus::SceneGraph::drawScene();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         glfwSwapBuffers(window);
@@ -184,21 +184,21 @@ void processInput(GLFWwindow *window)
     //     camera.ProcessKeyboard(Odysseus::LEFT, deltaTime);
     // if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     //     camera.ProcessKeyboard(Odysseus::RIGHT, deltaTime);
-	// if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    // if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     //     camera.ProcessKeyboard(Odysseus::UP, deltaTime);
-	// if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    // if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     //     camera.ProcessKeyboard(Odysseus::DOWN, deltaTime);
 }
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
-    // make sure the viewport matches the new window dimensions; note that width and 
+    // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
 }
 
 // glfw: whenever the mouse moves, this callback is called
-void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
+void mouse_callback(GLFWwindow *window, double xposIn, double yposIn)
 {
     float xpos = static_cast<float>(xposIn);
     float ypos = static_cast<float>(yposIn);
