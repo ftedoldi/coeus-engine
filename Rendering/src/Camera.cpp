@@ -2,72 +2,12 @@
 namespace Odysseus
 {
 
-    Camera::Camera()
+    Camera::Camera() : Front(_Front), Right(_Right), Up(_Up)
     {
-
+        _Front = Athena::Vector3(0, 0, -1);
+        _Right = Athena::Vector3::right();
+        _Up = Athena::Vector3::up();
     }
-
-    // Camera::Camera(Athena::Vector3 up, float yaw, float pitch) : Front(Athena::Vector3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY)
-    // {
-    //     WorldUp = up;
-    //     Yaw = yaw;
-    //     Pitch = pitch;
-    //     updateCameraVectors();
-
-    //     this->_uniqueID = static_cast<short>(std::time(0));
-    // }
-
-    // Camera::Camera(float upX, float upY, float upZ, float yaw, float pitch) : Front(Athena::Vector3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY)
-    // {
-    //     WorldUp = Athena::Vector3(upX, upY, upZ);
-    //     Yaw = yaw;
-    //     Pitch = pitch;
-    //     updateCameraVectors();
-
-    //     this->_uniqueID = static_cast<short>(std::time(0));
-    // }
-
-    // void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
-    // {
-    //     const float velocity = static_cast<float>(MovementSpeed * deltaTime);
-    //     if(direction == FORWARD)
-    //         Position += Front * velocity;
-    //     if(direction == BACKWARD)
-    //         Position -= Front * velocity;
-    //     if(direction == LEFT)
-    //         Position -= Right * velocity;
-    //     if(direction == RIGHT)
-    //         Position += Right * velocity;
-    //     if(direction == UP)
-    //         {
-    //             Position += WorldUp * velocity;
-    //             yValue = Position.coordinates.y;
-    //         }
-    //     if(direction == DOWN)
-    //         {
-    //             Position -= WorldUp * velocity;
-    //             yValue = Position.coordinates.y;
-    //         }
-        
-    //     Position.coordinates.y = yValue;
-    // }
-
-    // void Camera::ProcessMouseMovement(float xoffset, float yoffset)
-    // {
-    //     xoffset *= MouseSensitivity;
-    //     yoffset *= MouseSensitivity;
-
-    //     Yaw += xoffset;
-    //     Pitch += yoffset;
-
-    //     //make sure pitch is not out of bound
-    //     if(Pitch > 89.0f)
-    //         Pitch = 89.0f;
-    //     if(Pitch < -89.0f)
-    //         Pitch = -89.0f;
-
-    //     updateCameraVectors();
-    // }
 
     Athena::Matrix4 Camera::lookAt(const Athena::Vector3& position, const Athena::Vector3& forward, const Athena::Vector3& up)
     {
@@ -95,6 +35,10 @@ namespace Odysseus
         return result;
     }
 
+    Odysseus::Transform* Camera::GetViewTransform(Odysseus::Transform* objectTransform) const {
+        return new Transform(*objectTransform * *this->transform->inverse());
+    }
+
     Athena::Matrix4 Camera::perspective(const float& fieldOfView, const float& aspectRatio, const float& nearPlane, const float& farPlane)
     {
         Athena::Matrix4 result;
@@ -106,24 +50,13 @@ namespace Odysseus
         result.data[11] = -1;
         result.data[14] = 2 * farPlane * nearPlane / (nearPlane - farPlane);
         result.data[15] = 0;
+        
         return result;
     }
 
     Athena::Matrix4 Camera::GetViewMatrix() const
     {
         return Camera::lookAt(this->transform->position, this->transform->position + Front, Up);
-    }
-
-    void Camera::updateCameraVectors()
-    {
-        Athena::Vector3 direction;
-        direction.coordinates.x = std::cos(Athena::Math::degreeToRandiansAngle(Yaw)) * std::cos(Athena::Math::degreeToRandiansAngle(Pitch));
-        direction.coordinates.y = std::sin(Athena::Math::degreeToRandiansAngle(Pitch));
-        direction.coordinates.z = std::sin(Athena::Math::degreeToRandiansAngle(Yaw)) * std::cos(Athena::Math::degreeToRandiansAngle(Pitch));
-        Front = Athena::Vector3::normalize(direction);
-
-        Right = Athena::Vector3::normalize(Athena::Vector3::cross(Front, WorldUp));
-        Up = Athena::Vector3::normalize(Athena::Vector3::cross(Right, Front));
     }
 
     void Camera::start()
