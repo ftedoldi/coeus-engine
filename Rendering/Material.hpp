@@ -10,16 +10,14 @@ namespace Odysseus
     class Material
     {
     public:
-        Athena::Vector4 Diffuse;
-        Athena::Vector4 Specular;
-        Athena::Vector4 Ambient;
+        Athena::Vector3 Diffuse;
+        Athena::Vector3 Specular;
+        Athena::Vector3 Ambient;
         float Shininess;
         std::vector<Texture2D> Textures;
 
         Material();
-
-        Material(Athena::Vector4& diffuse, Athena::Vector4& specular, Athena::Vector4& ambient, float shininess);
-
+        Material(Athena::Vector3& diffuse, Athena::Vector3& specular, Athena::Vector3& ambient, float shininess);
         Material(std::vector<Texture2D>& textures);
 
         void loadShaderMaterial(Odysseus::Shader& shader);

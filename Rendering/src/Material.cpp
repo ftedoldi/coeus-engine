@@ -2,10 +2,10 @@
 
 namespace Odysseus
 {
-    Material::Material(): Diffuse(Athena::Vector4(0.0f, 0.0f, 0.0f, 0.0f)), Specular(Athena::Vector4(0.0f, 0.0f, 0.0f, 0.0f)),
-                        Ambient(Athena::Vector4(0.0f, 0.0f, 0.0f, 0.0f)), Shininess(0.0f){}
+    Material::Material(): Diffuse(Athena::Vector3(0.0f, 0.0f, 0.0f)), Specular(Athena::Vector3(0.0f, 0.0f, 0.0f)),
+                        Ambient(Athena::Vector3(0.0f, 0.0f, 0.0f)), Shininess(0.0f){}
 
-    Material::Material(Athena::Vector4& diffuse, Athena::Vector4& specular, Athena::Vector4& ambient, float shininess) :
+    Material::Material(Athena::Vector3& diffuse, Athena::Vector3& specular, Athena::Vector3& ambient, float shininess) :
     Diffuse(diffuse), Specular(specular), Ambient(ambient), Shininess(shininess) {}
 
     Material::Material(std::vector<Texture2D>& textures) : Textures(textures)
@@ -13,9 +13,9 @@ namespace Odysseus
 
     void Material::loadShaderMaterial(Odysseus::Shader& shader)
     {
-        shader.setVec4("material.diffuse", this->Diffuse.coordinates.x, this->Diffuse.coordinates.y, this->Diffuse.coordinates.z, 1.0f);
-        shader.setVec4("material.specular", this->Specular.coordinates.x, this->Specular.coordinates.y, this->Specular.coordinates.z, 1.0f);
-        shader.setVec4("material.ambient", this->Ambient.coordinates.x, this->Ambient.coordinates.y, this->Ambient.coordinates.z, 1.0f);
+        shader.setVec3("material.diffuse", this->Diffuse);
+        shader.setVec3("material.specular", this->Specular);
+        shader.setVec3("material.ambient", this->Diffuse);
         shader.setFloat("material.shininess", this->Shininess);
         shader.setBool("hasTexture", false);
     }
@@ -37,16 +37,19 @@ namespace Odysseus
                 switch(this->Textures[i].type)
                 {
                     case aiTextureType_DIFFUSE:
-                        name = "diffuse" + std::to_string(diffuseIdx++);
+                        name = "materialTex.diffuse" + std::to_string(diffuseIdx++);
                         break;
                     case aiTextureType_SPECULAR:
-                        name = "specular" + std::to_string(specularIdx++);
+                        name = "materialTex.specular" + std::to_string(specularIdx++);
                         break;
                     case aiTextureType_HEIGHT:
-                        name = "height" + std::to_string(heightIdx++);
+                        name = "materialTex.height" + std::to_string(heightIdx++);
                         break;
                     case aiTextureType_AMBIENT:
-                        name = "ambient" + std::to_string(ambientIdx++);
+                        name = "materialTex.ambient" + std::to_string(ambientIdx++);
+                        break;
+                    case aiTextureType_SHININESS:
+                        name = "materialTex.shininess";
                         break;
                     default:
                         break;
