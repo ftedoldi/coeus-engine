@@ -1,7 +1,11 @@
 #ifndef __SCENEGRAPH_H__
 #define __SCENEGRAPH_H__
 
-#include "SceneObject.hpp"
+#include <GLFW/glfw3.h>
+
+#include <Scalar.hpp>
+#include <SceneObject.hpp>
+#include <Time.hpp>
 
 #include <vector>
 

@@ -48,8 +48,6 @@ namespace Odysseus
             static SceneObject* FindSceneObjectWitTag(const std::string& tag);
 
             template<class T> T* findSceneObjectWithComponent() {
-                T instance = T();
-
                 for (int i = 0; i < SceneGraph::objectsInScene.size(); i++)
                     if (SceneGraph::objectsInScene[i]->getComponent<T>() != nullptr)
                         return SceneGraph::objectsInScene[i];
@@ -58,7 +56,6 @@ namespace Odysseus
             }
 
             template<class T> std::vector<T*> findSceneObjectsWithComponent() {
-                T instance = T();
                 std::vector<T*> objects;
 
                 for (int i = 0; i < SceneGraph::objectsInScene.size(); i++)
@@ -69,22 +66,26 @@ namespace Odysseus
             }
 
             template<class T> T* getComponent() {
-                T instance = T();
+                T* instance = new T();
 
                 for (int i = 0; i < _container->_components.size(); i++)
-                    if (_container->_components[i]->toString() == instance.toString())
+                    if (_container->_components[i]->toString() == instance->toString())
                         return dynamic_cast<T*>(_container->_components[i]);
+
+                delete instance;
 
                 return nullptr;
             }
 
             template<class T> std::vector<T*> getComponents() {
-                T instance = T();
+                T* instance = new T();
                 std::vector<T*> comps;
 
                 for (int i = 0; i < _container->_components.size(); i++)
-                    if (_container->_components[i]->toString() == instance.toString())
+                    if (_container->_components[i]->toString() == instance->toString())
                         comps.push_back(dynamic_cast<T*>(_container->_components[i]));
+
+                delete instance;
 
                 return comps;
             }
@@ -116,13 +117,15 @@ namespace Odysseus
             }
             
             template<class T> bool removeComponent() {
-                T instance = T();
+                T* instance = new T();
 
                 for (int i = 0; i < _container->components.size(); i++)
-                    if (_container->components[i]->toString() == instance.toString()) {
+                    if (_container->components[i]->toString() == instance->toString()) {
                         _container->_components.erase(_container->_components.begin() + i);
                         return true;
                     }
+
+                delete instance;
 
                 return false;
             }

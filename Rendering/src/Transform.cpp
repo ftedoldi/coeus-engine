@@ -561,4 +561,40 @@ namespace Odysseus {
         delete this->_childrenTree;
     }
 
+    Transform* compositeTransformBetween (Transform* a, Transform* b)
+    {
+        // Athena::Vector3* newScale = new Athena::Vector3(
+        //     a->localScale.coordinates.x * b->localScale.coordinates.x,
+        //     a->localScale.coordinates.y * b->localScale.coordinates.y,
+        //     a->localScale.coordinates.z * b->localScale.coordinates.z
+        // );
+
+        // // Athena::Quaternion* newRotation = new Athena::Quaternion(a->rotation * b->rotation);
+
+        // Athena::Vector3* newPosition = new Athena::Vector3(
+        //     a->position + a->rotation.rotateVectorByThisQuaternion(Athena::Vector3(
+        //         a->localScale.coordinates.x * b->position.coordinates.x,
+        //         a->localScale.coordinates.y * b->position.coordinates.y,
+        //         a->localScale.coordinates.z * b->position.coordinates.z
+        //         )
+        //     )
+        // );
+
+        return new Transform(
+            a->position + a->rotation.rotateVectorByThisQuaternion(
+                Athena::Vector3(
+                    a->localScale.coordinates.x * b->position.coordinates.x,
+                    a->localScale.coordinates.y * b->position.coordinates.y,
+                    a->localScale.coordinates.z * b->position.coordinates.z
+                )
+            ), 
+            a->rotation * b->rotation,
+            Athena::Vector3(
+                a->localScale.coordinates.x * b->localScale.coordinates.x,
+                a->localScale.coordinates.y * b->localScale.coordinates.y,
+                a->localScale.coordinates.z * b->localScale.coordinates.z
+            )
+        );
+    }
+
 }

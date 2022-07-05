@@ -35,7 +35,7 @@ namespace Odysseus
         return result;
     }
 
-    Odysseus::Transform* Camera::getViewTransform(Odysseus::Transform* objectTransform) const {
+    Transform* Camera::getViewTransform(Transform* objectTransform) {
         return new Transform(*objectTransform * *this->transform->inverse());
     }
 

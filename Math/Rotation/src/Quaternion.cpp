@@ -269,12 +269,9 @@ namespace Athena {
     }
 
     Vector3 Quaternion::rotateVectorByThisQuaternion(const Vector3& vectorToRotate) const {
-        Quaternion result = this->conjugated() * Quaternion(vectorToRotate, 0.0) * (*this);
+        Quaternion* result = new Quaternion(this->conjugated() * Quaternion(vectorToRotate, 0.0) * (*this));
 
-        if (result.real != 0)
-            throw std::invalid_argument("ERROR::in QUATERNION rotateVectorByThisQuaternion function, the _real part is not 0!");
-
-        return result.immaginary;
+        return result->immaginary;
     }
 
     Quaternion Quaternion::normalized() const {

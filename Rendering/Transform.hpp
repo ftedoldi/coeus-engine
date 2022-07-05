@@ -124,7 +124,9 @@ namespace Odysseus
             Transform* inverse() const;
 
             ~Transform();
-    };    
+    };
+
+    Transform* compositeTransformBetween (Transform* a, Transform* b);
 }
 
 #endif
