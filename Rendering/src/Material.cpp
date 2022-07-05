@@ -11,16 +11,16 @@ namespace Odysseus
     Material::Material(std::vector<Texture2D>& textures) : Textures(textures)
     {}
 
-    void Material::loadShaderMaterial(Odysseus::Shader& shader)
+    void Material::loadShaderMaterial(Odysseus::Shader* shader)
     {
-        shader.setVec3("material.diffuse", this->Diffuse);
-        shader.setVec3("material.specular", this->Specular);
-        shader.setVec3("material.ambient", this->Diffuse);
-        shader.setFloat("material.shininess", this->Shininess);
-        shader.setBool("hasTexture", false);
+        shader->setVec3("material.diffuse", this->Diffuse);
+        shader->setVec3("material.specular", this->Specular);
+        shader->setVec3("material.ambient", this->Diffuse);
+        shader->setFloat("material.shininess", this->Shininess);
+        shader->setBool("hasTexture", false);
     }
 
-    void Material::loadShaderTexture(Odysseus::Shader& shader)
+    void Material::loadShaderTexture(Odysseus::Shader* shader)
     {
         GLuint diffuseIdx = 0;
         GLuint specularIdx = 0;
@@ -55,8 +55,8 @@ namespace Odysseus
                         break;
                 }
                 //set shader uniform
-                shader.setInt(name.c_str(), i);
-                shader.setBool("hasTexture", true);
+                shader->setInt(name.c_str(), i);
+                shader->setBool("hasTexture", true);
                 //bind texture
                 this->Textures[i].BindTexture();
             }

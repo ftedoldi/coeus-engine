@@ -20,8 +20,8 @@ namespace Odysseus
         Material(Athena::Vector3& diffuse, Athena::Vector3& specular, Athena::Vector3& ambient, float shininess);
         Material(std::vector<Texture2D>& textures);
 
-        void loadShaderMaterial(Odysseus::Shader& shader);
-        void loadShaderTexture(Odysseus::Shader& shader);
+        void loadShaderMaterial(Odysseus::Shader* shader);
+        void loadShaderTexture(Odysseus::Shader* shader);
     };
 }
 

@@ -21,7 +21,6 @@ namespace Odysseus
     class Mesh
     {
     public:
-
         std::vector<Vertex> vertices;
         std::vector<GLuint> indices;
         Material material;
@@ -41,7 +40,7 @@ namespace Odysseus
         ~Mesh() noexcept;
 
         //Render of the mesh
-        void Draw(Shader &shader);
+        void Draw(Shader* shader);
 
     private:
 
