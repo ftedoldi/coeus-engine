@@ -1,7 +1,7 @@
 #ifndef __SCENEGRAPH_H__
 #define __SCENEGRAPH_H__
 
-#include <GLFW/glfw3.h>
+#include <Window.hpp>
 
 #include <Scalar.hpp>
 #include <SceneObject.hpp>

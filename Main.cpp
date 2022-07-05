@@ -1,4 +1,5 @@
 #include <Window.hpp>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 #include <coeus.hpp>
@@ -105,23 +106,3 @@ int main()
     delete window;
     return 0;
 }
-
-// // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// void processInput(GLFWwindow *window)
-// {
-//     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-//         glfwSetWindowShouldClose(window, true);
-
-//     // if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-//     //     camera.ProcessKeyboard(Odysseus::FORWARD, deltaTime);
-//     // if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-//     //     camera.ProcessKeyboard(Odysseus::BACKWARD, deltaTime);
-//     // if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-//     //     camera.ProcessKeyboard(Odysseus::LEFT, deltaTime);
-//     // if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-//     //     camera.ProcessKeyboard(Odysseus::RIGHT, deltaTime);
-//     // if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-//     //     camera.ProcessKeyboard(Odysseus::UP, deltaTime);
-//     // if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-//     //     camera.ProcessKeyboard(Odysseus::DOWN, deltaTime);
-// }
