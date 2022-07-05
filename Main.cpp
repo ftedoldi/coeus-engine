@@ -46,9 +46,11 @@ int main()
     // std:: cout << dynamic_cast<DummyComponent*>(c)->var; // WORKS
 
     Odysseus::SceneObject *cam = new Odysseus::SceneObject();
+    Odysseus::SceneObject *myModel = new Odysseus::SceneObject();
+    myModel->addComponent<Odysseus::Model>();
     cam->addComponent<Odysseus::Camera>();
 
-    auto comp = obj->addComponent<DummyComponent>();
+    /*auto comp = obj->addComponent<DummyComponent>();
     auto comp1 = obj->addComponent<DummyComponent>();
     comp->var = 245;
     comp1->var = 126;
@@ -60,7 +62,7 @@ int main()
     std::cout << obj->getComponent<DummyComponent>()->var << std::endl;
     for (int i = 0; i < comps.size(); i++)
         std::cout << comps[i]->var << std::endl;
-    std::cout << obj->getComponents<DummyComponent>().size() << std::endl;
+    std::cout << obj->getComponents<DummyComponent>().size() << std::endl;*/
     // obj->container->addComponent(*c);
 
     // obj->container->components[0]->start();
@@ -111,8 +113,10 @@ int main()
     // Create the shader
     Odysseus::Shader modelShader("shader1.vert", "shader1.frag");
 
-    // Create the model
-    Odysseus::Model myModel("Assets/Models/backpack/backpack.obj");
+    auto model = myModel->getComponent<Odysseus::Model>();
+    model->setPath("Assets/Models/matAndTex/matAndTex.obj");
+    model->setShader(&modelShader);
+    model->transform->translate(Athena::Vector3(0.0f, 0.0f, -5.0f));
 
     // Where all the starts are runned
     Odysseus::SceneGraph::initializeScene();
@@ -138,25 +142,16 @@ int main()
 
         // be sure to activate shader when setting uniforms/drawing objects
         modelShader.use();
-        modelShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
 
         auto camera = cam->getComponent<Odysseus::Camera>();
-
+        model->setCamera(camera);
         // Camera trasformations
         Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        Athena::Matrix4 view = Odysseus::Camera::lookAt(camera->transform->position, camera->transform->position + camera->Front, camera->Up);
-
-        Athena::Quaternion q = Athena::Quaternion::EulerAnglesToQuaternion(Athena::Vector3(0, 20, 50));
-
-        auto tmp = camera->getViewTransform(new Odysseus::Transform(Athena::Vector3(0, 0, -3.5), q, Athena::Vector3(.5, .4, .5)));
-
         modelShader.setMat4("projection", projection);
-        modelShader.setVec3("position", tmp->position);
-        modelShader.setVec4("rotation", tmp->rotation.asVector4());
-        modelShader.setVec3("scale", tmp->localScale);
+        //Athena::Matrix4 view = Odysseus::Camera::lookAt(camera->transform->position, camera->transform->position + camera->Front, camera->Up);
 
         // Model draw
-        myModel.Draw(modelShader);
+        //myModel.Draw(&modelShader);
 
         Odysseus::SceneGraph::drawScene();
 
