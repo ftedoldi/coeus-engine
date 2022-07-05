@@ -31,15 +31,12 @@ int main()
     Odysseus::SceneObject *obj = new Odysseus::SceneObject();
 
     Odysseus::SceneObject *cam = new Odysseus::SceneObject();
-<<<<<<< HEAD
     auto mainCamera = cam->addComponent<Odysseus::Camera>();
     auto movement = cam->addComponent<CameraMovement>();
     movement->camera = mainCamera;
-=======
     Odysseus::SceneObject *myModel = new Odysseus::SceneObject();
     myModel->addComponent<Odysseus::Model>();
     cam->addComponent<Odysseus::Camera>();
->>>>>>> d5301b7573a8e4a91c23115493ac25bc6b60a531
 
     auto comp = obj->addComponent<DummyComponent>();
     auto comp1 = obj->addComponent<DummyComponent>();

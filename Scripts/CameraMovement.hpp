@@ -4,7 +4,9 @@
 #include <Component.hpp>
 
 class CameraMovement : public System::Component { 
+    class CameraMovement {
 
+    };
 };
 
 #endif // __CAMERAMOVEMENT_H__
