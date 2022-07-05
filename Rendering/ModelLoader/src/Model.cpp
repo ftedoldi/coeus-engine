@@ -2,13 +2,55 @@
 namespace Odysseus
 {
 
-    Model::Model(const std::string& path)
+    Model::Model() : path(_path)
+    {}
+
+    void Model::setPath(const std::string& path)
     {
-        loadModel(path);
-        std::cout << "Path at costructor: " << path << std::endl;
+        this->_path = path;
     }
 
-    void Model::Draw(Shader& shader)
+    void Model::setShader(Shader* shader)
+    {
+        this->shader = shader;
+    }
+
+    void Model::setCamera(Camera* camera)
+    {
+        this->camera = camera;
+    }
+
+    void Model::start()
+    {
+        loadModel(this->_path);
+    }
+
+    void Model::update()
+    {
+        //il parametro corrisponde alla trasformazione che deve esseer applicata al modello
+        auto tmp = camera->getViewTransform(this->transform);
+        this->shader->setVec3("position", tmp->position);
+        this->shader->setVec4("rotation", tmp->rotation.asVector4());
+        this->shader->setVec3("scale", tmp->localScale);
+
+        this->Draw(this->shader);
+        
+    }
+
+    void Model::setOrderOfExecution(const short& newOrderOfExecution)
+    {}
+
+    short Model::getUniqueID()
+    {
+        return this->_uniqueID;
+    }
+
+    std::string Model::toString()
+    {
+        return "Model";
+    }
+
+    void Model::Draw(Shader* shader)
     {
         //process each mesh of the model by calling each mesh's Draw method
         for(GLuint i = 0; i < meshes.size(); ++i)
