@@ -3,7 +3,7 @@
 
 #include <Component.hpp>
 
-class CameraMovement /*: public Odysseus::Component*/ { 
+class CameraMovement : public System::Component { 
 
 };
 

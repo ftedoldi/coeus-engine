@@ -23,7 +23,7 @@ namespace Odysseus
     // const float SPEED = 2.5f;
     // const float SENSITIVITY = 0.1f;
 
-    class Camera : public Component
+    class Camera : public System::Component
     {
         public:
             const Athena::Vector3& Front;
@@ -36,8 +36,8 @@ namespace Odysseus
 
             static Athena::Matrix4 perspective(const float& fieldOfView, const float& aspectRatio, const float& nearPlane, const float& farPlane);
 
-            Athena::Matrix4 GetViewMatrix() const;
-            Odysseus::Transform* GetViewTransform(Odysseus::Transform* objectTransform) const;
+            Athena::Matrix4 getViewMatrix() const;
+            Odysseus::Transform* getViewTransform(Odysseus::Transform* objectTransform) const;
 
             virtual void start();
             virtual void update();

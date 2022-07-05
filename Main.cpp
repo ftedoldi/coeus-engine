@@ -40,7 +40,7 @@ float lastFrame = 0.0f;
 
 int main()
 {
-    Odysseus::Component *c = new DummyComponent();
+    System::Component *c = new DummyComponent();
     Odysseus::SceneObject *obj = new Odysseus::SceneObject();
 
     // std:: cout << dynamic_cast<DummyComponent*>(c)->var; // WORKS
@@ -148,7 +148,7 @@ int main()
 
         Athena::Quaternion q = Athena::Quaternion::EulerAnglesToQuaternion(Athena::Vector3(0, 20, 50));
 
-        auto tmp = camera->GetViewTransform(new Odysseus::Transform(Athena::Vector3(0, 0, -3.5), q, Athena::Vector3(.5, .4, .5)));
+        auto tmp = camera->getViewTransform(new Odysseus::Transform(Athena::Vector3(0, 0, -3.5), q, Athena::Vector3(.5, .4, .5)));
 
         modelShader.setMat4("projection", projection);
         modelShader.setVec3("position", tmp->position);

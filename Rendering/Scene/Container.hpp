@@ -8,8 +8,11 @@
 #include <vector>
 #include <memory>
 
-namespace Odysseus {
+namespace System {
     class Component;
+}
+
+namespace Odysseus {
     class SceneObject;
     class Transform;
 
@@ -17,10 +20,10 @@ namespace Odysseus {
         friend class SceneObject;
         
         private:
-            std::vector<Component*> _components;
+            std::vector<System::Component*> _components;
 
         public:
-            const std::vector<Component*>& components;
+            const std::vector<System::Component*>& components;
 
             Container(SceneObject& owner, Transform& ownerTransform);
 

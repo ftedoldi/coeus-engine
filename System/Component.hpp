@@ -11,6 +11,9 @@
 namespace Odysseus {
     class SceneObject;
     class Transform;
+}
+
+namespace System {
 
     class Component {
         protected:
@@ -18,8 +21,8 @@ namespace Odysseus {
             short _orderOfExecution =  0;
 
         public:
-            SceneObject* sceneObject;
-            Transform* transform;
+            Odysseus::SceneObject* sceneObject;
+            Odysseus::Transform* transform;
             
             virtual void start() = 0;
             virtual void update() = 0;

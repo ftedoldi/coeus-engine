@@ -11,9 +11,12 @@
 #include <iostream>
 #include <ctime>
 
+namespace System {
+    class Component;
+}
+
 namespace Odysseus
 {
-    class Component;
     class Container;
     class SceneGraph;
 

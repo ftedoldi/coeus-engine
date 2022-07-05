@@ -35,7 +35,7 @@ namespace Odysseus
         return result;
     }
 
-    Odysseus::Transform* Camera::GetViewTransform(Odysseus::Transform* objectTransform) const {
+    Odysseus::Transform* Camera::getViewTransform(Odysseus::Transform* objectTransform) const {
         return new Transform(*objectTransform * *this->transform->inverse());
     }
 
@@ -54,7 +54,7 @@ namespace Odysseus
         return result;
     }
 
-    Athena::Matrix4 Camera::GetViewMatrix() const
+    Athena::Matrix4 Camera::getViewMatrix() const
     {
         return Camera::lookAt(this->transform->position, this->transform->position + Front, Up);
     }

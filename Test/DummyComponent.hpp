@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 
-class DummyComponent : public Odysseus::Component {
+class DummyComponent : public System::Component {
     public:
         int var;
         
