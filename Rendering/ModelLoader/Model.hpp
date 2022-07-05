@@ -36,13 +36,12 @@ namespace Odysseus
     private:
         //Loading the model using assimp library, passing by copy the path, for the needs to be modified
         void loadModel(const std::string& path);
-
         Material loadMaterial(aiMaterial* mat);
-
         std::vector<Texture2D> loadTexture(aiMaterial *mat, aiTextureType type);
 
+        void setMeshTextures(aiMaterial* material, Material& mat);
+        void setMeshMaterials(aiMaterial* material, Material& mat);
         Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-
         void processNode(aiNode* node, const aiScene* scene);   
 
     };

@@ -49,12 +49,69 @@ namespace Odysseus
         }
     }
 
+    void Model::setMeshTextures(aiMaterial* material, Material& mat)
+    {
+        //diffuse
+        if(material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+        {
+            std::vector<Texture2D> diffuseMaps = loadTexture(material, aiTextureType_DIFFUSE);
+            mat.Textures.insert(mat.Textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+        }
+        //specular
+        if(material->GetTextureCount(aiTextureType_SPECULAR) > 0)
+        {
+            std::vector<Texture2D> specularMaps = loadTexture(material, aiTextureType_SPECULAR);
+            std::cout << "Has texture specular" << std::endl;
+            mat.Textures.insert(mat.Textures.end(), specularMaps.begin(), specularMaps.end());
+        }
+        //normal
+        if(material->GetTextureCount(aiTextureType_HEIGHT) > 0)
+        {
+            std::vector<Texture2D> normalMaps = loadTexture(material, aiTextureType_HEIGHT);
+            std::cout << "Has texture height" << std::endl;
+            mat.Textures.insert(mat.Textures.end(), normalMaps.begin(), normalMaps.end());
+        }
+        //height
+        if(material->GetTextureCount(aiTextureType_AMBIENT) > 0)
+        {
+            std::vector<Texture2D> heightMaps = loadTexture(material, aiTextureType_AMBIENT);
+            std::cout << "Has texture ambient" << std::endl;
+            mat.Textures.insert(mat.Textures.end(), heightMaps.begin(), heightMaps.end());
+        }
+
+        if(material->GetTextureCount(aiTextureType_SHININESS) > 0)
+        {
+            std::vector<Texture2D> shininessMaps = loadTexture(material, aiTextureType_SHININESS);
+            std::cout << "Has texture shininess" << std::endl;
+            mat.Textures.insert(mat.Textures.end(), shininessMaps.begin(), shininessMaps.end());
+            
+        }
+        std::cout <<"Textures size: "<< mat.Textures.size() << std::endl;
+    }
+
+    void Model::setMeshMaterials(aiMaterial* material, Material& mat)
+    {
+        aiColor3D diffuse, ambient, specular;
+        float shininess;
+
+        if(AI_SUCCESS == material->Get(AI_MATKEY_SHININESS, shininess))
+            mat.Shininess = shininess;
+        
+        if(AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse))
+            mat.Diffuse = Athena::Vector3(diffuse.r, diffuse.g, diffuse.b);
+        
+        if(AI_SUCCESS == material->Get(AI_MATKEY_COLOR_AMBIENT, ambient))
+            mat.Ambient = Athena::Vector3(ambient.r, ambient.g, ambient.b);
+
+        if(AI_SUCCESS == material->Get(AI_MATKEY_COLOR_SPECULAR, specular))
+            mat.Specular = Athena::Vector3(specular.r, specular.g, specular.b);
+    }
+
     Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     {
         // data to fill
         std::vector<Vertex> vertices;
         std::vector<GLuint> indices;
-        std::vector<Texture2D> textures;
 
         // walk through each of the mesh's vertices
         for(GLuint i = 0; i < mesh->mNumVertices; ++i)
@@ -110,57 +167,14 @@ namespace Odysseus
         //in the shaders, each texture must be named as 'texturetypeN' where N is a number ranging from 1 to the maximum number of the type of texture considered
         //and texturetype is the type of the texture e.g. diffuse, specular
         //for example, multiple diffuse textures will be written as diffuse1, diffuse2, diffuse3, ecc.
-        
-        // process materials
+
+        //process materials
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-
         Material mat;
-        //retrive textures info
-        //diffuse
-        if(material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
-        {
-            std::vector<Texture2D> diffuseMaps = loadTexture(material, aiTextureType_DIFFUSE);
-            textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        }
-        //specular
-        if(material->GetTextureCount(aiTextureType_SPECULAR) > 0)
-        {
-            std::vector<Texture2D> specularMaps = loadTexture(material, aiTextureType_SPECULAR);
-            textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-        }
-        //normal
-        if(material->GetTextureCount(aiTextureType_HEIGHT) > 0)
-        {
-            std::vector<Texture2D> normalMaps = loadTexture(material, aiTextureType_HEIGHT);
-            textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-        }
-        //height
-        if(material->GetTextureCount(aiTextureType_AMBIENT) > 0)
-        {
-            std::vector<Texture2D> heightMaps = loadTexture(material, aiTextureType_AMBIENT);
-            textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-        }
+        setMeshTextures(material, mat);
+        setMeshMaterials(material, mat);
 
-        mat.Textures = textures;
-        std::cout <<"Textures size: "<< textures.size() << std::endl;
-        
-        //retrive material infos
-        aiColor4D diffuse, ambient, specular;
-        float shininess;
-
-        if(AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diffuse))
-            mat.Diffuse = Athena::Vector4(diffuse.r, diffuse.g, diffuse.b, 1.0f);
-
-        if(AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_AMBIENT, &ambient))
-            mat.Ambient = Athena::Vector4(ambient.r, ambient.g, ambient.b, 1.0f);
-
-        if(AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_SPECULAR, &specular))
-            mat.Specular = Athena::Vector4(specular.r, specular.g, specular.b, 1.0f);
-
-        if(AI_SUCCESS == material->Get(AI_MATKEY_SHININESS, shininess))
-            mat.Shininess = shininess;
-        
-        // return a mesh object created from the extracted mesh data
+        //return a mesh object created from the extracted mesh data
         return Mesh(vertices, indices, mat);
     }
 
