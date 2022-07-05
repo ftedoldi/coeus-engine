@@ -55,7 +55,7 @@ namespace Odysseus
         Mesh::freeGPUresources();
     }
 
-    void Mesh::Draw(Shader &shader)
+    void Mesh::Draw(Shader* shader)
     {
         GLuint diffuseIdx = 0;
         GLuint specularIdx = 0;
@@ -63,7 +63,6 @@ namespace Odysseus
         GLuint ambientIdx = 0;
 
         //call to material
-
         if(this->material.Textures.size() > 0)
             material.loadShaderTexture(shader);
         else
