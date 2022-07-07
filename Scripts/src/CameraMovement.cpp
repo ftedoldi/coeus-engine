@@ -16,10 +16,15 @@ void CameraMovement::start()
 
     xMousePos = System::Input::mouse.xPosition;
     yMousePos = System::Input::mouse.yPosition;
+
+    camera->Front = Athena::Vector3(std::cos(yaw), 0, -std::sin(yaw));
+    camera->Right = camera->Front.cross(Athena::Vector3::up()).normalized();
 }
 
 void CameraMovement::update()
 {
+    float lastYaw = yaw;
+
     if (glfwGetKey(System::Window::window, GLFW_KEY_W) == GLFW_PRESS)
         camera->transform->position += camera->Front * movementSpeed * System::Time::deltaTime;
     if (glfwGetKey(System::Window::window, GLFW_KEY_S) == GLFW_PRESS)
@@ -45,16 +50,10 @@ void CameraMovement::update()
     if (pitch < -89.0f)
         pitch = -89.0f;
 
-    Athena::Vector3 direction;
-    direction.coordinates.x = std::cos(Athena::Math::degreeToRandiansAngle(yaw)) * std::cos(Athena::Math::degreeToRandiansAngle(pitch));
-    direction.coordinates.y = std::sin(Athena::Math::degreeToRandiansAngle(pitch));
-    direction.coordinates.z = std::sin(Athena::Math::degreeToRandiansAngle(yaw)) * std::cos(Athena::Math::degreeToRandiansAngle(pitch));
+    camera->transform->rotateOfEulerAngles(Athena::Vector3(0, yaw, 0));
 
-    Athena::Vector3 axis = Athena::Vector3::cross(camera->Front, direction).normalized();
-    camera->transform->rotate(Athena::Quaternion::EulerAnglesToQuaternion(Athena::Vector3(pitch, yaw, 0)));
-
-    // camera->Front = direction.normalized();
-    // camera->Right = camera->Front.cross(Athena::Vector3::up()).normalized();
+    camera->Front = Athena::Vector3(std::cos(yaw), 0, -std::sin(yaw));
+    camera->Right = camera->Front.cross(Athena::Vector3::up()).normalized();
     // camera->Up = camera->Front.cross(camera->Right).normalized();
 }
 
