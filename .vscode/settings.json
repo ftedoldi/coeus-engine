@@ -86,7 +86,12 @@
       "xtree": "cpp",
       "xutility": "cpp",
       "__functional_base": "cpp",
-      "__config": "cpp"
+      "__config": "cpp",
+      "__functional_03": "cpp",
+      "__hash_table": "cpp",
+      "__mutex_base": "cpp",
+      "__tree": "cpp",
+      "__tuple": "cpp"
     },
     "terminal.integrated.profiles.windows": {
         "my-pwsh": {
