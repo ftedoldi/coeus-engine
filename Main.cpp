@@ -59,7 +59,7 @@ int main()
     Odysseus::Shader modelShader("shader1.vert", "shader1.frag");
 
     auto model = myModel->getComponent<Odysseus::Model>();
-    model->setPath("Assets/Models/matAndTex/matAndTex.obj");
+    model->setPath("Assets/Models/backpack/backpack.obj");
     model->setShader(&modelShader);
     model->transform->translate(Athena::Vector3(0.0f, 0.0f, -5.0f));
 
@@ -71,8 +71,6 @@ int main()
     {
         // per-frame time logic
         // --------------------
-        std::cout << " " << System::Time::time;
-        std::cout << " " << System::Time::deltaTime << std::endl;
 
         // render
         // ------
@@ -83,16 +81,11 @@ int main()
 
         auto camera = cam->getComponent<Odysseus::Camera>();
         model->setCamera(camera);
+
         // Camera trasformations
         Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, System::Window::screen.width / System::Window::screen.height, 0.1f, 100.0f);
-        Athena::Matrix4 view = Odysseus::Camera::lookAt(camera->transform->position, camera->transform->position + camera->Front, camera->Up);
-
-        Odysseus::Transform* t = new Odysseus::Transform(Athena::Vector3(0, 0, -3.5), Athena::Quaternion::EulerAnglesToQuaternion(Athena::Vector3(0, 0, 0)), Athena::Vector3(.5, .4, .5));
-        t->inverse()->position.print();
-        auto tmp = camera->getViewTransform(t);
 
         modelShader.setMat4("projection", projection);
-        //Athena::Matrix4 view = Odysseus::Camera::lookAt(camera->transform->position, camera->transform->position + camera->Front, camera->Up);
 
         // Model draw
         //myModel.Draw(&modelShader);
