@@ -8,10 +8,12 @@
 #include <Vector3.hpp>
 #include <Math.hpp>
 #include <Scalar.hpp>
+#include <Shader.hpp>
 
 class CameraMovement : public System::Behaviour { 
     public:
         Odysseus::Camera* camera;
+        Odysseus::Shader* shader;
 
         Athena::Scalar xMousePos;
         Athena::Scalar yMousePos;
@@ -32,6 +34,9 @@ class CameraMovement : public System::Behaviour {
         virtual short getUniqueID();
         virtual std::string toString();
 
+        Athena::Quaternion calculateRotation(const Athena::Vector3& position, const Athena::Vector3& forward, const Athena::Vector3& up) const;
+
+        void setShader(Odysseus::Shader* shader);
         virtual ~CameraMovement();
 };
 
