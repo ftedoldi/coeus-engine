@@ -122,6 +122,22 @@ namespace Athena {
         );
     }
 
+    Quaternion Quaternion::Matrix4ToQuaternion(const Matrix4& matrix)
+    {
+        Quaternion q;
+        q.real = std::sqrt(std::max(0.0f, 1 + matrix.data[0] + matrix.data[5] + matrix.data[10])) / 2;
+        q.immaginary.coordinates.x = std::sqrt(std::max(0.0f, 1 + matrix.data[0] - matrix.data[5] - matrix.data[10])) / 2;
+        q.immaginary.coordinates.y = std::sqrt(std::max(0.0f, 1 - matrix.data[0] + matrix.data[5] - matrix.data[10])) / 2;
+        q.immaginary.coordinates.z = std::sqrt(std::max(0.0f, 1 - matrix.data[0] - matrix.data[5] + matrix.data[10])) / 2;
+        int signX = (q.immaginary.coordinates.x * (matrix.data[9] - matrix.data[6])) > 0 ? 1 : ((q.immaginary.coordinates.x * (matrix.data[9] - matrix.data[6]) < 0) ? -1 : 0);
+        int signY = (q.immaginary.coordinates.y * (matrix.data[2] - matrix.data[8])) > 0 ? 1 : ((q.immaginary.coordinates.x * (matrix.data[2] - matrix.data[8]) < 0) ? -1 : 0);
+        int signZ = (q.immaginary.coordinates.z * (matrix.data[4] - matrix.data[1])) > 0 ? 1 : ((q.immaginary.coordinates.x * (matrix.data[4] - matrix.data[1]) < 0) ? -1 : 0);
+        q.immaginary.coordinates.x *= signX;
+        q.immaginary.coordinates.y *= signY;
+        q.immaginary.coordinates.z *= signZ;
+        return q;
+    }
+
     Matrix3 Quaternion::QuaternionToMatrx3(const Quaternion& quaternion) {
         Vector4 quat = Quaternion::AsVector4(quaternion.normalized());
 

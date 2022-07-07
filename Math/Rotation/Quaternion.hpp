@@ -7,6 +7,7 @@
 #include <Vector3.hpp>
 #include <Vector4.hpp>
 #include <Matrix3.hpp>
+#include "../Matrix/Matrix4.hpp"
 #include <Math.hpp>
 
 #include <iostream>
@@ -17,6 +18,7 @@
 namespace Athena
 {
     class Vector4;
+    class Matrix4;
 
     class Quaternion
     {
@@ -45,6 +47,8 @@ namespace Athena
             static Vector3 QuaternionToEulerAngles(const Quaternion& quaternion);
 
             static Quaternion Matrix3ToQuaternion(const Matrix3& matrix);
+
+            static Quaternion Matrix4ToQuaternion(const Matrix4& matrix);
 
             static Matrix3 QuaternionToMatrx3(const Quaternion& quaternion);
 
