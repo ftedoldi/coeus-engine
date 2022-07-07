@@ -206,7 +206,7 @@ namespace Athena {
     }
 
     Quaternion Quaternion::conjugated() const {
-        return Quaternion(-this->immaginary, this->real);
+        return Quaternion(-this->_immaginary, this->_real);
     }
 
     Scalar Quaternion::squareMagnitude() const {
