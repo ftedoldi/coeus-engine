@@ -525,7 +525,7 @@ namespace Odysseus {
             this->localScale.coordinates.z * b.localScale.coordinates.z
         );
 
-        Athena::Quaternion newRotation = this->rotation * b.rotation;
+        Athena::Quaternion newRotation = b.rotation * this->rotation;
 
         Athena::Vector3 newPosition = this->position + this->rotation.rotateVectorByThisQuaternion(Athena::Vector3(
             this->localScale.coordinates.x * b.position.coordinates.x,
@@ -546,10 +546,10 @@ namespace Odysseus {
 
         Athena::Quaternion newRotation = this->rotation.inverse();
 
-        Athena::Vector3 newPosition = this->rotation.rotateVectorByThisQuaternion(Athena::Vector3(
-            -this->position.coordinates.x * this->localScale.coordinates.x,
-            -this->position.coordinates.y * this->localScale.coordinates.y,
-            -this->position.coordinates.z * this->localScale.coordinates.z
+        Athena::Vector3 newPosition = newRotation.rotateVectorByThisQuaternion(Athena::Vector3(
+            -this->position.coordinates.x * newScale.coordinates.x,
+            -this->position.coordinates.y * newScale.coordinates.y,
+            -this->position.coordinates.z * newScale.coordinates.z
         ));
 
         return new Transform(newPosition, newRotation, newScale);
@@ -563,23 +563,6 @@ namespace Odysseus {
 
     Transform* compositeTransformBetween (Transform* a, Transform* b)
     {
-        // Athena::Vector3* newScale = new Athena::Vector3(
-        //     a->localScale.coordinates.x * b->localScale.coordinates.x,
-        //     a->localScale.coordinates.y * b->localScale.coordinates.y,
-        //     a->localScale.coordinates.z * b->localScale.coordinates.z
-        // );
-
-        // // Athena::Quaternion* newRotation = new Athena::Quaternion(a->rotation * b->rotation);
-
-        // Athena::Vector3* newPosition = new Athena::Vector3(
-        //     a->position + a->rotation.rotateVectorByThisQuaternion(Athena::Vector3(
-        //         a->localScale.coordinates.x * b->position.coordinates.x,
-        //         a->localScale.coordinates.y * b->position.coordinates.y,
-        //         a->localScale.coordinates.z * b->position.coordinates.z
-        //         )
-        //     )
-        // );
-
         return new Transform(
             a->position + a->rotation.rotateVectorByThisQuaternion(
                 Athena::Vector3(

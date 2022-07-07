@@ -36,7 +36,7 @@ namespace Odysseus
     }
 
     Transform* Camera::getViewTransform(Transform* objectTransform) {
-        return new Transform(*objectTransform * *this->transform->inverse());
+        return new Transform(*this->transform->inverse() * *objectTransform);
     }
 
     Athena::Matrix4 Camera::perspective(const float& fieldOfView, const float& aspectRatio, const float& nearPlane, const float& farPlane)

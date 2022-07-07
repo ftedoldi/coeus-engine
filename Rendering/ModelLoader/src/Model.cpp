@@ -29,6 +29,7 @@ namespace Odysseus
     {
         //il parametro corrisponde alla trasformazione che deve esseer applicata al modello
         auto tmp = camera->getViewTransform(this->transform);
+
         this->shader->setVec3("position", tmp->position);
         this->shader->setVec4("rotation", tmp->rotation.asVector4());
         this->shader->setVec3("scale", tmp->localScale);
