@@ -36,6 +36,22 @@ namespace Athena
             static Scalar areEquals(const Scalar& a, const Scalar& b) {
                 return std::abs(a - b) < EPSILON;
             }
+
+            static Scalar clamp(const Scalar& start, const Scalar& end, const Scalar& value) {
+                return value < start ? start : value > end ? end : value;
+            }
+
+            static Scalar clamp(const int& start, const int& end, const int& value) {
+                return value < start ? start : value > end ? end : value;
+            }
+
+            static Scalar clamp01(const Scalar& value) {
+                return value < 0 ? 0 : value > 1 ? 1 : value;
+            }
+
+            static Scalar clamp01(const int& value) {
+                return value < 0 ? 0 : value > 1 ? 1 : value;
+            }
     };
 }
 
