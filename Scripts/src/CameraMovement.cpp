@@ -58,7 +58,9 @@ void CameraMovement::update()
     camera->Right = Athena::Vector3::normalize(Athena::Vector3::cross(camera->Front, Athena::Vector3::up()));
     camera->Up = Athena::Vector3::normalize(Athena::Vector3::cross(camera->Right, camera->Front));//camera->Front.cross(camera->Right).normalized();
 
-    camera->transform->rotate(calculateRotation(camera->transform->position, camera->transform->position + camera->Front, camera->Up));
+    Athena::Quaternion q = calculateRotation(camera->transform->position, camera->transform->position + camera->Front, camera->Up);
+    Athena::Quaternion rotation = Athena::Quaternion(q.immaginary.coordinates.x, q.immaginary.coordinates.y, 0, q.real);
+    camera->transform->rotate(rotation);
 
 
     /*camera->transform->rotateOfEulerAngles(Athena::Vector3(0, yaw, 0));
