@@ -25,8 +25,8 @@ namespace Athena
             Scalar _real;
         
         public:
-            const Vector3& immaginary;
-            const Scalar& real;
+            Vector3& immaginary;
+            Scalar& real;
 
             Quaternion();
             Quaternion(const Scalar& a, const Scalar& b, const Scalar& c, const Scalar& d);
