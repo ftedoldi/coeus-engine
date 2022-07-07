@@ -186,12 +186,12 @@ namespace Odysseus {
         return this->_rotation.rotateVectorByThisQuaternion(Athena::Vector3::right());
     }
 
-    Transform Transform::translate(const Athena::Vector3& destination) const
+    Transform Transform::translated(const Athena::Vector3& destination) const
     {
         return Transform(this->position + destination, this->_rotation, this->localScale);
     }
 
-    Transform Transform::nonUniformScaleBy(const Athena::Vector3& scale) const
+    Transform Transform::nonUniformScaledBy(const Athena::Vector3& scale) const
     {
         return Transform(
             this->position, 
@@ -204,17 +204,17 @@ namespace Odysseus {
         );
     }
 
-    Transform Transform::uniformScaleBy(const Athena::Scalar& uniformScale) const
+    Transform Transform::uniformScaledBy(const Athena::Scalar& uniformScale) const
     {
         return Transform(this->position, this->_rotation, this->localScale * uniformScale);
     }
 
-    Transform Transform::rotateAroundAxis(const Athena::Vector3& axis, const Athena::Scalar& angle) const
+    Transform Transform::rotatedAroundAxis(const Athena::Vector3& axis, const Athena::Scalar& angle) const
     {
         return Transform(this->position, this->_rotation.fromAxisAngle(angle, axis), this->localScale);
     }
 
-    Transform Transform::rotateAroundAxis(const Athena::Vector4& axisAngle) const
+    Transform Transform::rotatedAroundAxis(const Athena::Vector4& axisAngle) const
     {
         return Transform(
             this->position, 
@@ -230,17 +230,17 @@ namespace Odysseus {
         );
     }
 
-    Transform Transform::rotateOfEulerAngles(const Athena::Vector3 eulerAngles) const
+    Transform Transform::rotatedOfEulerAngles(const Athena::Vector3 eulerAngles) const
     {
         return Transform(this->position, this->_rotation.fromEulerAngles(eulerAngles), this->localScale);
     }
 
-    Transform Transform::rotateOfMatrix3(const Athena::Matrix3 matrix) const
+    Transform Transform::rotatedOfMatrix3(const Athena::Matrix3 matrix) const
     {
         return Transform(this->position, this->_rotation.fromMatrix(matrix), this->localScale);
     }
 
-    Transform Transform::rotate(const Athena::Quaternion& rotationQuaternion) const
+    Transform Transform::rotated(const Athena::Quaternion& rotationQuaternion) const
     {
         return Transform(this->position, rotationQuaternion, this->localScale);
     }
@@ -366,9 +366,6 @@ namespace Odysseus {
 
     Athena::Versor4 Transform::transformDirection(const Athena::Versor4& versor) const
     {
-        if (versor.coordinates.w != 1.f)
-            throw std::invalid_argument("INVALID_VERSOR::in order to transform a Versor4 to World Coordinates the last component might be 1");
-
         return Athena::Versor4(localToWorldMatrix * Athena::Vector4(versor.asVector4()));
     }
 
@@ -386,9 +383,6 @@ namespace Odysseus {
 
     Athena::Vector4 Transform::transformVector(const Athena::Vector4& vector) const
     {
-        if (vector.coordinates.w != 1.f)
-            throw std::invalid_argument("INVALID_VECTOR::in order to transform a Vector4 to World Coordinates the last component might be 1");
-
         return localToWorldMatrix * Athena::Vector4(vector);
     }
 
@@ -406,9 +400,6 @@ namespace Odysseus {
 
     Athena::Point4 Transform::transformPoint(const Athena::Point4& point) const
     {
-        if (point.coordinates.w != 1.f)
-            throw std::invalid_argument("INVALID_POINT::in order to transform a Point4 to World Coordinates the last component might be 1");
-
         return localToWorldMatrix * Athena::Vector4(point.asVector4());
     }
 
@@ -426,9 +417,6 @@ namespace Odysseus {
 
     Athena::Versor4 Transform::inverseTransformDirection(const Athena::Versor4& versor) const
     {
-        if (versor.coordinates.w != 1.f)
-            throw std::invalid_argument("INVALID_VERSOR::in order to transform a Versor4 to Local Coordinates the last component might be 1");
-
         return Athena::Versor4(worldToLocalMatrix * Athena::Vector4(versor.asVector4()));
     }
 
@@ -446,9 +434,6 @@ namespace Odysseus {
 
     Athena::Vector4 Transform::inverseTransformVector(const Athena::Vector4& vector) const
     {
-        if (vector.coordinates.w != 1.f)
-            throw std::invalid_argument("INVALID_VECTOR::in order to transform a Vector4 to Local Coordinates the last component might be 1");
-
         return worldToLocalMatrix * Athena::Vector4(vector);
     }
 
@@ -466,9 +451,6 @@ namespace Odysseus {
 
     Athena::Point4 Transform::inverseTransformPoint(const Athena::Point4& point) const
     {
-        if (point.coordinates.w != 1.f)
-            throw std::invalid_argument("INVALID_POINT::in order to transform a Point4 to Local Coordinates the last component might be 1");
-
         return worldToLocalMatrix * Athena::Vector4(point.asVector4());
     }
 

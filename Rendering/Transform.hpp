@@ -67,14 +67,14 @@ namespace Odysseus
             Athena::Vector3 forward() const;
             Athena::Vector3 right() const;
 
-            Transform translate(const Athena::Vector3& destination) const;
-            Transform nonUniformScaleBy(const Athena::Vector3& scale) const;
-            Transform uniformScaleBy(const Athena::Scalar& uniformScale) const;
-            Transform rotateAroundAxis(const Athena::Vector3& axis, const Athena::Scalar& angle) const;
-            Transform rotateAroundAxis(const Athena::Vector4& axisAngle) const;
-            Transform rotateOfEulerAngles(const Athena::Vector3 eulerAngles) const;
-            Transform rotateOfMatrix3(const Athena::Matrix3 matrix) const;
-            Transform rotate(const Athena::Quaternion& rotationQuaternion) const;
+            Transform translated(const Athena::Vector3& destination) const;
+            Transform nonUniformScaledBy(const Athena::Vector3& scale) const;
+            Transform uniformScaledBy(const Athena::Scalar& uniformScale) const;
+            Transform rotatedAroundAxis(const Athena::Vector3& axis, const Athena::Scalar& angle) const;
+            Transform rotatedAroundAxis(const Athena::Vector4& axisAngle) const;
+            Transform rotatedOfEulerAngles(const Athena::Vector3 eulerAngles) const;
+            Transform rotatedOfMatrix3(const Athena::Matrix3 matrix) const;
+            Transform rotated(const Athena::Quaternion& rotationQuaternion) const;
 
             Transform lookAt(const Athena::Vector3& pos) const;
             Transform lookAt(const Transform& target) const;
