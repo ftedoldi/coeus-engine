@@ -9,7 +9,7 @@ void CameraMovement::start()
 {
     this->movementSpeed = 2.0f;
 
-    this->yaw = -90;
+    this->yaw = -45;
     this->pitch = 0;
 
     this->mouseSensitivity = .2f;
@@ -56,18 +56,15 @@ void CameraMovement::update()
     direction.coordinates.z = std::sin(Athena::Math::degreeToRandiansAngle(yaw)) * std::cos(Athena::Math::degreeToRandiansAngle(pitch));
     camera->Front = Athena::Vector3::normalize(direction);
     camera->Right = Athena::Vector3::normalize(Athena::Vector3::cross(camera->Front, Athena::Vector3::up()));
-    camera->Up = Athena::Vector3::normalize(Athena::Vector3::cross(camera->Right, camera->Front));//camera->Front.cross(camera->Right).normalized();
+    camera->Up = Athena::Vector3::normalize(Athena::Vector3::cross(camera->Right, camera->Front));
 
     Athena::Quaternion q = calculateRotation(camera->transform->position, camera->transform->position + camera->Front, camera->Up);
-    Athena::Quaternion rotation = Athena::Quaternion(q.immaginary.coordinates.x, q.immaginary.coordinates.y, 0, q.real);
+    Athena::Quaternion rotation = Athena::Quaternion(q.immaginary.coordinates.x, q.immaginary.coordinates.y, 0, q.real).normalized();
     camera->transform->rotate(rotation);
 
-
-    /*camera->transform->rotateOfEulerAngles(Athena::Vector3(0, yaw, 0));
-
-    camera->Front = Athena::Vector3(std::cos(yaw), 0, -std::sin(yaw));
-    camera->Right = camera->Front.cross(Athena::Vector3::up()).normalized();*/
-    // camera->Up = camera->Front.cross(camera->Right).normalized();
+    camera->Front = rotation.rotateVectorByThisQuaternion(Athena::Vector3(0, 0, -1));
+    camera->Right = Athena::Vector3::normalize(Athena::Vector3::cross(camera->Front, Athena::Vector3::up()));
+    camera->Up = Athena::Vector3::normalize(Athena::Vector3::cross(camera->Front, camera->Right));
 }
 
 Athena::Quaternion CameraMovement::calculateRotation(const Athena::Vector3& position, const Athena::Vector3& forward, const Athena::Vector3& up) const
