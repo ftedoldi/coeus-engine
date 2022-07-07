@@ -59,7 +59,7 @@ int main()
     Odysseus::Shader modelShader("shader1.vert", "shader1.frag");
 
     auto model = myModel->getComponent<Odysseus::Model>();
-    model->setPath("Assets/Models/backpack/backpack.obj");
+    model->setPath("Assets/Models/cube/untitled.obj");
     model->setShader(&modelShader);
     model->transform->translate(Athena::Vector3(0.0f, 0.0f, -5.0f));
 
