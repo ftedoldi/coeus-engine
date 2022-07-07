@@ -12,7 +12,7 @@
 
     void DummyComponent::update()
     {
-        std::cout << "Dummy component is running!";
+        // std::cout << "Dummy component is running!";
     }
 
     void DummyComponent::setOrderOfExecution(const short& newOrderOfExecution)
