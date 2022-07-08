@@ -17,12 +17,17 @@ CCFLAGS  = /Od /Zi /EHsc /MT
 LFLAGS = /LIBPATH:./Includes/Libraries assimp-vc142-mt.lib zlib.lib cuda.lib cudart.lib glfw3dll.lib glm_static.lib
 
 SOURCES = ./Includes/src/glad.c $(FILENAME).cpp $(shell powershell -file .getCPPFilePaths.ps1)
+PARTIAL_SOURCES = $(shell python ./findAllObjs.py $(ARGS))
 
 TARGET = ./Build/CoeusEngine.exe
 
 .PHONY : all
 all:
 	$(CC) $(CCFLAGS) $(IDIR) $(SOURCES) /Fe:$(TARGET) /link $(LFLAGS)
+
+.PHONY : partial
+partial:
+	$(CC) $(CCFLAGS) $(IDIR) $(PARTIAL_SOURCES) /Fe:$(TARGET) /link $(LFLAGS)
 
 .PHONY : clean
 clean :
