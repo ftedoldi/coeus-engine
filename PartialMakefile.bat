@@ -11,5 +11,7 @@ make partial ARGS=%*
 
 python ./moveObjs.py
 
+start ./Build/CoeusEngine.exe
+
 
 
