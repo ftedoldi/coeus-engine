@@ -8,20 +8,6 @@
 
 namespace Odysseus
 {
-    // enum Camera_Movement
-    // {
-    //     FORWARD,
-    //     BACKWARD,
-    //     LEFT,
-    //     RIGHT,
-    //     UP,
-    //     DOWN
-    // };
-
-    // const float YAW = -90.0f;
-    // const float PITCH = 0.0f;
-    // const float SPEED = 2.5f;
-    // const float SENSITIVITY = 0.1f;
     class Transform;
 
     class Camera : public System::Component
@@ -39,6 +25,10 @@ namespace Odysseus
 
             Athena::Matrix4 getViewMatrix() const;
             Transform* getViewTransform(Transform* objectTransform);
+
+            void lookAtDirection(const Athena::Vector3& direction);
+            void lookAtPitchYawDirection(const Athena::Scalar& pitch, const Athena::Scalar& yaw);
+            void lookAtEulerAnglesDirection(const Athena::Vector3& eulerAngles);
 
             virtual void start();
             virtual void update();

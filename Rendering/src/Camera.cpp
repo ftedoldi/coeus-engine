@@ -39,6 +39,36 @@ namespace Odysseus
         return new Transform(*this->transform->inverse() * *objectTransform);
     }
 
+    void Camera::lookAtDirection(const Athena::Vector3& direction) {
+        this->_Front = Athena::Vector3::normalize(direction);
+        this->_Right = Athena::Vector3::normalize(Athena::Vector3::cross(this->Front, Athena::Vector3::up()));
+        this->_Up = Athena::Vector3::normalize(Athena::Vector3::cross(this->Right, this->Front));
+
+        Athena::Matrix4 look = this->lookAt(this->transform->position, this->transform->position + this->Front, this->Up);
+        Athena::Quaternion lookAtQuat(Athena::Quaternion::matToQuatCast(look));
+        
+        this->transform->rotate(lookAtQuat);
+    }
+
+    void Camera::lookAtPitchYawDirection(const Athena::Scalar& pitch, const Athena::Scalar& yaw) {
+        Athena::Vector3 direction;
+        direction.coordinates.x = std::cos(Athena::Math::degreeToRandiansAngle(yaw)) * std::cos(Athena::Math::degreeToRandiansAngle(pitch));
+        direction.coordinates.y = std::sin(Athena::Math::degreeToRandiansAngle(pitch));
+        direction.coordinates.z = std::sin(Athena::Math::degreeToRandiansAngle(yaw)) * std::cos(Athena::Math::degreeToRandiansAngle(pitch));
+
+        lookAtDirection(direction);
+    }
+
+    void Camera::lookAtEulerAnglesDirection(const Athena::Vector3& eulerAngles)
+    {
+        Athena::Vector3 direction;
+        direction.coordinates.x = std::cos(Athena::Math::degreeToRandiansAngle(eulerAngles.coordinates.y)) * std::cos(Athena::Math::degreeToRandiansAngle(eulerAngles.coordinates.x));
+        direction.coordinates.y = std::sin(Athena::Math::degreeToRandiansAngle(eulerAngles.coordinates.z));
+        direction.coordinates.z = std::sin(Athena::Math::degreeToRandiansAngle(eulerAngles.coordinates.y)) * std::cos(Athena::Math::degreeToRandiansAngle(eulerAngles.coordinates.z));
+
+        lookAtDirection(direction);
+    }
+
     Athena::Matrix4 Camera::perspective(const float& fieldOfView, const float& aspectRatio, const float& nearPlane, const float& farPlane)
     {
         Athena::Matrix4 result;
