@@ -138,6 +138,52 @@ namespace Athena {
         return q;
     }
 
+    Quaternion Quaternion::matToQuatCast(Matrix4& matrix)
+    {
+        Matrix3 mat = Matrix4::toMatrix3(matrix);
+
+        Scalar fourXSquaredMinus1 = mat.data[0] - mat.data[4] - mat.data[8];
+		Scalar fourYSquaredMinus1 = mat.data[4] - mat.data[0] - mat.data[8];
+		Scalar fourZSquaredMinus1 = mat.data[8] - mat.data[0] - mat.data[4];
+		Scalar fourWSquaredMinus1 = mat.data[0] + mat.data[4] + mat.data[8];
+
+        int biggestIndex = 0;
+		Scalar fourBiggestSquaredMinus1 = fourWSquaredMinus1;
+		if(fourXSquaredMinus1 > fourBiggestSquaredMinus1)
+		{
+			fourBiggestSquaredMinus1 = fourXSquaredMinus1;
+			biggestIndex = 1;
+		}
+		if(fourYSquaredMinus1 > fourBiggestSquaredMinus1)
+		{
+			fourBiggestSquaredMinus1 = fourYSquaredMinus1;
+			biggestIndex = 2;
+		}
+		if(fourZSquaredMinus1 > fourBiggestSquaredMinus1)
+		{
+			fourBiggestSquaredMinus1 = fourZSquaredMinus1;
+			biggestIndex = 3;
+		}
+
+        Scalar biggestVal = sqrt(fourBiggestSquaredMinus1 + static_cast<Scalar>(1)) * static_cast<Scalar>(0.5);
+		Scalar mult = static_cast<Scalar>(0.25) / biggestVal;
+
+        switch(biggestIndex)
+		{
+		case 0:
+            return Quaternion((mat.data[5] - mat.data[7]) * mult, (mat.data[6] - mat.data[2]) * mult, (mat.data[1] - mat.data[3]) * mult, biggestVal);
+		case 1:
+            return Quaternion(biggestVal, (mat.data[1] + mat.data[3]) * mult, (mat.data[6] + mat.data[2]) * mult, (mat.data[5] - mat.data[7]) * mult);
+		case 2:
+            return Quaternion((mat.data[1] + mat.data[3]) * mult, biggestVal, (mat.data[5] + mat.data[7]) * mult, (mat.data[6] - mat.data[2]) * mult);
+		case 3:
+            return Quaternion((mat.data[6] + mat.data[2]) * mult, (mat.data[5] + mat.data[7]) * mult, biggestVal, (mat.data[1] - mat.data[3]) * mult);
+		default:
+			assert(false);
+			return Quaternion(0, 0, 0, 1);
+		}
+    }
+
     Matrix3 Quaternion::QuaternionToMatrx3(const Quaternion& quaternion) {
         Vector4 quat = Quaternion::AsVector4(quaternion.normalized());
 

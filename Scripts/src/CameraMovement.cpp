@@ -63,36 +63,39 @@ void CameraMovement::update()
     direction.coordinates.y = std::sin(Athena::Math::degreeToRandiansAngle(pitch));
     direction.coordinates.z = std::sin(Athena::Math::degreeToRandiansAngle(yaw)) * std::cos(Athena::Math::degreeToRandiansAngle(pitch));
 
-    glm::vec3 newDirection(direction.coordinates.x, direction.coordinates.y, direction.coordinates.z);
+    /*glm::vec3 newDirection(direction.coordinates.x, direction.coordinates.y, direction.coordinates.z);
     glm::vec3 oldFront = glm::normalize(newDirection);
     glm::vec3 oldRight = glm::normalize(glm::cross(oldFront, glm::vec3(0, 1, 0)));
-    glm::vec3 oldUp = glm::normalize(glm::cross(oldRight, oldFront));
+    glm::vec3 oldUp = glm::normalize(glm::cross(oldRight, oldFront));*/
 
-    /*camera->Front = Athena::Vector3::normalize(direction);
+    camera->Front = Athena::Vector3::normalize(direction);
     camera->Right = Athena::Vector3::normalize(Athena::Vector3::cross(camera->Front, Athena::Vector3::up()));
-    camera->Up = Athena::Vector3::normalize(Athena::Vector3::cross(camera->Right, camera->Front));*/
+    camera->Up = Athena::Vector3::normalize(Athena::Vector3::cross(camera->Right, camera->Front));
 
-    camera->Front = Athena::Vector3(oldFront.x, oldFront.y, oldFront.z);
+    /*camera->Front = Athena::Vector3(oldFront.x, oldFront.y, oldFront.z);
     camera->Right = Athena::Vector3(oldRight.x, oldRight.y, oldRight.z);
-    camera->Up = Athena::Vector3(oldUp.x, oldUp.y, oldUp.z);
+    camera->Up = Athena::Vector3(oldUp.x, oldUp.y, oldUp.z);*/
 
 
     /*Athena::Quaternion q = calculateRotation(camera->transform->position, camera->transform->position + camera->Front, camera->Up);
     Athena::Quaternion rotation = Athena::Quaternion(q.immaginary.coordinates.x, q.immaginary.coordinates.y, 0, q.real);*/
-    glm::vec3 newPos((float)camera->transform->position.coordinates.x, (float)camera->transform->position.coordinates.y, (float)camera->transform->position.coordinates.z);
-    glm::quat newQuat(glm::quat_cast(glm::lookAt(newPos, newPos + oldFront, oldUp)));
-    Athena::Quaternion athenaQuat(newQuat.x, newQuat.y, newQuat.z, newQuat.w);
+    //glm::vec3 newPos((float)camera->transform->position.coordinates.x, (float)camera->transform->position.coordinates.y, (float)camera->transform->position.coordinates.z);
+    
+
+    /*glm::mat4x4 lookglm(look.data[0], look.data[1], look.data[2], look.data[3], look.data[4], look.data[5], look.data[6],
+                look.data[7], look.data[8], look.data[9], look.data[10], look.data[11], look.data[12], look.data[13],
+                look.data[14], look.data[15]);
+    glm::quat newQuat(glm::quat_cast(lookglm));
+    Athena::Quaternion athenaQuat(newQuat.x, newQuat.y, newQuat.z, newQuat.w);*/
+
+    Athena::Matrix4 look = camera->lookAt(camera->transform->position, camera->transform->position + camera->Front, camera->Up);
+    Athena::Quaternion lookAtQuat(Athena::Quaternion::matToQuatCast(look));
 
     //Athena::Quaternion quatMat(Athena::Quaternion::Matrix4ToQuaternion(camera->lookAt(camera->transform->position, camera->transform->position + camera->Front, camera->Up)));
 
     //Athena::Quaternion calcQuat(calculateRotation(camera->transform->position, camera->transform->position + camera->Front, camera->Up));
 
-    camera->transform->rotate(athenaQuat);
-
-    camera->Front = athenaQuat.rotateVectorByThisQuaternion(Athena::Vector3(0, 0, -1));
-    camera->Right = Athena::Vector3::normalize(Athena::Vector3::cross(camera->Front, Athena::Vector3::up()));
-    camera->Up = Athena::Vector3::normalize(Athena::Vector3::cross(camera->Front, camera->Right));
-
+    camera->transform->rotate(lookAtQuat);
 
     /*camera->transform->rotateOfEulerAngles(Athena::Vector3(0, yaw, 0));
 
