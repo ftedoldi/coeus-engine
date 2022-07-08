@@ -3,8 +3,26 @@
     "tasks": [
         {
             "type": "shell",
+            "label": "folder clean",
+            "command": "powershell -Command \"Remove-Item '${workspaceFolder}\\.objs\\*' -Recurse -Force\"",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build"
+            },
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
             "label": "C/C++: g++ build active file",
-            "command": ".\\Makefile.bat"
+            "command": ".\\Makefile.bat",
+            "dependsOn": [
+                "folder clean"
+            ],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build"
+            },
+            "problemMatcher": []
         },
         {
             "type": "shell",
@@ -22,7 +40,7 @@
         {
             "type": "shell",
             "label": "C++ clean",
-            "command": "make clean",
+            "command": "mv *.obj .objs/",
             "dependsOn": [
                 "C++ run"
             ],
