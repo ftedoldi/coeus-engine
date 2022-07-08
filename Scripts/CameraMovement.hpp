@@ -37,8 +37,6 @@ class CameraMovement : public System::Behaviour {
         virtual short getUniqueID();
         virtual std::string toString();
 
-        Athena::Quaternion calculateRotation(const Athena::Vector3& position, const Athena::Vector3& forward, const Athena::Vector3& up) const;
-
         void setShader(Odysseus::Shader* shader);
         virtual ~CameraMovement();
 };
