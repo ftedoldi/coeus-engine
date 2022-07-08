@@ -26,7 +26,7 @@
 int main()
 {
     // Where all the starts are runned
-    System::Window* window = new System::Window();
+    System::Window* window = new System::Window("myWindow", true);
 
     System::Component *c = new DummyComponent();
     Odysseus::SceneObject *obj = new Odysseus::SceneObject();
@@ -59,7 +59,7 @@ int main()
     Odysseus::Shader modelShader("shader1.vert", "shader1.frag");
 
     auto model = myModel->getComponent<Odysseus::Model>();
-    model->setPath("Assets/Models/cube/untitled.obj");
+    model->setPath("Assets/Models/matAndTex/matAndTex.obj");
     model->setShader(&modelShader);
     model->transform->translate(Athena::Vector3(0.0f, 0.0f, -5.0f));
 
