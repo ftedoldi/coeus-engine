@@ -26,7 +26,7 @@
 int main()
 {
     // Where all the starts are runned
-    System::Window* window = new System::Window();
+    System::Window* window = new System::Window("MyApp", true);
 
     System::Component *c = new DummyComponent();
     Odysseus::SceneObject *obj = new Odysseus::SceneObject();
