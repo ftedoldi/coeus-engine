@@ -39,20 +39,6 @@ int main()
     myModel->addComponent<Odysseus::Model>();
     cam->addComponent<Odysseus::Camera>();
 
-    auto comp = obj->addComponent<DummyComponent>();
-    auto comp1 = obj->addComponent<DummyComponent>();
-    comp->var = 245;
-    comp1->var = 126;
-    auto comps = obj->getComponents<DummyComponent>();
-    for (int i = 0; i < comps.size(); i++)
-        std::cout << comps[i]->var << std::endl;
-    std::cout << obj->getComponent<DummyComponent>()->var << std::endl;
-    std::cout << obj->removeComponent<DummyComponent>() << std::endl;
-    std::cout << obj->getComponent<DummyComponent>()->var << std::endl;
-    for (int i = 0; i < comps.size(); i++)
-        std::cout << comps[i]->var << std::endl;
-    std::cout << obj->getComponents<DummyComponent>().size() << std::endl;
-
     stbi_set_flip_vertically_on_load(true);
 
     // Create the shader
