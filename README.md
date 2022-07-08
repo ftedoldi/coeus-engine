@@ -20,4 +20,7 @@ Once the .lib and the .dll files are generated you might add the flag -l{NameOfT
 
 # Compilation
 
-Just simply press Ctrl + Shift + B in order to compile and run the project.
+Just simply press Ctrl + Shift + B in order to fully (re)compile and run the project.
+If you wish to compile only some components in order to avoid the full recompilation use the script <br />
+PartialMakefile.bat with subsequent parameters -> ex.: ParialMakefile.bat camera model <br />
+this command will recompile only Camera.cpp and Model.cpp classes resulting in a fast paced compilation.
