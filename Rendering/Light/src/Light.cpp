@@ -1,9 +1,6 @@
 #include "../Light.hpp"
 namespace Odysseus
 {
-    Light::Light(Athena::Vector3& diffuse, Athena::Vector3& specular, Athena::Vector3& ambient) :
-    _diffuse(diffuse), _specular(specular), _ambient(ambient){}
-
     Athena::Vector3 Light::getDiffuse() const
     {
         return this->_diffuse;
@@ -27,6 +24,11 @@ namespace Odysseus
     void Light::setSpecular(Athena::Vector3& spec)
     {
         this->_specular = spec;
+    }
+    
+    void Light::setShader(Shader* shader)
+    {
+        this->shader = shader;
     }
 
 }

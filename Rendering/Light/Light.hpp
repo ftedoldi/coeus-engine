@@ -2,18 +2,19 @@
 #define LIGHT_HPP
 #include <Vector3.hpp>
 #include <Shader.hpp>
+#include <Component.hpp>
 
 namespace Odysseus
 {
-    class Light
+    class Light : public System::Component
     {
         protected:
             Athena::Vector3 _diffuse;
             Athena::Vector3 _ambient;
             Athena::Vector3 _specular;
+            Shader* shader;
 
         public:
-            Light(Athena::Vector3& diffuse, Athena::Vector3& specular, Athena::Vector3& ambient);
             Athena::Vector3 getDiffuse() const;
             Athena::Vector3 getAmbient() const;
             Athena::Vector3 getSpecular() const;
@@ -22,8 +23,9 @@ namespace Odysseus
             void setDiffuse(Athena::Vector3& diff);
             void setAmbient(Athena::Vector3& amb);
             void setSpecular(Athena::Vector3& spec);
+            void setShader(Shader* shader);
 
-            virtual void setLightShader(Odysseus::Shader& shader) const = 0;
+            virtual void setLightShader(Odysseus::Shader* shader) const = 0;
 
     };
 }
