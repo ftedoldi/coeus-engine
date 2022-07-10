@@ -3,6 +3,7 @@
 
 #include <coeus.hpp>
 #include <shader.hpp>
+#include <Component.hpp> 
 #include <vector>
 #include "../Texture/Texture2D.hpp"
 #include "../Material.hpp"
@@ -18,29 +19,34 @@ namespace Odysseus
         Athena::Vector3 Bitangent;
     };
     
-    class Mesh
+    class Mesh : public System::Component
     {
     public:
         std::vector<Vertex> vertices;
         std::vector<GLuint> indices;
         Material material;
+        Shader* shader;
         GLuint VAO;
 
-        //Using move semantics, we delete the copy constructor and copy operator=
-        Mesh(const Mesh& mesh) = delete;
-        Mesh& operator=(const Mesh& mesh) = delete;
-
-        Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, Material& mat) noexcept;
-
-        //Creating the move constructor and move assignment
-        Mesh(Mesh&& move) noexcept;
-        Mesh& operator=(Mesh&& move) noexcept;
-
-        //Destructor to delete dynamically allocated resources
+        Mesh();
         ~Mesh() noexcept;
 
         //Render of the mesh
         void Draw(Shader* shader);
+
+        void setVertices(std::vector<Vertex>& vertices);
+        void setIndices(std::vector<GLuint>& indices);
+        void setMaterial(Material& mat);
+        void setShader(Shader* shader);
+
+        virtual void start();
+        virtual void update();
+
+        virtual void setOrderOfExecution(const short& newOrderOfExecution);
+
+        virtual short getUniqueID();
+
+        virtual std::string toString();
 
     private:
 
