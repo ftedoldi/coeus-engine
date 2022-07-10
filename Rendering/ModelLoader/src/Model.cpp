@@ -2,66 +2,15 @@
 namespace Odysseus
 {
 
-    Model::Model() : path(_path)
-    {}
-
-    void Model::setPath(const std::string& path)
+    Model::Model(const std::string& path, Shader* shader) : shader(shader)
     {
-        this->_path = path;
-    }
-
-    void Model::setShader(Shader* shader)
-    {
-        this->shader = shader;
-    }
-
-    void Model::setCamera(Camera* camera)
-    {
-        this->camera = camera;
-    }
-
-    void Model::start()
-    {
-        loadModel(this->_path);
-    }
-
-    void Model::update()
-    {
-        //il parametro corrisponde alla trasformazione che deve esseer applicata al modello
-        auto tmp = camera->getViewTransform(this->transform);
-
-        this->shader->setVec3("position", tmp->position);
-        this->shader->setVec4("rotation", tmp->rotation.asVector4());
-        this->shader->setVec3("scale", tmp->localScale);
-
-        this->Draw(this->shader);
-        
-    }
-
-    void Model::setOrderOfExecution(const short& newOrderOfExecution)
-    {}
-
-    short Model::getUniqueID()
-    {
-        return this->_uniqueID;
-    }
-
-    std::string Model::toString()
-    {
-        return "Model";
-    }
-
-    void Model::Draw(Shader* shader)
-    {
-        //process each mesh of the model by calling each mesh's Draw method
-        for(GLuint i = 0; i < meshes.size(); ++i)
-            meshes[i].Draw(shader);
+        loadModel(path);
     }
 
     void Model::loadModel(const std::string& path)
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace | aiProcess_FlipUVs);
+        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace /*| aiProcess_FlipUVs*/);
         //checking for errors in the scene creation
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
@@ -75,15 +24,15 @@ namespace Odysseus
         processNode(scene->mRootNode, scene);
 
     }
+
     //process a node recursively and for each node processed, process his meshes
     void Model::processNode(aiNode* node, const aiScene* scene)
     {
-        //process each mesh of the current node
+        Odysseus::SceneObject* obj = new SceneObject();
         for(GLuint i = 0; i < node->mNumMeshes; ++i)
         {
-            //since the scene containts all the data, to access a node mesh we firstly need to access the scene meshes
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            meshes.push_back(processMesh(mesh, scene));
+            processMesh(mesh, scene, obj);
         }
 
         for(GLuint i = 0; i < node->mNumChildren; ++i)
@@ -150,7 +99,7 @@ namespace Odysseus
             mat.Specular = Athena::Vector3(specular.r, specular.g, specular.b);
     }
 
-    Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
+    void Model::processMesh(aiMesh *mesh, const aiScene *scene, SceneObject* obj)
     {
         // data to fill
         std::vector<Vertex> vertices;
@@ -217,8 +166,12 @@ namespace Odysseus
         setMeshTextures(material, mat);
         setMeshMaterials(material, mat);
 
-        //return a mesh object created from the extracted mesh data
-        return Mesh(vertices, indices, mat);
+        auto objMesh = obj->addComponent<Odysseus::Mesh>();
+        objMesh->setShader(this->shader);
+        objMesh->setVertices(vertices);
+        objMesh->setIndices(indices);
+        objMesh->setMaterial(mat);
+
     }
 
     std::vector<Texture2D> Model::loadTexture(aiMaterial* mat, aiTextureType type)
