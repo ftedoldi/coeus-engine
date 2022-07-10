@@ -15,17 +15,24 @@ namespace Odysseus
         
         public:
             SpotLight();
-            SpotLight(Athena::Vector3& position, Athena::Vector3& diffuse, Athena::Vector3& ambient,
-                       Athena::Vector3& specular, Athena::Vector3& direction, float cutOff, float spotExponent);
             Athena::Vector3 getPosition() const;
             Athena::Vector3 getDirection() const;
             float getCutOff() const;
+
+            virtual void start();
+            virtual void update();
+
+            virtual void setOrderOfExecution(const short& newOrderOfExecution);
+
+            virtual short getUniqueID();
+
+            virtual std::string toString();
 
             void setPosition(Athena::Vector3& position);
             void setDirection(Athena::Vector3& direction);
             void setCutOff(float cutOff);
 
-            void setLightShader(Odysseus::Shader& shader) const;
+            void setLightShader(Odysseus::Shader* shader) const;
 
     };
 }
