@@ -32,15 +32,15 @@ int main()
     System::Component *c = new DummyComponent();
     Odysseus::SceneObject *obj = new Odysseus::SceneObject();
     obj->transform->name = "Object";
+    obj->addComponent<DummyComponent>();
 
     Odysseus::SceneObject *cam = new Odysseus::SceneObject();
     cam->transform->name = "Camera";
-    auto mainCamera = cam->addComponent<Odysseus::Camera>();
+    cam->addComponent<Odysseus::Camera>();
     // auto movement = cam->addComponent<CameraMovement>();
     // movement->camera = mainCamera;
-    auto movement = cam->addComponent<CameraMovement>();
-    movement->camera = mainCamera;
-    cam->addComponent<Odysseus::Camera>();
+    cam->addComponent<CameraMovement>()->camera = cam->getComponent<Odysseus::Camera>();
+    // cam->addComponent<Odysseus::Camera>();
 
     stbi_set_flip_vertically_on_load(true);
 
@@ -48,8 +48,6 @@ int main()
     Odysseus::Shader modelShader(".\\Shader\\shader1.vert", ".\\Shader\\shader1.frag");
 
     Odysseus::Model myModel("Assets/Models/matAndTex/matAndTex.obj", &modelShader);
-
-    //Odysseus::SceneObject* provaobj = myModel.provaObj;
 
     Odysseus::SceneGraph::initializeScene();
 
@@ -64,7 +62,7 @@ int main()
         // be sure to activate shader when setting uniforms/drawing objects
         modelShader.use();
 
-        auto tmp = mainCamera->getViewTransform(new Odysseus::Transform(Athena::Vector3(0, 0, -3.5), Athena::Quaternion(), Athena::Vector3(1, 1, 1)));
+        auto tmp = cam->getComponent<Odysseus::Camera>()->getViewTransform(new Odysseus::Transform(Athena::Vector3(0, 0, -3.5), Athena::Quaternion(), Athena::Vector3(1, 1, 1)));
 
         modelShader.setVec3("position", tmp->position);
         modelShader.setVec4("rotation", tmp->rotation.asVector4());
