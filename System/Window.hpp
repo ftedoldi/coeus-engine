@@ -1,10 +1,18 @@
 #ifndef __ENGINE_WINDOW_H__
 #define __ENGINE_WINDOW_H__
 
+#include <imgui.h>
+#include <imgui_internal.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <IO/Input.hpp>
+
+#include <SceneGraph.hpp>
+#include <Shader.hpp>
 
 #include <iostream>
 #include <string>
@@ -15,7 +23,23 @@ namespace System {
         int height;
     };
 
-    class Window {         
+    class Window {    
+        private:
+            ImGuiID dockspace_id;
+
+            Odysseus::Shader screenShader;
+            
+            GLuint framebuffer;
+            GLuint screenVAO, screenVBO;
+            GLuint rbo;
+            GLuint textureColorbuffer;
+
+            int sizeX, sizeY;
+
+            void initializeImGUI();
+            void createDockSpace();
+            void initializeFrameBuffer();
+
         public:
             static GLFWwindow* window;
             static Screen screen;
