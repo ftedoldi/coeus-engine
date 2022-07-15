@@ -41,6 +41,8 @@ int main()
     Odysseus::SceneObject *myModel = new Odysseus::SceneObject();
     myModel->transform->name = "Model";
     myModel->addComponent<Odysseus::Model>();
+    auto movement = cam->addComponent<CameraMovement>();
+    movement->camera = mainCamera;
     cam->addComponent<Odysseus::Camera>();
 
     stbi_set_flip_vertically_on_load(true);
@@ -48,10 +50,9 @@ int main()
     // Create the shader
     Odysseus::Shader modelShader("shader1.vert", "shader1.frag");
 
-    auto model = myModel->getComponent<Odysseus::Model>();
-    model->setPath("Assets/Models/matAndTex/matAndTex.obj");
-    model->setShader(&modelShader);
-    model->transform->translate(Athena::Vector3(0.0f, 0.0f, -5.0f));
+    Odysseus::Model myModel("Assets/Models/matAndTex/matAndTex.obj", &modelShader);
+
+    //Odysseus::SceneObject* provaobj = myModel.provaObj;
 
     Odysseus::SceneGraph::initializeScene();
 
@@ -66,8 +67,11 @@ int main()
         // be sure to activate shader when setting uniforms/drawing objects
         modelShader.use();
 
-        auto camera = cam->getComponent<Odysseus::Camera>();
-        model->setCamera(camera);
+        auto tmp = mainCamera->getViewTransform(new Odysseus::Transform(Athena::Vector3(0, 0, -3.5), Athena::Quaternion(), Athena::Vector3(1, 1, 1)));
+
+        modelShader.setVec3("position", tmp->position);
+        modelShader.setVec4("rotation", tmp->rotation.asVector4());
+        modelShader.setVec3("scale", tmp->localScale);
 
         // Camera trasformations
         Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, System::Window::screen.width / System::Window::screen.height, 0.1f, 100.0f);

@@ -2,71 +2,25 @@
 
 namespace Odysseus
 {
-
-    Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, Material& mat) noexcept 
-    : vertices(vertices), indices(indices), material(mat)
+    Mesh::Mesh()
     {
-        Mesh::setupMesh();
+        std::cout << "Mesh created" << std::endl;
     }
 
-    Mesh::Mesh(Mesh&& move) noexcept :
-            vertices(std::move(move.vertices)), indices(std::move(move.indices)), material(std::move(move.material)),
-            VAO(move.VAO), VBO(move.VBO), EBO(move.EBO)
+    void Mesh::start()
     {
-        move.VAO = 0;
-        move.VBO = 0;
-        move.EBO = 0;
+        this->setupMesh();
     }
-
-    Mesh& Mesh::operator=(Mesh&& move) noexcept
+    void Mesh::update()
     {
-        if(&move == this)
-            return *this;
-        
-        //firstly i delete all the resources that this mesh is pointing to
-        Mesh::freeGPUresources();
-
-        //if move has resources
-        if(move.VAO)
-        {
-            this->vertices = std::move(move.vertices);
-            this->indices = std::move(move.indices);
-            this->material = std::move(move.material);
-            this->VAO = move.VAO;
-            this->VBO = move.VBO;
-            this->EBO = move.EBO;
-
-            move.VAO = 0;
-            move.VBO = 0;
-            move.EBO = 0;
-        }
-        else //move doesnt have resources
-        {
-            this->VAO = 0;
-            this->VBO = 0;
-            this->EBO = 0;
-        }
-
-        return *this;
-    }
-
-    Mesh::~Mesh() noexcept
-    {
-        Mesh::freeGPUresources();
-    }
-
-    void Mesh::Draw(Shader* shader)
-    {
-        GLuint diffuseIdx = 0;
-        GLuint specularIdx = 0;
-        GLuint heightIdx = 0;
-        GLuint ambientIdx = 0;
-
-        //call to material
         if(this->material.Textures.size() > 0)
-            material.loadShaderTexture(shader);
+        {
+            material.loadShaderTexture(this->shader);
+        }
         else
-            material.loadShaderMaterial(shader);
+        {
+            material.loadShaderMaterial(this->shader);
+        }
         
         // draw mesh
         glBindVertexArray(VAO);
@@ -75,6 +29,44 @@ namespace Odysseus
 
         // set everything back to default
         glActiveTexture(GL_TEXTURE0);
+    }
+
+    void Mesh::setOrderOfExecution(const short& newOrderOfExecution)
+    {
+
+    }
+
+    short Mesh::getUniqueID()
+    {
+        return this->_uniqueID;
+    }
+
+    std::string Mesh::toString()
+    {
+        return "Mesh";
+    }
+
+    void Mesh::setVertices(std::vector<Vertex>& vertices)
+    {
+        this->vertices = vertices;
+    }
+    void Mesh::setIndices(std::vector<GLuint>& indices)
+    {
+        this->indices = indices;
+    }
+    void Mesh::setMaterial(Material& mat)
+    {
+        this->material = mat;
+    }
+
+    void Mesh::setShader(Shader* shader)
+    {
+        this->shader = shader;
+    }
+
+    Mesh::~Mesh() noexcept
+    {
+        Mesh::freeGPUresources();
     }
 
     void Mesh::setupMesh()

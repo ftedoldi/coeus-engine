@@ -13,10 +13,16 @@ namespace Odysseus
             float _quadratic;
         
         public:
-            //PointLight();
-            
-            PointLight(Athena::Vector3& position, Athena::Vector3& diffuse, Athena::Vector3& ambient,
-                       Athena::Vector3& specular, float constant, float linear, float quadratic);
+            PointLight();
+
+            virtual void start();
+            virtual void update();
+
+            virtual void setOrderOfExecution(const short& newOrderOfExecution);
+
+            virtual short getUniqueID();
+
+            virtual std::string toString();
             
             Athena::Vector3 getPosition() const;
             float getConstant() const;
@@ -28,7 +34,7 @@ namespace Odysseus
             void setLinear(float& linear);
             void setQuadratic(float& quadratic);
 
-            void setLightShader(Odysseus::Shader& shader) const;
+            void setLightShader(Odysseus::Shader* shader) const;
     };
 }
 

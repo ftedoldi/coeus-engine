@@ -12,12 +12,19 @@ namespace Odysseus
         public:
             DirectionalLight();
 
-            DirectionalLight(Athena::Vector3& direction, Athena::Vector3& diffuse, Athena::Vector3& specular, Athena::Vector3& ambient);
-
             Athena::Vector3 getDirection() const;
             void setDirection(Athena::Vector3& dir);
 
-            void setLightShader(Odysseus::Shader& shader) const;
+            virtual void start();
+            virtual void update();
+
+            virtual void setOrderOfExecution(const short& newOrderOfExecution);
+
+            virtual short getUniqueID();
+
+            virtual std::string toString();
+
+            void setLightShader(Odysseus::Shader* shader) const;
 
     };
 }

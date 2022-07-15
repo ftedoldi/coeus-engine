@@ -2,11 +2,10 @@
 
 namespace Odysseus
 {
-    //PointLight::PointLight(){}
+    PointLight::PointLight()
+    {
 
-    PointLight::PointLight(Athena::Vector3& position, Athena::Vector3& diffuse, Athena::Vector3& specular,
-                            Athena::Vector3& ambient, float constant, float linear, float quadratic) :
-    Light(diffuse, specular, ambient), _position(position), _constant(constant), _linear(linear), _quadratic(quadratic) {}
+    }
 
     Athena::Vector3 PointLight::getPosition() const
     {
@@ -48,15 +47,39 @@ namespace Odysseus
         this->_quadratic = quadratic;
     }
 
-    void PointLight::setLightShader(Odysseus::Shader& shader) const
+    void PointLight::start()
     {
-        shader.setVec3("pointLight.diffuse", this->_diffuse);
-        shader.setVec3("pointLight.specular", this->_specular);
-        shader.setVec3("pointLight.ambient", this->_ambient);
-        shader.setVec3("pointLight.position", this->_position);
-        shader.setFloat("pointLight.constant", this->_constant);
-        shader.setFloat("pointLight.linear", this->_linear);
-        shader.setFloat("pointLight.quadratic", this->_quadratic);
+
+    }
+    void PointLight::update()
+    {
+        this->setLightShader(this->shader);
+    }
+
+    void PointLight::setOrderOfExecution(const short& newOrderOfExecution)
+    {
+
+    }
+
+    short PointLight::getUniqueID()
+    {
+        return this->_uniqueID;
+    }
+
+    std::string PointLight::toString()
+    {
+        return "PointLight";
+    }
+
+    void PointLight::setLightShader(Odysseus::Shader* shader) const
+    {
+        shader->setVec3("pointLight.diffuse", this->_diffuse);
+        shader->setVec3("pointLight.specular", this->_specular);
+        shader->setVec3("pointLight.ambient", this->_ambient);
+        shader->setVec3("pointLight.position", this->_position);
+        shader->setFloat("pointLight.constant", this->_constant);
+        shader->setFloat("pointLight.linear", this->_linear);
+        shader->setFloat("pointLight.quadratic", this->_quadratic);
     }
     
 }

@@ -7,6 +7,7 @@
 #include <coeus.hpp>
 #include <Component.hpp>
 #include <Camera.hpp>
+#include <Tree.hpp>
 
 #include "Mesh.hpp"
 #include "../Texture/Texture2D.hpp"
@@ -14,15 +15,14 @@
 namespace Odysseus
 {
     std::vector<Texture2D> loadTexture(aiMaterial *mat, aiTextureType type);
-    class Model : public System::Component
+    class Model 
     {
     public:
         std::vector<Texture2D> textures_loaded;
         std::vector<Mesh> meshes;
         std::string directory;
-        const std::string& path;
         Odysseus::Shader* shader;
-        Odysseus::Camera* camera;
+        SceneObject* provaObj;
 
         //Deleting the possibility to use a copy constructor and copy operator=
         Model(const Model& model) = delete;
@@ -33,27 +33,12 @@ namespace Odysseus
         Model(Model&& model) = default;
 
         //Creating a default constructor
-        Model();
+        Model(const std::string& path, Shader* shader);
 
         //rendering the model by drawing each Mesh instance in the vector
         void Draw(Shader* shader);
 
-        void setPath(const std::string& path);
-        void setShader(Shader* shader);
-        void setCamera(Camera* camera);
-
-        virtual void start();
-        virtual void update();
-
-        virtual void setOrderOfExecution(const short& newOrderOfExecution);
-
-        virtual short getUniqueID();
-
-        virtual std::string toString();
-
     private:
-        //Loading the model using assimp library, passing by copy the path, for the needs to be modified
-        std::string _path;
 
         void loadModel(const std::string& path);
         Material loadMaterial(aiMaterial* mat);
@@ -61,7 +46,7 @@ namespace Odysseus
 
         void setMeshTextures(aiMaterial* material, Material& mat);
         void setMeshMaterials(aiMaterial* material, Material& mat);
-        Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+        void processMesh(aiMesh* mesh, const aiScene* scene, SceneObject* sceneObject);
         void processNode(aiNode* node, const aiScene* scene);   
 
     };
