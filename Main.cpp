@@ -38,9 +38,6 @@ int main()
     auto mainCamera = cam->addComponent<Odysseus::Camera>();
     // auto movement = cam->addComponent<CameraMovement>();
     // movement->camera = mainCamera;
-    Odysseus::SceneObject *myModel = new Odysseus::SceneObject();
-    myModel->transform->name = "Model";
-    myModel->addComponent<Odysseus::Model>();
     auto movement = cam->addComponent<CameraMovement>();
     movement->camera = mainCamera;
     cam->addComponent<Odysseus::Camera>();
