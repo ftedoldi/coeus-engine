@@ -208,6 +208,8 @@ namespace System {
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 330");
         ImGui::StyleColorsDark();
+
+        this->transformToShow = nullptr;
     }
 
     bool Window::shouldWindowClose()
@@ -482,7 +484,14 @@ namespace System {
         ImGui::End();
 
         ImGui::Begin("Hierarchy");
-        ImGui::Text("Hello, left!");
+            for (int i = 0; i < Odysseus::SceneGraph::objectsInScene.size(); i++) {
+                if (ImGui::Button(Odysseus::SceneGraph::objectsInScene[i]->transform->name.c_str())) {
+                    this->transformToShow = Odysseus::SceneGraph::objectsInScene[i]->transform;
+                    this->inspectorParams.clear();
+                    for (int j = 0; j < Odysseus::SceneGraph::objectsInScene[i]->_container->components.size(); j++)
+                        this->inspectorParams.push_back(Odysseus::SceneGraph::objectsInScene[i]->_container->components[j]);
+                }
+            }
         ImGui::End();
         
         ImGui::Begin("Console");
@@ -494,7 +503,26 @@ namespace System {
         ImGui::End();
 
         ImGui::Begin("Inspector");
-        ImGui::Text("Hello, right!");
+            if (this->transformToShow != nullptr) {
+                float pos[] = { this->transformToShow->position.coordinates.x, this->transformToShow->position.coordinates.y, this->transformToShow->position.coordinates.z };
+                ImGui::InputFloat3("Position", pos);
+                this->transformToShow->position = Athena::Vector3(pos[0], pos[1], pos[2]);
+
+                Athena::Vector3 rot(this->transformToShow->rotation.toEulerAngles());
+                float rotation[] = { rot.coordinates.x, rot.coordinates.y, rot.coordinates.z };
+                ImGui::InputFloat3("Rotation", rotation);
+                // TODO: learn how to set the rotation
+                // this->transformToShow->rotation = Athena::Vector3(scale[0], scale[1], scale[2]);
+
+                float scale[] = { this->transformToShow->localScale.coordinates.x, this->transformToShow->localScale.coordinates.y, this->transformToShow->localScale.coordinates.z };
+                ImGui::InputFloat3("Scale", scale);
+                this->transformToShow->localScale = Athena::Vector3(scale[0], scale[1], scale[2]);
+
+
+                for (int i = 0; i < this->inspectorParams.size(); i++) {
+                    ImGui::Text(this->inspectorParams[i]->toString().c_str());
+                }
+            }
         ImGui::End();
 
         ImGui::Begin("Scene");

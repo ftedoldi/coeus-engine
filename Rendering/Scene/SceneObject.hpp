@@ -1,6 +1,8 @@
 #ifndef __SCENEOBJECT_H__
 #define __SCENEOBJECT_H__
 
+#include <Window.hpp>
+
 #include "Component.hpp"
 #include "Container.hpp"
 #include <Transform.hpp>
@@ -13,6 +15,7 @@
 
 namespace System {
     class Component;
+    class Window;
 }
 
 namespace Odysseus
@@ -22,6 +25,7 @@ namespace Odysseus
 
     class SceneObject {
         friend class SceneGraph;
+        friend class System::Window;
 
         private:
             bool _active;

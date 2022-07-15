@@ -13,6 +13,8 @@
 
 #include <SceneGraph.hpp>
 #include <Shader.hpp>
+#include <Component.hpp>
+#include <Transform.hpp>
 
 #include <iostream>
 #include <string>
@@ -25,6 +27,9 @@ namespace System {
 
     class Window {    
         private:
+            Odysseus::Transform* transformToShow;
+            std::vector<Component*> inspectorParams;
+
             ImGuiID dockspace_id;
 
             Odysseus::Shader screenShader;
