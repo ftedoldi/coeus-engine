@@ -43,7 +43,7 @@ namespace Odysseus
 
         public:
             Athena::Vector3 position;
-            const Athena::Quaternion& rotation;
+            Athena::Quaternion& rotation;
             Athena::Vector3 localScale;
 
             const Athena::Matrix4& worldToLocalMatrix;
