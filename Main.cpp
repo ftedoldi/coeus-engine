@@ -10,6 +10,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <Texture2D.hpp>
 #include <SceneObject.hpp>
 #include <SceneGraph.hpp>
 #include <Component.hpp>
@@ -26,16 +27,19 @@
 int main()
 {
     // Where all the starts are runned
-    System::Window* window = new System::Window("myWindow", true);
+    System::Window* window = new System::Window("myWindow");
 
     System::Component *c = new DummyComponent();
     Odysseus::SceneObject *obj = new Odysseus::SceneObject();
+    obj->transform->name = "Object";
 
     Odysseus::SceneObject *cam = new Odysseus::SceneObject();
+    cam->transform->name = "Camera";
     auto mainCamera = cam->addComponent<Odysseus::Camera>();
-    auto movement = cam->addComponent<CameraMovement>();
-    movement->camera = mainCamera;
+    // auto movement = cam->addComponent<CameraMovement>();
+    // movement->camera = mainCamera;
     Odysseus::SceneObject *myModel = new Odysseus::SceneObject();
+    myModel->transform->name = "Model";
     myModel->addComponent<Odysseus::Model>();
     cam->addComponent<Odysseus::Camera>();
 
@@ -55,9 +59,6 @@ int main()
     // -----------
     while (!window->shouldWindowClose())
     {
-        // per-frame time logic
-        // --------------------
-
         // render
         // ------
         window->clear();
@@ -73,15 +74,11 @@ int main()
 
         modelShader.setMat4("projection", projection);
 
-        // Model draw
-        //myModel.Draw(&modelShader);
-
         Odysseus::SceneGraph::drawScene();
 
         window->update();
     }
 
-    // glfw: terminate, clearing all previously allocated GLFW resources.
     delete window;
     return 0;
 }
