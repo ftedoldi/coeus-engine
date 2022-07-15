@@ -18,9 +18,11 @@ namespace Odysseus
     {
     public:
         unsigned int ID;
+        Shader();
         // constructor generates the shader on the fly
         Shader(const char* vertexPath, const char* fragmentPath);
 
+        void assignShadersPath(const char* vertexPath, const char* fragmentPath);
         // activate the shader
         // ------------------------------------------------------------------------
         void use() const;
