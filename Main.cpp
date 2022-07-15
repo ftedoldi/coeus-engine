@@ -45,7 +45,7 @@ int main()
     stbi_set_flip_vertically_on_load(true);
 
     // Create the shader
-    Odysseus::Shader modelShader("shader1.vert", "shader1.frag");
+    Odysseus::Shader modelShader(".\\Shader\\shader1.vert", ".\\Shader\\shader1.frag");
 
     Odysseus::Model myModel("Assets/Models/matAndTex/matAndTex.obj", &modelShader);
 

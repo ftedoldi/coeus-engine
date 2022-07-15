@@ -152,7 +152,7 @@ namespace System {
          1.0f,  1.0f,       1.0f, 1.0f
         };
 
-        screenShader.assignShadersPath("frameBufferShader.vert", "frameBufferShader.frag");
+        screenShader.assignShadersPath(".\\Shader\\frameBufferShader.vert", ".\\Shader\\frameBufferShader.frag");
 
         screenShader.use();
         screenShader.setInt("screenTexture", 0);
