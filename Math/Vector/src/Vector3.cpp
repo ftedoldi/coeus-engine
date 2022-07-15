@@ -75,14 +75,23 @@ namespace Athena {
     }
 
     Vector3 Vector3::normalized() const {
+        if (this->magnitude() == 0)
+            return *this;
+
         return *this / this->magnitude();
     }
 
     void Vector3::normalize() {
+        if (this->magnitude() == 0)
+            return;
+
         *this /= this->magnitude();
     }
 
     Vector3 Vector3::normalize(const Vector3& vec) {
+        if (vec.magnitude() == 0)
+            return vec;
+
         return vec / vec.magnitude(); 
     }
 

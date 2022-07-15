@@ -74,7 +74,7 @@ namespace Athena {
             c1c2 * c3 - s1s2 * s3
         );
 
-        return q.normalized();
+        return q;
     }
 
     Vector3 Quaternion::QuaternionToEulerAngles(const Quaternion& quaternion) {
@@ -83,10 +83,10 @@ namespace Athena {
 
         auto q = quat.coordinates;
         
-        Scalar singularityAtNorthPole = 0.499;
-        Scalar singularityAtSouthPole = -0.499;
+        double singularityAtNorthPole = 0.499;
+        double singularityAtSouthPole = -0.499;
 
-        Scalar test = q.x * q.y + q.z * q.w;
+        double test = q.x * q.y + q.z * q.w;
 
         if (test > singularityAtNorthPole)
             return Vector3(Math::radiansToDegreeAngle(0), Math::radiansToDegreeAngle(2 * std::atan2(q.x, q.w)), Math::radiansToDegreeAngle(M_PI / 2));
@@ -351,8 +351,10 @@ namespace Athena {
 
     Quaternion operator *(const Quaternion& a, const Quaternion& b) {
         return Quaternion(
-            a.real * b.immaginary + a.immaginary * b.real + Vector3::cross(a.immaginary, b.immaginary),  // imaginary part
-            a.real * b.real - Vector3::dot(a.immaginary, b.immaginary) // _real part
+            b.real * a.immaginary.coordinates.x + b.immaginary.coordinates.x * a.real - b.immaginary.coordinates.y * a.immaginary.coordinates.z + b.immaginary.coordinates.z * a.immaginary.coordinates.y,
+            b.real * a.immaginary.coordinates.y + b.immaginary.coordinates.x * a.immaginary.coordinates.z + b.immaginary.coordinates.y * a.real - b.immaginary.coordinates.z * a.immaginary.coordinates.x,
+            b.real * a.immaginary.coordinates.z - b.immaginary.coordinates.x * a.immaginary.coordinates.y + b.immaginary.coordinates.y * a.immaginary.coordinates.x + b.immaginary.coordinates.z * a.real,
+            b.real * a.real - b.immaginary.coordinates.x * a.immaginary.coordinates.x - b.immaginary.coordinates.y * a.immaginary.coordinates.y - b.immaginary.coordinates.z * a.immaginary.coordinates.z
         );
     }
 }
