@@ -35,11 +35,13 @@ int main()
     obj->addComponent<DummyComponent>();
 
     Odysseus::SceneObject *cam = new Odysseus::SceneObject();
+    cam->transform->position = Athena::Vector3(0, 0, 20);
     cam->transform->name = "Camera";
-    cam->addComponent<Odysseus::Camera>();
+    auto mainCamera = cam->addComponent<Odysseus::Camera>();
+    Odysseus::Camera::main = mainCamera;
     // auto movement = cam->addComponent<CameraMovement>();
     // movement->camera = mainCamera;
-    cam->addComponent<CameraMovement>()->camera = cam->getComponent<Odysseus::Camera>();
+    // cam->addComponent<CameraMovement>()->camera = cam->getComponent<Odysseus::Camera>();
     // cam->addComponent<Odysseus::Camera>();
 
     stbi_set_flip_vertically_on_load(true);
@@ -47,7 +49,7 @@ int main()
     // Create the shader
     Odysseus::Shader modelShader(".\\Shader\\shader1.vert", ".\\Shader\\shader1.frag");
 
-    Odysseus::Model myModel("Assets/Models/matAndTex/matAndTex.obj", &modelShader);
+    Odysseus::Model myModel("Assets/Models/cube/untitled.obj", &modelShader);
 
     Odysseus::SceneGraph::initializeScene();
 
@@ -62,16 +64,16 @@ int main()
         // be sure to activate shader when setting uniforms/drawing objects
         modelShader.use();
 
-        auto tmp = cam->getComponent<Odysseus::Camera>()->getViewTransform(new Odysseus::Transform(Athena::Vector3(0, 0, -3.5), Athena::Quaternion(), Athena::Vector3(1, 1, 1)));
+        // auto tmp = cam->getComponent<Odysseus::Camera>()->getViewTransform(new Odysseus::Transform(Athena::Vector3(0, 0, -3.5), Athena::Quaternion(), Athena::Vector3(1, 1, 1)));
 
-        modelShader.setVec3("position", tmp->position);
-        modelShader.setVec4("rotation", tmp->rotation.asVector4());
-        modelShader.setVec3("scale", tmp->localScale);
+        // modelShader.setVec3("position", tmp->position);
+        // modelShader.setVec4("rotation", tmp->rotation.asVector4());
+        // modelShader.setVec3("scale", tmp->localScale);
 
-        // Camera trasformations
-        Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, System::Window::screen.width / System::Window::screen.height, 0.1f, 100.0f);
+        // // Camera trasformations
+        // Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, System::Window::screen.width / System::Window::screen.height, 0.1f, 100.0f);
 
-        modelShader.setMat4("projection", projection);
+        // modelShader.setMat4("projection", projection);
 
         Odysseus::SceneGraph::drawScene();
 
