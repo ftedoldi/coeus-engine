@@ -28,9 +28,9 @@ namespace Odysseus
     //process a node recursively and for each node processed, process his meshes
     void Model::processNode(aiNode* node, const aiScene* scene)
     {
-        Odysseus::SceneObject* obj = new SceneObject();
         for(GLuint i = 0; i < node->mNumMeshes; ++i)
         {
+            Odysseus::SceneObject* obj = new SceneObject();
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
             processMesh(mesh, scene, obj);
         }

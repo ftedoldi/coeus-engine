@@ -10,7 +10,20 @@ namespace Odysseus
     void Mesh::start()
     {
         this->setupMesh();
+
+        this->shader->use();
+
+        auto tmp = Odysseus::Camera::main->getViewTransform(this->transform);;
+
+        this->shader->setVec3("position", tmp->position);
+        this->shader->setVec4("rotation", tmp->rotation.asVector4());
+        this->shader->setVec3("scale", tmp->localScale);
+
+        Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, System::Window::screen.width / System::Window::screen.height, 0.1f, 100.0f);
+
+        this->shader->setMat4("projection", projection);
     }
+
     void Mesh::update()
     {
         if(this->material.Textures.size() > 0)
@@ -21,6 +34,18 @@ namespace Odysseus
         {
             material.loadShaderMaterial(this->shader);
         }
+
+        this->shader->use();
+
+        auto tmp = Odysseus::Camera::main->getViewTransform(this->transform);
+
+        this->shader->setVec3("position", tmp->position);
+        this->shader->setVec4("rotation", tmp->rotation.asVector4());
+        this->shader->setVec3("scale", tmp->localScale);
+
+        Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, System::Window::screen.width / System::Window::screen.height, 0.1f, 100.0f);
+
+        this->shader->setMat4("projection", projection);
         
         // draw mesh
         glBindVertexArray(VAO);
