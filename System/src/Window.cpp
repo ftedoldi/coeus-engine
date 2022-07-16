@@ -249,15 +249,6 @@ namespace System {
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        // for (int i = 0; i < Odysseus::SceneGraph::objectsInScene.size(); i++){
-        //     auto obj = Odysseus::SceneGraph::objectsInScene[i];
-        //     ImGui::Begin(obj->transform->name.c_str());
-        //     float pos[] = {obj->transform->position.coordinates.x, obj->transform->position.coordinates.y, obj->transform->position.coordinates.z};
-        //     ImGui::InputFloat3("Position", pos);
-        //     obj->transform->position = Athena::Vector3(pos[0], pos[1], pos[2]);
-        //     ImGui::End();
-        // }
-
         createDockSpace();
 
         ImGui::Render();
@@ -504,23 +495,48 @@ namespace System {
 
         ImGui::Begin("Inspector");
             if (this->transformToShow != nullptr) {
+                ImGui::Text("Transform");
                 float pos[] = { this->transformToShow->position.coordinates.x, this->transformToShow->position.coordinates.y, this->transformToShow->position.coordinates.z };
                 ImGui::InputFloat3("Position", pos);
                 this->transformToShow->position = Athena::Vector3(pos[0], pos[1], pos[2]);
 
-                Athena::Vector3 rot(this->transformToShow->rotation.toEulerAngles());
-                float rotation[] = { rot.coordinates.x, rot.coordinates.y, rot.coordinates.z };
+                static bool firstRotation = true;
+                static float rotation[3];
+                if (firstRotation) {
+                    Athena::Vector3 rot(this->transformToShow->rotation.toEulerAngles());
+                    rotation[0] = rot.coordinates.x;
+                    rotation[1] = rot.coordinates.y;
+                    rotation[2] = rot.coordinates.z;
+                    firstRotation = false;
+                }
                 ImGui::InputFloat3("Rotation", rotation);
-                // TODO: learn how to set the rotation
-                // this->transformToShow->rotation = Athena::Vector3(scale[0], scale[1], scale[2]);
+                this->transformToShow->rotation = Athena::Quaternion(
+                                                                        0, 
+                                                                        0,
+                                                                        std::sin(Athena::Math::degreeToRandiansAngle(rotation[2])/2),
+                                                                        std::cos(Athena::Math::degreeToRandiansAngle(rotation[2])/2)
+                                                                    )
+                                                * Athena::Quaternion(
+                                                                        0, 
+                                                                        std::sin(Athena::Math::degreeToRandiansAngle(rotation[1])/2), 
+                                                                        0, 
+                                                                        std::cos(Athena::Math::degreeToRandiansAngle(rotation[1])/2)
+                                                                    )
+                                                * Athena::Quaternion(
+                                                                        std::sin(Athena::Math::degreeToRandiansAngle(rotation[0])/2),
+                                                                        0, 
+                                                                        0, 
+                                                                        std::cos(Athena::Math::degreeToRandiansAngle(rotation[0])/2)
+                                                                    );
 
                 float scale[] = { this->transformToShow->localScale.coordinates.x, this->transformToShow->localScale.coordinates.y, this->transformToShow->localScale.coordinates.z };
                 ImGui::InputFloat3("Scale", scale);
                 this->transformToShow->localScale = Athena::Vector3(scale[0], scale[1], scale[2]);
 
-
+                ImGui::Separator();
                 for (int i = 0; i < this->inspectorParams.size(); i++) {
                     ImGui::Text(this->inspectorParams[i]->toString().c_str());
+                    ImGui::Separator();
                 }
             }
         ImGui::End();

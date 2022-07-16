@@ -15,15 +15,19 @@
 #include <Shader.hpp>
 #include <Component.hpp>
 #include <Transform.hpp>
+#include <Math.hpp>
 
 #include <iostream>
 #include <string>
+#include <cmath>
 
 namespace System {
     struct Screen {
         int width;
         int height;
     };
+
+    class Component;
 
     class Window {    
         private:
