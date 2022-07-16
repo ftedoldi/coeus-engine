@@ -22,10 +22,6 @@ namespace Odysseus
 
     void Material::loadShaderTexture(Odysseus::Shader* shader)
     {
-        GLuint diffuseIdx = 0;
-        GLuint specularIdx = 0;
-        GLuint heightIdx = 0;
-        GLuint ambientIdx = 0;
 
         for(GLuint i = 0; i < this->Textures.size(); ++i)
             {
@@ -37,19 +33,19 @@ namespace Odysseus
                 switch(this->Textures[i].type)
                 {
                     case aiTextureType_DIFFUSE:
-                        name = "materialTex.diffuse" + std::to_string(diffuseIdx++);
+                        name = "material.diffuseTex";
                         break;
                     case aiTextureType_SPECULAR:
-                        name = "materialTex.specular" + std::to_string(specularIdx++);
+                        name = "material.specularTex";
                         break;
                     case aiTextureType_HEIGHT:
-                        name = "materialTex.height" + std::to_string(heightIdx++);
+                        name = "material.heightTex";
                         break;
                     case aiTextureType_AMBIENT:
-                        name = "materialTex.ambient" + std::to_string(ambientIdx++);
+                        name = "material.ambientTex";
                         break;
                     case aiTextureType_SHININESS:
-                        name = "materialTex.shininess";
+                        name = "material.shininessTex";
                         break;
                     default:
                         break;
