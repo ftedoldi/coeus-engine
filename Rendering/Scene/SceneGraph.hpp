@@ -10,6 +10,8 @@
 #include <vector>
 
 namespace Odysseus {
+    class SceneObject;
+    
     class SceneGraph {
         public:
             static std::vector<SceneObject*> objectsInScene;
