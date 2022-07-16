@@ -4,6 +4,8 @@ layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoords;
 
 out vec2 TexCoords;
+out vec3 Normal;
+out vec3 FragPos;
 
 uniform vec3 position;
 uniform vec3 scale;
@@ -12,6 +14,7 @@ uniform mat4 projection;
 
 void main()
 {
+	Normal = aNormal;
 	TexCoords = aTexCoords;
 	vec3 scaledVector = vec3(aPos.x * scale.x, aPos.y * scale.y, aPos.z * scale.z);
 
@@ -21,6 +24,8 @@ void main()
 	 conj.w * scaledQuaternion.w - dot(conj.xyz, scaledQuaternion.xyz));
 	vec4 rotatedVector = vec4((inverseRotation.w * rotation.xyz + inverseRotation.xyz * rotation.w + cross(inverseRotation.xyz, rotation.xyz)).xyz,
 	 inverseRotation.w * rotation.w - dot(inverseRotation.xyz, rotation.xyz));
+
+	FragPos = rotatedVector.xyz;
 
 	vec3 viewPos = rotatedVector.xyz + position; // 1 scaling 2 rotation 3 sum translation
 
