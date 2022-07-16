@@ -16,6 +16,8 @@
 #include <Component.hpp>
 #include <Time.hpp>
 #include "Test/DummyComponent.hpp"
+#include <PointLight.hpp>
+#include <DirectionalLight.hpp>
 
 #include <iostream>
 #include <vector>
@@ -39,6 +41,13 @@ int main()
     cam->transform->name = "Camera";
     auto mainCamera = cam->addComponent<Odysseus::Camera>();
     Odysseus::Camera::main = mainCamera;
+    Odysseus::SceneObject *light = new Odysseus::SceneObject();
+    light->transform->name = "PointLight";
+    auto pLight = light->addComponent<Odysseus::PointLight>();
+
+    /*Odysseus::SceneObject *dirLight = new Odysseus::SceneObject();
+    dirLight->transform->name = "DirectionaLight";
+    auto dLight = dirLight->addComponent<Odysseus::DirectionalLight>();*/
     // auto movement = cam->addComponent<CameraMovement>();
     // movement->camera = mainCamera;
     // cam->addComponent<CameraMovement>()->camera = cam->getComponent<Odysseus::Camera>();
@@ -47,9 +56,26 @@ int main()
     stbi_set_flip_vertically_on_load(true);
 
     // Create the shader
-    Odysseus::Shader modelShader(".\\Shader\\shader1.vert", ".\\Shader\\shader1.frag");
+    Odysseus::Shader modelShader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
+    //Odysseus::Shader lightShader(".\\Shader\\lightShader.vert", ".\\Shader\\lightShader.frag");
 
-    Odysseus::Model myModel("Assets/Models/cube/untitled.obj", &modelShader);
+    Odysseus::Model myModel("Assets/Models/cubeCentered/cubeCentered.obj", &modelShader);
+    //Odysseus::Model lightModel("Assets/Models/cubeCentered/cubeCentered.obj", &lightShader);
+
+    pLight->setPosition(Athena::Vector3(0.2f, 0.2f, 0.2f));
+    pLight->setShader(&modelShader);
+    pLight->setAmbient(Athena::Vector3(0.2f, 0.2f, 0.2f));
+    pLight->setDiffuse(Athena::Vector3(0.8f, 0.8f, 0.8f));
+    pLight->setSpecular(Athena::Vector3(0.5f, 0.5f, 0.5f));
+    pLight->setConstant(1.0f);
+    pLight->setLinear(0.09f);
+    pLight->setQuadratic(0.032f);
+
+    /*dLight->setShader(&modelShader);
+    dLight->setAmbient(Athena::Vector3(0.2f, 0.2f, 0.2f));
+    dLight->setDiffuse(Athena::Vector3(0.8f, 0.8f, 0.8f));
+    dLight->setSpecular(Athena::Vector3(0.5f, 0.5f, 0.5f));
+    dLight->setDirection(Athena::Vector3(-0.2f, -1.0f, -0.3f));*/
 
     Odysseus::SceneGraph::initializeScene();
 
@@ -63,6 +89,7 @@ int main()
 
         // be sure to activate shader when setting uniforms/drawing objects
         modelShader.use();
+        //lightShader.use();
 
         // auto tmp = cam->getComponent<Odysseus::Camera>()->getViewTransform(new Odysseus::Transform(Athena::Vector3(0, 0, -3.5), Athena::Quaternion(), Athena::Vector3(1, 1, 1)));
 
