@@ -9,7 +9,7 @@ namespace Odysseus
 
     Athena::Vector3 SpotLight::getPosition() const
     {
-        return this->_position;
+        return this->transform->position;
     }
 
     Athena::Vector3 SpotLight::getDirection() const
@@ -24,7 +24,7 @@ namespace Odysseus
 
     void SpotLight::setPosition(Athena::Vector3& position)
     {
-        this->_position = position;
+        this->transform->position = position;
     }
 
     void SpotLight::setDirection(Athena::Vector3& direction)
@@ -66,7 +66,7 @@ namespace Odysseus
         shader->setVec3("spotLight.diffuse", this->_diffuse);
         shader->setVec3("spotLight.specular", this->_specular);
         shader->setVec3("spotLight.ambient", this->_ambient);
-        shader->setVec3("spotLight.position", this->_position);
+        shader->setVec3("spotLight.position", this->transform->position);
         shader->setVec3("spotLight.direction", this->_direction);
         shader->setFloat("spotLight.spotExponent", this->_spotExponent);
         //We calculate the cosine value here because its needed in the fragment shader and also because calculating it in the shader would be expensive

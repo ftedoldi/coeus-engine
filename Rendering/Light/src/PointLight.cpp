@@ -9,7 +9,7 @@ namespace Odysseus
 
     Athena::Vector3 PointLight::getPosition() const
     {
-        return this->_position;
+        return this->transform->position;
     }
 
     float PointLight::getConstant() const
@@ -29,20 +29,20 @@ namespace Odysseus
 
     void PointLight::setPosition(Athena::Vector3& position)
     {
-        this->_position = position;
+        this->transform->position = position;
     }
 
-    void PointLight::setConstant(float& constant)
+    void PointLight::setConstant(float constant)
     {
         this->_constant = constant;
     }
 
-    void PointLight::setLinear(float& linear)
+    void PointLight::setLinear(float linear)
     {
         this->_linear = linear;
     }
 
-    void PointLight::setQuadratic(float& quadratic)
+    void PointLight::setQuadratic(float quadratic)
     {
         this->_quadratic = quadratic;
     }
@@ -76,7 +76,7 @@ namespace Odysseus
         shader->setVec3("pointLight.diffuse", this->_diffuse);
         shader->setVec3("pointLight.specular", this->_specular);
         shader->setVec3("pointLight.ambient", this->_ambient);
-        shader->setVec3("pointLight.position", this->_position);
+        shader->setVec3("pointLight.position", this->transform->position);
         shader->setFloat("pointLight.constant", this->_constant);
         shader->setFloat("pointLight.linear", this->_linear);
         shader->setFloat("pointLight.quadratic", this->_quadratic);

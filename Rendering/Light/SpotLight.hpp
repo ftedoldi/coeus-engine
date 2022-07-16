@@ -7,7 +7,6 @@ namespace Odysseus
     class SpotLight : public Light
     {
         private:
-            Athena::Vector3 _position;
             Athena::Vector3 _direction;
             float _spotExponent;
             //angle representing the size of the cone where there'll be light

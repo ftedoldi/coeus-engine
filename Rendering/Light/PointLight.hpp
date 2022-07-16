@@ -7,7 +7,6 @@ namespace Odysseus
     class PointLight : public Light
     {
         private:
-            Athena::Vector3 _position;
             float _constant;
             float _linear;
             float _quadratic;
@@ -30,9 +29,9 @@ namespace Odysseus
             float getQuadratic() const;
 
             void setPosition(Athena::Vector3& position);
-            void setConstant(float& constant);
-            void setLinear(float& linear);
-            void setQuadratic(float& quadratic);
+            void setConstant(float constant);
+            void setLinear(float linear);
+            void setQuadratic(float quadratic);
 
             void setLightShader(Odysseus::Shader* shader) const;
     };
