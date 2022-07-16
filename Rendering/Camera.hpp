@@ -13,6 +13,8 @@ namespace Odysseus
     class Camera : public System::Component
     {
         public:
+            static Camera* main;
+
             Athena::Vector3& Front;
             Athena::Vector3& Right;
             Athena::Vector3& Up;

@@ -1,6 +1,7 @@
 #include "Camera.hpp"
 namespace Odysseus
 {
+    Camera* Camera::main;
 
     Camera::Camera() : Front(_Front), Right(_Right), Up(_Up)
     {
