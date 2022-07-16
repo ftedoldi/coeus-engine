@@ -22,7 +22,6 @@ namespace Odysseus
         std::vector<Mesh> meshes;
         std::string directory;
         Odysseus::Shader* shader;
-        SceneObject* provaObj;
 
         //Deleting the possibility to use a copy constructor and copy operator=
         Model(const Model& model) = delete;
