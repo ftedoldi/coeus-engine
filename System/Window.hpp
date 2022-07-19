@@ -17,6 +17,8 @@
 #include <Transform.hpp>
 #include <Math.hpp>
 
+#include "Debug.hpp"
+
 #include <iostream>
 #include <string>
 #include <cmath>
@@ -28,6 +30,7 @@ namespace System {
     };
 
     class Component;
+    class Console;
 
     class Window {    
         private:
@@ -44,6 +47,8 @@ namespace System {
             GLuint textureColorbuffer;
 
             int sizeX, sizeY;
+
+            Console* console;
 
             void initializeImGUI();
             void createDockSpace();

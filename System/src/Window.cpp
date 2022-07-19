@@ -210,6 +210,9 @@ namespace System {
         ImGui::StyleColorsDark();
 
         this->transformToShow = nullptr;
+
+        this->console = new Console();
+        Debug::mainConsole = this->console;
     }
 
     bool Window::shouldWindowClose()
@@ -474,6 +477,7 @@ namespace System {
 
         ImGui::End();
 
+        static Odysseus::Transform* lastTransform = nullptr;
         ImGui::Begin("Hierarchy");
             for (int i = 0; i < Odysseus::SceneGraph::objectsInScene.size(); i++) {
                 if (ImGui::Button(Odysseus::SceneGraph::objectsInScene[i]->transform->name.c_str())) {
@@ -484,10 +488,10 @@ namespace System {
                 }
             }
         ImGui::End();
-        
-        ImGui::Begin("Console");
-        ImGui::Text("Hello, right!");
-        ImGui::End();
+
+        static bool isOpen = true;
+
+        console->Draw("Console", &isOpen);
 
         ImGui::Begin("Project");
         ImGui::Text("Hello, down!");
@@ -502,12 +506,14 @@ namespace System {
 
                 static bool firstRotation = true;
                 static float rotation[3];
-                if (firstRotation) {
+                // TODO: Fix this in order to prevent rounding errors of toEulerAnglesMethod
+                if (lastTransform != transformToShow) {
                     Athena::Vector3 rot(this->transformToShow->rotation.toEulerAngles());
                     rotation[0] = rot.coordinates.x;
                     rotation[1] = rot.coordinates.y;
                     rotation[2] = rot.coordinates.z;
                     firstRotation = false;
+                    lastTransform = transformToShow;
                 }
                 ImGui::InputFloat3("Rotation", rotation);
                 this->transformToShow->rotation = Athena::Quaternion(
