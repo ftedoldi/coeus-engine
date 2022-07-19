@@ -26,6 +26,8 @@ namespace Odysseus
 
     void Mesh::update()
     {
+        this->shader->use();
+
         if(this->material.Textures.size() > 0)
         {
             material.loadShaderTexture(this->shader);
@@ -34,8 +36,6 @@ namespace Odysseus
         {
             material.loadShaderMaterial(this->shader);
         }
-
-        this->shader->use();
 
         auto tmp = Odysseus::Camera::main->getViewTransform(this->transform);
 
