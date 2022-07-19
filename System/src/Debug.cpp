@@ -290,6 +290,7 @@ namespace System {
             if (has_color)
                 ImGui::PushStyleColor(ImGuiCol_Text, color);
             ImGui::TextUnformatted(item);
+            ImGui::Separator();
             if (has_color)
                 ImGui::PopStyleColor();
         }
