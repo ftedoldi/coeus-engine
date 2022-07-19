@@ -63,6 +63,8 @@ namespace Odysseus
 
     void SpotLight::setLightShader(Odysseus::Shader* shader) const
     {
+        shader->use();
+        
         shader->setVec3("spotLight.diffuse", this->_diffuse);
         shader->setVec3("spotLight.specular", this->_specular);
         shader->setVec3("spotLight.ambient", this->_ambient);

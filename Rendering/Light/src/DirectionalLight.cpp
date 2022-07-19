@@ -43,6 +43,8 @@ namespace Odysseus
 
     void DirectionalLight::setLightShader(Odysseus::Shader* shader) const
     {
+        shader->use();
+        
         shader->setVec3("dirLight.diffuse", this->_diffuse);
         shader->setVec3("dirLight.specular", this->_specular);
         shader->setVec3("dirLight.ambient", this->_ambient);

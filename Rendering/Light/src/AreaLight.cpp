@@ -39,6 +39,8 @@ namespace Odysseus
 
     void AreaLight::setLightShader(Odysseus::Shader* shader) const
     {
+        shader->use();
+        
         for(unsigned int i = 0; i < this->pointLights.size(); ++i)
         {
             shader->setVec3("pointLights[i].position", pointLights[i].getPosition());
