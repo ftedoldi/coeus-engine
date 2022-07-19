@@ -56,14 +56,14 @@ int main()
     stbi_set_flip_vertically_on_load(true);
 
     // Create the shader
-    Odysseus::Shader modelShader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
+    Odysseus::Shader* modelShader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
     //Odysseus::Shader lightShader(".\\Shader\\lightShader.vert", ".\\Shader\\lightShader.frag");
 
-    Odysseus::Model myModel("Assets/Models/cubeCentered/cubeCentered.obj", &modelShader);
-    //Odysseus::Model lightModel("Assets/Models/cubeCentered/cubeCentered.obj", &lightShader);
+    Odysseus::Model myModel("Assets/Models/cube/untitled.obj", modelShader);
+    // Odysseus::Model lightModel("Assets/Models/cubeCentered/cubeCentered.obj", &lightShader);
 
-    pLight->setPosition(Athena::Vector3(0.2f, 0.2f, 0.2f));
-    pLight->setShader(&modelShader);
+    pLight->setPosition(Athena::Vector3(1, 1, 2));
+    pLight->setShader(modelShader);
     pLight->setAmbient(Athena::Vector3(0.2f, 0.2f, 0.2f));
     pLight->setDiffuse(Athena::Vector3(0.8f, 0.8f, 0.8f));
     pLight->setSpecular(Athena::Vector3(0.5f, 0.5f, 0.5f));
@@ -86,21 +86,6 @@ int main()
         // render
         // ------
         window->clear();
-
-        // be sure to activate shader when setting uniforms/drawing objects
-        modelShader.use();
-        //lightShader.use();
-
-        // auto tmp = cam->getComponent<Odysseus::Camera>()->getViewTransform(new Odysseus::Transform(Athena::Vector3(0, 0, -3.5), Athena::Quaternion(), Athena::Vector3(1, 1, 1)));
-
-        // modelShader.setVec3("position", tmp->position);
-        // modelShader.setVec4("rotation", tmp->rotation.asVector4());
-        // modelShader.setVec3("scale", tmp->localScale);
-
-        // // Camera trasformations
-        // Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, System::Window::screen.width / System::Window::screen.height, 0.1f, 100.0f);
-
-        // modelShader.setMat4("projection", projection);
 
         Odysseus::SceneGraph::drawScene();
 
