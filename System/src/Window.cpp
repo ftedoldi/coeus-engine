@@ -3,6 +3,7 @@
 namespace System {
     GLFWwindow* Window::window;
     Screen Window::screen;
+    Odysseus::Shader* Window::screenShader;
 
     Window::Window(std::string name, bool cursorDisabled)
     {
@@ -142,20 +143,20 @@ namespace System {
     void Window::initializeFrameBuffer()
     {
         float screenVertices[] = {
-        //   positions      texture coordinates
-        -1.0f,  1.0f,       0.0f, 1.0f,
-        -1.0f, -1.0f,       0.0f, 0.0f,
-         1.0f, -1.0f,       1.0f, 0.0f,
+        // positions   // texCoords
+        -0.3f,  1.0f,  0.0f, 1.0f,
+        -0.3f,  0.7f,  0.0f, 0.0f,
+         0.3f,  0.7f,  1.0f, 0.0f,
 
-        -1.0f,  1.0f,       0.0f, 1.0f,
-         1.0f, -1.0f,       1.0f, 0.0f,
-         1.0f,  1.0f,       1.0f, 1.0f
+        -0.3f,  1.0f,  0.0f, 1.0f,
+         0.3f,  0.7f,  1.0f, 0.0f,
+         0.3f,  1.0f,  1.0f, 1.0f
         };
 
-        screenShader.assignShadersPath(".\\Shader\\frameBufferShader.vert", ".\\Shader\\frameBufferShader.frag");
+        screenShader = new Odysseus::Shader(".\\Shader\\frameBufferShader.vert", ".\\Shader\\frameBufferShader.frag");
 
-        screenShader.use();
-        screenShader.setInt("screenTexture", 0);
+        screenShader->use();
+        screenShader->setInt("screenTexture", 0);
 
         // framebuffer configuration
         // -------------------------
@@ -190,9 +191,15 @@ namespace System {
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, System::Window::screen.width, System::Window::screen.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             std::cerr << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0); 
     }
 
@@ -206,7 +213,7 @@ namespace System {
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
         ImGui::StyleColorsDark();
         ImGui_ImplGlfw_InitForOpenGL(window, true);
-        ImGui_ImplOpenGL3_Init("#version 330");
+        ImGui_ImplOpenGL3_Init("#version 330 core");
         ImGui::StyleColorsDark();
 
         this->transformToShow = nullptr;
@@ -222,7 +229,11 @@ namespace System {
 
     void Window::clear()
     {
-        glfwGetFramebufferSize(this->window, &sizeX, &sizeY);
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        glfwGetFramebufferSize(window, &sizeX, &sizeY);
 
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glViewport(0, 0, System::Window::screen.width, System::Window::screen.height);
@@ -230,10 +241,6 @@ namespace System {
 
         glClearColor(0.4f, 0.2f, 0.6f, 0.5f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
     }
 
     void Window::update()
@@ -242,20 +249,33 @@ namespace System {
 
         glViewport(0, 0, sizeX, sizeY);
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // now draw the mirror quad with screen texture
         // --------------------------------------------
         glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
-
-        screenShader.use();
+        
+        screenShader->use();
         glBindVertexArray(screenVAO);
-        glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
+        glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         createDockSpace();
 
         ImGui::Render();
+        // int display_w, display_h;
+        // glfwGetFramebufferSize(window, &display_w, &display_h);
+        // glViewport(0, 0, display_w, display_h);
+        // glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
+        // glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            GLFWwindow* backup_current_context = glfwGetCurrentContext();
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+            glfwMakeContextCurrent(backup_current_context);
+        }
 
         if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(this->window, true);
@@ -549,9 +569,17 @@ namespace System {
 
         ImGui::Begin("Scene");
             ImGui::BeginChild("Game Render");
+                ImDrawList* drawList = ImGui::GetWindowDrawList();
+                drawList->AddCallback(&useShader, nullptr);
                 ImVec2 wSize = ImGui::GetWindowSize();
 
-                ImGui::Image((ImTextureID)textureColorbuffer, wSize, ImVec2(0, 1), ImVec2(1, 0));
+                ImGuiWindow* w = ImGui::GetCurrentWindow();
+
+                ImRect bb(w->DC.CursorPos, {w->DC.CursorPos.x + wSize.x, w->DC.CursorPos.y + wSize.y});
+                // ImGui::Image((ImTextureID)textureColorbuffer, wSize, ImVec2(0, 1), ImVec2(1, 0));
+                drawList->AddRect(bb.Min, bb.Max, ImGui::GetColorU32(ImVec4(0, 0, 0, 0)), 0.0f);
+                drawList->AddImage((ImTextureID)textureColorbuffer, {-1.5, -1.5}, {1.5, 1.5}, ImVec2(0, 0), ImVec2(1, 1));
+                drawList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
             ImGui::EndChild();
         ImGui::End();
 
@@ -562,11 +590,22 @@ namespace System {
         // TODO: setup a frame buffer for the Game Scene
         ImGui::Begin("Game");
             ImGui::BeginChild("Game Render");
-                ImVec2 width = ImGui::GetWindowSize();
+                ImDrawList* dList = ImGui::GetWindowDrawList();
+                dList->AddCallback(&useShader, nullptr);
+                ImVec2 size = ImGui::GetWindowSize();
 
-                ImGui::Image((ImTextureID)textureColorbuffer, width, ImVec2(0, 1), ImVec2(1, 0));
+                // ImGui::Image((ImTextureID)textureColorbuffer, wSize, ImVec2(0, 1), ImVec2(1, 0));
+                dList->AddRect(bb.Min, bb.Max, ImGui::GetColorU32(ImVec4(0, 0, 0, 0)), 0.0f);
+                dList->AddImage((ImTextureID)textureColorbuffer, {-1.5, -1.5}, {1.5, 1.5}, ImVec2(0, 0), ImVec2(1, 1));
+                dList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
             ImGui::EndChild();
         ImGui::End();
+    }
+
+    // TODO: Find a way to resize the window
+    void Window::useShader(const ImDrawList* asd, const ImDrawCmd* command)
+    {
+        Window::screenShader->use();
     }
 
     Window::~Window()

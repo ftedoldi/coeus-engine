@@ -38,12 +38,9 @@ namespace System {
     };
     
     class Debug {
-        friend Window;
-
-        private:
-            static Console* mainConsole;
-
         public:
+            static Console* mainConsole;
+            
             static void Log(std::string message);
             static void LogError(std::string errorMessage);
             static void LogWarning(std::string warningMessage);

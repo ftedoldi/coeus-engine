@@ -67,6 +67,11 @@ namespace Odysseus
         *this = Shader(vertexPath, fragmentPath);
     }
 
+    Shader* Shader::newShaderAtPath(const char* vertexPath, const char* fragmentPath)
+    {
+        return new Shader(vertexPath, fragmentPath);
+    }
+
     void Shader::use() const
     {
         glUseProgram(ID);

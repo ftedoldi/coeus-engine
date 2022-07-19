@@ -11,7 +11,7 @@ CC = cl.exe
 IDIR = /I./Includes /I./Includes/CUDA /I./Math /I./CUDA /I./CUDA/Shared /I./Math/Vector /I./Math/Versor /I./Math/Point /I./Rendering/Scene /I./Math/Rotation /I./Math/Matrix /I./Rendering /I./Rendering/Texture /I./Rendering/ModelLoader /I./DataStructs /I./Test /I./System /I./Includes/imgui /I./Rendering/Light     
 
 # compiler flags:
-CCFLAGS  = /Od /Zi /EHsc /MT
+CCFLAGS  = /Od /Zi /EHsc /MT /std:c++17
 
 # linker flags:
 LFLAGS = /LIBPATH:./Includes/Libraries assimp-vc142-mt.lib zlib.lib cuda.lib cudart.lib glfw3dll.lib glm_static.lib

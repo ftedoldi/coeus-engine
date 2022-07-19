@@ -23,6 +23,7 @@ namespace Odysseus
         Shader(const char* vertexPath, const char* fragmentPath);
 
         void assignShadersPath(const char* vertexPath, const char* fragmentPath);
+        Shader* newShaderAtPath(const char* vertexPath, const char* fragmentPath);
         // activate the shader
         // ------------------------------------------------------------------------
         void use() const;

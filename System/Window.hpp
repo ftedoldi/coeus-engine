@@ -39,12 +39,11 @@ namespace System {
 
             ImGuiID dockspace_id;
 
-            Odysseus::Shader screenShader;
-            
             GLuint framebuffer;
             GLuint screenVAO, screenVBO;
             GLuint rbo;
             GLuint textureColorbuffer;
+            GLuint texture;
 
             int sizeX, sizeY;
 
@@ -53,8 +52,11 @@ namespace System {
             void initializeImGUI();
             void createDockSpace();
             void initializeFrameBuffer();
+            static void useShader(const ImDrawList*, const ImDrawCmd* command);
 
         public:
+            static Odysseus::Shader* screenShader;
+
             static GLFWwindow* window;
             static Screen screen;
 
