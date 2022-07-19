@@ -559,8 +559,13 @@ namespace System {
         ImGui::Text("Hello, right!");
         ImGui::End();
 
+        // TODO: setup a frame buffer for the Game Scene
         ImGui::Begin("Game");
-        ImGui::Text("Hello, right!");
+            ImGui::BeginChild("Game Render");
+                ImVec2 width = ImGui::GetWindowSize();
+
+                ImGui::Image((ImTextureID)textureColorbuffer, width, ImVec2(0, 1), ImVec2(1, 0));
+            ImGui::EndChild();
         ImGui::End();
     }
 
