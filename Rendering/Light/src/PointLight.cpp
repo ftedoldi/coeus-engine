@@ -49,7 +49,7 @@ namespace Odysseus
 
     void PointLight::start()
     {
-
+        this->setLightShader(this->shader);
     }
     void PointLight::update()
     {
@@ -73,12 +73,13 @@ namespace Odysseus
 
     void PointLight::setLightShader(Odysseus::Shader* shader) const
     {
+        auto tmp = Odysseus::Camera::main->getViewTransform(this->transform);
         shader->use();
         
         shader->setVec3("pointLight.diffuse", this->_diffuse);
         shader->setVec3("pointLight.specular", this->_specular);
         shader->setVec3("pointLight.ambient", this->_ambient);
-        shader->setVec3("pointLight.position", this->transform->position);
+        shader->setVec3("pointLight.position", tmp->position);
         shader->setFloat("pointLight.constant", this->_constant);
         shader->setFloat("pointLight.linear", this->_linear);
         shader->setFloat("pointLight.quadratic", this->_quadratic);

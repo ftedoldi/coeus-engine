@@ -64,11 +64,12 @@ namespace Odysseus
     void SpotLight::setLightShader(Odysseus::Shader* shader) const
     {
         shader->use();
+        auto tmp = Odysseus::Camera::main->getViewTransform(this->transform);
         
         shader->setVec3("spotLight.diffuse", this->_diffuse);
         shader->setVec3("spotLight.specular", this->_specular);
         shader->setVec3("spotLight.ambient", this->_ambient);
-        shader->setVec3("spotLight.position", this->transform->position);
+        shader->setVec3("spotLight.position", tmp->position);
         shader->setVec3("spotLight.direction", this->_direction);
         shader->setFloat("spotLight.spotExponent", this->_spotExponent);
         //We calculate the cosine value here because its needed in the fragment shader and also because calculating it in the shader would be expensive
