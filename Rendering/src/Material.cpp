@@ -22,7 +22,7 @@ namespace Odysseus
 
     void Material::loadShaderTexture(Odysseus::Shader* shader)
     {
-
+        shader->setFloat("material.shininess", this->Shininess);
         for(GLuint i = 0; i < this->Textures.size(); ++i)
             {
                 //activate texture
@@ -43,9 +43,6 @@ namespace Odysseus
                         break;
                     case aiTextureType_AMBIENT:
                         name = "material.ambientTex";
-                        break;
-                    case aiTextureType_SHININESS:
-                        name = "material.shininessTex";
                         break;
                     default:
                         break;
