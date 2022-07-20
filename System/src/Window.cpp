@@ -185,11 +185,11 @@ namespace System {
         glGenBuffers(1, &screenVBO);
         glBindVertexArray(screenVAO);
         glBindBuffer(GL_ARRAY_BUFFER, screenVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(screenVertices), &screenVertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(screenVertices), &screenVertices, GL_STREAM_DRAW);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(0);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+        glEnableVertexAttribArray(1);
 
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
@@ -213,7 +213,7 @@ namespace System {
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
         ImGui::StyleColorsDark();
         ImGui_ImplGlfw_InitForOpenGL(window, true);
-        ImGui_ImplOpenGL3_Init("#version 330 core");
+        ImGui_ImplOpenGL3_Init("#version 410 core");
         ImGui::StyleColorsDark();
 
         this->transformToShow = nullptr;
@@ -575,10 +575,7 @@ namespace System {
 
                 ImGuiWindow* w = ImGui::GetCurrentWindow();
 
-                ImRect bb(w->DC.CursorPos, {w->DC.CursorPos.x + wSize.x, w->DC.CursorPos.y + wSize.y});
-                // ImGui::Image((ImTextureID)textureColorbuffer, wSize, ImVec2(0, 1), ImVec2(1, 0));
-                drawList->AddRect(bb.Min, bb.Max, ImGui::GetColorU32(ImVec4(0, 0, 0, 0)), 0.0f);
-                drawList->AddImage((ImTextureID)textureColorbuffer, {-1.5, -1.5}, {1.5, 1.5}, ImVec2(0, 0), ImVec2(1, 1));
+                ImGui::Image((ImTextureID)textureColorbuffer, wSize, ImVec2(0, 1), ImVec2(1, 0));
                 drawList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
             ImGui::EndChild();
         ImGui::End();
@@ -594,9 +591,7 @@ namespace System {
                 dList->AddCallback(&useShader, nullptr);
                 ImVec2 size = ImGui::GetWindowSize();
 
-                // ImGui::Image((ImTextureID)textureColorbuffer, wSize, ImVec2(0, 1), ImVec2(1, 0));
-                dList->AddRect(bb.Min, bb.Max, ImGui::GetColorU32(ImVec4(0, 0, 0, 0)), 0.0f);
-                dList->AddImage((ImTextureID)textureColorbuffer, {-1.5, -1.5}, {1.5, 1.5}, ImVec2(0, 0), ImVec2(1, 1));
+                ImGui::Image((ImTextureID)textureColorbuffer, size, ImVec2(0, 1), ImVec2(1, 0));
                 dList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
             ImGui::EndChild();
         ImGui::End();
@@ -605,7 +600,28 @@ namespace System {
     // TODO: Find a way to resize the window
     void Window::useShader(const ImDrawList* asd, const ImDrawCmd* command)
     {
+        ImDrawData* draw_data = ImGui::GetDrawData();
+        float L = draw_data->DisplayPos.x;
+        float R = draw_data->DisplayPos.x + draw_data->DisplaySize.x;
+        float T = draw_data->DisplayPos.y;
+        float B = draw_data->DisplayPos.y + draw_data->DisplaySize.y;
+
+        const float ortho_projection[4][4] =
+        {
+            { 2.0f/(R-L),   0.0f,         0.0f,   0.0f },
+            { 0.0f,         2.0f/(T-B),   0.0f,   0.0f },
+            { 0.0f,         0.0f,        -1.0f,   0.0f },
+            { (R+L)/(L-R),  (T+B)/(B-T),  0.0f,   1.0f },
+        };
+
+        Athena::Matrix4 projection(ortho_projection[0][0],ortho_projection[0][1], ortho_projection[0][2], ortho_projection[0][3],
+                                   ortho_projection[1][0],ortho_projection[1][1], ortho_projection[1][2], ortho_projection[1][3], 
+                                   ortho_projection[2][0],ortho_projection[2][1], ortho_projection[2][2], ortho_projection[2][3],
+                                   ortho_projection[3][0],ortho_projection[3][1], ortho_projection[3][2], ortho_projection[3][3]
+                                );
+
         Window::screenShader->use();
+        Window::screenShader->setMat4("projection", projection);
     }
 
     Window::~Window()
