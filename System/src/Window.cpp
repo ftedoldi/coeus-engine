@@ -570,7 +570,7 @@ namespace System {
         ImGui::Begin("Scene");
             ImGui::BeginChild("Game Render");
                 ImDrawList* drawList = ImGui::GetWindowDrawList();
-                drawList->AddCallback(&useShader, nullptr);
+                drawList->AddCallback(&framebufferShaderCallback, nullptr);
                 ImVec2 wSize = ImGui::GetWindowSize();
 
                 ImGuiWindow* w = ImGui::GetCurrentWindow();
@@ -588,7 +588,7 @@ namespace System {
         ImGui::Begin("Game");
             ImGui::BeginChild("Game Render");
                 ImDrawList* dList = ImGui::GetWindowDrawList();
-                dList->AddCallback(&useShader, nullptr);
+                dList->AddCallback(&framebufferShaderCallback, nullptr);
                 ImVec2 size = ImGui::GetWindowSize();
 
                 ImGui::Image((ImTextureID)textureColorbuffer, size, ImVec2(0, 1), ImVec2(1, 0));
@@ -597,8 +597,7 @@ namespace System {
         ImGui::End();
     }
 
-    // TODO: Find a way to resize the window
-    void Window::useShader(const ImDrawList* asd, const ImDrawCmd* command)
+    void Window::framebufferShaderCallback(const ImDrawList* asd, const ImDrawCmd* command)
     {
         ImDrawData* draw_data = ImGui::GetDrawData();
         float L = draw_data->DisplayPos.x;

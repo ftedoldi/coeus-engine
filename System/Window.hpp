@@ -39,6 +39,8 @@ namespace System {
             Odysseus::Transform* transformToShow;
             std::vector<Component*> inspectorParams;
 
+            static Odysseus::Shader* screenShader;
+
             ImGuiID dockspace_id;
 
             GLuint framebuffer;
@@ -54,10 +56,9 @@ namespace System {
             void initializeImGUI();
             void createDockSpace();
             void initializeFrameBuffer();
-            static void useShader(const ImDrawList*, const ImDrawCmd* command);
+            static void framebufferShaderCallback(const ImDrawList*, const ImDrawCmd* command);
 
         public:
-            static Odysseus::Shader* screenShader;
 
             static GLFWwindow* window;
             static Screen screen;
