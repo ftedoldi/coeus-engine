@@ -12,6 +12,7 @@
 #include <glm/glm.hpp>
 
 #include <IO/Input.hpp>
+#include <Folder.hpp>
 
 #include <SceneGraph.hpp>
 #include <Shader.hpp>
@@ -24,6 +25,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <filesystem>
 
 namespace System {
     struct Screen {
@@ -55,12 +57,18 @@ namespace System {
 
             Console* console;
 
+            std::filesystem::path assetDirectory;
+            std::filesystem::path currentDirectory;
+
             void initializeImGUI();
-            void createDockSpace();
+
             void initializeFrameBuffer();
             void initializeMSAAframebuffer();
             void initializeQuad();
             static void framebufferShaderCallback(const ImDrawList*, const ImDrawCmd* command);
+
+            void createDockSpace();
+            void createContentBrowser();
 
         public:
 

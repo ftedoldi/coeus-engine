@@ -236,6 +236,8 @@ namespace System {
 
         this->console = new Console();
         Debug::mainConsole = this->console;
+        this->assetDirectory = Folder::getFolderPath("Assets");
+        this->currentDirectory = this->assetDirectory;
     }
 
     bool Window::shouldWindowClose()
@@ -531,10 +533,7 @@ namespace System {
         static bool isOpen = true;
 
         console->Draw("Console", &isOpen);
-
-        ImGui::Begin("Project");
-        ImGui::Text("Hello, down!");
-        ImGui::End();
+        createContentBrowser();
 
         ImGui::Begin("Inspector");
             if (this->transformToShow != nullptr) {
@@ -640,6 +639,32 @@ namespace System {
 
         Window::screenShader->use();
         Window::screenShader->setMat4("projection", projection);
+    }
+
+    void Window::createContentBrowser()
+    {
+        ImGui::Begin("Project");
+            if (this->currentDirectory.string() != this->assetDirectory.string())
+                if(ImGui::Button("<-"))
+                    currentDirectory = currentDirectory.parent_path();
+            
+            for (auto& directory : std::filesystem::directory_iterator(currentDirectory)) {
+                auto& path = directory.path();
+                auto relativePath = std::filesystem::relative(path, currentDirectory);
+                std::string filenameString = relativePath.filename().string();
+
+                if(directory.is_directory()) {
+                    if (ImGui::Button(filenameString.c_str(), { 64, 64 }))
+                        currentDirectory = path;
+                }
+                else {
+                    if (ImGui::Button(filenameString.c_str(), { 64, 64 }))
+                        system(path.string().c_str());
+                }
+
+                ImGui::SameLine();
+            }
+        ImGui::End();
     }
 
     Window::~Window()
