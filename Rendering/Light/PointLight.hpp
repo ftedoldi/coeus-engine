@@ -1,5 +1,8 @@
 #ifndef POINTLIGHT_HPP
 #define POINTLIGHT_HPP
+
+#include <Camera.hpp>
+
 #include "Light.hpp"
 
 namespace Odysseus
