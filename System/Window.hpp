@@ -18,6 +18,7 @@
 #include <Shader.hpp>
 #include <Component.hpp>
 #include <Transform.hpp>
+#include <Texture2D.hpp>
 #include <Math.hpp>
 
 #include "Debug.hpp"
@@ -59,6 +60,9 @@ namespace System {
 
             std::filesystem::path assetDirectory;
             std::filesystem::path currentDirectory;
+
+            // Odysseus::Texture2D folderIcon;
+            // Odysseus::Texture2D fileIcon;
 
             void initializeImGUI();
 

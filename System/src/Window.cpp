@@ -236,8 +236,12 @@ namespace System {
 
         this->console = new Console();
         Debug::mainConsole = this->console;
+
         this->assetDirectory = Folder::getFolderPath("Assets");
         this->currentDirectory = this->assetDirectory;
+        // std::cout << (Folder::getFolderPath("Assets").string()) << std::endl;
+        // this->folderIcon = Odysseus::Texture2D::loadTextureFromFile((Folder::getFolderPath("Icons").string() + "/folder.png").c_str());
+        // this->fileIcon = Odysseus::Texture2D::loadTextureFromFile((Folder::getFolderPath("Icons").string() + "/document.png").c_str());
     }
 
     bool Window::shouldWindowClose()
@@ -645,25 +649,70 @@ namespace System {
     {
         ImGui::Begin("Project");
             if (this->currentDirectory.string() != this->assetDirectory.string())
-                if(ImGui::Button("<-"))
+                if (ImGui::ImageButtonEx(
+                                            100,
+                                            (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
+                                                (Folder::getFolderPath("Icons").string() + "/leftArrow.png").c_str()
+                                            ).ID, 
+                                            { 16, 16 },
+                                            { 0, 0 },
+                                            { 1, 1 },
+                                            { 0, 0 },
+                                            { 0, 0, 0, 0 },
+                                            { 1, 1, 1, 1 }
+                                        )
+                )
                     currentDirectory = currentDirectory.parent_path();
             
+            ImGui::Columns(5, 0, false);
+
+            auto index = 0;
+
             for (auto& directory : std::filesystem::directory_iterator(currentDirectory)) {
                 auto& path = directory.path();
                 auto relativePath = std::filesystem::relative(path, currentDirectory);
                 std::string filenameString = relativePath.filename().string();
 
+                ImGui::GetContentRegionAvail();
+
                 if(directory.is_directory()) {
-                    if (ImGui::Button(filenameString.c_str(), { 64, 64 }))
+                    if (ImGui::ImageButtonEx(
+                                                ++index,
+                                                (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
+                                                    (Folder::getFolderPath("Icons").string() + "/folder.png").c_str()
+                                                ).ID, 
+                                                { 64, 64 },
+                                                { 1, 1 },
+                                                { 0, 0 },
+                                                { 0, 0 },
+                                                { 0, 0, 0, 0 },
+                                                { 1, 1, 1, 1 }
+                                            )
+                        )
                         currentDirectory = path;
                 }
                 else {
-                    if (ImGui::Button(filenameString.c_str(), { 64, 64 }))
+                    if (ImGui::ImageButtonEx(
+                                                ++index,
+                                                (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
+                                                    (Folder::getFolderPath("Icons").string() + "/document.png").c_str()
+                                                ).ID, 
+                                                { 64, 64 },
+                                                { 1, 1 },
+                                                { 0, 0 },
+                                                { 0, 0 },
+                                                { 0, 0, 0, 0 },
+                                                { 1, 1, 1, 1 }
+                                            )
+                    )
                         system(path.string().c_str());
                 }
 
-                ImGui::SameLine();
+                ImGui::Text(filenameString.c_str());
+                ImGui::NextColumn();
             }
+
+            ImGui::Columns(1);
         ImGui::End();
     }
 
