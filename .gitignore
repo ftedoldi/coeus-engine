@@ -53,7 +53,7 @@
 *.vsix
 
 # Images
-*.png
+# *.png
 *.jpg
 *.jpeg
 
