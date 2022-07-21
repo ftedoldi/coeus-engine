@@ -44,9 +44,11 @@ namespace System {
             ImGuiID dockspace_id;
 
             GLuint framebuffer;
+            GLuint intermediateFBO;
             GLuint screenVAO, screenVBO;
             GLuint rbo;
             GLuint textureColorbuffer;
+            GLuint textureColorBufferMultisample;
             GLuint texture;
 
             int sizeX, sizeY;
@@ -56,6 +58,8 @@ namespace System {
             void initializeImGUI();
             void createDockSpace();
             void initializeFrameBuffer();
+            void initializeMSAAframebuffer();
+            void initializeQuad();
             static void framebufferShaderCallback(const ImDrawList*, const ImDrawCmd* command);
 
         public:
