@@ -28,6 +28,8 @@
 #include <cmath>
 #include <filesystem>
 
+#include <stb/stb_image.h>
+
 namespace System {
     struct Screen {
         int width;
@@ -61,9 +63,7 @@ namespace System {
             std::filesystem::path assetDirectory;
             std::filesystem::path currentDirectory;
 
-            // Odysseus::Texture2D folderIcon;
-            // Odysseus::Texture2D fileIcon;
-
+            void setWindowIcon();
             void initializeImGUI();
 
             void initializeFrameBuffer();
