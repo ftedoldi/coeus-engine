@@ -30,8 +30,6 @@ namespace System {
 
         auto frameBufferCallback = [](GLFWwindow* window, int w, int h) {
             glViewport(0, 0, w, h);
-            //screen.width = w;
-            //screen.height = h;
         };
 
         Input::mouse.isFirstMovement = true;
@@ -75,6 +73,8 @@ namespace System {
         initializeQuad();
         initializeMSAAframebuffer();
         initializeFrameBuffer();
+        
+        setWindowIcon();
     }
 
     Window::Window(const int& width, const int& height, std::string name, bool cursorDisabled)
@@ -144,6 +144,19 @@ namespace System {
         initializeQuad();
         initializeMSAAframebuffer();
         initializeFrameBuffer();
+
+        setWindowIcon();
+    }
+
+    void Window::setWindowIcon()
+    {
+        GLFWimage icons[1];
+        int w, h, channels;
+        stbi_uc* img = stbi_load("./Icons/gladiator.png", &w, &h, &channels, 0);
+        icons->height = h;
+        icons->width = w;
+        icons[0].pixels = img;
+        glfwSetWindowIcon(this->window, 1, icons);
     }
 
     void Window::initializeQuad()
@@ -225,7 +238,8 @@ namespace System {
 
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
-        io.Fonts->AddFontFromFileTTF(".\\Assets\\Fonts\\Roboto-Regular.ttf", 15.0f);
+        float fontSize = 15;
+        io.Fonts->AddFontFromFileTTF(".\\Assets\\Fonts\\Roboto-Regular.ttf", fontSize);
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
         ImGui::StyleColorsDark();
         ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -239,9 +253,6 @@ namespace System {
 
         this->assetDirectory = Folder::getFolderPath("Assets");
         this->currentDirectory = this->assetDirectory;
-        // std::cout << (Folder::getFolderPath("Assets").string()) << std::endl;
-        // this->folderIcon = Odysseus::Texture2D::loadTextureFromFile((Folder::getFolderPath("Icons").string() + "/folder.png").c_str());
-        // this->fileIcon = Odysseus::Texture2D::loadTextureFromFile((Folder::getFolderPath("Icons").string() + "/document.png").c_str());
     }
 
     bool Window::shouldWindowClose()
@@ -537,6 +548,7 @@ namespace System {
         static bool isOpen = true;
 
         console->Draw("Console", &isOpen);
+        // TODO: find texture icons and add these icons over textures
         createContentBrowser();
 
         ImGui::Begin("Inspector");
@@ -647,70 +659,159 @@ namespace System {
 
     void Window::createContentBrowser()
     {
-        ImGui::Begin("Project");
-            if (this->currentDirectory.string() != this->assetDirectory.string())
-                if (ImGui::ImageButtonEx(
+        static bool isOpen = true;
+        ImGui::Begin("Project", &isOpen, ImGuiWindowFlags_NoScrollbar);
+            ImGui::Columns(2);
+
+            static bool isFirstOpening = true;
+            if (isFirstOpening) 
+            {
+                ImGui::SetColumnWidth(0, ImGui::GetContentRegionAvail().x / 1.8);
+                isFirstOpening = false;
+            }
+
+            ImGui::TextWrapped("My new Col!");
+
+            ImGui::NextColumn();
+            
+            ImGui::BeginChild("Inner", { 0, 0 }, false, ImGuiWindowFlags_NoScrollbar);
+                static float iconScale = 24;
+
+                ImGui::PushStyleColor(ImGuiCol_Button, { 0, 0, 0, 0 });
+                if (this->currentDirectory.string() != this->assetDirectory.string()) {
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.38f, 0.38f, 0.38f, 0.50f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.67f, 0.67f, 0.67f, 0.39f));
+                }
+                else {
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0, 0, 0, 0 });
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0, 0, 0, 0 });
+                }
+
+                ImGui::ImageButtonEx(
                                             100,
                                             (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
                                                 (Folder::getFolderPath("Icons").string() + "/leftArrow.png").c_str()
                                             ).ID, 
-                                            { 16, 16 },
+                                            { iconScale, iconScale },
                                             { 0, 0 },
                                             { 1, 1 },
                                             { 0, 0 },
                                             { 0, 0, 0, 0 },
                                             { 1, 1, 1, 1 }
-                                        )
-                )
-                    currentDirectory = currentDirectory.parent_path();
-            
-            ImGui::Columns(5, 0, false);
+                                    );
+                
+                if (this->currentDirectory.string() != this->assetDirectory.string())
+                    if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+                        currentDirectory = currentDirectory.parent_path();
 
-            auto index = 0;
+                ImGui::SameLine();
 
-            for (auto& directory : std::filesystem::directory_iterator(currentDirectory)) {
-                auto& path = directory.path();
-                auto relativePath = std::filesystem::relative(path, currentDirectory);
-                std::string filenameString = relativePath.filename().string();
+                ImGui::ImageButtonEx(
+                                            100,
+                                            (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
+                                                (Folder::getFolderPath("Icons").string() + "/leftArrow.png").c_str()
+                                            ).ID, 
+                                            { iconScale, iconScale },
+                                            { 1, 1 },
+                                            { 0, 0 },
+                                            { 0, 0 },
+                                            { 0, 0, 0, 0 },
+                                            { 1, 1, 1, 1 }
+                                    );
 
-                ImGui::GetContentRegionAvail();
+                ImGui::SameLine();
 
-                if(directory.is_directory()) {
-                    if (ImGui::ImageButtonEx(
+                ImGui::ImageButtonEx(
+                                            100,
+                                            (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
+                                                (Folder::getFolderPath("Icons").string() + "/rotate.png").c_str()
+                                            ).ID, 
+                                            { iconScale, iconScale },
+                                            { 1, 1 },
+                                            { 0, 0 },
+                                            { 0, 0 },
+                                            { 0, 0, 0, 0 },
+                                            { 1, 1, 1, 1 }
+                                    );
+
+                ImGui::PopStyleColor(3);
+
+                ImGui::SameLine();
+
+                // TODO: Implement filter of folders and files
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.4f, 0.4f, 0.4f, 1.00f));
+                float filterWidth = ImGui::GetContentRegionAvail().x / 4 + 40;
+                ImGuiTextFilter filter;
+                filter.Draw(" ", filterWidth);
+                ImGui::PopStyleColor();
+
+                ImGui::SameLine();
+                
+                ImGui::Text("Assets");
+
+                ImGui::Separator();
+
+                // TODO: move this settings inside a file in order to let the user set his custom values
+                static float padding = 22;
+                static float thumbnailSize = ImGui::GetContentRegionAvail().x / 5;
+
+                float cellSize = thumbnailSize + padding;
+                float panelWidth = ImGui::GetContentRegionAvail().x;
+
+                int columnCount = (int)(panelWidth / cellSize) < 1 ? 1 : (int)(panelWidth / cellSize);
+                ImGui::Columns(columnCount, 0, false);
+
+                auto index = 0;
+
+                for (auto& directory : std::filesystem::directory_iterator(currentDirectory)) {
+                    auto& path = directory.path();
+                    auto relativePath = std::filesystem::relative(path, currentDirectory);
+                    std::string filenameString = relativePath.filename().string();
+
+                    ImGui::PushStyleColor(ImGuiCol_Button, {0, 0, 0, 0});
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.38f, 0.38f, 0.38f, 0.50f));
+                    if(directory.is_directory()) {
+                        ImGui::ImageButtonEx(
                                                 ++index,
                                                 (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
                                                     (Folder::getFolderPath("Icons").string() + "/folder.png").c_str()
                                                 ).ID, 
-                                                { 64, 64 },
+                                                { thumbnailSize, thumbnailSize },
                                                 { 1, 1 },
                                                 { 0, 0 },
-                                                { 0, 0 },
+                                                { 10, 10 },
                                                 { 0, 0, 0, 0 },
                                                 { 1, 1, 1, 1 }
-                                            )
-                        )
-                        currentDirectory = path;
-                }
-                else {
-                    if (ImGui::ImageButtonEx(
-                                                ++index,
-                                                (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                    (Folder::getFolderPath("Icons").string() + "/document.png").c_str()
-                                                ).ID, 
-                                                { 64, 64 },
-                                                { 1, 1 },
-                                                { 0, 0 },
-                                                { 0, 0 },
-                                                { 0, 0, 0, 0 },
-                                                { 1, 1, 1, 1 }
-                                            )
-                    )
-                        system(path.string().c_str());
+                                            );
+                        if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+                            currentDirectory = path;
+                    }
+                    else {
+                        ImGui::ImageButtonEx(
+                                                    ++index,
+                                                    (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
+                                                        (Folder::getFolderPath("Icons").string() + "/document.png").c_str()
+                                                    ).ID, 
+                                                    { thumbnailSize, thumbnailSize },
+                                                    { 1, 1 },
+                                                    { 0, 0 },
+                                                    { 10, 10 },
+                                                    { 0, 0, 0, 0 },
+                                                    { 1, 1, 1, 1 }
+                                            );
+                        if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+                            system(path.string().c_str());
+                    }
+                    ImGui::PopStyleColor(2);
+
+                    ImGui::TextWrapped(filenameString.c_str());
+                    ImGui::NextColumn();
+
+                    ImGui::Dummy({ 100, 0 });
                 }
 
-                ImGui::Text(filenameString.c_str());
-                ImGui::NextColumn();
-            }
+                ImGui::Columns(1);
+            ImGui::EndChild();
 
             ImGui::Columns(1);
         ImGui::End();
