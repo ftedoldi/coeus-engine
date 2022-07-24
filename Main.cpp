@@ -51,8 +51,8 @@ int main()
     auto dLight = dirLight->addComponent<Odysseus::DirectionalLight>();*/
     auto movement = cam->addComponent<CameraMovement>();
     movement->camera = mainCamera;
-    cam->addComponent<CameraMovement>()->camera = cam->getComponent<Odysseus::Camera>();
-    cam->addComponent<Odysseus::Camera>();
+    cam->getComponent<CameraMovement>()->camera = cam->getComponent<Odysseus::Camera>();
+    // cam->addComponent<Odysseus::Camera>();
 
     stbi_set_flip_vertically_on_load(true);
 
