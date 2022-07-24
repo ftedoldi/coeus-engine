@@ -3,6 +3,7 @@
 #include <Vector3.hpp>
 #include <Shader.hpp>
 #include <Component.hpp>
+#include <Camera.hpp>
 
 namespace Odysseus
 {

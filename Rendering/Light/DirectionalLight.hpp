@@ -1,8 +1,6 @@
 #ifndef DIRECTIONALLIGHT_HPP
 #define DIRECTIONALLIGHT_HPP
 
-#include <Camera.hpp>
-
 #include "Light.hpp"
 
 namespace Odysseus
