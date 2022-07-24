@@ -18,6 +18,7 @@
 #include "Test/DummyComponent.hpp"
 #include <PointLight.hpp>
 #include <DirectionalLight.hpp>
+#include <Cubemap.hpp>
 
 #include <iostream>
 #include <vector>
@@ -48,10 +49,10 @@ int main()
     /*Odysseus::SceneObject *dirLight = new Odysseus::SceneObject();
     dirLight->transform->name = "DirectionaLight";
     auto dLight = dirLight->addComponent<Odysseus::DirectionalLight>();*/
-    // auto movement = cam->addComponent<CameraMovement>();
-    // movement->camera = mainCamera;
-    // cam->addComponent<CameraMovement>()->camera = cam->getComponent<Odysseus::Camera>();
-    // cam->addComponent<Odysseus::Camera>();
+    auto movement = cam->addComponent<CameraMovement>();
+    movement->camera = mainCamera;
+    cam->addComponent<CameraMovement>()->camera = cam->getComponent<Odysseus::Camera>();
+    cam->addComponent<Odysseus::Camera>();
 
     stbi_set_flip_vertically_on_load(true);
 
@@ -59,23 +60,24 @@ int main()
     Odysseus::Shader* modelShader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
     //Odysseus::Shader lightShader(".\\Shader\\lightShader.vert", ".\\Shader\\lightShader.frag");
 
-    Odysseus::Model myModel("Assets/Models/cube/untitled.obj", modelShader);
-    // Odysseus::Model lightModel("Assets/Models/cubeCentered/cubeCentered.obj", &lightShader);
+    Odysseus::Model myModel("Assets/Models/cubeCentered/cubeCentered.obj", modelShader);
+    //Odysseus::Model lightModel("Assets/Models/cubeCentered/cubeCentered.obj", &lightShader);
 
-    pLight->setPosition(Athena::Vector3(1, 1, 2));
+    pLight->setPosition(Athena::Vector3(0.0f, 2.0f, 0.0f));
     pLight->setShader(modelShader);
     pLight->setAmbient(Athena::Vector3(0.2f, 0.2f, 0.2f));
     pLight->setDiffuse(Athena::Vector3(0.8f, 0.8f, 0.8f));
-    pLight->setSpecular(Athena::Vector3(0.5f, 0.5f, 0.5f));
+    pLight->setSpecular(Athena::Vector3(1.0f, 1.0f, 1.0f));
     pLight->setConstant(1.0f);
     pLight->setLinear(0.09f);
     pLight->setQuadratic(0.032f);
 
-    /*dLight->setShader(&modelShader);
+    /*dLight->setShader(modelShader);
     dLight->setAmbient(Athena::Vector3(0.2f, 0.2f, 0.2f));
-    dLight->setDiffuse(Athena::Vector3(0.8f, 0.8f, 0.8f));
+    dLight->setDiffuse(Athena::Vector3(0.5f, 0.5f, 0.5f));
     dLight->setSpecular(Athena::Vector3(0.5f, 0.5f, 0.5f));
-    dLight->setDirection(Athena::Vector3(-0.2f, -1.0f, -0.3f));*/
+    dLight->setDirection(Athena::Vector3(0.0f, -1.0f, 0.0f));*/
+    Odysseus::Cubemap skyBox;
 
     Odysseus::SceneGraph::initializeScene();
 
@@ -86,9 +88,11 @@ int main()
         // render
         // ------
         window->clear();
-
+        
         Odysseus::SceneGraph::drawScene();
 
+        skyBox.update();
+        
         window->update();
     }
 
