@@ -20,6 +20,7 @@ namespace Athena
     public:
         Scalar data[3 * 3];
         Matrix3();
+        Matrix3(Vector3& vec1, Vector3& vec2, Vector3& vec3);
         Matrix3(const Matrix2& mat);
         Matrix3(const Matrix3& mat);
         Matrix3(const Scalar& v1, const Scalar& v2, const Scalar& v3,

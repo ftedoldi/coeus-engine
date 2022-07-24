@@ -1,4 +1,4 @@
-#include "../Material.hpp"
+#include "../PhongMaterial.hpp"
 
 namespace Odysseus
 {
@@ -22,7 +22,7 @@ namespace Odysseus
 
     void Material::loadShaderTexture(Odysseus::Shader* shader)
     {
-        shader->setFloat("material.shininess", this->Shininess);
+        //shader->setFloat("material.shininess", this->Shininess);
         for(GLuint i = 0; i < this->Textures.size(); ++i)
             {
                 //activate texture
@@ -38,12 +38,11 @@ namespace Odysseus
                     case aiTextureType_SPECULAR:
                         name = "material.specularTex";
                         break;
-                    case aiTextureType_HEIGHT:
-                        name = "material.heightTex";
-                        break;
                     case aiTextureType_AMBIENT:
                         name = "material.ambientTex";
                         break;
+                    case aiTextureType_NORMALS:
+                        name = "material.normalTex";
                     default:
                         break;
                 }

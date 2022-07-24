@@ -8,6 +8,7 @@
 #include <Component.hpp>
 #include <Camera.hpp>
 #include <Tree.hpp>
+#include <PhysicsMaterial.hpp>
 
 #include "Mesh.hpp"
 #include "../Texture/Texture2D.hpp"
@@ -45,6 +46,9 @@ namespace Odysseus
 
         void setMeshTextures(aiMaterial* material, Material& mat);
         void setMeshMaterials(aiMaterial* material, Material& mat);
+
+        void setMeshPBRtextures(aiMaterial* material, PhysicsMaterial& mat);
+        void setMeshPBRmaterial(aiMaterial* material, PhysicsMaterial& mat);
         void processMesh(aiMesh* mesh, const aiScene* scene, SceneObject* sceneObject);
         void processNode(aiNode* node, const aiScene* scene);   
 

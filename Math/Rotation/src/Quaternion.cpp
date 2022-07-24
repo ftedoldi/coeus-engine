@@ -138,10 +138,8 @@ namespace Athena {
         return q;
     }
 
-    Quaternion Quaternion::matToQuatCast(Matrix4& matrix)
+    Quaternion Quaternion::matToQuatCast(Matrix3& mat)
     {
-        Matrix3 mat = Matrix4::toMatrix3(matrix);
-
         Scalar fourXSquaredMinus1 = mat.data[0] - mat.data[4] - mat.data[8];
 		Scalar fourYSquaredMinus1 = mat.data[4] - mat.data[0] - mat.data[8];
 		Scalar fourZSquaredMinus1 = mat.data[8] - mat.data[0] - mat.data[4];
@@ -182,6 +180,12 @@ namespace Athena {
 			assert(false);
 			return Quaternion(0, 0, 0, 1);
 		}
+    }
+
+    Quaternion Quaternion::matToQuatCast(Matrix4& matrix)
+    {
+        Matrix3 mat = Matrix4::toMatrix3(matrix);
+        return matToQuatCast(mat);
     }
 
     Matrix3 Quaternion::QuaternionToMatrx3(const Quaternion& quaternion) {

@@ -56,27 +56,19 @@ namespace Odysseus
             std::cout << "Has texture specular" << std::endl;
             mat.Textures.insert(mat.Textures.end(), specularMaps.begin(), specularMaps.end());
         }
-        //normal
-        if(material->GetTextureCount(aiTextureType_HEIGHT) > 0)
-        {
-            std::vector<Texture2D> normalMaps = loadTexture(material, aiTextureType_HEIGHT);
-            std::cout << "Has texture height" << std::endl;
-            mat.Textures.insert(mat.Textures.end(), normalMaps.begin(), normalMaps.end());
-        }
-        //height
+        //ambient
         if(material->GetTextureCount(aiTextureType_AMBIENT) > 0)
         {
-            std::vector<Texture2D> heightMaps = loadTexture(material, aiTextureType_AMBIENT);
+            std::vector<Texture2D> ambientMaps = loadTexture(material, aiTextureType_AMBIENT);
             std::cout << "Has texture ambient" << std::endl;
-            mat.Textures.insert(mat.Textures.end(), heightMaps.begin(), heightMaps.end());
+            mat.Textures.insert(mat.Textures.end(), ambientMaps.begin(), ambientMaps.end());
         }
 
-        if(material->GetTextureCount(aiTextureType_SHININESS) > 0)
+        if(material->GetTextureCount(aiTextureType_NORMALS) > 0)
         {
-            std::vector<Texture2D> shininessMaps = loadTexture(material, aiTextureType_SHININESS);
-            std::cout << "Has texture shininess" << std::endl;
-            mat.Textures.insert(mat.Textures.end(), shininessMaps.begin(), shininessMaps.end());
-            
+            std::vector<Texture2D> normalMap = loadTexture(material, aiTextureType_NORMALS);
+            std::cout << "Has texture NORMAL" << std::endl;
+            mat.Textures.insert(mat.Textures.end(), normalMap.begin(), normalMap.end());
         }
         std::cout <<"Textures size: "<< mat.Textures.size() << std::endl;
     }
@@ -97,6 +89,60 @@ namespace Odysseus
 
         if(AI_SUCCESS == material->Get(AI_MATKEY_COLOR_SPECULAR, specular))
             mat.Specular = Athena::Vector3(specular.r, specular.g, specular.b);
+    }
+
+    void Model::setMeshPBRtextures(aiMaterial* material, PhysicsMaterial& mat)
+    {
+        if(material->GetTextureCount(aiTextureType_BASE_COLOR) > 0)
+        {
+            std::cout << "Has texture albedo" << std::endl;
+            std::vector<Texture2D> albedoMap = loadTexture(material, aiTextureType_BASE_COLOR);
+            mat.PBR_textures.insert(mat.PBR_textures.end(), albedoMap.begin(), albedoMap.end());
+        }
+
+        if(material->GetTextureCount(aiTextureType_HEIGHT) > 0)
+        {
+            std::cout << "Has texture normal" << std::endl;
+            std::vector<Texture2D> normalMap = loadTexture(material, aiTextureType_HEIGHT);
+            mat.PBR_textures.insert(mat.PBR_textures.end(), normalMap.begin(), normalMap.end());
+        }
+
+        if(material->GetTextureCount(aiTextureType_METALNESS) > 0)
+        {
+            std::cout << "Has texture metalness" << std::endl;
+            std::vector<Texture2D> metalnessMap = loadTexture(material, aiTextureType_METALNESS);
+            mat.PBR_textures.insert(mat.PBR_textures.end(), metalnessMap.begin(), metalnessMap.end());
+        }
+
+        if(material->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS) > 0)
+        {
+            std::cout << "Has texture roughness" << std::endl;
+            std::vector<Texture2D> roughnessMap = loadTexture(material, aiTextureType_DIFFUSE_ROUGHNESS);
+            mat.PBR_textures.insert(mat.PBR_textures.end(), roughnessMap.begin(), roughnessMap.end());
+        }
+
+        if(material->GetTextureCount(aiTextureType_AMBIENT_OCCLUSION) > 0)
+        {
+            std::cout << "Has texture AO" << std::endl;
+            std::vector<Texture2D> AOMap = loadTexture(material, aiTextureType_AMBIENT_OCCLUSION);
+            mat.PBR_textures.insert(mat.PBR_textures.end(), AOMap.begin(), AOMap.end());
+        }
+    }
+
+    void Model::setMeshPBRmaterial(aiMaterial* material, PhysicsMaterial& mat)
+    {
+        aiColor3D color;
+        float metallic;
+        float roughness;
+
+        if(AI_SUCCESS == material->Get(AI_MATKEY_BASE_COLOR, color))
+            mat.color = Athena::Vector3(color.r, color.g, color.b);
+        
+        if(AI_SUCCESS == material->Get(AI_MATKEY_METALLIC_FACTOR, metallic))
+            mat.metallic = metallic;
+        
+        if(AI_SUCCESS == material->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughness))
+            mat.roughness = roughness;
     }
 
     void Model::processMesh(aiMesh *mesh, const aiScene *scene, SceneObject* obj)

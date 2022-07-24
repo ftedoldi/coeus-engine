@@ -7,7 +7,7 @@
 #include <Camera.hpp> 
 #include <vector>
 #include "../Texture/Texture2D.hpp"
-#include "../Material.hpp"
+#include "../PhongMaterial.hpp"
 
 namespace Odysseus
 {

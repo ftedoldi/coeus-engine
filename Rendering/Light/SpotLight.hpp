@@ -1,8 +1,6 @@
 #ifndef SPOTLIGHT_HPP
 #define SPOTLIGHT_HPP
 
-#include <Camera.hpp>
-
 #include "Light.hpp"
 
 namespace Odysseus

@@ -14,6 +14,8 @@ void CameraMovement::start()
 
     this->mouseSensitivity = .2f;
 
+    this->yValue = 0.0f;
+
     xMousePos = System::Input::mouse.xPosition;
     yMousePos = System::Input::mouse.yPosition;
 }
@@ -31,10 +33,17 @@ void CameraMovement::update()
     if (glfwGetKey(System::Window::window, GLFW_KEY_D) == GLFW_PRESS)
         camera->transform->position += camera->Right * movementSpeed * System::Time::deltaTime;
     if (glfwGetKey(System::Window::window, GLFW_KEY_Q) == GLFW_PRESS)
+    {
         camera->transform->position += Athena::Vector3::up() * movementSpeed * System::Time::deltaTime;
+        yValue = camera->transform->position.coordinates.y;
+    }
     if (glfwGetKey(System::Window::window, GLFW_KEY_E) == GLFW_PRESS)
+    {
         camera->transform->position -= Athena::Vector3::up() * movementSpeed * System::Time::deltaTime;
-
+        yValue = camera->transform->position.coordinates.y;
+    }
+        
+    camera->transform->position.coordinates.y = yValue;
     yaw += (System::Input::mouse.xPosition - xMousePos) * mouseSensitivity;
     pitch += (yMousePos - System::Input::mouse.yPosition) * mouseSensitivity;
 

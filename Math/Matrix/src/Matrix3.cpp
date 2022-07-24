@@ -18,6 +18,19 @@ namespace Athena
         data[6] = v7; data[7] = v8; data[8] = v9;
     }
 
+    Matrix3::Matrix3(Vector3& vec1, Vector3& vec2, Vector3& vec3)
+    {
+        data[0] = vec1.coordinates.x;
+        data[1] = vec2.coordinates.x;
+        data[2] = vec3.coordinates.x;
+        data[3] = vec1.coordinates.y;
+        data[4] = vec2.coordinates.y;
+        data[5] = vec3.coordinates.y;
+        data[6] = vec1.coordinates.z;
+        data[7] = vec2.coordinates.z;
+        data[8] = vec3.coordinates.z;
+    }
+
     Matrix3::Matrix3(const Matrix2& mat)
     {
         data[0] = mat.data[0];

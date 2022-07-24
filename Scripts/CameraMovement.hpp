@@ -27,6 +27,8 @@ class CameraMovement : public System::Behaviour {
         Athena::Scalar yaw;
         Athena::Scalar pitch;
 
+        Athena::Scalar yValue;
+
         CameraMovement();
 
         virtual void start();
