@@ -13,7 +13,7 @@ namespace Odysseus
 
         this->shader->use();
 
-        auto tmp = Odysseus::Camera::main->getViewTransform(this->transform);;
+        auto tmp = Odysseus::Camera::main->getViewTransform(this->transform);
 
         this->shader->setVec3("position", tmp->position);
         this->shader->setVec4("rotation", tmp->rotation.asVector4());
