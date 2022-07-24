@@ -76,6 +76,7 @@ namespace Odysseus
         auto tmp = Odysseus::Camera::main->getViewTransform(this->transform);
         shader->use();
         
+        shader->setVec3("pointLightPos", tmp->position);
         shader->setVec3("pointLight.diffuse", this->_diffuse);
         shader->setVec3("pointLight.specular", this->_specular);
         shader->setVec3("pointLight.ambient", this->_ambient);
