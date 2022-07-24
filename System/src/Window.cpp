@@ -659,8 +659,7 @@ namespace System {
 
     void Window::createContentBrowser()
     {
-        static bool isOpen = true;
-        ImGui::Begin("Project", &isOpen, ImGuiWindowFlags_NoScrollbar);
+        ImGui::Begin("Project", NULL, ImGuiWindowFlags_NoScrollbar);
             ImGui::Columns(2);
 
             static bool isFirstOpening = true;
