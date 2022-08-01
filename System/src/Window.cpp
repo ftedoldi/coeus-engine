@@ -379,6 +379,9 @@ namespace System {
         style.Colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
         style.Colors[ImGuiCol_NavWindowingDimBg]     = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
         style.Colors[ImGuiCol_ModalWindowDimBg]      = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+        style.Colors[ImGuiCol_Header]                = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+        style.Colors[ImGuiCol_HeaderHovered]         = ImVec4(0.38f, 0.38f, 0.38f, 1.00f);
+        style.Colors[ImGuiCol_HeaderActive]          = ImVec4(0.67f, 0.67f, 0.67f, 0.39f);
 
         style.WindowRounding    = 2.0f;
         style.ChildRounding     = 2.0f;
@@ -657,8 +660,14 @@ namespace System {
         Window::screenShader->setMat4("projection", projection);
     }
 
+    // TODO: Fix forward button bug
     void Window::createContentBrowser()
     {
+        static int actionIndex = 0;
+        static std::vector<std::filesystem::path> actions = { this->assetDirectory };
+
+        static ImGuiTextFilter filter;
+        
         ImGui::Begin("Project", NULL, ImGuiWindowFlags_NoScrollbar);
             ImGui::Columns(2);
 
@@ -669,7 +678,12 @@ namespace System {
                 isFirstOpening = false;
             }
 
-            ImGui::TextWrapped("My new Col!");
+            if(ImGui::CollapsingHeader(this->assetDirectory.filename().string().c_str())) {
+                if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+                    this->currentDirectory = this->assetDirectory;
+                }
+                dfsOverFolders(this->assetDirectory);
+            }
 
             ImGui::NextColumn();
             
@@ -700,8 +714,11 @@ namespace System {
                                     );
                 
                 if (this->currentDirectory.string() != this->assetDirectory.string())
-                    if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+                    if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
                         currentDirectory = currentDirectory.parent_path();
+
+                        actionIndex -= 1;
+                    }
 
                 ImGui::SameLine();
 
@@ -718,6 +735,10 @@ namespace System {
                                             { 1, 1, 1, 1 }
                                     );
 
+                if (actions.size() > 1 && (actionIndex + 1) < actions.size())
+                    if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+                        currentDirectory = actions[++actionIndex];
+
                 ImGui::SameLine();
 
                 ImGui::ImageButtonEx(
@@ -732,6 +753,9 @@ namespace System {
                                             { 0, 0, 0, 0 },
                                             { 1, 1, 1, 1 }
                                     );
+                
+                if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+                    std::fill_n(filter.InputBuf, 256, 0);
 
                 ImGui::PopStyleColor(3);
 
@@ -740,8 +764,12 @@ namespace System {
                 // TODO: Implement filter of folders and files
                 ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.4f, 0.4f, 0.4f, 1.00f));
                 float filterWidth = ImGui::GetContentRegionAvail().x / 4 + 40;
-                ImGuiTextFilter filter;
                 filter.Draw(" ", filterWidth);
+                static std::string filterContent(filter.InputBuf);
+                filterContent = filter.InputBuf;
+                std::for_each(filterContent.begin(), filterContent.end(), [](char & c) {
+                    c = ::tolower(c);
+                });
                 ImGui::PopStyleColor();
 
                 ImGui::SameLine();
@@ -752,7 +780,7 @@ namespace System {
 
                 // TODO: move this settings inside a file in order to let the user set his custom values
                 static float padding = 22;
-                static float thumbnailSize = ImGui::GetContentRegionAvail().x / 5;
+                static float thumbnailSize = ImGui::GetContentRegionAvail().x / 9;
 
                 float cellSize = thumbnailSize + padding;
                 float panelWidth = ImGui::GetContentRegionAvail().x;
@@ -766,10 +794,14 @@ namespace System {
                     auto& path = directory.path();
                     auto relativePath = std::filesystem::relative(path, currentDirectory);
                     std::string filenameString = relativePath.filename().string();
+                    std::string lowercaseFilenameString(filenameString);
+                    std::for_each(lowercaseFilenameString.begin(), lowercaseFilenameString.end(), [](char & c) {
+                        c = ::tolower(c);
+                    });
 
                     ImGui::PushStyleColor(ImGuiCol_Button, {0, 0, 0, 0});
                     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.38f, 0.38f, 0.38f, 0.50f));
-                    if(directory.is_directory()) {
+                    if(directory.is_directory() && (lowercaseFilenameString.find(filterContent) != std::string::npos)) {
                         ImGui::ImageButtonEx(
                                                 ++index,
                                                 (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
@@ -783,9 +815,19 @@ namespace System {
                                                 { 1, 1, 1, 1 }
                                             );
                         if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+                        {
                             currentDirectory = path;
+                         
+                            if (actionIndex == 0 && actions.size() > 1) {
+                                actions.clear();
+                                actions.push_back(this->assetDirectory);
+                            }
+
+                            actions.push_back(path);
+                            actionIndex += 1;
+                        }
                     }
-                    else {
+                    else if (lowercaseFilenameString.find(filterContent) != std::string::npos){
                         ImGui::ImageButtonEx(
                                                     ++index,
                                                     (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
@@ -803,10 +845,11 @@ namespace System {
                     }
                     ImGui::PopStyleColor(2);
 
-                    ImGui::TextWrapped(filenameString.c_str());
-                    ImGui::NextColumn();
+                    if (lowercaseFilenameString.find(filterContent) != std::string::npos) {
+                        ImGui::TextWrapped(filenameString.c_str());
+                        ImGui::NextColumn();
+                    }
 
-                    ImGui::Dummy({ 100, 0 });
                 }
 
                 ImGui::Columns(1);
@@ -814,6 +857,45 @@ namespace System {
 
             ImGui::Columns(1);
         ImGui::End();
+    }
+
+    void Window::dfsOverFolders(std::filesystem::path sourceFolder, int index)
+    {
+        for (auto& directory : std::filesystem::directory_iterator(sourceFolder)) {
+            float marginX = 15.0f * static_cast<float>(index);
+            if (directory.is_directory()) {
+                ImGui::Dummy({ marginX, 0 });
+                ImGui::SameLine();
+                
+                if (countNestedFolders(directory.path()) > 0) {
+                    bool isOpen = ImGui::CollapsingHeader(directory.path().filename().string().c_str());
+                    if (!isOpen && ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+                            this->currentDirectory = directory.path();
+                    }
+                    if(isOpen) {
+                        dfsOverFolders(directory.path(), index + 1);
+                    }
+                }
+                else {
+                    ImGui::CollapsingHeader(directory.path().filename().string().c_str(), ImGuiTreeNodeFlags_Bullet);
+                    if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+                        this->currentDirectory = directory.path();
+                    }
+                }
+            }
+        }
+    }
+
+    int Window::countNestedFolders(std::filesystem::path sourceFolder)
+    {
+        auto counter = 0;
+
+        for (auto& directory : std::filesystem::directory_iterator(sourceFolder)) {
+            if (directory.is_directory())
+                ++counter;
+        }
+
+        return counter;
     }
 
     Window::~Window()

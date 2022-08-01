@@ -27,6 +27,9 @@
 #include <string>
 #include <cmath>
 #include <filesystem>
+#include <vector>
+#include <algorithm>
+#include <random>
 
 #include <stb/stb_image.h>
 
@@ -73,6 +76,9 @@ namespace System {
 
             void createDockSpace();
             void createContentBrowser();
+
+            void dfsOverFolders(std::filesystem::path sourceFolder, int index = 1);
+            int countNestedFolders(std::filesystem::path sourceFolder);
 
         public:
 
