@@ -152,7 +152,7 @@ namespace System {
     {
         GLFWimage icons[1];
         int w, h, channels;
-        stbi_uc* img = stbi_load("./Icons/gladiator.png", &w, &h, &channels, 0);
+        stbi_uc* img = stbi_load("./Resources/gladiator.png", &w, &h, &channels, 0);
         icons->height = h;
         icons->width = w;
         icons[0].pixels = img;
