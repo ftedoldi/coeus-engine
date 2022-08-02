@@ -2,16 +2,16 @@
 
 namespace Odysseus
 {
-    Material::Material(): Diffuse(Athena::Vector3(0.0f, 0.0f, 0.0f)), Specular(Athena::Vector3(0.0f, 0.0f, 0.0f)),
+    PhongMaterial::PhongMaterial(): Diffuse(Athena::Vector3(0.0f, 0.0f, 0.0f)), Specular(Athena::Vector3(0.0f, 0.0f, 0.0f)),
                         Ambient(Athena::Vector3(0.0f, 0.0f, 0.0f)), Shininess(0.0f){}
 
-    Material::Material(Athena::Vector3& diffuse, Athena::Vector3& specular, Athena::Vector3& ambient, float shininess) :
+    PhongMaterial::PhongMaterial(Athena::Vector3& diffuse, Athena::Vector3& specular, Athena::Vector3& ambient, float shininess) :
     Diffuse(diffuse), Specular(specular), Ambient(ambient), Shininess(shininess) {}
 
-    Material::Material(std::vector<Texture2D>& textures) : Textures(textures)
+    PhongMaterial::PhongMaterial(std::vector<Texture2D>& textures) : Textures(textures)
     {}
 
-    void Material::loadShaderMaterial(Odysseus::Shader* shader)
+    void PhongMaterial::loadShaderMaterial(Odysseus::Shader* shader)
     {
         shader->setVec3("material.diffuse", this->Diffuse);
         shader->setVec3("material.specular", this->Specular);
@@ -20,7 +20,7 @@ namespace Odysseus
         shader->setBool("hasTexture", false);
     }
 
-    void Material::loadShaderTexture(Odysseus::Shader* shader)
+    void PhongMaterial::loadShaderTexture(Odysseus::Shader* shader)
     {
         //shader->setFloat("material.shininess", this->Shininess);
         for(GLuint i = 0; i < this->Textures.size(); ++i)

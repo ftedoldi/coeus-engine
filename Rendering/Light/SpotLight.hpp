@@ -31,6 +31,7 @@ namespace Odysseus
             void setPosition(Athena::Vector3& position);
             void setDirection(Athena::Vector3& direction);
             void setCutOff(float cutOff);
+            void setSpotExponent(float spotExp);
 
             void setLightShader(Odysseus::Shader* shader) const;
 

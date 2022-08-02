@@ -394,7 +394,7 @@ namespace System {
                 ImGui::ImageButtonEx(
                                             100,
                                             (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                (Folder::getFolderPath("Icons").string() + "/leftArrow.png").c_str()
+                                                (Folder::getFolderPath("Icons").string() + "/leftArrow.png").c_str(), false
                                             ).ID, 
                                             { iconScale, iconScale },
                                             { 0, 0 },
@@ -416,7 +416,7 @@ namespace System {
                 ImGui::ImageButtonEx(
                                             100,
                                             (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                (Folder::getFolderPath("Icons").string() + "/leftArrow.png").c_str()
+                                                (Folder::getFolderPath("Icons").string() + "/leftArrow.png").c_str(), false
                                             ).ID, 
                                             { iconScale, iconScale },
                                             { 1, 1 },
@@ -435,7 +435,7 @@ namespace System {
                 ImGui::ImageButtonEx(
                                             100,
                                             (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                (Folder::getFolderPath("Icons").string() + "/rotate.png").c_str()
+                                                (Folder::getFolderPath("Icons").string() + "/rotate.png").c_str(), false
                                             ).ID, 
                                             { iconScale, iconScale },
                                             { 1, 1 },
@@ -496,7 +496,7 @@ namespace System {
                         ImGui::ImageButtonEx(
                                                 ++index,
                                                 (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                    (Folder::getFolderPath("Icons").string() + "/folder.png").c_str()
+                                                    (Folder::getFolderPath("Icons").string() + "/folder.png").c_str(), false
                                                 ).ID, 
                                                 { thumbnailSize, thumbnailSize },
                                                 { 1, 1 },
@@ -522,7 +522,7 @@ namespace System {
                         ImGui::ImageButtonEx(
                                                     ++index,
                                                     (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                        (Folder::getFolderPath("Icons").string() + "/document.png").c_str()
+                                                        (Folder::getFolderPath("Icons").string() + "/document.png").c_str(), false
                                                     ).ID, 
                                                     { thumbnailSize, thumbnailSize },
                                                     { 1, 1 },

@@ -7,7 +7,7 @@
 
 namespace Odysseus
 {
-    class Material
+    class PhongMaterial
     {
     public:
         Athena::Vector3 Diffuse;
@@ -16,9 +16,9 @@ namespace Odysseus
         float Shininess;
         std::vector<Texture2D> Textures;
 
-        Material();
-        Material(Athena::Vector3& diffuse, Athena::Vector3& specular, Athena::Vector3& ambient, float shininess);
-        Material(std::vector<Texture2D>& textures);
+        PhongMaterial();
+        PhongMaterial(Athena::Vector3& diffuse, Athena::Vector3& specular, Athena::Vector3& ambient, float shininess);
+        PhongMaterial(std::vector<Texture2D>& textures);
 
         void loadShaderMaterial(Odysseus::Shader* shader);
         void loadShaderTexture(Odysseus::Shader* shader);

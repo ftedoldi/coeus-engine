@@ -10,7 +10,7 @@ namespace Odysseus
     void Model::loadModel(const std::string& path)
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace /*| aiProcess_FlipUVs*/);
+        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace /*| aiProcess_FlipUVs*/);
         //checking for errors in the scene creation
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
@@ -41,39 +41,43 @@ namespace Odysseus
         }
     }
 
-    void Model::setMeshTextures(aiMaterial* material, Material& mat)
+    void Model::setMeshTextures(aiMaterial* material, PhongMaterial& mat)
     {
         //diffuse
         if(material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
         {
-            std::vector<Texture2D> diffuseMaps = loadTexture(material, aiTextureType_DIFFUSE);
+            this->_gammaCorrect = true;
+            std::vector<Texture2D> diffuseMaps = loadTexture(material, aiTextureType_DIFFUSE, this->_gammaCorrect);
             mat.Textures.insert(mat.Textures.end(), diffuseMaps.begin(), diffuseMaps.end());
         }
         //specular
         if(material->GetTextureCount(aiTextureType_SPECULAR) > 0)
         {
-            std::vector<Texture2D> specularMaps = loadTexture(material, aiTextureType_SPECULAR);
+            this->_gammaCorrect = false;
+            std::vector<Texture2D> specularMaps = loadTexture(material, aiTextureType_SPECULAR, this->_gammaCorrect);
             std::cout << "Has texture specular" << std::endl;
             mat.Textures.insert(mat.Textures.end(), specularMaps.begin(), specularMaps.end());
         }
         //ambient
         if(material->GetTextureCount(aiTextureType_AMBIENT) > 0)
         {
-            std::vector<Texture2D> ambientMaps = loadTexture(material, aiTextureType_AMBIENT);
+            this->_gammaCorrect = true;
+            std::vector<Texture2D> ambientMaps = loadTexture(material, aiTextureType_AMBIENT, this->_gammaCorrect);
             std::cout << "Has texture ambient" << std::endl;
             mat.Textures.insert(mat.Textures.end(), ambientMaps.begin(), ambientMaps.end());
         }
 
         if(material->GetTextureCount(aiTextureType_NORMALS) > 0)
         {
-            std::vector<Texture2D> normalMap = loadTexture(material, aiTextureType_NORMALS);
+            this->_gammaCorrect = false;
+            std::vector<Texture2D> normalMap = loadTexture(material, aiTextureType_NORMALS, this->_gammaCorrect);
             std::cout << "Has texture NORMAL" << std::endl;
             mat.Textures.insert(mat.Textures.end(), normalMap.begin(), normalMap.end());
         }
         std::cout <<"Textures size: "<< mat.Textures.size() << std::endl;
     }
 
-    void Model::setMeshMaterials(aiMaterial* material, Material& mat)
+    void Model::setMeshMaterials(aiMaterial* material, PhongMaterial& mat)
     {
         aiColor3D diffuse, ambient, specular;
         float shininess;
@@ -93,38 +97,43 @@ namespace Odysseus
 
     void Model::setMeshPBRtextures(aiMaterial* material, PhysicsMaterial& mat)
     {
-        if(material->GetTextureCount(aiTextureType_BASE_COLOR) > 0)
+        if(material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
         {
+            this->_gammaCorrect = true;
             std::cout << "Has texture albedo" << std::endl;
-            std::vector<Texture2D> albedoMap = loadTexture(material, aiTextureType_BASE_COLOR);
+            std::vector<Texture2D> albedoMap = loadTexture(material, aiTextureType_DIFFUSE, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), albedoMap.begin(), albedoMap.end());
         }
 
-        if(material->GetTextureCount(aiTextureType_HEIGHT) > 0)
+        if(material->GetTextureCount(aiTextureType_NORMALS) > 0)
         {
+            this->_gammaCorrect = false;
             std::cout << "Has texture normal" << std::endl;
-            std::vector<Texture2D> normalMap = loadTexture(material, aiTextureType_HEIGHT);
+            std::vector<Texture2D> normalMap = loadTexture(material, aiTextureType_NORMALS, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), normalMap.begin(), normalMap.end());
         }
 
         if(material->GetTextureCount(aiTextureType_METALNESS) > 0)
         {
+            this->_gammaCorrect = false;
             std::cout << "Has texture metalness" << std::endl;
-            std::vector<Texture2D> metalnessMap = loadTexture(material, aiTextureType_METALNESS);
+            std::vector<Texture2D> metalnessMap = loadTexture(material, aiTextureType_METALNESS, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), metalnessMap.begin(), metalnessMap.end());
         }
 
         if(material->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS) > 0)
         {
+            this->_gammaCorrect = false;
             std::cout << "Has texture roughness" << std::endl;
-            std::vector<Texture2D> roughnessMap = loadTexture(material, aiTextureType_DIFFUSE_ROUGHNESS);
+            std::vector<Texture2D> roughnessMap = loadTexture(material, aiTextureType_DIFFUSE_ROUGHNESS, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), roughnessMap.begin(), roughnessMap.end());
         }
 
         if(material->GetTextureCount(aiTextureType_AMBIENT_OCCLUSION) > 0)
         {
+            this->_gammaCorrect = false;
             std::cout << "Has texture AO" << std::endl;
-            std::vector<Texture2D> AOMap = loadTexture(material, aiTextureType_AMBIENT_OCCLUSION);
+            std::vector<Texture2D> AOMap = loadTexture(material, aiTextureType_AMBIENT_OCCLUSION, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), AOMap.begin(), AOMap.end());
         }
     }
@@ -135,14 +144,23 @@ namespace Odysseus
         float metallic;
         float roughness;
 
-        if(AI_SUCCESS == material->Get(AI_MATKEY_BASE_COLOR, color))
-            mat.color = Athena::Vector3(color.r, color.g, color.b);
+        if(AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, color))
+        {
+            std::cout << "Has MATERIAL COLOR" << std::endl;
+            mat.albedo = Athena::Vector3(color.r, color.g, color.b);
+        }
         
         if(AI_SUCCESS == material->Get(AI_MATKEY_METALLIC_FACTOR, metallic))
+        {
+            std::cout << "Has MATERIAL METALLIC" << std::endl;
             mat.metallic = metallic;
-        
+        }
+            
         if(AI_SUCCESS == material->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughness))
+        {
+            std::cout << "Has MATERIAL ROUGHNESS" << std::endl;
             mat.roughness = roughness;
+        }
     }
 
     void Model::processMesh(aiMesh *mesh, const aiScene *scene, SceneObject* obj)
@@ -183,11 +201,6 @@ namespace Odysseus
                 vector.coordinates.y = mesh->mTangents[i].y;
                 vector.coordinates.z = mesh->mTangents[i].z;
                 vertex.Tangent = vector;
-                // bitangent
-                vector.coordinates.x = mesh->mBitangents[i].x;
-                vector.coordinates.y = mesh->mBitangents[i].y;
-                vector.coordinates.z = mesh->mBitangents[i].z;
-                vertex.Bitangent = vector;
             }
             else{
                 vertex.TexCoords = Athena::Vector2(0.0f, 0.0f);
@@ -208,19 +221,27 @@ namespace Odysseus
 
         //process materials
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-        Material mat;
-        setMeshTextures(material, mat);
-        setMeshMaterials(material, mat);
+        //PhongMaterial mat;
+        //setMeshTextures(material, mat);
+        //setMeshMaterials(material, mat);
+        PhysicsMaterial physMat;
+        setMeshPBRtextures(material, physMat);
+        setMeshPBRmaterial(material, physMat);
 
         auto objMesh = obj->addComponent<Odysseus::Mesh>();
         objMesh->setShader(this->shader);
         objMesh->setVertices(vertices);
         objMesh->setIndices(indices);
-        objMesh->setMaterial(mat);
+        //objMesh->setPhongMaterial(mat);
+        objMesh->setPhysicsMaterial(physMat);
+        /*objMesh->setShader(this->shader);
+        objMesh->setVertices(vertices);
+        objMesh->setIndices(indices);
+        objMesh->setMaterial(mat);*/
 
     }
 
-    std::vector<Texture2D> Model::loadTexture(aiMaterial* mat, aiTextureType type)
+    std::vector<Texture2D> Model::loadTexture(aiMaterial* mat, aiTextureType type, bool gammaCorrect)
     {
         std::vector<Texture2D> textures;
         for(GLuint i = 0; i < mat->GetTextureCount(type); ++i)
@@ -242,7 +263,8 @@ namespace Odysseus
             if(!skip)
             {
                 Texture2D tex(this->directory, str.C_Str(), type);
-                tex.loadTextureFromFile();
+                std::cout << tex.ID << std::endl;
+                tex.loadTextureFromFile(gammaCorrect);
                 textures.push_back(tex);
                 textures_loaded.push_back(tex);
             }

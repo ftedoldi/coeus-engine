@@ -4,6 +4,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <assimp/version.h>
 #include <coeus.hpp>
 #include <Component.hpp>
 #include <Camera.hpp>
@@ -35,17 +36,14 @@ namespace Odysseus
         //Creating a default constructor
         Model(const std::string& path, Shader* shader);
 
-        //rendering the model by drawing each Mesh instance in the vector
-        void Draw(Shader* shader);
-
     private:
 
+        bool _gammaCorrect;
         void loadModel(const std::string& path);
-        Material loadMaterial(aiMaterial* mat);
-        std::vector<Texture2D> loadTexture(aiMaterial *mat, aiTextureType type);
+        std::vector<Texture2D> loadTexture(aiMaterial *mat, aiTextureType type, bool gammaCorrect);
 
-        void setMeshTextures(aiMaterial* material, Material& mat);
-        void setMeshMaterials(aiMaterial* material, Material& mat);
+        void setMeshTextures(aiMaterial* material, PhongMaterial& mat);
+        void setMeshMaterials(aiMaterial* material, PhongMaterial& mat);
 
         void setMeshPBRtextures(aiMaterial* material, PhysicsMaterial& mat);
         void setMeshPBRmaterial(aiMaterial* material, PhysicsMaterial& mat);
