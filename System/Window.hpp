@@ -43,6 +43,8 @@ namespace System {
     class Dockspace;
 
     class Window {
+        friend class Dockspace;
+
         private:
             static Odysseus::Shader* screenShader;
 
@@ -57,6 +59,10 @@ namespace System {
 
             Dockspace* dockspace;
 
+            static GLuint textureColorbuffer;
+
+            static void framebufferShaderCallback(const ImDrawList*, const ImDrawCmd* command);
+            
             void setWindowIcon();
             void initializeImGUI();
 
@@ -65,15 +71,11 @@ namespace System {
             void initializeQuad();
 
         public:
-
-            static GLuint textureColorbuffer;
             static GLFWwindow* window;
             static Screen screen;
 
             Window(std::string name = "MyApplication", bool cursorDisabled = false);
             Window(const int& width, const int& height, std::string name = "MyApplication", bool cursorDisabled = false);
-
-            static void framebufferShaderCallback(const ImDrawList*, const ImDrawCmd* command);
             
             bool shouldWindowClose();
 
