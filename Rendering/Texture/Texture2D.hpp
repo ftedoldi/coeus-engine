@@ -37,8 +37,8 @@ namespace Odysseus
         //Binds the texture as current active texture
         void BindTexture() const;
 
-        static Texture2D loadTextureFromFile(const char *file);
-        void loadTextureFromFile();
+        static Texture2D loadTextureFromFile(const char *file, bool gamma);
+        void loadTextureFromFile(bool gamma);
 
     };
 }

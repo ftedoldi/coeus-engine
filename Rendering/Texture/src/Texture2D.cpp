@@ -11,7 +11,7 @@ namespace Odysseus
 
     Texture2D::Texture2D(std::string dir, std::string path, aiTextureType type) : 
             directory(dir), path(path), type(type), width(0), height(0), 
-            internalFormat(GL_RGB), pixelDataFormat(GL_RGB), wrapS(GL_REPEAT), 
+            internalFormat(GL_RGBA), pixelDataFormat(GL_RGBA), wrapS(GL_REPEAT), 
             wrapT(GL_REPEAT), filterMin(GL_LINEAR_MIPMAP_LINEAR), filterMax(GL_LINEAR)
     {
         glGenTextures(1, &this->ID);
@@ -39,7 +39,7 @@ namespace Odysseus
         glBindTexture(GL_TEXTURE_2D, this->ID);
     }
 
-    Texture2D Texture2D::loadTextureFromFile(const char* file)
+    Texture2D Texture2D::loadTextureFromFile(const char* file, bool gamma)
     {
         Texture2D texture;
 
@@ -48,7 +48,6 @@ namespace Odysseus
 
         if(data)
         {
-            GLenum format;
             if (nrChannels == 1)
             {
                 texture.internalFormat = GL_RED;
@@ -56,12 +55,12 @@ namespace Odysseus
             }
             else if (nrChannels == 3)
             {
-                texture.internalFormat = GL_RGB;
+                texture.internalFormat = gamma ? GL_SRGB : GL_RGB;
                 texture.pixelDataFormat = GL_RGB;
             }
             else if (nrChannels == 4)
             {
-                texture.internalFormat = GL_RGBA;
+                texture.internalFormat = gamma ? GL_SRGB_ALPHA : GL_RGB;
                 texture.pixelDataFormat = GL_RGBA;
             }
             texture.GenerateTexture(width, height, data);
@@ -75,13 +74,7 @@ namespace Odysseus
 
     //To load a file with a texture, make sure that in the same directory as the obj file
     //you have a folder called "Textures" which contains all textures used.
-    //In the .MTL file the path to the various textures should be the name of the texture itself.
-    //In order to get the corret .MTL file while exporting an obj file on blender, you need to
-    //go on file -> export -> Wavefront(obj) on the right side there is an option called "Transform".
-    //Click on Path Mode and select copy, to get an .MTL file with the correct paths and all used textures
-    //in the same folder as the .obj file.
-    //Lastly just create a "Textures" folder and move all textures inside it.
-    void Texture2D::loadTextureFromFile()
+    void Texture2D::loadTextureFromFile(bool gamma)
     {
         int width, height, nrChannels;
         unsigned char* data = stbi_load((this->directory + "/" + "Textures" + "/" + this->path).c_str(), &width, &height, &nrChannels, 0);
@@ -93,7 +86,6 @@ namespace Odysseus
 
         if(data)
         {
-            GLenum format;
             if (nrChannels == 1)
             {
                 this->internalFormat = GL_RED;
@@ -101,12 +93,12 @@ namespace Odysseus
             }
             else if (nrChannels == 3)
             {
-                this->internalFormat = GL_RGB;
+                this->internalFormat = gamma ? GL_SRGB : GL_RGB;
                 this->pixelDataFormat = GL_RGB;
             }
             else if (nrChannels == 4)
             {
-                this->internalFormat = GL_RGBA;
+                this->internalFormat = gamma ? GL_SRGB_ALPHA : GL_RGBA;
                 this->pixelDataFormat = GL_RGBA;
             }
             this->GenerateTexture(width, height, data);
