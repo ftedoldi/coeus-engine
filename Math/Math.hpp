@@ -52,6 +52,11 @@ namespace Athena
             static Scalar clamp01(const int& value) {
                 return value < 0 ? 0 : value > 1 ? 1 : value;
             }
+
+            static Scalar inverseSqrt(const Scalar& value)
+            {
+                return static_cast<Scalar>(1) / static_cast<Scalar>(std::sqrt(static_cast<double>(value)));
+            }
     };
 }
 
