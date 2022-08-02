@@ -21,5 +21,7 @@ void main()
     
     TexCoords = aPos;
     vec4 pos = projection * vec4(viewPos, 1.0);
+	//we do pos.xyww because we want to make sure that the depth value of the rendered cube
+	//will always be 1.0, the maximum depth value, so everything gets rendered before the cubemap
     gl_Position = pos.xyww;
 }  
