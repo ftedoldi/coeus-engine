@@ -10,7 +10,12 @@ uniform sampler2D screenTexture;
 void main()
 { 
     float gamma = 2.2;
+    float exposure = 1.0;
+    
     vec3 color = texture(screenTexture, Frag_UV.st).rgb;
-    //color = pow(color, vec3(1.0 / gamma));
+    // HDR tonemapping
+    color = vec3(1.0) - exp(-color * exposure);
+    // gamma correction
+    color = pow(color, vec3(1.0 / gamma));
     FragColor = vec4(color, 1.0);
 }
