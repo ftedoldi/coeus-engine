@@ -3,6 +3,7 @@
 namespace System {
     GLFWwindow* Window::window;
     Screen Window::screen;
+    Screen Window::frameBufferSize;
     Odysseus::Shader* Window::screenShader;
     GLuint Window::textureColorbuffer;
 
@@ -29,8 +30,22 @@ namespace System {
             glfwTerminate();
         }
 
-        auto frameBufferCallback = [](GLFWwindow* window, int w, int h) {
-            glViewport(0, 0, w, h);
+        auto frameBufferCallback = [](GLFWwindow* window, int w, int h) {            
+            Window::screen.width = w;
+            Window::screen.height = h;
+
+            if (Window::screen.width > Window::screen.height)
+                glViewport(0, (Window::screen.height - Window::screen.width) / 2, Window::screen.width, Window::screen.width);
+            else
+                glViewport((Window::screen.width - Window::screen.height) / 2, 0, Window::screen.height, Window::screen.height);
+
+            if (w < h) {
+                Window::screen.width = h;
+                Window::screen.height = h;
+            } else {
+                Window::screen.width = w;
+                Window::screen.height = w;
+            }
         };
 
         Input::mouse.isFirstMovement = true;
@@ -100,8 +115,22 @@ namespace System {
             glfwTerminate();
         }
 
-        auto frameBufferCallback = [](GLFWwindow* window, int w, int h) {
-            glViewport(0, 0, w, h);
+        auto frameBufferCallback = [](GLFWwindow* window, int w, int h) {            
+            Window::screen.width = w;
+            Window::screen.height = h;
+
+            if (Window::screen.width > Window::screen.height)
+                glViewport(0, (Window::screen.height - Window::screen.width) / 2, Window::screen.width, Window::screen.width);
+            else
+                glViewport((Window::screen.width - Window::screen.height) / 2, 0, Window::screen.height, Window::screen.height);
+
+            if (w < h) {
+                Window::screen.width = h;
+                Window::screen.height = h;
+            } else {
+                Window::screen.width = w;
+                Window::screen.height = w;
+            }
         };
 
         Input::mouse.isFirstMovement = true;
@@ -193,13 +222,13 @@ namespace System {
         // create a multisampled color attachment texture
         glGenTextures(1, &textureColorBufferMultisample);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, textureColorBufferMultisample);
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, System::Window::screen.width, System::Window::screen.height, GL_TRUE);
+        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, frameBufferSize.width, frameBufferSize.height, GL_TRUE);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, textureColorBufferMultisample, 0);
         // create a (also multisampled) renderbuffer object for depth and stencil attachments
         glGenRenderbuffers(1, &rbo);
         glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-        glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, System::Window::screen.width, System::Window::screen.height);
+        glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, frameBufferSize.width, frameBufferSize.height);
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
@@ -218,7 +247,7 @@ namespace System {
         // create a color attachment texture
         glGenTextures(1, &textureColorbuffer);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16, System::Window::screen.width, System::Window::screen.height, 0, GL_RGBA, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, frameBufferSize.width, frameBufferSize.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
@@ -247,6 +276,11 @@ namespace System {
         ImGui_ImplOpenGL3_Init("#version 410 core");
         ImGui::StyleColorsDark();
 
+        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+        frameBufferSize.width = mode->width * 2;
+        frameBufferSize.height = mode->height * 2;
+
         dockspace = new Dockspace();
     }
 
@@ -261,10 +295,10 @@ namespace System {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        initializeFrameBuffer();
         glfwGetFramebufferSize(window, &sizeX, &sizeY);
 
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glViewport(0, 0, System::Window::screen.width, System::Window::screen.height);
         glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
 
         glClearColor(0.4f, 0.2f, 0.6f, 0.5f);
@@ -275,10 +309,10 @@ namespace System {
     {
         glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFBO);
-        glBlitFramebuffer(0, 0, System::Window::screen.width, System::Window::screen.height, 0, 0, System::Window::screen.width, System::Window::screen.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        glBlitFramebuffer(0, 0, frameBufferSize.width, frameBufferSize.height, 0, 0, frameBufferSize.width, frameBufferSize.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, sizeX, sizeY);
+        glViewport(0, 0, frameBufferSize.width, frameBufferSize.height);
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT);
         

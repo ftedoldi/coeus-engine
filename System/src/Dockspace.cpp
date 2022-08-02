@@ -237,7 +237,10 @@ namespace System {
         static Odysseus::Transform* lastTransform = nullptr;
         ImGui::Begin("Hierarchy");
             for (int i = 0; i < Odysseus::SceneGraph::objectsInScene.size(); i++) {
-                if (ImGui::Button(Odysseus::SceneGraph::objectsInScene[i]->transform->name.c_str())) {
+                if (Odysseus::SceneGraph::objectsInScene[i]->transform->childrenTree()->root->father != nullptr)
+                    continue;
+                auto isOpen = ImGui::CollapsingHeader(Odysseus::SceneGraph::objectsInScene[i]->transform->name.c_str());
+                if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
                     this->transformToShow = Odysseus::SceneGraph::objectsInScene[i]->transform;
                     this->inspectorParams.clear();
                     for (int j = 0; j < Odysseus::SceneGraph::objectsInScene[i]->_container->components.size(); j++)
@@ -303,14 +306,28 @@ namespace System {
         ImGui::End();
 
         ImGui::Begin("Scene");
-            ImGui::BeginChild("Game Render");
+            ImGui::BeginChild("Game Render", { 0, 0 }, false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
                 ImDrawList* drawList = ImGui::GetWindowDrawList();
                 drawList->AddCallback(&Window::framebufferShaderCallback, nullptr);
                 ImVec2 wSize = ImGui::GetWindowSize();
 
                 ImGuiWindow* w = ImGui::GetCurrentWindow();
 
-                ImGui::Image((ImTextureID)Window::textureColorbuffer, wSize, ImVec2(0, 1), ImVec2(1, 0));
+                if (wSize.x < wSize.y) {
+                    Window::frameBufferSize.width = wSize.y;
+                    Window::frameBufferSize.height = wSize.y;
+                } else {
+                    Window::frameBufferSize.width = wSize.x;
+                    Window::frameBufferSize.height = wSize.x;
+                }
+
+                ImGui::SetScrollY(0);
+
+                auto imageSize = ImVec2((float)Window::frameBufferSize.width, (float)Window::frameBufferSize.height);
+                auto imagePos = ImVec2((ImGui::GetWindowSize().x - imageSize.x) * 0.5f, (ImGui::GetWindowSize().y - imageSize.y) * 0.5f);
+                ImGui::SetCursorPos(imagePos);
+                
+                ImGui::Image((ImTextureID)Window::textureColorbuffer, { (float)Window::frameBufferSize.width, (float)Window::frameBufferSize.height }, ImVec2(0, 1), ImVec2(1, 0));
                 drawList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
             ImGui::EndChild();
         ImGui::End();
@@ -319,12 +336,14 @@ namespace System {
         ImGui::Text("Hello, right!");
         ImGui::End();
 
-        // TODO: setup a frame buffer for the Game Scene
         ImGui::Begin("Game");
             ImGui::BeginChild("Game Render");
                 ImDrawList* dList = ImGui::GetWindowDrawList();
                 dList->AddCallback(&Window::framebufferShaderCallback, nullptr);
                 ImVec2 size = ImGui::GetWindowSize();
+
+                // Window::frameBufferSize.width = size.x;
+                // Window::frameBufferSize.height = size.y;
 
                 ImGui::Image((ImTextureID)Window::textureColorbuffer, size, ImVec2(0, 1), ImVec2(1, 0));
                 dList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
