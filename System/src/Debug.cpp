@@ -259,7 +259,7 @@ namespace System {
         ImGui::SameLine();
         ImGui::Text("Filter: ");
         ImGui::SameLine();
-        Filter.Draw(" ", 180);
+        Filter.Draw(" ", ImGui::GetContentRegionAvail().x / 2 + 40);
         ImGui::Separator();
 
         // Reserve enough left-over height for 1 separator + 1 input text
