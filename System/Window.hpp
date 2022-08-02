@@ -73,6 +73,7 @@ namespace System {
         public:
             static GLFWwindow* window;
             static Screen screen;
+            static Screen frameBufferSize;
 
             Window(std::string name = "MyApplication", bool cursorDisabled = false);
             Window(const int& width, const int& height, std::string name = "MyApplication", bool cursorDisabled = false);
