@@ -7,7 +7,9 @@
 #include <Camera.hpp> 
 #include <vector>
 #include "../Texture/Texture2D.hpp"
-#include "../PhongMaterial.hpp"
+#include <PhongMaterial.hpp>
+#include <PhysicsMaterial.hpp>
+#include <Time.hpp>
 
 namespace Odysseus
 {
@@ -17,7 +19,6 @@ namespace Odysseus
         Athena::Vector3 Normal;
         Athena::Vector2 TexCoords;
         Athena::Vector3 Tangent;
-        Athena::Vector3 Bitangent;
     };
     
     class Mesh : public System::Component
@@ -25,19 +26,19 @@ namespace Odysseus
     public:
         std::vector<Vertex> vertices;
         std::vector<GLuint> indices;
-        Material material;
+        PhongMaterial phongMaterial;
+        PhysicsMaterial physicsMaterial;
+
         Shader* shader;
         GLuint VAO;
 
         Mesh();
         ~Mesh() noexcept;
 
-        //Render of the mesh
-        void Draw(Shader* shader);
-
         void setVertices(std::vector<Vertex>& vertices);
         void setIndices(std::vector<GLuint>& indices);
-        void setMaterial(Material& mat);
+        void setPhongMaterial(PhongMaterial& mat);
+        void setPhysicsMaterial(PhysicsMaterial& mat);
         void setShader(Shader* shader);
 
         virtual void start();

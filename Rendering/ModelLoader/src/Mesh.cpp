@@ -15,6 +15,11 @@ namespace Odysseus
 
         auto tmp = Odysseus::Camera::main->getViewTransform(this->transform);
 
+        this->shader->setVec3("viewPos", Odysseus::Camera::main->transform->position);
+        this->shader->setVec3("WorldPosition", this->transform->position);
+        this->shader->setVec4("WorldRotation", this->transform->rotation.asVector4());
+        this->shader->setVec3("WorldScale", this->transform->localScale);
+
         this->shader->setVec3("position", tmp->position);
         this->shader->setVec4("rotation", tmp->rotation.asVector4());
         this->shader->setVec3("scale", tmp->localScale);
@@ -28,16 +33,32 @@ namespace Odysseus
     {
         this->shader->use();
 
-        if(this->material.Textures.size() > 0)
+        /*if(this->phongMaterial.Textures.size() > 0)
         {
-            material.loadShaderTexture(this->shader);
+            phongMaterial.loadShaderTexture(this->shader);
         }
         else
         {
-            material.loadShaderMaterial(this->shader);
+            phongMaterial.loadShaderMaterial(this->shader);
+        }*/
+
+        //Odysseus::Camera::main->transform->position.print();
+
+        if(this->physicsMaterial.PBR_textures.size() > 0)
+        {
+            physicsMaterial.loadShaderTexture(this->shader);
+        }
+        else
+        {
+            physicsMaterial.loadShaderMaterial(this->shader);
         }
 
         auto tmp = Odysseus::Camera::main->getViewTransform(this->transform);
+
+        this->shader->setVec3("viewPos", Odysseus::Camera::main->transform->position);
+        this->shader->setVec3("WorldPosition", this->transform->position);
+        this->shader->setVec4("WorldRotation", this->transform->rotation.asVector4());
+        this->shader->setVec3("WorldScale", this->transform->localScale);
 
         this->shader->setVec3("position", tmp->position);
         this->shader->setVec4("rotation", tmp->rotation.asVector4());
@@ -79,9 +100,15 @@ namespace Odysseus
     {
         this->indices = indices;
     }
-    void Mesh::setMaterial(Material& mat)
+
+    void Mesh::setPhongMaterial(PhongMaterial& mat)
     {
-        this->material = mat;
+        this->phongMaterial = mat;
+    }
+
+    void Mesh::setPhysicsMaterial(PhysicsMaterial& mat)
+    {
+        this->physicsMaterial = mat;
     }
 
     void Mesh::setShader(Shader* shader)
@@ -124,9 +151,6 @@ namespace Odysseus
         // vertex tangent
         glEnableVertexAttribArray(3);
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
-        // vertex bitangent
-        glEnableVertexAttribArray(4);
-        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
 
         glBindVertexArray(0);
     }
