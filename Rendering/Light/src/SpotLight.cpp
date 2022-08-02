@@ -37,6 +37,11 @@ namespace Odysseus
         this->_cutOff = cutOff;
     }
 
+    void SpotLight::setSpotExponent(float spotExp)
+    {
+        this->_spotExponent = spotExp;
+    }
+
     void SpotLight::start()
     {
 
