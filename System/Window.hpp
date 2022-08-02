@@ -21,7 +21,7 @@
 #include <Texture2D.hpp>
 #include <Math.hpp>
 
-#include "Debug.hpp"
+#include "Dockspace.hpp"
 
 #include <iostream>
 #include <string>
@@ -40,31 +40,22 @@ namespace System {
     };
 
     class Component;
-    class Console;
+    class Dockspace;
 
-    class Window {    
+    class Window {
         private:
-            Odysseus::Transform* transformToShow;
-            std::vector<Component*> inspectorParams;
-
             static Odysseus::Shader* screenShader;
-
-            ImGuiID dockspace_id;
 
             GLuint framebuffer;
             GLuint intermediateFBO;
             GLuint screenVAO, screenVBO;
             GLuint rbo;
-            GLuint textureColorbuffer;
             GLuint textureColorBufferMultisample;
             GLuint texture;
 
             int sizeX, sizeY;
 
-            Console* console;
-
-            std::filesystem::path assetDirectory;
-            std::filesystem::path currentDirectory;
+            Dockspace* dockspace;
 
             void setWindowIcon();
             void initializeImGUI();
@@ -72,22 +63,18 @@ namespace System {
             void initializeFrameBuffer();
             void initializeMSAAframebuffer();
             void initializeQuad();
-            static void framebufferShaderCallback(const ImDrawList*, const ImDrawCmd* command);
-
-            void createDockSpace();
-            void createContentBrowser();
-
-            void dfsOverFolders(std::filesystem::path sourceFolder, int index = 1);
-            int countNestedFolders(std::filesystem::path sourceFolder);
 
         public:
 
+            static GLuint textureColorbuffer;
             static GLFWwindow* window;
             static Screen screen;
 
             Window(std::string name = "MyApplication", bool cursorDisabled = false);
             Window(const int& width, const int& height, std::string name = "MyApplication", bool cursorDisabled = false);
 
+            static void framebufferShaderCallback(const ImDrawList*, const ImDrawCmd* command);
+            
             bool shouldWindowClose();
 
             void clear();

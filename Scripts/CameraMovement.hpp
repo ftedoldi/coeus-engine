@@ -13,6 +13,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+namespace System {
+    class Window;
+}
+
+class System::Window;
+
 class CameraMovement : public System::Behaviour { 
     public:
         Odysseus::Camera* camera;

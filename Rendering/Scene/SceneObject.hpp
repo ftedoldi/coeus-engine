@@ -1,7 +1,7 @@
 #ifndef __SCENEOBJECT_H__
 #define __SCENEOBJECT_H__
 
-#include <Window.hpp>
+#include <Dockspace.hpp>
 
 #include "Component.hpp"
 #include "Container.hpp"
@@ -15,7 +15,7 @@
 
 namespace System {
     class Component;
-    class Window;
+    class Dockspace;
 }
 
 namespace Odysseus
@@ -25,7 +25,7 @@ namespace Odysseus
 
     class SceneObject {
         friend class SceneGraph;
-        friend class System::Window;
+        friend class System::Dockspace;
 
         private:
             bool _active;

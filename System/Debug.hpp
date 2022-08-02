@@ -1,7 +1,10 @@
 #ifndef __DEBUG_H__
 #define __DEBUG_H__
 
-#include <Window.hpp>
+#include <imgui.h>
+#include <imgui_internal.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 #include <string>
 
