@@ -1,0 +1,6 @@
+#ifndef _RESOURCE_RC
+#define _RESOURCE_RC
+
+MAINICON ICON "CoeusEngine.ico"
+
+#endif
