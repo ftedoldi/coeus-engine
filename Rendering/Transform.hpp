@@ -20,6 +20,7 @@
 #include <SceneObject.hpp>
 
 #include <string>
+#include <vector>
 #include <stdexcept>
 
 namespace Zeus {
@@ -52,6 +53,9 @@ namespace Odysseus
             std::string name;
 
             SceneObject* sceneObject;
+
+            Transform* parent;
+            std::vector<Transform*> children;
 
             Transform(const Athena::Vector3& pos, const Athena::Quaternion& rot, const Athena::Vector3& scale);
             Transform(const Athena::Vector3& pos, const Athena::Vector3& eulerAnglesRotation, const Athena::Vector3& scale);

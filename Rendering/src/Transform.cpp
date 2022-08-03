@@ -25,6 +25,8 @@ namespace Odysseus {
         );
 
         this->name = "Scene Object";
+
+        this->parent = nullptr;
     }
 
     Transform::Transform(const Athena::Vector3& pos, const Athena::Vector3& eulerAnglesRotation, const Athena::Vector3& scale) 
@@ -50,6 +52,8 @@ namespace Odysseus {
         );
 
         this->name = "Scene Object";
+
+        this->parent = nullptr;
     }
 
     Transform::Transform(const Athena::Vector3& pos, const Athena::Vector3& eulerAnglesRotation) 
@@ -75,6 +79,8 @@ namespace Odysseus {
         );
 
         this->name = "Scene Object";
+
+        this->parent = nullptr;
     }
 
     Transform::Transform(const Athena::Vector3& pos) 
@@ -100,6 +106,8 @@ namespace Odysseus {
         );
 
         this->name = "Scene Object";
+
+        this->parent = nullptr;
     }
 
     Transform::Transform(const Athena::Quaternion& rot) 
@@ -125,6 +133,8 @@ namespace Odysseus {
         );
 
         this->name = "Scene Object";
+
+        this->parent = nullptr;
     }
 
     Transform::Transform(const Transform& t) 
@@ -140,6 +150,8 @@ namespace Odysseus {
         this->_worldToLocalMatrix = t.worldToLocalMatrix;
 
         this->name = t.name;
+
+        this->parent = nullptr;
     }
 
     Transform::Transform() 
@@ -165,6 +177,8 @@ namespace Odysseus {
         );
 
         this->name = "Scene Object";
+
+        this->parent = nullptr;
     }
 
     Zeus::Tree* Transform::childrenTree() const {
