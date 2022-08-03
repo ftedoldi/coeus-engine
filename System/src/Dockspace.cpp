@@ -166,6 +166,24 @@ namespace System {
 	    	ImGui::DockBuilderFinish(dockspace_id);
 	    }
 
+        createMainMenuBar();
+        createToolMenuBar();
+        createStatusMenuBar();
+
+        ImGui::End();
+
+        createHierarchyWindow();
+        createConsoleWindow();
+        createContentBrowser(); // TODO: find texture icons and add these icons over textures
+        createInspectorWindow();
+        createSceneWindow();
+        createProjectSettingsWindow();
+        createGameWindow();
+    }
+
+    // TODO: Setup menu properly
+    void Dockspace::createMainMenuBar()
+    {
         ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Menu bar background color
         ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0,0,0,255));
         ImGui::PushStyleColor(ImGuiCol_Border, IM_COL32(255,255,255,255));
@@ -176,28 +194,28 @@ namespace System {
                 ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Menu bar background color
                 if (ImGui::BeginMenu("Options"))
                 {
-                    ImGui::MenuItem("Padding", NULL, &opt_padding);
+                    // ImGui::MenuItem("Padding", NULL, &opt_padding);
                     ImGui::Separator();
 
-                    if (ImGui::MenuItem("Flag: NoSplit",                "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0))                 
-                        dockspace_flags ^= ImGuiDockNodeFlags_NoSplit;
+                    // if (ImGui::MenuItem("Flag: NoSplit",                "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0))                 
+                    //     dockspace_flags ^= ImGuiDockNodeFlags_NoSplit;
 
-                    if (ImGui::MenuItem("Flag: NoResize",               "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0))                
-                        dockspace_flags ^= ImGuiDockNodeFlags_NoResize;
+                    // if (ImGui::MenuItem("Flag: NoResize",               "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0))                
+                    //     dockspace_flags ^= ImGuiDockNodeFlags_NoResize;
 
-                    if (ImGui::MenuItem("Flag: NoDockingInCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_NoDockingInCentralNode) != 0))  
-                        dockspace_flags ^= ImGuiDockNodeFlags_NoDockingInCentralNode;
+                    // if (ImGui::MenuItem("Flag: NoDockingInCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_NoDockingInCentralNode) != 0))  
+                    //     dockspace_flags ^= ImGuiDockNodeFlags_NoDockingInCentralNode;
 
-                    if (ImGui::MenuItem("Flag: AutoHideTabBar",         "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0))          
-                        dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar;
+                    // if (ImGui::MenuItem("Flag: AutoHideTabBar",         "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0))          
+                    //     dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar;
 
-                    if (ImGui::MenuItem("Flag: PassthruCentralNode",    "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) 
-                        dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode;
+                    // if (ImGui::MenuItem("Flag: PassthruCentralNode",    "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) 
+                    //     dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode;
 
-                    ImGui::Separator();
+                    // ImGui::Separator();
 
-                    if (ImGui::MenuItem("Close", NULL, false, p_open != NULL))
-                        *p_open = false;
+                    // if (ImGui::MenuItem("Close", NULL, false, p_open != NULL))
+                    //     *p_open = false;
                     ImGui::EndMenu();
                 }
                 ImGui::PopStyleColor();
@@ -207,9 +225,13 @@ namespace System {
             ImGui::End();
         }
         ImGui::PopStyleColor(3);
+    }
 
+    void Dockspace::createToolMenuBar()
+    {
         ImGui::PushStyleColor(ImGuiCol_Border, IM_COL32(255,255,255,0));
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0, 2});
+        
         if (ImGui::BeginViewportSideBar("Tool Bar", ImGui::GetMainViewport(), ImGuiDir_Up, 1, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar))
         {
             if (ImGui::BeginMenuBar()) {
@@ -218,10 +240,15 @@ namespace System {
             }
             ImGui::End();
         }
+
         ImGui::PopStyleColor();
         ImGui::PopStyleVar();
+    }
 
+    void Dockspace::createStatusMenuBar()
+    {
         ImGui::PushStyleColor(ImGuiCol_Border, IM_COL32(255,255,255,0));
+
         if (ImGui::BeginViewportSideBar("Status Bar", ImGui::GetMainViewport(), ImGuiDir_Down, ImGui::GetFrameHeight(), ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar))
         {
             if (ImGui::BeginMenuBar()) {
@@ -230,30 +257,91 @@ namespace System {
             }
             ImGui::End();
         }
+
         ImGui::PopStyleColor();
+    }
 
-        ImGui::End();
-
-        static Odysseus::Transform* lastTransform = nullptr;
+    void Dockspace::createHierarchyWindow()
+    {
         ImGui::Begin("Hierarchy");
             for (int i = 0; i < Odysseus::SceneGraph::objectsInScene.size(); i++) {
-                if (Odysseus::SceneGraph::objectsInScene[i]->transform->childrenTree()->root->father != nullptr)
+                if (Odysseus::SceneGraph::objectsInScene[i]->transform->parent != nullptr)
                     continue;
-                auto isOpen = ImGui::CollapsingHeader(Odysseus::SceneGraph::objectsInScene[i]->transform->name.c_str());
+                auto isOpen = ImGui::TreeNodeEx(std::to_string(Odysseus::SceneGraph::objectsInScene[i]->ID).c_str(), ImGuiTreeNodeFlags_CollapsingHeader, Odysseus::SceneGraph::objectsInScene[i]->transform->name.c_str());
                 if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
                     this->transformToShow = Odysseus::SceneGraph::objectsInScene[i]->transform;
                     this->inspectorParams.clear();
                     for (int j = 0; j < Odysseus::SceneGraph::objectsInScene[i]->_container->components.size(); j++)
                         this->inspectorParams.push_back(Odysseus::SceneGraph::objectsInScene[i]->_container->components[j]);
                 }
+                if (isOpen) {
+                    this->dfsOverChildren(Odysseus::SceneGraph::objectsInScene[i]->transform);
+                }
             }
         ImGui::End();
+    }
+    
+    void Dockspace::dfsOverChildren(Odysseus::Transform* childrenTransform, int index) 
+    {
+        for (int j = 0; j < childrenTransform->children.size(); j++) {
 
+            ImGui::Dummy({ 10 * static_cast<float>(index), 0 });
+            ImGui::SameLine();
+
+            if (this->countNestedChildren(childrenTransform->children[j])) {
+                auto childOpen = ImGui::TreeNodeEx(
+                                                    std::to_string(
+                                                                    childrenTransform->children[j]->sceneObject->ID
+                                                                ).c_str(), 
+                                                    ImGuiTreeNodeFlags_CollapsingHeader, 
+                                                    childrenTransform->children[j]->name.c_str()
+                                                );
+
+                if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
+                    this->transformToShow = childrenTransform->children[j];
+                    this->inspectorParams.clear();
+                    for (int k = 0; k < childrenTransform->children[j]->sceneObject->_container->components.size(); k++)
+                        this->inspectorParams.push_back(childrenTransform->children[j]->sceneObject->_container->components[k]);
+                }
+
+                if (childOpen)
+                    this->dfsOverChildren(childrenTransform->children[j], index + 1);           
+            } else {
+                auto childOpen = ImGui::TreeNodeEx(
+                                                    std::to_string(
+                                                                    childrenTransform->children[j]->sceneObject->ID
+                                                                ).c_str(), 
+                                                    ImGuiTreeNodeFlags_CollapsingHeader | ImGuiTreeNodeFlags_Bullet, 
+                                                    childrenTransform->children[j]->name.c_str()
+                                                );
+
+                if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
+                    this->transformToShow = childrenTransform->children[j];
+                    this->inspectorParams.clear();
+                    for (int k = 0; k < childrenTransform->children[j]->sceneObject->_container->components.size(); k++)
+                        this->inspectorParams.push_back(childrenTransform->children[j]->sceneObject->_container->components[k]);
+                }
+            }
+        }
+    }
+    
+    int Dockspace::countNestedChildren(Odysseus::Transform* childrenTransform)
+    {
+        if (childrenTransform->children.size() == 0)
+            return 0;
+        
+        return childrenTransform->children.size();
+    }
+
+    void Dockspace::createConsoleWindow()
+    {
         static bool isOpen = true;
-
         console->Draw("Console", &isOpen);
-        // TODO: find texture icons and add these icons over textures
-        createContentBrowser();
+    }
+
+    void Dockspace::createInspectorWindow()
+    {
+        static Odysseus::Transform* lastTransform = nullptr;
 
         ImGui::Begin("Inspector");
             if (this->transformToShow != nullptr) {
@@ -304,7 +392,10 @@ namespace System {
                 }
             }
         ImGui::End();
-
+    }
+    
+    void Dockspace::createSceneWindow()
+    {
         ImGui::Begin("Scene");
             ImGui::BeginChild("Game Render", { 0, 0 }, false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
                 ImDrawList* drawList = ImGui::GetWindowDrawList();
@@ -327,15 +418,18 @@ namespace System {
                 auto imagePos = ImVec2((ImGui::GetWindowSize().x - imageSize.x) * 0.5f, (ImGui::GetWindowSize().y - imageSize.y) * 0.5f);
                 ImGui::SetCursorPos(imagePos);
                 
+                #pragma warning(push)
+                #pragma warning(disable : 4312)
                 ImGui::Image((ImTextureID)Window::textureColorbuffer, { (float)Window::frameBufferSize.width, (float)Window::frameBufferSize.height }, ImVec2(0, 1), ImVec2(1, 0));
+                #pragma warning(pop) 
                 drawList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
             ImGui::EndChild();
         ImGui::End();
-
-        ImGui::Begin("Project Settings");
-        ImGui::Text("Hello, right!");
-        ImGui::End();
-
+    }
+    
+    // TODO: setup framebuffer for game scene
+    void Dockspace::createGameWindow()
+    {
         ImGui::Begin("Game");
             ImGui::BeginChild("Game Render");
                 ImDrawList* dList = ImGui::GetWindowDrawList();
@@ -344,10 +438,21 @@ namespace System {
 
                 // Window::frameBufferSize.width = size.x;
                 // Window::frameBufferSize.height = size.y;
-
+                
+                #pragma warning(push)
+                #pragma warning(disable : 4312)
                 ImGui::Image((ImTextureID)Window::textureColorbuffer, size, ImVec2(0, 1), ImVec2(1, 0));
+                #pragma warning(pop)
+
                 dList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
             ImGui::EndChild();
+        ImGui::End();
+    }
+    
+    void Dockspace::createProjectSettingsWindow()
+    {
+        ImGui::Begin("Project Settings");
+        ImGui::Text("Hello, right!");
         ImGui::End();
     }
 
@@ -391,10 +496,12 @@ namespace System {
                     ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0, 0, 0, 0 });
                 }
 
+                #pragma warning(push)
+                #pragma warning(disable : 4312)                
                 ImGui::ImageButtonEx(
                                             100,
                                             (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                (Folder::getFolderPath("Icons").string() + "/leftArrow.png").c_str(), false
+                                                (Folder::getFolderPath("Icons").string() + "/leftArrow.png").c_str(), true
                                             ).ID, 
                                             { iconScale, iconScale },
                                             { 0, 0 },
@@ -403,6 +510,7 @@ namespace System {
                                             { 0, 0, 0, 0 },
                                             { 1, 1, 1, 1 }
                                     );
+                #pragma warning(pop)
                 
                 if (this->currentDirectory.string() != this->assetDirectory.string())
                     if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
@@ -413,10 +521,12 @@ namespace System {
 
                 ImGui::SameLine();
 
+                #pragma warning(push)
+                #pragma warning(disable : 4312)
                 ImGui::ImageButtonEx(
                                             100,
                                             (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                (Folder::getFolderPath("Icons").string() + "/leftArrow.png").c_str(), false
+                                                (Folder::getFolderPath("Icons").string() + "/leftArrow.png").c_str(), true
                                             ).ID, 
                                             { iconScale, iconScale },
                                             { 1, 1 },
@@ -425,6 +535,7 @@ namespace System {
                                             { 0, 0, 0, 0 },
                                             { 1, 1, 1, 1 }
                                     );
+                #pragma warning(pop)
 
                 if (actions.size() > 1 && (actionIndex + 1) < actions.size())
                     if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
@@ -432,10 +543,12 @@ namespace System {
 
                 ImGui::SameLine();
 
+                #pragma warning(push)
+                #pragma warning(disable : 4312)                
                 ImGui::ImageButtonEx(
                                             100,
                                             (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                (Folder::getFolderPath("Icons").string() + "/rotate.png").c_str(), false
+                                                (Folder::getFolderPath("Icons").string() + "/rotate.png").c_str(), true
                                             ).ID, 
                                             { iconScale, iconScale },
                                             { 1, 1 },
@@ -444,6 +557,7 @@ namespace System {
                                             { 0, 0, 0, 0 },
                                             { 1, 1, 1, 1 }
                                     );
+                #pragma warning(pop)
                 
                 if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
                     std::fill_n(filter.InputBuf, 256, 0);
@@ -493,10 +607,13 @@ namespace System {
                     ImGui::PushStyleColor(ImGuiCol_Button, {0, 0, 0, 0});
                     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.38f, 0.38f, 0.38f, 0.50f));
                     if(directory.is_directory() && (lowercaseFilenameString.find(filterContent) != std::string::npos)) {
+
+                        #pragma warning(push)
+                        #pragma warning(disable : 4312)
                         ImGui::ImageButtonEx(
                                                 ++index,
                                                 (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                    (Folder::getFolderPath("Icons").string() + "/folder.png").c_str(), false
+                                                    (Folder::getFolderPath("Icons").string() + "/folder.png").c_str(), true
                                                 ).ID, 
                                                 { thumbnailSize, thumbnailSize },
                                                 { 1, 1 },
@@ -505,6 +622,8 @@ namespace System {
                                                 { 0, 0, 0, 0 },
                                                 { 1, 1, 1, 1 }
                                             );
+                        #pragma warning(pop)
+
                         if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                         {
                             currentDirectory = path;
@@ -519,10 +638,13 @@ namespace System {
                         }
                     }
                     else if (lowercaseFilenameString.find(filterContent) != std::string::npos){
+
+                        #pragma warning(push)
+                        #pragma warning(disable : 4312)                
                         ImGui::ImageButtonEx(
                                                     ++index,
                                                     (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                        (Folder::getFolderPath("Icons").string() + "/document.png").c_str(), false
+                                                        (Folder::getFolderPath("Icons").string() + "/document.png").c_str(), true
                                                     ).ID, 
                                                     { thumbnailSize, thumbnailSize },
                                                     { 1, 1 },
@@ -531,6 +653,8 @@ namespace System {
                                                     { 0, 0, 0, 0 },
                                                     { 1, 1, 1, 1 }
                                             );
+                        #pragma warning(pop)
+                        
                         if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                             system(path.string().c_str());
                     }

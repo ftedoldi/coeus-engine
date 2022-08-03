@@ -54,9 +54,25 @@ namespace System {
 
             void createStyle();
 
+            //----------------------Menu Creation---------------------------------//
+            void createMainMenuBar();
+            void createToolMenuBar();
+            void createStatusMenuBar();
+
+            //----------------------Window Creation-------------------------------//
+            void createHierarchyWindow();
+            void createInspectorWindow();
+            void createConsoleWindow();
             void createContentBrowser();
+            void createSceneWindow();
+            void createGameWindow();
+            void createProjectSettingsWindow();
+
+            //----------------------Utils Methods--------------------------------//
             void dfsOverFolders(std::filesystem::path sourceFolder, int index = 1);
             int countNestedFolders(std::filesystem::path sourceFolder);
+            void dfsOverChildren(Odysseus::Transform* childrenTransform, int index = 1);
+            int countNestedChildren(Odysseus::Transform* childrenTransform);
 
         public:
             Dockspace();
