@@ -58,16 +58,22 @@ int main()
 
     // Create the shader
     Odysseus::Shader* modelShader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
-    Odysseus::Shader* PBRshader = new Odysseus::Shader(".\\Shader\\PBRshader.vert", ".\\Shader\\PBRshader.frag");
-    //Odysseus::Shader lightShader(".\\Shader\\lightShader.vert", ".\\Shader\\lightShader.frag");
+    // Odysseus::Shader* PBRshader = new Odysseus::Shader(".\\Shader\\PBRshader.vert", ".\\Shader\\PBRshader.frag");
+    Odysseus::Shader* lightShader = new Odysseus::Shader(".\\Shader\\lightShader.vert", ".\\Shader\\lightShader.frag");
 
-    Odysseus::Model myModel("Assets/Models/PBRcube/PBRcube.obj", PBRshader);
-    //Odysseus::Model myModel("Assets/Models/cubeCentered/cubeCentered.obj", modelShader);
-    Odysseus::Model myModel1("Assets/Models/PBRsphere/PBRsphere.obj", PBRshader);
-    //Odysseus::Model lightModel("Assets/Models/cubeCentered/cubeCentered.obj", &lightShader);
+    // Odysseus::Model myModel("Assets/Models/PBRcube/PBRcube.obj", PBRshader);
+    Odysseus::Model myModel("Assets/Models/matAndTex/matAndTex.obj", modelShader);
+    // Odysseus::Model myModel1("Assets/Models/PBRsphere/PBRsphere.obj", PBRshader);
+    Odysseus::Model lightModel("Assets/Models/cubeCentered/cubeCentered.obj", lightShader);
+
+    for(int i = 0; i < myModel.objectsCreated.size(); i++)
+        myModel.objectsCreated[i]->transform->name = "MyModel" + std::to_string(i);
+
+    for(int i = 0; i < lightModel.objectsCreated.size(); i++)
+        lightModel.objectsCreated[i]->transform->name = "Light" + std::to_string(i);
 
     pLight->setPosition(Athena::Vector3(0.0f, 2.0f, 0.0f));
-    pLight->setShader(PBRshader);
+    pLight->setShader(lightShader);
     pLight->setAmbient(Athena::Vector3(0.2f, 0.2f, 0.2f));
     pLight->setDiffuse(Athena::Vector3(0.8f, 0.8f, 0.8f));
     pLight->setSpecular(Athena::Vector3(1.0f, 1.0f, 1.0f));
@@ -80,8 +86,8 @@ int main()
     dLight->setDiffuse(Athena::Vector3(0.5f, 0.5f, 0.5f));
     dLight->setSpecular(Athena::Vector3(0.5f, 0.5f, 0.5f));
     dLight->setDirection(Athena::Vector3(0.0f, -1.0f, 0.0f));*/
-    Odysseus::Cubemap HDRImap;
-    HDRImap.setPBRshader(PBRshader);
+    // Odysseus::Cubemap HDRImap;
+    // HDRImap.setPBRshader(PBRshader);
 
     Odysseus::SceneGraph::initializeScene();
 
@@ -95,7 +101,7 @@ int main()
         
         Odysseus::SceneGraph::drawScene();
 
-        HDRImap.update();
+        // HDRImap.update();
         
         window->update();
     }
