@@ -55,14 +55,14 @@ int main()
     //-------------------------------------------------------
     //Shaders setup
 
-    Odysseus::Shader* modelShader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
-    //Odysseus::Shader* PBRshader = new Odysseus::Shader(".\\Shader\\PBRshader.vert", ".\\Shader\\PBRshader.frag");
+    //Odysseus::Shader* modelShader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
+    Odysseus::Shader* PBRshader = new Odysseus::Shader(".\\Shader\\PBRshader.vert", ".\\Shader\\PBRshader.frag");
 
     //-------------------------------------------------------
     //Models setup
 
-    Odysseus::Model myModel("Assets/Models/cubeCentered/cubeCentered.obj", modelShader);
-    myModel.setIfPBR(false);
+    Odysseus::Model myModel("Assets/Models/PBRsphere/PBRsphere.obj", PBRshader, true);
+    //myModel.setIfPBR(true);
 
     //-------------------------------------------------------
     //Light setup
@@ -73,7 +73,7 @@ int main()
     auto pLight = light->addComponent<Odysseus::PointLight>();
     
     pLight->setPosition(Athena::Vector3(0.0f, 2.0f, 0.0f));
-    pLight->setShader(modelShader);
+    pLight->setShader(PBRshader);
     pLight->setAmbient(Athena::Vector3(0.2f, 0.2f, 0.2f));
     pLight->setDiffuse(Athena::Vector3(0.8f, 0.8f, 0.8f));
     pLight->setSpecular(Athena::Vector3(0.3f, 0.3f, 0.3f));
@@ -109,8 +109,8 @@ int main()
     stbi_set_flip_vertically_on_load(true);
     
     //HDR map setup
-    //Odysseus::Cubemap* HDRImap = new Odysseus::Cubemap();
-    //HDRImap->setPBRshader(PBRshader);
+    Odysseus::Cubemap* HDRImap = new Odysseus::Cubemap();
+    HDRImap->setPBRshader(PBRshader);
 
     //Setup everything before initializeScene call
     Odysseus::SceneGraph::initializeScene();
@@ -125,7 +125,7 @@ int main()
         
         Odysseus::SceneGraph::drawScene();
 
-        //HDRImap->update();
+        HDRImap->update();
         
         window->update();
     }

@@ -2,8 +2,9 @@
 namespace Odysseus
 {
 
-    Model::Model(const std::string& path, Shader* shader) : shader(shader), _isPBR(false)
+    Model::Model(const std::string& path, Shader* shader, bool isPBR) : shader(shader)
     {
+        this->_isPBR = isPBR;
         loadModel(path);
     }
 
@@ -271,11 +272,6 @@ namespace Odysseus
             }
         }
         return textures;
-    }
-
-    void Model::setIfPBR(bool isPBR)
-    {
-        this->_isPBR = isPBR;
     }
 }
 

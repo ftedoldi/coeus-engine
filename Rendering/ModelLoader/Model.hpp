@@ -34,9 +34,7 @@ namespace Odysseus
         Model(Model&& model) = default;
 
         //Creating a default constructor
-        Model(const std::string& path, Shader* shader);
-
-        void setIfPBR(bool isPBR);
+        Model(const std::string& path, Shader* shader, bool isPBR);
 
     private:
 
