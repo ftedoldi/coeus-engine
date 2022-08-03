@@ -41,8 +41,6 @@ void main()
 
 	vec4 rotatedNormal = calcWorldPosition(aNormal.xyz, worldConj);
 	vs_out.Normal = normalize(rotatedNormal.xyz);
-
-	vs_out.LightPos = pointLightPos;
 	
 	//Calculate view position
 	vec4 conj = vec4(-rotation.x, -rotation.y, -rotation.z, rotation.w);

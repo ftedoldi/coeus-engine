@@ -142,9 +142,9 @@ void main()
     for(int i = 0; i < nMaxLights; ++i)
     {
         //calculate radiance
-        vec3 L = normalize(fs_in.LightPos - fs_in.FragPos);
+        vec3 L = normalize(pointLight.position - fs_in.FragPos);
         vec3 H = normalize(V + L);
-        float distance = length(fs_in.LightPos - fs_in.FragPos);
+        float distance = length(pointLight.position - fs_in.FragPos);
         float attenuation = 1.0 / (pointLight.constant + pointLight.linear * distance + 
                                 pointLight.quadratic * (distance * distance));
         vec3 radiance = pointLight.diffuse * attenuation;
