@@ -2,16 +2,16 @@
 #define AREALIGHT_HPP
 
 #include <PointLight.hpp>
+#include <vector>
 
 namespace Odysseus
 {
     class AreaLight : public Light
     {
         private:
-        std::vector<PointLight> pointLights;
+        std::vector<PointLight*> pointLights;
 
         public:
-
         AreaLight();
         virtual void start();
         virtual void update();
@@ -21,7 +21,7 @@ namespace Odysseus
         virtual short getUniqueID();
 
         virtual std::string toString();
-        void addLights(PointLight& pt);
+        void addLight(PointLight* pt);
         void setLightShader(Odysseus::Shader* shader) const;
     };
 }

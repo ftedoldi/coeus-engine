@@ -19,6 +19,8 @@
 #include <PointLight.hpp>
 #include <DirectionalLight.hpp>
 #include <Cubemap.hpp>
+#include <SpotLight.hpp>
+#include <AreaLight.hpp>
 
 #include <iostream>
 #include <vector>
@@ -32,63 +34,85 @@ int main()
     // Where all the starts are runned
     System::Window* window = new System::Window("myWindow");
 
+    //Dummy component test
     System::Component *c = new DummyComponent();
     Odysseus::SceneObject *obj = new Odysseus::SceneObject();
     obj->transform->name = "Object";
     obj->addComponent<DummyComponent>();
 
+    //Camera setup
     Odysseus::SceneObject *cam = new Odysseus::SceneObject();
     cam->transform->position = Athena::Vector3(0, 0, 20);
     cam->transform->name = "Camera";
     auto mainCamera = cam->addComponent<Odysseus::Camera>();
     Odysseus::Camera::main = mainCamera;
+
+    //Camera movement setup
+    auto movement = cam->addComponent<CameraMovement>();
+    movement->camera = mainCamera;
+    cam->getComponent<CameraMovement>()->camera = cam->getComponent<Odysseus::Camera>();
+
+    //-------------------------------------------------------
+    //Shaders setup
+
+    //Odysseus::Shader* modelShader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
+    Odysseus::Shader* PBRshader = new Odysseus::Shader(".\\Shader\\PBRshader.vert", ".\\Shader\\PBRshader.frag");
+
+    //-------------------------------------------------------
+    //Models setup
+
+    Odysseus::Model myModel("Assets/Models/PBRsphere/PBRsphere.obj", PBRshader, true);
+    //myModel.setIfPBR(true);
+
+    //-------------------------------------------------------
+    //Light setup
+
+    //Point light
     Odysseus::SceneObject *light = new Odysseus::SceneObject();
     light->transform->name = "PointLight";
     auto pLight = light->addComponent<Odysseus::PointLight>();
-
-    /*Odysseus::SceneObject *dirLight = new Odysseus::SceneObject();
-    dirLight->transform->name = "DirectionaLight";
-    auto dLight = dirLight->addComponent<Odysseus::DirectionalLight>();*/
-    // auto movement = cam->addComponent<CameraMovement>();
-    // movement->camera = mainCamera;
-    // cam->getComponent<CameraMovement>()->camera = cam->getComponent<Odysseus::Camera>();
-    // cam->addComponent<Odysseus::Camera>();
-
-    stbi_set_flip_vertically_on_load(true);
-
-    // Create the shader
-    Odysseus::Shader* modelShader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
-    // Odysseus::Shader* PBRshader = new Odysseus::Shader(".\\Shader\\PBRshader.vert", ".\\Shader\\PBRshader.frag");
-    Odysseus::Shader* lightShader = new Odysseus::Shader(".\\Shader\\lightShader.vert", ".\\Shader\\lightShader.frag");
-
-    // Odysseus::Model myModel("Assets/Models/PBRcube/PBRcube.obj", PBRshader);
-    Odysseus::Model myModel("Assets/Models/matAndTex/matAndTex.obj", modelShader);
-    // Odysseus::Model myModel1("Assets/Models/PBRsphere/PBRsphere.obj", PBRshader);
-    Odysseus::Model lightModel("Assets/Models/cubeCentered/cubeCentered.obj", lightShader);
-
-    for(int i = 0; i < myModel.objectsCreated.size(); i++)
-        myModel.objectsCreated[i]->transform->name = "MyModel" + std::to_string(i);
-
-    for(int i = 0; i < lightModel.objectsCreated.size(); i++)
-        lightModel.objectsCreated[i]->transform->name = "Light" + std::to_string(i);
-
+    
     pLight->setPosition(Athena::Vector3(0.0f, 2.0f, 0.0f));
-    pLight->setShader(lightShader);
+    pLight->setShader(PBRshader);
     pLight->setAmbient(Athena::Vector3(0.2f, 0.2f, 0.2f));
     pLight->setDiffuse(Athena::Vector3(0.8f, 0.8f, 0.8f));
-    pLight->setSpecular(Athena::Vector3(1.0f, 1.0f, 1.0f));
+    pLight->setSpecular(Athena::Vector3(0.3f, 0.3f, 0.3f));
     pLight->setConstant(1.0f);
     pLight->setLinear(0.09f);
     pLight->setQuadratic(0.032f);
 
-    /*dLight->setShader(modelShader);
+    //Directional light
+    /*Odysseus::SceneObject *dirLight = new Odysseus::SceneObject();
+    dirLight->transform->name = "DirectionaLight";
+    auto dLight = dirLight->addComponent<Odysseus::DirectionalLight>();
+
+    dLight->setShader(modelShader);
     dLight->setAmbient(Athena::Vector3(0.2f, 0.2f, 0.2f));
     dLight->setDiffuse(Athena::Vector3(0.5f, 0.5f, 0.5f));
     dLight->setSpecular(Athena::Vector3(0.5f, 0.5f, 0.5f));
     dLight->setDirection(Athena::Vector3(0.0f, -1.0f, 0.0f));*/
-    // Odysseus::Cubemap HDRImap;
-    // HDRImap.setPBRshader(PBRshader);
+    
+    //Spot light
+    /*Odysseus::SceneObject *spotLight = new Odysseus::SceneObject();
+    spotLight->transform->name = "spotLight";
+    auto sLight = spotLight->addComponent<Odysseus::SpotLight>();
+    
+    sLight->setPosition(Athena::Vector3(0.0f, 2.0f, 0.0f));
+    sLight->setDirection(Athena::Vector3(0.0f, -1.0f, 0.0f));
+    sLight->setShader(modelShader);
+    sLight->setAmbient(Athena::Vector3(0.2f, 0.2f, 0.2f));
+    sLight->setDiffuse(Athena::Vector3(0.8f, 0.8f, 0.8f));
+    sLight->setSpecular(Athena::Vector3(1.0f, 1.0f, 1.0f));
+    sLight->setCutOff(41.0f);
+    sLight->setSpotExponent(19.0f);*/
 
+    stbi_set_flip_vertically_on_load(true);
+    
+    //HDR map setup
+    Odysseus::Cubemap* HDRImap = new Odysseus::Cubemap();
+    HDRImap->setPBRshader(PBRshader);
+
+    //Setup everything before initializeScene call
     Odysseus::SceneGraph::initializeScene();
 
     // render loop
@@ -101,7 +125,7 @@ int main()
         
         Odysseus::SceneGraph::drawScene();
 
-        // HDRImap.update();
+        HDRImap->update();
         
         window->update();
     }

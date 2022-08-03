@@ -35,11 +35,12 @@ namespace Odysseus
         Model(Model&& model) = default;
 
         //Creating a default constructor
-        Model(const std::string& path, Shader* shader);
+        Model(const std::string& path, Shader* shader, bool isPBR);
 
     private:
 
         bool _gammaCorrect;
+        bool _isPBR;
         void loadModel(const std::string& path);
         std::vector<Texture2D> loadTexture(aiMaterial *mat, aiTextureType type, bool gammaCorrect);
 

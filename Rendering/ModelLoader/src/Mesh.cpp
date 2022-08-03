@@ -13,6 +13,28 @@ namespace Odysseus
 
         this->shader->use();
 
+        if(this->_isPBR)
+        {
+            if(this->physicsMaterial.PBR_textures.size() > 0)
+            {
+                physicsMaterial.loadShaderTexture(this->shader);
+            }
+            else
+            {
+                physicsMaterial.loadShaderMaterial(this->shader);
+            }
+        }else
+        {
+            if(this->phongMaterial.Textures.size() > 0)
+            {
+                phongMaterial.loadShaderTexture(this->shader);
+            }
+            else
+            {
+                phongMaterial.loadShaderMaterial(this->shader);
+            }
+        }
+
         auto tmp = Odysseus::Camera::main->getViewTransform(this->transform);
 
         this->shader->setVec3("viewPos", Odysseus::Camera::main->transform->position);
@@ -35,24 +57,27 @@ namespace Odysseus
     {
         this->shader->use();
 
-        /*if(this->phongMaterial.Textures.size() > 0)
+        if(this->_isPBR)
         {
-            phongMaterial.loadShaderTexture(this->shader);
-        }
-        else
+            if(this->physicsMaterial.PBR_textures.size() > 0)
+            {
+                physicsMaterial.loadShaderTexture(this->shader);
+            }
+            else
+            {
+                physicsMaterial.loadShaderMaterial(this->shader);
+            }
+        }else
         {
-            phongMaterial.loadShaderMaterial(this->shader);
-        }*/
+            if(this->phongMaterial.Textures.size() > 0)
+            {
+                phongMaterial.loadShaderTexture(this->shader);
+            }
+            else
+            {
+                phongMaterial.loadShaderMaterial(this->shader);
+            }
 
-        //Odysseus::Camera::main->transform->position.print();
-
-        if(this->physicsMaterial.PBR_textures.size() > 0)
-        {
-            physicsMaterial.loadShaderTexture(this->shader);
-        }
-        else
-        {
-            physicsMaterial.loadShaderMaterial(this->shader);
         }
 
         auto tmp = Odysseus::Camera::main->getViewTransform(this->transform);
@@ -66,6 +91,7 @@ namespace Odysseus
         this->shader->setVec4("rotation", tmp->rotation.asVector4());
         this->shader->setVec3("scale", tmp->localScale);
 
+        //TODO: call this inside framebuffer callback to avoid creating a perspective even if not needed
         Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, System::Window::frameBufferSize.width / System::Window::frameBufferSize.height, 0.1f, 100.0f);
         projection.data[0] = projection.data[0] / (System::Window::frameBufferSize.width / (float)System::Window::frameBufferSize.height);
         projection.data[5] = projection.data[0];
@@ -74,7 +100,7 @@ namespace Odysseus
         
         // draw mesh
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, static_cast<GLuint>(indices.size()), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, static_cast<GLuint>(this->indices.size()), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
         // set everything back to default
@@ -157,6 +183,11 @@ namespace Odysseus
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
 
         glBindVertexArray(0);
+    }
+
+    void Mesh::setIfPBR(bool isPBR)
+    {
+        this->_isPBR = isPBR;
     }
 
     void Mesh::freeGPUresources()
