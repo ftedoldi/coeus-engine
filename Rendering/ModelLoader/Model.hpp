@@ -20,6 +20,7 @@ namespace Odysseus
     class Model 
     {
     public:
+        std::vector<SceneObject*> objectsCreated;
         std::vector<Texture2D> textures_loaded;
         std::vector<Mesh> meshes;
         std::string directory;
@@ -48,7 +49,7 @@ namespace Odysseus
         void setMeshPBRtextures(aiMaterial* material, PhysicsMaterial& mat);
         void setMeshPBRmaterial(aiMaterial* material, PhysicsMaterial& mat);
         void processMesh(aiMesh* mesh, const aiScene* scene, SceneObject* sceneObject);
-        void processNode(aiNode* node, const aiScene* scene);   
+        void processNode(aiNode* node, const aiScene* scene, Transform* parent=nullptr);   
 
     };
 }

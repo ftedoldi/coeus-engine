@@ -26,18 +26,31 @@ namespace Odysseus
     }
 
     //process a node recursively and for each node processed, process his meshes
-    void Model::processNode(aiNode* node, const aiScene* scene)
+    void Model::processNode(aiNode* node, const aiScene* scene, Transform* parent)
     {
+        Odysseus::SceneObject* obj = new SceneObject();
+        objectsCreated.push_back(obj);
+
         for(GLuint i = 0; i < node->mNumMeshes; ++i)
         {
-            Odysseus::SceneObject* obj = new SceneObject();
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
             processMesh(mesh, scene, obj);
         }
 
+        obj->transform->parent = parent;
+        if (parent != nullptr)
+            parent->children.push_back(obj->transform);
+
+        // for(GLuint i = 0; i < node->mNumMeshes; ++i)
+        // {
+        //     Odysseus::SceneObject* obj = new SceneObject();
+        //     aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+        //     processMesh(mesh, scene, obj);
+        // }
+
         for(GLuint i = 0; i < node->mNumChildren; ++i)
         {
-            processNode(node->mChildren[i], scene);
+            processNode(node->mChildren[i], scene, obj->transform);
         }
     }
 
