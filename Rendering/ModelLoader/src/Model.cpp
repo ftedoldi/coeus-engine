@@ -2,7 +2,7 @@
 namespace Odysseus
 {
 
-    Model::Model(const std::string& path, Shader* shader) : shader(shader)
+    Model::Model(const std::string& path, Shader* shader) : shader(shader), _isPBR(false)
     {
         loadModel(path);
     }
@@ -221,24 +221,25 @@ namespace Odysseus
 
         //process materials
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-        //PhongMaterial mat;
-        //setMeshTextures(material, mat);
-        //setMeshMaterials(material, mat);
-        PhysicsMaterial physMat;
-        setMeshPBRtextures(material, physMat);
-        setMeshPBRmaterial(material, physMat);
-
         auto objMesh = obj->addComponent<Odysseus::Mesh>();
         objMesh->setShader(this->shader);
         objMesh->setVertices(vertices);
         objMesh->setIndices(indices);
-        //objMesh->setPhongMaterial(mat);
-        objMesh->setPhysicsMaterial(physMat);
-        /*objMesh->setShader(this->shader);
-        objMesh->setVertices(vertices);
-        objMesh->setIndices(indices);
-        objMesh->setMaterial(mat);*/
-
+        objMesh->setIfPBR(_isPBR);
+        if(_isPBR)
+        {
+            PhysicsMaterial physMat;
+            setMeshPBRtextures(material, physMat);
+            setMeshPBRmaterial(material, physMat);
+            objMesh->setPhysicsMaterial(physMat);
+        }else
+        {
+            PhongMaterial phongMat;
+            setMeshTextures(material, phongMat);
+            setMeshMaterials(material, phongMat);
+            objMesh->setPhongMaterial(phongMat);
+        }
+        
     }
 
     std::vector<Texture2D> Model::loadTexture(aiMaterial* mat, aiTextureType type, bool gammaCorrect)
@@ -270,6 +271,11 @@ namespace Odysseus
             }
         }
         return textures;
+    }
+
+    void Model::setIfPBR(bool isPBR)
+    {
+        this->_isPBR = isPBR;
     }
 }
 

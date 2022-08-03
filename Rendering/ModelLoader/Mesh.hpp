@@ -40,6 +40,7 @@ namespace Odysseus
         void setPhongMaterial(PhongMaterial& mat);
         void setPhysicsMaterial(PhysicsMaterial& mat);
         void setShader(Shader* shader);
+        void setIfPBR(bool isPBR);
 
         virtual void start();
         virtual void update();
@@ -55,6 +56,7 @@ namespace Odysseus
         GLuint VBO, EBO;
 
         bool hasTexture;
+        bool _isPBR;
 
         //Inizialize VAO, VBO, EBO
         void setupMesh();
