@@ -7,8 +7,10 @@ namespace Odysseus {
         this->transform = new Transform();
         this->_container = new Container(*this, *this->transform);
 
-        this->ID = static_cast<short>(std::time(0));
-
+        this->transform->sceneObject = this;
+ 
+        this->ID = System::UUID();
+ 
         SceneGraph::objectsInScene.push_back(this);
     }
 
@@ -17,8 +19,10 @@ namespace Odysseus {
         this->transform = new Transform();
         this->_container = new Container(*this, *this->transform);
 
-        this->ID = static_cast<short>(std::time(0));
-
+        this->transform->sceneObject = this;
+ 
+        this->ID = System::UUID();
+ 
         SceneGraph::objectsInScene.push_back(this);
     }
 
@@ -27,8 +31,10 @@ namespace Odysseus {
         this->transform = new Transform(transform);
         this->_container = new Container(*this, *this->transform);
 
-        this->ID = static_cast<short>(std::time(0));
-
+        this->transform->sceneObject = this;
+ 
+        this->ID = System::UUID();
+ 
         SceneGraph::objectsInScene.push_back(this);
     }
 
@@ -37,8 +43,10 @@ namespace Odysseus {
         this->transform = new Transform(transform);
         this->_container = new Container(*this, *this->transform);
 
-        this->ID = static_cast<short>(std::time(0));
-
+        this->transform->sceneObject = this;
+ 
+        this->ID = System::UUID();
+ 
         SceneGraph::objectsInScene.push_back(this);
     }
 
@@ -47,8 +55,10 @@ namespace Odysseus {
         this->transform = new Transform(*sceneObject.transform);
         this->_container = new Container(*this, *this->transform);
 
-        this->ID = static_cast<short>(std::time(0));
-
+        this->transform->sceneObject = this;
+ 
+        this->ID = System::UUID();
+ 
         SceneGraph::objectsInScene.push_back(this);
     }
 
@@ -95,9 +105,10 @@ namespace Odysseus {
         _static = newState;
     }
 
+    // FIXME: Erease correctly form game scene, right now we erease the first element, we want to erase the i element
     void SceneObject::destroy()
     {
-        SceneGraph::objectsInScene.erase(SceneGraph::objectsInScene.begin() + this->ID);
+        SceneGraph::objectsInScene.erase(SceneGraph::objectsInScene.begin());
         delete this;
     }
 

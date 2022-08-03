@@ -3,6 +3,8 @@
 
 #include <Dockspace.hpp>
 
+#include <UUID.hpp>
+
 #include "Component.hpp"
 #include "Container.hpp"
 #include <Transform.hpp>
@@ -16,6 +18,7 @@
 namespace System {
     class Component;
     class Dockspace;
+    class UUID;
 }
 
 namespace Odysseus
@@ -30,10 +33,11 @@ namespace Odysseus
         private:
             bool _active;
             bool _static;
-            short ID;
             Container* _container;
 
         public:
+            System::UUID ID;
+
             Transform* transform;
 
             std::string tag;
