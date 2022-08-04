@@ -62,6 +62,7 @@ int main()
     //Models setup
 
     Odysseus::Model myModel("Assets/Models/PBRsphere/PBRsphere.obj", PBRshader, true);
+    Odysseus::Model myModel1("Assets/Models/matAndTex/matAndTex.obj", PBRshader, true);
     //myModel.setIfPBR(true);
 
     //-------------------------------------------------------
