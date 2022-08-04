@@ -38,16 +38,26 @@ namespace Athena {
     }
     
     void Quaternion::QuaternionToAxisAngle(const Quaternion& quaternion, Scalar& angle, Vector3& axis) {
-        Vector3 immm = quaternion.immaginary;
-        Scalar real = quaternion.real;
+        Quaternion q = quaternion;
+        if (quaternion.real > 1)
+            q = quaternion.normalized();
 
-        auto im = immm.coordinates;
+        Vector3 immm = q.immaginary;
+        Scalar real = q.real;
 
         angle = 2.f * std::acos(real);
 
-        axis.coordinates.x = im.x / std::sqrt(1.f - real * real);
-        axis.coordinates.y = im.y / std::sqrt(1.f - real * real);
-        axis.coordinates.z = im.z / std::sqrt(1.f - real * real);
+        double s = std::sqrt(1 - (real * real));
+
+        if (s < 0.001) {
+            axis.coordinates.x = immm.coordinates.x;
+            axis.coordinates.y = immm.coordinates.y;
+            axis.coordinates.z = immm.coordinates.z;
+        } else {
+            axis.coordinates.x = immm.coordinates.x / s;
+            axis.coordinates.y = immm.coordinates.y / s;
+            axis.coordinates.z = immm.coordinates.z / s;
+        }
     }
 
     Quaternion Quaternion::EulerAnglesToQuaternion(const Vector3& eulerAngles) {
@@ -257,6 +267,19 @@ namespace Athena {
 
     Matrix3 Quaternion::toMatrix3() const {
         return Quaternion::QuaternionToMatrx3(*this);
+    }
+
+    Matrix4 Quaternion::toMatrix4() const {
+        Matrix3 m3 = Quaternion::QuaternionToMatrx3(*this);
+        Matrix4 res(0.0f);
+ 
+        res.data[15] = 1;
+
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                res.data[j + 4 * i] = m3.data[j + 3 * i];
+
+        return res;
     }
 
     Vector3 Quaternion::toEulerAngles() const {
