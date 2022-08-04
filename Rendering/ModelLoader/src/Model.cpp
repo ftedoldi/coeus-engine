@@ -8,6 +8,7 @@ namespace Odysseus
         loadModel(path);
     }
 
+    // TODO: Set the position of a model in the world correctly
     void Model::loadModel(const std::string& path)
     {
         Assimp::Importer importer;

@@ -102,3 +102,6 @@ $RECYCLE.BIN/
 
 # Asset Folders
 Assets/
+
+# Configuration Files
+*.ini

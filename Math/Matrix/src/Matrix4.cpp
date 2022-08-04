@@ -10,6 +10,14 @@ namespace Athena
         data[12] = 0, data[13] = 0, data[14] = 0, data[15] = 1;
     }
 
+    Matrix4::Matrix4(const Scalar& value)
+    {
+        data[0] = value, data[1] = value, data[2] = value, data[3] = value,
+        data[4] = value, data[5] = value, data[6] = value, data[7] = value,
+        data[8] = value, data[9] = value, data[10] = value, data[11] = value,
+        data[12] = value, data[13] = value, data[14] = value, data[15] = value;
+    }
+
     Matrix4::Matrix4(const Matrix4& mat)
     {
         data[0] = mat.data[0], data[1] = mat.data[1], data[2] = mat.data[2], data[3] = mat.data[3],
@@ -306,6 +314,33 @@ namespace Athena
         return result;
     }
     
+    Matrix4 Matrix4::transposed() const
+    {
+        Matrix4 result;
+
+        result.data[0] = this->data[0];
+        result.data[1] = this->data[4];
+        result.data[2] = this->data[8];
+        result.data[3] = this->data[12];
+
+        result.data[4] = this->data[1];
+        result.data[5] = this->data[5];
+        result.data[6] = this->data[9];
+        result.data[7] = this->data[13];
+
+        result.data[8] = this->data[2];
+        result.data[9] = this->data[6];
+        result.data[10] = this->data[10];
+        result.data[11] = this->data[14];
+
+        result.data[12] = this->data[3];
+        result.data[13] = this->data[7];
+        result.data[14] = this->data[11];
+        result.data[15] = this->data[15];
+
+        return result;
+    }
+
     Matrix3 Matrix4::toMatrix3()
     {
         Matrix3 result;
@@ -346,6 +381,28 @@ namespace Athena
                        data[12] * vec[0] + data[13] * vec[1] + data[14] * vec[2] + data[15] * vec[3]);
     }
 
+    // TODO: Finish this
+    bool Matrix4::decomposeMatrixInScaleRotateTranslateComponents(
+        const Matrix4& modelMatrix, 
+        Vector3& scale, 
+        Quaternion& rotation, 
+        Vector3& translation)
+    {
+        Matrix4 temp(modelMatrix);
+
+        if (temp.data[15] < std::numeric_limits<float>::min())
+            return false;
+
+        // Normalizing the matrix
+        for (int i = 0; i < 16; i++)
+            temp.data[i] /= temp.data[15];
+
+        translation = Athena::Vector3(temp.data[3], temp.data[7], temp.data[11]);
+        temp.data[3], temp.data[7], temp.data[11] = 0;
+
+        return true;
+    }
+
     void Matrix4::print() const
     {
         for(unsigned int i = 0; i < 16; ++i)
@@ -354,5 +411,6 @@ namespace Athena
             if(i == 3 || i == 7 || i == 11)
                 std::cout << std::endl;
         }
+        std::cout << std::endl;
     }
 }

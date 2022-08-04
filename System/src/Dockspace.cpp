@@ -11,6 +11,54 @@ namespace System {
 
         this->assetDirectory = Folder::getFolderPath("Assets");
         this->currentDirectory = this->assetDirectory;
+
+        initializeButtonImageTextures();
+
+        gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+    }
+
+    void Dockspace::initializeButtonImageTextures() 
+    {
+        buttonImages.translateTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/translate.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.rotateTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/rotation.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.scaleTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/resize.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.playTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/play.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.pauseTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/pause.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.stopTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/stop.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.leftArrowTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/leftArrow.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.reloadTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/rotate.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.folderTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/folder.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.documentTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/document.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
     }
 
     void Dockspace::createStyle()
@@ -227,15 +275,142 @@ namespace System {
         ImGui::PopStyleColor(3);
     }
 
+    // TODO: At each action add a log for the Status Bar
     void Dockspace::createToolMenuBar()
     {
-        ImGui::PushStyleColor(ImGuiCol_Border, IM_COL32(255,255,255,0));
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0, 2});
+        ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.43f, 0.43f, 0.50f, 0));
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {2, 8});
         
-        if (ImGui::BeginViewportSideBar("Tool Bar", ImGui::GetMainViewport(), ImGuiDir_Up, 1, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar))
+        if (ImGui::BeginViewportSideBar("Tool Bar", ImGui::GetMainViewport(), ImGuiDir_Up, 8, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar))
         {
             if (ImGui::BeginMenuBar()) {
-                ImGui::Text("Happy tool bar");
+                    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.38f, 0.38f, 0.38f, 0.50f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.38f, 0.38f, 0.38f, 0.70f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.67f, 0.67f, 0.67f, 0.39f));
+
+                    static ImVec2 buttonPadding = ImVec2(4, 4);
+                    static ImVec2 buttonSize = ImVec2(18, 18);
+
+                    ImVec2 cursor = ImGui::GetCursorPos();
+                    ImGui::SetCursorPos({ cursor.x + 0.5f, cursor.y + 2.5f });
+
+                    #pragma warning(push)
+                    #pragma warning(disable : 4312)                
+                    ImGui::ImageButtonEx(
+                                UUID(),
+                                (ImTextureID)buttonImages.translateTextureID, 
+                                buttonSize,
+                                { 0, 0 },
+                                { 1, 1 },
+                                buttonPadding,
+                                { 0, 0, 0, 0 },
+                                { 1, 1, 1, 1 }
+                        );
+                    #pragma warning(pop)
+
+                    if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) || Input::keyboard->getPressedKey() == GLFW_KEY_T) {
+                        gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+                    }
+
+                    ImGui::SameLine();
+                    cursor = ImGui::GetCursorPos();
+                    ImGui::SetCursorPos({ cursor.x, cursor.y });
+
+                    #pragma warning(push)
+                    #pragma warning(disable : 4312)                
+                    ImGui::ImageButtonEx(
+                                UUID(),
+                                (ImTextureID)buttonImages.scaleTextureID, 
+                                buttonSize,
+                                { 0, 0 },
+                                { 1, 1 },
+                                buttonPadding,
+                                { 0, 0, 0, 0 },
+                                { 1, 1, 1, 1 }
+                        );
+                    #pragma warning(pop)
+
+                    if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) || Input::keyboard->getPressedKey() == GLFW_KEY_S) {
+                        gizmoOperation = ImGuizmo::OPERATION::SCALE;
+                    }
+                    
+                    ImGui::SameLine();
+                    cursor = ImGui::GetCursorPos();
+                    ImGui::SetCursorPos({ cursor.x, cursor.y });
+
+                    #pragma warning(push)
+                    #pragma warning(disable : 4312)                
+                    ImGui::ImageButtonEx(
+                                UUID(),
+                                (ImTextureID)buttonImages.rotateTextureID, 
+                                buttonSize,
+                                { 0, 0 },
+                                { 1, 1 },
+                                buttonPadding,
+                                { 0, 0, 0, 0 },
+                                { 1, 1, 1, 1 }
+                        );
+                    #pragma warning(pop)
+
+                    if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) || Input::keyboard->getPressedKey() == GLFW_KEY_R) {
+                        gizmoOperation = ImGuizmo::OPERATION::ROTATE;
+                    }
+
+                    ImGui::SameLine();
+                    cursor = ImGui::GetCursorPos();
+                    ImGui::SetCursorPos({ cursor.x + ImGui::GetContentRegionAvail().x / 3, cursor.y });
+
+                    #pragma warning(push)
+                    #pragma warning(disable : 4312)                
+                    ImGui::ImageButtonEx(
+                                UUID(),
+                                (ImTextureID)buttonImages.playTextureID, 
+                                buttonSize,
+                                { 0, 0 },
+                                { 1, 1 },
+                                buttonPadding,
+                                { 0, 0, 0, 0 },
+                                { 1, 1, 1, 1 }
+                        );
+                    #pragma warning(pop)
+
+                    if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) || Input::keyboard->getPressedKey() == GLFW_KEY_P) {
+
+                    }
+                    
+                    ImGui::SameLine();
+
+                    #pragma warning(push)
+                    #pragma warning(disable : 4312)                
+                    ImGui::ImageButtonEx(
+                                UUID(),
+                                (ImTextureID)buttonImages.pauseTextureID, 
+                                buttonSize,
+                                { 0, 0 },
+                                { 1, 1 },
+                                buttonPadding,
+                                { 0, 0, 0, 0 },
+                                { 1, 1, 1, 1 }
+                        );
+                    #pragma warning(pop)
+                    
+                    ImGui::SameLine();
+
+                    #pragma warning(push)
+                    #pragma warning(disable : 4312)                
+                    ImGui::ImageButtonEx(
+                                UUID(),
+                                (ImTextureID)buttonImages.stopTextureID, 
+                                buttonSize,
+                                { 0, 0 },
+                                { 1, 1 },
+                                buttonPadding,
+                                { 0, 0, 0, 0 },
+                                { 1, 1, 1, 1 }
+                        );
+                    #pragma warning(pop)
+
+                    ImGui::PopStyleColor(3);
                 ImGui::EndMenuBar();
             }
             ImGui::End();
@@ -267,15 +442,28 @@ namespace System {
             for (int i = 0; i < Odysseus::SceneGraph::objectsInScene.size(); i++) {
                 if (Odysseus::SceneGraph::objectsInScene[i]->transform->parent != nullptr)
                     continue;
-                auto isOpen = ImGui::TreeNodeEx(std::to_string(Odysseus::SceneGraph::objectsInScene[i]->ID).c_str(), ImGuiTreeNodeFlags_CollapsingHeader, Odysseus::SceneGraph::objectsInScene[i]->transform->name.c_str());
-                if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
-                    this->transformToShow = Odysseus::SceneGraph::objectsInScene[i]->transform;
-                    this->inspectorParams.clear();
-                    for (int j = 0; j < Odysseus::SceneGraph::objectsInScene[i]->_container->components.size(); j++)
-                        this->inspectorParams.push_back(Odysseus::SceneGraph::objectsInScene[i]->_container->components[j]);
-                }
-                if (isOpen) {
-                    this->dfsOverChildren(Odysseus::SceneGraph::objectsInScene[i]->transform);
+
+                if (countNestedChildren(Odysseus::SceneGraph::objectsInScene[i]->transform)) {
+                    auto isOpen = ImGui::TreeNodeEx(std::to_string(Odysseus::SceneGraph::objectsInScene[i]->ID).c_str(), ImGuiTreeNodeFlags_CollapsingHeader, Odysseus::SceneGraph::objectsInScene[i]->transform->name.c_str());
+                    
+                    if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
+                        this->transformToShow = Odysseus::SceneGraph::objectsInScene[i]->transform;
+                        this->inspectorParams.clear();
+                        for (int j = 0; j < Odysseus::SceneGraph::objectsInScene[i]->_container->components.size(); j++)
+                            this->inspectorParams.push_back(Odysseus::SceneGraph::objectsInScene[i]->_container->components[j]);
+                    }
+                    
+                    if (isOpen) {
+                        this->dfsOverChildren(Odysseus::SceneGraph::objectsInScene[i]->transform);
+                    }
+                } else {
+                    ImGui::TreeNodeEx(std::to_string(Odysseus::SceneGraph::objectsInScene[i]->ID).c_str(), ImGuiTreeNodeFlags_CollapsingHeader | ImGuiTreeNodeFlags_Bullet, Odysseus::SceneGraph::objectsInScene[i]->transform->name.c_str());
+                    if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
+                        this->transformToShow = Odysseus::SceneGraph::objectsInScene[i]->transform;
+                        this->inspectorParams.clear();
+                        for (int j = 0; j < Odysseus::SceneGraph::objectsInScene[i]->_container->components.size(); j++)
+                            this->inspectorParams.push_back(Odysseus::SceneGraph::objectsInScene[i]->_container->components[j]);
+                    }
                 }
             }
         ImGui::End();
@@ -362,24 +550,24 @@ namespace System {
                     lastTransform = transformToShow;
                 }
                 ImGui::InputFloat3("Rotation", rotation);
-                this->transformToShow->rotation = Athena::Quaternion(
-                                                                        0, 
-                                                                        0,
-                                                                        std::sin(Athena::Math::degreeToRandiansAngle(rotation[2])/2),
-                                                                        std::cos(Athena::Math::degreeToRandiansAngle(rotation[2])/2)
-                                                                    )
-                                                * Athena::Quaternion(
-                                                                        0, 
-                                                                        std::sin(Athena::Math::degreeToRandiansAngle(rotation[1])/2), 
-                                                                        0, 
-                                                                        std::cos(Athena::Math::degreeToRandiansAngle(rotation[1])/2)
-                                                                    )
-                                                * Athena::Quaternion(
-                                                                        std::sin(Athena::Math::degreeToRandiansAngle(rotation[0])/2),
-                                                                        0, 
-                                                                        0, 
-                                                                        std::cos(Athena::Math::degreeToRandiansAngle(rotation[0])/2)
-                                                                    );
+                // this->transformToShow->rotation = Athena::Quaternion(
+                //                                                         0, 
+                //                                                         0,
+                //                                                         std::sin(Athena::Math::degreeToRandiansAngle(rotation[2])/2),
+                //                                                         std::cos(Athena::Math::degreeToRandiansAngle(rotation[2])/2)
+                //                                                     )
+                //                                 * Athena::Quaternion(
+                //                                                         0, 
+                //                                                         std::sin(Athena::Math::degreeToRandiansAngle(rotation[1])/2), 
+                //                                                         0, 
+                //                                                         std::cos(Athena::Math::degreeToRandiansAngle(rotation[1])/2)
+                //                                                     )
+                //                                 * Athena::Quaternion(
+                //                                                         std::sin(Athena::Math::degreeToRandiansAngle(rotation[0])/2),
+                //                                                         0, 
+                //                                                         0, 
+                //                                                         std::cos(Athena::Math::degreeToRandiansAngle(rotation[0])/2)
+                //                                                     );
 
                 float scale[] = { this->transformToShow->localScale.coordinates.x, this->transformToShow->localScale.coordinates.y, this->transformToShow->localScale.coordinates.z };
                 ImGui::InputFloat3("Scale", scale);
@@ -414,15 +602,76 @@ namespace System {
 
                 ImGui::SetScrollY(0);
 
-                auto imageSize = ImVec2((float)Window::frameBufferSize.width, (float)Window::frameBufferSize.height);
-                auto imagePos = ImVec2((ImGui::GetWindowSize().x - imageSize.x) * 0.5f, (ImGui::GetWindowSize().y - imageSize.y) * 0.5f);
-                ImGui::SetCursorPos(imagePos);
+                // auto imageSize = ImVec2((float)Window::frameBufferSize.width, (float)Window::frameBufferSize.height);
+                // auto imagePos = ImVec2((ImGui::GetWindowSize().x - imageSize.x) * 0.5f, (ImGui::GetWindowSize().y - imageSize.y) * 0.5f);
+                // ImGui::SetCursorPos(imagePos);
                 
                 #pragma warning(push)
                 #pragma warning(disable : 4312)
                 ImGui::Image((ImTextureID)Window::textureColorbuffer, { (float)Window::frameBufferSize.width, (float)Window::frameBufferSize.height }, ImVec2(0, 1), ImVec2(1, 0));
                 #pragma warning(pop) 
                 drawList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
+                Window::refreshFrameBuffer = true;
+
+                if (this->transformToShow != nullptr) {
+                    ImGuizmo::SetOrthographic(false);
+                    ImGuizmo::SetDrawlist();
+                    ImGuizmo::AllowAxisFlip(false);
+                    ImVec2 size = ImGui::GetContentRegionAvail();
+                    ImVec2 cursorPos = ImGui::GetCursorScreenPos();  
+                    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, Window::frameBufferSize.width, Window::frameBufferSize.height);
+
+                    Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, Window::frameBufferSize.width / Window::frameBufferSize.height, 0.1f, 100.0f);
+                    projection.data[0] = projection.data[0] / (System::Window::frameBufferSize.width / (float)System::Window::frameBufferSize.height);
+                    projection.data[5] = projection.data[0];
+
+                    Athena::Matrix4 view = Odysseus::Camera::main->getViewMatrix();
+
+                    Athena::Matrix4 translateMatrix(
+                                                        Athena::Vector4(1, 0, 0, this->transformToShow->position.coordinates.x),
+                                                        Athena::Vector4(0, 1, 0, this->transformToShow->position.coordinates.y),
+                                                        Athena::Vector4(0, 0, 1, this->transformToShow->position.coordinates.z),
+                                                        Athena::Vector4(0, 0, 0,                                             1)
+                                                    );
+
+                    Athena::Matrix4 scaleMatrix(
+                                                    Athena::Vector4(this->transformToShow->localScale.coordinates.x, 0, 0, 0),
+                                                    Athena::Vector4(0, this->transformToShow->localScale.coordinates.y, 0, 0),
+                                                    Athena::Vector4(0, 0, this->transformToShow->localScale.coordinates.z, 0),
+                                                    Athena::Vector4(0, 0, 0,                                               1)
+                                                );
+
+                    Athena::Matrix4 rotationMatrix = this->transformToShow->rotation.toMatrix4();
+
+                    Athena::Matrix4 objTransform = scaleMatrix * rotationMatrix * translateMatrix;
+
+                    if (gizmoOperation == ImGuizmo::OPERATION::TRANSLATE)
+                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, &objTransform.data[0]);
+                    else if (gizmoOperation == ImGuizmo::OPERATION::SCALE)
+                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::SCALE, ImGuizmo::LOCAL, &objTransform.data[0]);
+                    else if (gizmoOperation == ImGuizmo::OPERATION::ROTATE)
+                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::ROTATE, ImGuizmo::LOCAL, &objTransform.data[0]);
+
+                    if (ImGuizmo::IsUsing()) {
+
+                        // TODO: Avoid using glm implement own library in order to do so
+                        glm::vec3 scale, translate, skew;
+                        glm::vec4 perspective;
+                        glm::quat rotation;
+
+                        glm::mat4 t(
+                                        objTransform.data[0], objTransform.data[1], objTransform.data[2], objTransform.data[3],
+                                        objTransform.data[4], objTransform.data[5], objTransform.data[6], objTransform.data[7],
+                                        objTransform.data[8], objTransform.data[9], objTransform.data[10], objTransform.data[11],
+                                        objTransform.data[12], objTransform.data[13], objTransform.data[14], objTransform.data[15]
+                                    );
+                        glm::decompose(t, scale, rotation, translate, skew, perspective);
+
+                        this->transformToShow->position = Athena::Vector3(translate[0], translate[1], translate[2]);
+                        this->transformToShow->localScale = Athena::Vector3(scale.x, scale.y, scale.z);
+                        this->transformToShow->rotation = Athena::Quaternion(rotation.x, rotation.y, rotation.z, rotation.w).conjugated();
+                    }
+                }
             ImGui::EndChild();
         ImGui::End();
     }
@@ -499,10 +748,8 @@ namespace System {
                 #pragma warning(push)
                 #pragma warning(disable : 4312)                
                 ImGui::ImageButtonEx(
-                                            100,
-                                            (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                (Folder::getFolderPath("Icons").string() + "/leftArrow.png").c_str(), true
-                                            ).ID, 
+                                            UUID(),
+                                            (ImTextureID)buttonImages.leftArrowTextureID, 
                                             { iconScale, iconScale },
                                             { 0, 0 },
                                             { 1, 1 },
@@ -524,10 +771,8 @@ namespace System {
                 #pragma warning(push)
                 #pragma warning(disable : 4312)
                 ImGui::ImageButtonEx(
-                                            100,
-                                            (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                (Folder::getFolderPath("Icons").string() + "/leftArrow.png").c_str(), true
-                                            ).ID, 
+                                            UUID(),
+                                            (ImTextureID)buttonImages.leftArrowTextureID, 
                                             { iconScale, iconScale },
                                             { 1, 1 },
                                             { 0, 0 },
@@ -546,10 +791,8 @@ namespace System {
                 #pragma warning(push)
                 #pragma warning(disable : 4312)                
                 ImGui::ImageButtonEx(
-                                            100,
-                                            (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                (Folder::getFolderPath("Icons").string() + "/rotate.png").c_str(), true
-                                            ).ID, 
+                                            UUID(),
+                                            (ImTextureID)buttonImages.reloadTextureID, 
                                             { iconScale, iconScale },
                                             { 1, 1 },
                                             { 0, 0 },
@@ -566,7 +809,6 @@ namespace System {
 
                 ImGui::SameLine();
 
-                // TODO: Implement filter of folders and files
                 ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.4f, 0.4f, 0.4f, 1.00f));
                 float filterWidth = ImGui::GetContentRegionAvail().x / 4 + 40;
                 filter.Draw(" ", filterWidth);
@@ -611,13 +853,11 @@ namespace System {
                         #pragma warning(push)
                         #pragma warning(disable : 4312)
                         ImGui::ImageButtonEx(
-                                                ++index,
-                                                (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                    (Folder::getFolderPath("Icons").string() + "/folder.png").c_str(), true
-                                                ).ID, 
+                                                UUID(),
+                                                (ImTextureID)buttonImages.folderTextureID, 
                                                 { thumbnailSize, thumbnailSize },
-                                                { 1, 1 },
                                                 { 0, 0 },
+                                                { 1, 1 },
                                                 { 10, 10 },
                                                 { 0, 0, 0, 0 },
                                                 { 1, 1, 1, 1 }
@@ -642,13 +882,11 @@ namespace System {
                         #pragma warning(push)
                         #pragma warning(disable : 4312)                
                         ImGui::ImageButtonEx(
-                                                    ++index,
-                                                    (ImTextureID)Odysseus::Texture2D::loadTextureFromFile(
-                                                        (Folder::getFolderPath("Icons").string() + "/document.png").c_str(), true
-                                                    ).ID, 
+                                                    UUID(),
+                                                    (ImTextureID)buttonImages.documentTextureID, 
                                                     { thumbnailSize, thumbnailSize },
-                                                    { 1, 1 },
                                                     { 0, 0 },
+                                                    { 1, 1 },
                                                     { 10, 10 },
                                                     { 0, 0, 0, 0 },
                                                     { 1, 1, 1, 1 }

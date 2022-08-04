@@ -7,6 +7,7 @@
 #include <Vector3.hpp>
 #include <Vector4.hpp>
 #include <Matrix3.hpp>
+#include <Matrix4.hpp>
 #include "../Matrix/Matrix4.hpp"
 #include <Math.hpp>
 
@@ -65,6 +66,7 @@ namespace Athena
             Quaternion fromAxisAngle(const Degree& angle, const Vector3& axis) const;
 
             Matrix3 toMatrix3() const;
+            Matrix4 toMatrix4() const;
             Vector3 toEulerAngles() const;
             void toAxisAngle(Degree& angle, Vector3& axis) const;
 
