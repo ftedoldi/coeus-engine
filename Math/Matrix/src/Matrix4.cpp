@@ -418,6 +418,7 @@ namespace Athena
         translation = Athena::Vector3(temp.data[3], temp.data[7], temp.data[11]);
         temp.data[3], temp.data[7], temp.data[11] = 0;
 
+        return true;
     }
 
     void Matrix4::print() const

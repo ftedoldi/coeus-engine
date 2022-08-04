@@ -6,6 +6,7 @@
 #include "../Vector/Vector3.hpp"
 #include "../Vector/Vector4.hpp"
 #include "Matrix3.hpp"
+#include <Quaternion.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -14,6 +15,8 @@
 
 namespace Athena 
 {
+    class Quaternion;
+    
     class Matrix4
     {
     public:
