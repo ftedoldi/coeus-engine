@@ -8,6 +8,17 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include <glm/glm.hpp>
+#include <glm/common.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
+
+#include <ImGuizmo.h>
+
 #include <IO/Input.hpp>
 #include <Folder.hpp>
 
@@ -20,6 +31,8 @@
 #include <Component.hpp>
 #include <Texture2D.hpp>
 #include <Math.hpp>
+#include <Camera.hpp>
+#include <Matrix4.hpp>
 
 #include <iostream>
 #include <string>
@@ -40,6 +53,31 @@ namespace System {
     class Component;
     class Odysseus::Transform;
     class Console;
+    
+    struct ButtonImages {
+        int translateTextureID;
+        int rotateTextureID;
+        int scaleTextureID;
+        int leftArrowTextureID;
+        int reloadTextureID;
+        int playTextureID;
+        int pauseTextureID;
+        int stopTextureID;
+        int folderTextureID;
+        int documentTextureID;
+    };
+
+    enum TextColor {
+        WHITE,
+        RED,
+        YELLOW,
+        GREEN
+    };
+
+    struct CurrentStatus {
+        std::string statusText;
+        TextColor statusTextColor;
+    };
 
     class Dockspace {
         private:
@@ -51,6 +89,10 @@ namespace System {
 
             std::filesystem::path assetDirectory;
             std::filesystem::path currentDirectory;
+
+            ButtonImages buttonImages;
+
+            ImGuizmo::OPERATION gizmoOperation;
 
             void createStyle();
 
@@ -73,6 +115,8 @@ namespace System {
             int countNestedFolders(std::filesystem::path sourceFolder);
             void dfsOverChildren(Odysseus::Transform* childrenTransform, int index = 1);
             int countNestedChildren(Odysseus::Transform* childrenTransform);
+
+            void initializeButtonImageTextures();
 
         public:
             Dockspace();
