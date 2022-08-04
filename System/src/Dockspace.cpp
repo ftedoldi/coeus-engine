@@ -628,10 +628,10 @@ namespace System {
                     Athena::Matrix4 view = Odysseus::Camera::main->getViewMatrix();
 
                     Athena::Matrix4 translateMatrix(
-                                                        Athena::Vector4(1, 0, 0, this->transformToShow->position.coordinates.x),
-                                                        Athena::Vector4(0, 1, 0, this->transformToShow->position.coordinates.y),
-                                                        Athena::Vector4(0, 0, 1, this->transformToShow->position.coordinates.z),
-                                                        Athena::Vector4(0, 0, 0,                                             1)
+                                                        Athena::Vector4(1, 0, 0, 0),
+                                                        Athena::Vector4(0, 1, 0, 0),
+                                                        Athena::Vector4(0, 0, 1, 0),
+                                                        Athena::Vector4(this->transformToShow->position.coordinates.x, this->transformToShow->position.coordinates.y, this->transformToShow->position.coordinates.z, 1)
                                                     );
 
                     Athena::Matrix4 scaleMatrix(
