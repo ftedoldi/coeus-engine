@@ -19,8 +19,8 @@ namespace Athena{
     Matrix2::Matrix2(const Vector2& vec1, const Vector2& vec2)
     {
         data[0] = vec1.coordinates.x;
-        data[1] = vec2.coordinates.x;
-        data[2] = vec1.coordinates.y;
+        data[1] = vec1.coordinates.y;
+        data[2] = vec2.coordinates.x;
         data[3] = vec2.coordinates.y;
     }
 
