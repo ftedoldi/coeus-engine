@@ -1,7 +1,7 @@
 #ifndef __COMPONENT_H__
 #define __COMPONENT_H__
 
-#include "SceneObject.hpp"
+#include <SceneObject.hpp>
 #include <Transform.hpp>
 
 #include <string>

@@ -6,7 +6,6 @@
 #include <assimp/postprocess.h>
 #include <assimp/version.h>
 #include <coeus.hpp>
-#include <Component.hpp>
 #include <Camera.hpp>
 #include <Tree.hpp>
 #include <PhysicsMaterial.hpp>
