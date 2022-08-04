@@ -7,6 +7,8 @@ namespace System {
     Odysseus::Shader* Window::screenShader;
     GLuint Window::textureColorbuffer;
 
+    bool Window::refreshFrameBuffer;
+
     Window::Window(std::string name, bool cursorDisabled)
     {
         screen.width = 800;
@@ -235,6 +237,8 @@ namespace System {
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        refreshFrameBuffer = false;
     }
 
     void Window::initializeFrameBuffer()
@@ -260,6 +264,8 @@ namespace System {
 
         screenShader->use();
         screenShader->setInt("screenTexture", 0);
+
+        refreshFrameBuffer = false;
     }
 
     void Window::initializeImGUI()
@@ -282,6 +288,8 @@ namespace System {
         frameBufferSize.height = mode->height * 2;
 
         dockspace = new Dockspace();
+
+        Input::keyboard = new Keyboard();
     }
 
     bool Window::shouldWindowClose()
@@ -289,16 +297,29 @@ namespace System {
         return glfwWindowShouldClose(this->window);
     }
 
+    void Window::resetFrameBufferTexture()
+    {
+        glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, frameBufferSize.width, frameBufferSize.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    }
+
     void Window::clear()
     {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+        ImGuizmo::BeginFrame();
 
-        initializeFrameBuffer();
+        if (refreshFrameBuffer) 
+        {
+            resetFrameBufferTexture();
+            refreshFrameBuffer = false;
+        }
+        
         glfwGetFramebufferSize(window, &sizeX, &sizeY);
 
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        glViewport(0, 0, frameBufferSize.width, frameBufferSize.height);
         glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
 
         glClearColor(0.4f, 0.2f, 0.6f, 0.5f);
@@ -312,7 +333,7 @@ namespace System {
         glBlitFramebuffer(0, 0, frameBufferSize.width, frameBufferSize.height, 0, 0, frameBufferSize.width, frameBufferSize.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, frameBufferSize.width, frameBufferSize.height);
+        // glViewport(0, 0, frameBufferSize.width, frameBufferSize.height);
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT);
         
