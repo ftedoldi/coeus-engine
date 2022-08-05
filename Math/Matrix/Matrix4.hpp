@@ -58,7 +58,7 @@ namespace Athena
 
         // Decomposing a Matrix4 into 3 different components - Scale, Rotate & Translate 
         // in order to be able to break down matrices into engine usable components
-        static bool decomposeMatrixInScaleRotateTranslateComponents(const Matrix4& modelMatrix, Vector3& scale, Quaternion& rotation, Vector3& translation);
+        static bool DecomposeMatrixInScaleRotateTranslateComponents(const Matrix4& modelMatrix, Vector3& scale, Quaternion& rotation, Vector3& translation);
 
         void print() const;
     };

@@ -381,24 +381,109 @@ namespace Athena
                        data[12] * vec[0] + data[13] * vec[1] + data[14] * vec[2] + data[15] * vec[3]);
     }
 
-    // TODO: Finish this
-    bool Matrix4::decomposeMatrixInScaleRotateTranslateComponents(
+    bool Matrix4::DecomposeMatrixInScaleRotateTranslateComponents(
         const Matrix4& modelMatrix, 
         Vector3& scale, 
         Quaternion& rotation, 
         Vector3& translation)
     {
         Matrix4 temp(modelMatrix);
+        Athena::Vector3 skew;
+        Athena::Vector3 eulerAngles;
 
         if (temp.data[15] < std::numeric_limits<float>::min())
             return false;
 
+        //---------------------Getting Translation Factor------------------------//
         // Normalizing the matrix
-        for (int i = 0; i < 16; i++)
+        for (short i = 0; i < 16; i++)
             temp.data[i] /= temp.data[15];
 
-        translation = Athena::Vector3(temp.data[3], temp.data[7], temp.data[11]);
-        temp.data[3], temp.data[7], temp.data[11] = 0;
+        translation = Vector3(temp.data[12], temp.data[13], temp.data[14]);
+        temp.data[12], temp.data[13], temp.data[14] = 0;
+
+        //---------------------Getting Scaling Factor---------------------------//
+        Vector3 row[3], pdum;
+        Matrix3 temp3x3 = temp.toMatrix3();
+
+        for (short i = 0; i < 3; i++)
+            row[i] = Vector3(temp3x3.data[0 + i * 3], temp3x3.data[1 + i * 3], temp3x3.data[2 + i * 3]);
+
+        scale.coordinates.x = row[0].magnitude();
+
+        row[0].normalize();
+
+        skew.coordinates.z = row[0].dot(row[1]);
+        row[1] = row[1] * 1 + row[0] * (-skew.coordinates.z);
+
+        scale.coordinates.y = row[1].magnitude();
+        row[1].normalize();
+        skew.coordinates.z /= scale.coordinates.y;
+         
+        skew.coordinates.y = row[0].dot(row[2]);
+        row[2] = row[2] * 1 + row[0] * (-skew.coordinates.y);
+        skew.coordinates.x = row[1].dot(row[2]);
+        row[2] = row[2] * 1 + row[1] * (-skew.coordinates.x);
+
+        scale.coordinates.z = row[2].magnitude();
+        row[2].normalize();
+        skew.coordinates.y /= scale.coordinates.z;
+        skew.coordinates.x /= scale.coordinates.z;
+
+        pdum = row[1].cross(row[2]);
+        if (row[0].dot(pdum) < 0)
+            for (short i = 0; i < 3; i++) 
+            {
+                scale[i] *= -1.0f;
+                row[i] *= -1.0f;
+            }
+        
+        //---------------------Getting Euler Angles------------------------//
+        eulerAngles.coordinates.y = std::asin(-row[0][2]);
+        if (std::cos(eulerAngles.coordinates.y) != 0) 
+        {
+            eulerAngles.coordinates.x = std::atan2(row[1][2], row[2][2]);
+            eulerAngles.coordinates.z = std::atan2(row[0][1], row[0][0]);
+        }
+        else
+        {
+            eulerAngles.coordinates.x = std::atan2(-row[2][0], row[1][1]);
+            eulerAngles.coordinates.z = 0;
+        }
+
+        //---------------------Getting Quaternion-------------------------//
+        int i, j, k = 0;
+        Scalar root, trace = row[0].coordinates.x + row[1].coordinates.y + row[2].coordinates.z;
+        if (trace > static_cast<Scalar>(0))
+        {
+            root = std::sqrt(trace + static_cast<Scalar>(1.0));
+            rotation.real = static_cast<Scalar>(0.5) * root;
+            root = static_cast<Scalar>(0.5) / root;
+            rotation.immaginary.coordinates.x = root * (row[1].coordinates.z - row[2].coordinates.y);
+            rotation.immaginary.coordinates.y = root * (row[2].coordinates.x - row[0].coordinates.z);
+            rotation.immaginary.coordinates.z = root * (row[0].coordinates.y - row[1].coordinates.x);
+        }
+        else
+        {
+            static int next[3] = { 1, 2, 0 };
+            i = 0;
+            if (row[1].coordinates.y > row[0].coordinates.x)
+                i = 1;
+            if (row[2].coordinates.z > row[i][i])
+                i = 2;
+            j = next[i];
+            k = next[j];
+
+            int offset = 1;
+
+            root = std::sqrt(row[i][i] - row[j][j] - row[k][k] + static_cast<Scalar>(1.0));
+
+            rotation[i + offset] = static_cast<Scalar>(0.5) * root;
+            root = static_cast<Scalar>(0.5) / root;
+            rotation[j + offset] = root * (row[i][j] + row[j][i]);
+            rotation[k + offset] = root * (row[i][k] + row[k][i]);
+            rotation.real = root * (row[j][k] - row[k][j]);
+        }
 
         return true;
     }
