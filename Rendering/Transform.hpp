@@ -47,6 +47,9 @@ namespace Odysseus
             Athena::Quaternion& rotation;
             Athena::Vector3 localScale;
 
+            // TODO: Move this in an appropriate place FOR FUCK SAKE!
+            Athena::Vector3 eulerRotation;
+
             const Athena::Matrix4& worldToLocalMatrix;
             const Athena::Matrix4& localToWorldMatrix;
 
