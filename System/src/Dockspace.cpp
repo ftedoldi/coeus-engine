@@ -685,21 +685,31 @@ namespace System {
                     Athena::Matrix4 objTransform = scaleMatrix * rotationMatrix * translateMatrix;
 
                     if (gizmoOperation == ImGuizmo::OPERATION::TRANSLATE)
-                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::WORLD, &objTransform.data[0]);
+                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, &objTransform.data[0]);
                     else if (gizmoOperation == ImGuizmo::OPERATION::SCALE)
-                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::SCALE, ImGuizmo::WORLD, &objTransform.data[0]);
+                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::SCALE, ImGuizmo::LOCAL, &objTransform.data[0]);
                     else if (gizmoOperation == ImGuizmo::OPERATION::ROTATE)
-                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::ROTATE, ImGuizmo::WORLD, &objTransform.data[0]);
+                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::ROTATE, ImGuizmo::LOCAL, &objTransform.data[0]);
 
                     if (ImGuizmo::IsUsing()) {
                         Athena::Vector3 scale, translate;
                         Athena::Quaternion rotation;
                         if (Athena::Matrix4::DecomposeMatrixInScaleRotateTranslateComponents(objTransform, scale, rotation, translate))
                         {
-                            auto deltaTranslation = worldTransform->position - this->transformToShow->position;
-                            auto deltaScale = worldTransform->localScale - this->transformToShow->localScale;
-                            // This is how to calculate a quaternion delta
-                            auto deltaRotation = worldTransform->rotation * this->transformToShow->rotation.inverse();
+                            Athena::Vector3 deltaTranslation, deltaScale;
+                            Athena::Quaternion deltaRotation(0, 0, 0, 1);
+
+                            Odysseus::Transform* parent = this->transformToShow->parent;
+
+                            while (parent != nullptr)
+                            {
+                                deltaTranslation += worldTransform->position - this->transformToShow->position;
+                                deltaScale += worldTransform->localScale - this->transformToShow->localScale;
+                                // This is how to calculate a quaternion delta
+                                deltaRotation = deltaRotation * (worldTransform->rotation * this->transformToShow->rotation.inverse());
+
+                                parent = parent->parent;
+                            }
 
                             this->transformToShow->position = translate - deltaTranslation;
                             this->transformToShow->localScale = scale - deltaScale;
