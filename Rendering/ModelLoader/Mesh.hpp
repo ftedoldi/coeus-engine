@@ -3,7 +3,6 @@
 
 #include <coeus.hpp>
 #include <shader.hpp>
-#include <Component.hpp> 
 #include <Camera.hpp> 
 #include <vector>
 #include "../Texture/Texture2D.hpp"
@@ -11,8 +10,14 @@
 #include <PhysicsMaterial.hpp>
 #include <Time.hpp>
 
+namespace System {
+    class Component;
+}
+
 namespace Odysseus
 {
+    class System::Component;
+
     struct Vertex
     {
         Athena::Vector3 Position;

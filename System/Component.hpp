@@ -1,5 +1,7 @@
-#ifndef __COMPONENT_H__
-#define __COMPONENT_H__
+#pragma once
+
+#ifndef __COMPONENT_HPP__
+#define __COMPONENT_HPP__
 
 #include "SceneObject.hpp"
 #include <Transform.hpp>
@@ -37,4 +39,4 @@ namespace System {
     };
 }
 
-#endif // __COMPONENT_H__
+#endif // __COMPONENT_HPP__

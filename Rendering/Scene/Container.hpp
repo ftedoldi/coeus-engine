@@ -1,7 +1,6 @@
 #ifndef __CONTAINTER_H__
 #define __CONTAINTER_H__
 
-#include <Component.hpp>
 #include <SceneObject.hpp>
 #include <Transform.hpp>
 

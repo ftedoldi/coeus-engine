@@ -1,12 +1,18 @@
 #ifndef LIGHT_HPP
 #define LIGHT_HPP
+
 #include <Vector3.hpp>
 #include <Shader.hpp>
-#include <Component.hpp>
 #include <Camera.hpp>
+
+namespace System {
+    class Component;
+}
 
 namespace Odysseus
 {
+    class System::Component;
+
     class Light : public System::Component
     {
         protected:

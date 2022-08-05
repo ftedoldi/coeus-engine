@@ -1,14 +1,19 @@
-#ifndef CAMERA_HPP
-#define CAMERA_HPP
+#ifndef __CAMERA_HPP__
+#define __CAMERA_HPP__
 
 #include <Component.hpp>
 
 #include <coeus.hpp>
 #include <vector>
 
+namespace System {
+    class Component;
+}
+
 namespace Odysseus
 {
     class Transform;
+    class System::Component;
 
     class Camera : public System::Component
     {

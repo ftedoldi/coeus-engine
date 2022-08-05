@@ -549,6 +549,7 @@ namespace System {
                     firstRotation = false;
                     lastTransform = transformToShow;
                 }
+                // FIXME: Fix rotation issue and make it work together with Gizmo system
                 ImGui::InputFloat3("Rotation", rotation);
                 // this->transformToShow->rotation = Athena::Quaternion(
                 //                                                         0, 

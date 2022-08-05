@@ -1,10 +1,16 @@
 #ifndef __DUMMYCOMPONENT_H__
 #define __DUMMYCOMPONENT_H__
 
-#include <Component.hpp>
+#include <Camera.hpp>
 
 #include <iostream>
 #include <string>
+
+namespace System {
+    class Component;
+}
+
+class System::Component;
 
 class DummyComponent : public System::Component {
     public:
