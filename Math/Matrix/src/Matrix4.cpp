@@ -381,6 +381,7 @@ namespace Athena
                        data[12] * vec[0] + data[13] * vec[1] + data[14] * vec[2] + data[15] * vec[3]);
     }
 
+    // TODO: Add retrurn for skew and euler angles
     bool Matrix4::DecomposeMatrixInScaleRotateTranslateComponents(
         const Matrix4& modelMatrix, 
         Vector3& scale, 
