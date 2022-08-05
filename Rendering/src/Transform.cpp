@@ -551,6 +551,33 @@ namespace Odysseus {
         return new Transform(newPosition, newRotation, newScale);
     }
 
+    Transform* Transform::GetWorldTransform(Transform* start, Transform* currentTransform)
+    {
+        if (start->parent == nullptr)
+            return currentTransform;
+        
+        return GetWorldTransform(start->parent, compositeTransformBetween(start->parent, currentTransform));
+    }
+
+    Transform* Transform::GetLocalTransform(Transform* start, Transform* currentTransform)
+    {
+        if (start->parent == nullptr)
+            return start->parent->inverse();
+        
+        auto t = GetLocalTransform(start->parent, currentTransform);
+
+        t->position.print();
+
+        if (t == currentTransform) 
+        {
+            return compositeTransformBetween(t, currentTransform);
+        }
+        else
+        {
+            return compositeTransformBetween(t, start->inverse());
+        }
+    }
+
     Transform::~Transform()
     {
         this->_childrenTree->deleteTree();

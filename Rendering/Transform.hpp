@@ -127,6 +127,10 @@ namespace Odysseus
 
             Transform* inverse() const;
 
+            static Transform* GetWorldTransform(Transform* start, Transform* currentTransform);
+            // FIXME: Buggy function and quite useless TBH
+            static Transform* GetLocalTransform(Transform* start, Transform* currentTransform);
+
             ~Transform();
     };
 
