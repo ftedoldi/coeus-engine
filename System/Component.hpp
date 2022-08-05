@@ -3,7 +3,7 @@
 #ifndef __COMPONENT_HPP__
 #define __COMPONENT_HPP__
 
-#include "SceneObject.hpp"
+#include <SceneObject.hpp>
 #include <Transform.hpp>
 
 #include <string>

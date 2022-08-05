@@ -4,30 +4,30 @@ namespace Athena
 {
     Matrix3::Matrix3()
     {
-        data[0] = 1; data[4] = 1; data[8] = 1;
-        data[1] = 0; data[2] = 0; data[3] = 0;
-        data[5] = 0; data[6] = 0; data[7] = 0;
+        data[0] = 1, data[1] = 0, data[2] = 0,
+        data[3] = 0, data[4] = 1, data[5] = 0,
+        data[6] = 0, data[7] = 0; data[8] = 1;
     }
 
     Matrix3::Matrix3(const Scalar& v1, const Scalar& v2, const Scalar& v3,
                      const Scalar& v4, const Scalar& v5, const Scalar& v6,
                      const Scalar& v7, const Scalar& v8, const Scalar& v9)
     {
-        data[0] = v1; data[1] = v2; data[2] = v3;
-        data[3] = v4; data[4] = v5; data[5] = v6;
-        data[6] = v7; data[7] = v8; data[8] = v9;
+        data[0] = v1, data[1] = v2, data[2] = v3,
+        data[3] = v4, data[4] = v5, data[5] = v6,
+        data[6] = v7, data[7] = v8, data[8] = v9;
     }
 
     Matrix3::Matrix3(Vector3& vec1, Vector3& vec2, Vector3& vec3)
     {
         data[0] = vec1.coordinates.x;
-        data[1] = vec2.coordinates.x;
-        data[2] = vec3.coordinates.x;
-        data[3] = vec1.coordinates.y;
+        data[1] = vec1.coordinates.y;
+        data[2] = vec1.coordinates.z;
+        data[3] = vec2.coordinates.x;
         data[4] = vec2.coordinates.y;
-        data[5] = vec3.coordinates.y;
-        data[6] = vec1.coordinates.z;
-        data[7] = vec2.coordinates.z;
+        data[5] = vec2.coordinates.z;
+        data[6] = vec3.coordinates.x;
+        data[7] = vec3.coordinates.y;
         data[8] = vec3.coordinates.z;
     }
 

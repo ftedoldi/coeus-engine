@@ -40,23 +40,23 @@ namespace Athena
     Matrix4::Matrix4(const Vector4& vec1, const Vector4& vec2, const Vector4& vec3, const Vector4& vec4)
     {
         data[0] = vec1[0];
-        data[4] = vec1[1];
-        data[8] = vec1[2];
-        data[12] = vec1[3];
+        data[1] = vec1[1];
+        data[2] = vec1[2];
+        data[3] = vec1[3];
 
-        data[1] = vec2[0];
+        data[4] = vec2[0];
         data[5] = vec2[1];
-        data[9] = vec2[2];
-        data[13] = vec2[3];
+        data[6] = vec2[2];
+        data[7] = vec2[3];
 
-        data[2] = vec3[0];
-        data[6] = vec3[1];
+        data[8] = vec3[0];
+        data[9] = vec3[1];
         data[10] = vec3[2];
-        data[14] = vec3[3];
+        data[11] = vec3[3];
 
-        data[3] = vec4[0];
-        data[7] = vec4[1];
-        data[11] = vec4[2];
+        data[12] = vec4[0];
+        data[13] = vec4[1];
+        data[14] = vec4[2];
         data[15] = vec4[3];
     }
 
@@ -370,24 +370,6 @@ namespace Athena
         result.data[7] = mat.data[9];
         result.data[8] = mat.data[10];
 
-        return result;
-    }
-    
-    Matrix4 Matrix4::scale(const Matrix4& mat, const Vector3& scale)
-    {
-        Matrix4 result(mat);
-        result.data[0] *= scale.coordinates.x;
-        result.data[5] *= scale.coordinates.y;
-        result.data[10] *= scale.coordinates.z;
-        return result;
-    }
-
-    Matrix4 Matrix4::translate(const Matrix4& mat, const Vector3& translate)
-    {
-        Matrix4 result(mat);
-        result.data[12] += translate.coordinates.x;
-        result.data[13] += translate.coordinates.y;
-        result.data[14] += translate.coordinates.z;
         return result;
     }
 
