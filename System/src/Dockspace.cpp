@@ -569,37 +569,12 @@ namespace System {
                 ImGui::InputFloat3("Position", pos);
                 this->transformToShow->position = Athena::Vector3(pos[0], pos[1], pos[2]);
 
-                static bool firstRotation = true;
-                static float rotation[3];
-                // TODO: Fix this in order to prevent rounding errors of toEulerAnglesMethod
-                if (lastTransform != transformToShow) {
-                    Athena::Vector3 rot(this->transformToShow->rotation.toEulerAngles());
-                    rotation[0] = rot.coordinates.x;
-                    rotation[1] = rot.coordinates.y;
-                    rotation[2] = rot.coordinates.z;
-                    firstRotation = false;
-                    lastTransform = transformToShow;
-                }
-                // FIXME: Fix rotation issue and make it work together with Gizmo system
+                Athena::Vector3 rotationAsVector = this->transformToShow->eulerRotation;
+                float rotation[3] = { rotationAsVector[0], rotationAsVector[1], rotationAsVector[2]};
                 ImGui::InputFloat3("Rotation", rotation);
-                // this->transformToShow->rotation = Athena::Quaternion(
-                //                                                         0, 
-                //                                                         0,
-                //                                                         std::sin(Athena::Math::degreeToRandiansAngle(rotation[2])/2),
-                //                                                         std::cos(Athena::Math::degreeToRandiansAngle(rotation[2])/2)
-                //                                                     )
-                //                                 * Athena::Quaternion(
-                //                                                         0, 
-                //                                                         std::sin(Athena::Math::degreeToRandiansAngle(rotation[1])/2), 
-                //                                                         0, 
-                //                                                         std::cos(Athena::Math::degreeToRandiansAngle(rotation[1])/2)
-                //                                                     )
-                //                                 * Athena::Quaternion(
-                //                                                         std::sin(Athena::Math::degreeToRandiansAngle(rotation[0])/2),
-                //                                                         0, 
-                //                                                         0, 
-                //                                                         std::cos(Athena::Math::degreeToRandiansAngle(rotation[0])/2)
-                //                                                     );
+                this->transformToShow->eulerRotation = Athena::Vector3(rotation[0], rotation[1], rotation[2]);
+                if (ImGui::IsItemEdited())
+                    this->transformToShow->rotation = Athena::Quaternion::EulerAnglesToQuaternion(this->transformToShow->eulerRotation);
 
                 float scale[] = { this->transformToShow->localScale.coordinates.x, this->transformToShow->localScale.coordinates.y, this->transformToShow->localScale.coordinates.z };
                 ImGui::InputFloat3("Scale", scale);
@@ -715,6 +690,7 @@ namespace System {
                             this->transformToShow->localScale = scale - deltaScale;
                             // This is how to add a delta of quaternions
                             this->transformToShow->rotation = rotation.conjugated() * deltaRotation.conjugated();
+                            this->transformToShow->eulerRotation = this->transformToShow->rotation.toEulerAngles();
                         }
                         else
                         {
