@@ -61,10 +61,10 @@ int main()
     //-------------------------------------------------------
     //Models setup
 
-    //Odysseus::Model myModel("Assets/Models/PBRsphere/PBRsphere.obj", PBRshader, true);
-    //Odysseus::Model myModel1("Assets/Models/matAndTex/matAndTex.obj", PBRshader, true);
-    Odysseus::Model myModel1("Assets/Models/testFiles/posCubesColored.gltf", modelShader, false);
-    //myModel.setIfPBR(true);
+    Odysseus::Model myModel("Assets/Models/PBRsphere/PBRsphere.obj", PBRshader, true);
+    Odysseus::Model myModel1("Assets/Models/matAndTex/matAndTex.obj", PBRshader, true);
+    // Odysseus::Model myModel1("Assets/Models/testFiles/posCubesColored.gltf", modelShader, false);
+    // myModel.setIfPBR(true);
 
     //-------------------------------------------------------
     //Light setup
@@ -84,7 +84,7 @@ int main()
     pLight->setQuadratic(0.032f);
 
     //Directional light
-    /*Odysseus::SceneObject *dirLight = new Odysseus::SceneObject();
+    Odysseus::SceneObject *dirLight = new Odysseus::SceneObject();
     dirLight->transform->name = "DirectionaLight";
     auto dLight = dirLight->addComponent<Odysseus::DirectionalLight>();
 
@@ -92,10 +92,10 @@ int main()
     dLight->setAmbient(Athena::Vector3(0.2f, 0.2f, 0.2f));
     dLight->setDiffuse(Athena::Vector3(0.5f, 0.5f, 0.5f));
     dLight->setSpecular(Athena::Vector3(0.5f, 0.5f, 0.5f));
-    dLight->setDirection(Athena::Vector3(0.0f, -1.0f, 0.0f));*/
+    dLight->setDirection(Athena::Vector3(0.0f, -1.0f, 0.0f));
     
     //Spot light
-    /*Odysseus::SceneObject *spotLight = new Odysseus::SceneObject();
+    Odysseus::SceneObject *spotLight = new Odysseus::SceneObject();
     spotLight->transform->name = "spotLight";
     auto sLight = spotLight->addComponent<Odysseus::SpotLight>();
     
@@ -106,7 +106,7 @@ int main()
     sLight->setDiffuse(Athena::Vector3(0.8f, 0.8f, 0.8f));
     sLight->setSpecular(Athena::Vector3(1.0f, 1.0f, 1.0f));
     sLight->setCutOff(41.0f);
-    sLight->setSpotExponent(19.0f);*/
+    sLight->setSpotExponent(19.0f);
 
     stbi_set_flip_vertically_on_load(true);
     
