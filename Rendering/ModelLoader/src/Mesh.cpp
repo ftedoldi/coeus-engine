@@ -35,7 +35,7 @@ namespace Odysseus
             }
         }
 
-        auto tmp = Odysseus::Camera::main->getViewTransform(this->transform);
+        auto tmp = Odysseus::Camera::main->getViewTransform(Transform::GetWorldTransform(this->transform, this->transform));
 
         this->shader->setVec3("viewPos", Odysseus::Camera::main->transform->position);
         this->shader->setVec3("WorldPosition", this->transform->position);
@@ -80,12 +80,13 @@ namespace Odysseus
 
         }
 
-        auto tmp = Odysseus::Camera::main->getViewTransform(this->transform);
+        auto worldPosition = Transform::GetWorldTransform(this->transform, this->transform);
+        auto tmp = Odysseus::Camera::main->getViewTransform(worldPosition);
 
         this->shader->setVec3("viewPos", Odysseus::Camera::main->transform->position);
-        this->shader->setVec3("WorldPosition", this->transform->position);
-        this->shader->setVec4("WorldRotation", this->transform->rotation.asVector4());
-        this->shader->setVec3("WorldScale", this->transform->localScale);
+        this->shader->setVec3("WorldPosition", worldPosition->position);
+        this->shader->setVec4("WorldRotation", worldPosition->rotation.asVector4());
+        this->shader->setVec3("WorldScale", worldPosition->localScale);
 
         this->shader->setVec3("position", tmp->position);
         this->shader->setVec4("rotation", tmp->rotation.asVector4());
