@@ -15,6 +15,8 @@ namespace System {
         initializeButtonImageTextures();
 
         gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+
+        statusBar = new StatusBar();
     }
 
     void Dockspace::initializeButtonImageTextures() 
@@ -310,6 +312,7 @@ namespace System {
 
                     if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) || Input::keyboard->getPressedKey() == GLFW_KEY_T) {
                         gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+                        statusBar->addStatus("Translate operation selected", TextColor::GREEN);
                     }
 
                     ImGui::SameLine();
@@ -332,6 +335,7 @@ namespace System {
 
                     if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) || Input::keyboard->getPressedKey() == GLFW_KEY_S) {
                         gizmoOperation = ImGuizmo::OPERATION::SCALE;
+                        statusBar->addStatus("Scale operation selected", TextColor::GREEN);
                     }
                     
                     ImGui::SameLine();
@@ -354,6 +358,7 @@ namespace System {
 
                     if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) || Input::keyboard->getPressedKey() == GLFW_KEY_R) {
                         gizmoOperation = ImGuizmo::OPERATION::ROTATE;
+                        statusBar->addStatus("Rotate operation selected", TextColor::GREEN);
                     }
 
                     ImGui::SameLine();
@@ -375,7 +380,7 @@ namespace System {
                     #pragma warning(pop)
 
                     if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) || Input::keyboard->getPressedKey() == GLFW_KEY_P) {
-
+                        statusBar->addStatus("Starting simulation...");
                     }
                     
                     ImGui::SameLine();
@@ -393,6 +398,10 @@ namespace System {
                                 { 1, 1, 1, 1 }
                         );
                     #pragma warning(pop)
+
+                    if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))) {
+                        statusBar->addStatus("Pausing simulation...");
+                    }
                     
                     ImGui::SameLine();
 
@@ -409,6 +418,10 @@ namespace System {
                                 { 1, 1, 1, 1 }
                         );
                     #pragma warning(pop)
+
+                    if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))) {
+                        statusBar->addStatus("Stopping simulation...");
+                    }
 
                     ImGui::PopStyleColor(3);
                 ImGui::EndMenuBar();
@@ -427,7 +440,25 @@ namespace System {
         if (ImGui::BeginViewportSideBar("Status Bar", ImGui::GetMainViewport(), ImGuiDir_Down, ImGui::GetFrameHeight(), ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar))
         {
             if (ImGui::BeginMenuBar()) {
-                ImGui::Text("Happy status bar");
+                    static CurrentStatus statusToDisplay = statusBar->errorStatus;
+
+                    if (statusToDisplay.statusTextColor == TextColor::RED)
+                        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+                    else if (statusToDisplay.statusTextColor == TextColor::GREEN)
+                        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
+                    else if (statusToDisplay.statusTextColor == TextColor::WHITE)
+                        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1));
+                    else if (statusToDisplay.statusTextColor == TextColor::YELLOW)
+                        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
+                        
+                    if (statusBar->getLastStatus().statusText != statusBar->errorStatus.statusText)
+                        statusToDisplay = statusBar->popStatus();
+
+                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetColumnWidth() - ImGui::CalcTextSize(statusToDisplay.statusText.c_str()).x 
+                        - ImGui::GetScrollX() - 2 * ImGui::GetStyle().ItemSpacing.x);
+
+                    ImGui::Text("%s", statusToDisplay.statusText.c_str());
+                    ImGui::PopStyleColor();
                 ImGui::EndMenuBar();
             }
             ImGui::End();
@@ -632,7 +663,12 @@ namespace System {
                                                         Athena::Vector4(1, 0, 0, 0),
                                                         Athena::Vector4(0, 1, 0, 0),
                                                         Athena::Vector4(0, 0, 1, 0),
-                                                        Athena::Vector4(this->transformToShow->position.coordinates.x, this->transformToShow->position.coordinates.y, this->transformToShow->position.coordinates.z, 1)
+                                                        Athena::Vector4(
+                                                                            this->transformToShow->position.coordinates.x, 
+                                                                            this->transformToShow->position.coordinates.y, 
+                                                                            this->transformToShow->position.coordinates.z,                                             
+                                                                            1
+                                                                        )
                                                     );
 
                     Athena::Matrix4 scaleMatrix(
@@ -654,23 +690,19 @@ namespace System {
                         ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::ROTATE, ImGuizmo::LOCAL, &objTransform.data[0]);
 
                     if (ImGuizmo::IsUsing()) {
+                        Athena::Vector3 scale, translate;
+                        Athena::Quaternion rotation;
+                        if (Athena::Matrix4::DecomposeMatrixInScaleRotateTranslateComponents(objTransform, scale, rotation, translate))
+                        {
+                            this->transformToShow->position = translate;
+                            this->transformToShow->localScale = scale;
+                            this->transformToShow->rotation = rotation.conjugated();
+                        }
+                        else
+                        {
+                            Debug::LogError("Could not decompose transformation matrix, please try again!");
+                        }
 
-                        // TODO: Avoid using glm implement own library in order to do so
-                        glm::vec3 scale, translate, skew;
-                        glm::vec4 perspective;
-                        glm::quat rotation;
-
-                        glm::mat4 t(
-                                        objTransform.data[0], objTransform.data[1], objTransform.data[2], objTransform.data[3],
-                                        objTransform.data[4], objTransform.data[5], objTransform.data[6], objTransform.data[7],
-                                        objTransform.data[8], objTransform.data[9], objTransform.data[10], objTransform.data[11],
-                                        objTransform.data[12], objTransform.data[13], objTransform.data[14], objTransform.data[15]
-                                    );
-                        glm::decompose(t, scale, rotation, translate, skew, perspective);
-
-                        this->transformToShow->position = Athena::Vector3(translate[0], translate[1], translate[2]);
-                        this->transformToShow->localScale = Athena::Vector3(scale.x, scale.y, scale.z);
-                        this->transformToShow->rotation = Athena::Quaternion(rotation.x, rotation.y, rotation.z, rotation.w).conjugated();
                     }
                 }
             ImGui::EndChild();

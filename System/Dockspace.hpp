@@ -8,19 +8,11 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include <glm/glm.hpp>
-#include <glm/common.hpp>
-#include <glm/mat4x4.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/matrix_decompose.hpp>
-
 #include <ImGuizmo.h>
 
 #include <IO/Input.hpp>
 #include <Folder.hpp>
+#include <StatusBar.hpp>
 
 #include "Debug.hpp"
 
@@ -53,6 +45,7 @@ namespace System {
     class Component;
     class Odysseus::Transform;
     class Console;
+    class StatusBar;
     
     struct ButtonImages {
         int translateTextureID;
@@ -67,18 +60,6 @@ namespace System {
         int documentTextureID;
     };
 
-    enum TextColor {
-        WHITE,
-        RED,
-        YELLOW,
-        GREEN
-    };
-
-    struct CurrentStatus {
-        std::string statusText;
-        TextColor statusTextColor;
-    };
-
     class Dockspace {
         private:
             Odysseus::Transform* transformToShow;
@@ -86,6 +67,8 @@ namespace System {
             std::vector<Component*> inspectorParams;
 
             Console* console;
+
+            StatusBar* statusBar;
 
             std::filesystem::path assetDirectory;
             std::filesystem::path currentDirectory;
