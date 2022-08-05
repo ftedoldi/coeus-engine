@@ -315,6 +315,30 @@ namespace Athena {
         return this->conjugated() / this->squareMagnitude();
     }
 
+    Scalar Quaternion::operator [] (const short& i) const
+    {
+        if (i == 0)
+            return this->real;
+        if (i == 1)
+            return this->immaginary.coordinates.x;
+        if (i == 2)
+            return this->immaginary.coordinates.y;
+        if (i == 3)
+            return this->immaginary.coordinates.z;
+    }
+
+    Scalar& Quaternion::operator [] (const short& i)
+    {
+        if (i == 0)
+            return this->real;
+        if (i == 1)
+            return this->immaginary.coordinates.x;
+        if (i == 2)
+            return this->immaginary.coordinates.y;
+        if (i == 3)
+            return this->immaginary.coordinates.z;
+    }
+
     Quaternion Quaternion::operator /(const Scalar& k) const {
         return Quaternion(this->immaginary / k, this->real / k);
     }

@@ -79,6 +79,11 @@ namespace Athena
             void invert();
             Quaternion inverse() const;
 
+            // Returns a quaternion IN A DIFFERENT CONFIGURATION
+            // q[0] -> q.w, q[1] -> q.x, ....
+            Scalar operator [] (const short& i) const;
+            Scalar& operator [] (const short& i);
+
             Quaternion operator /(const Scalar& k) const;
             Quaternion operator *(const Scalar& k) const;
 
