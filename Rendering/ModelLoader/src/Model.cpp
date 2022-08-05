@@ -35,8 +35,20 @@ namespace Odysseus
 
         for(GLuint i = 0; i < node->mNumMeshes; ++i)
         {
+            Athena::Vector3 position;
+            if(node->mParent != nullptr)
+            {
+                //local transformation matrix of the node
+                aiMatrix4x4 transform =  node->mTransformation;
+                position = Athena::Vector3((float)transform.a4, (float)transform.b4, (float)transform.c4);
+                std::cout << transform.a4 << " ";
+                std::cout << transform.b4 << " ";
+                std::cout << transform.c4 << " ";
+                std::cout << std::endl;
+            }
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            processMesh(mesh, scene, obj);
+            
+            processMesh(mesh, scene, obj, position);
         }
 
         obj->transform->parent = parent;
@@ -178,11 +190,12 @@ namespace Odysseus
         }
     }
 
-    void Model::processMesh(aiMesh *mesh, const aiScene *scene, SceneObject* obj)
+    void Model::processMesh(aiMesh *mesh, const aiScene *scene, SceneObject* obj, Athena::Vector3& position)
     {
         // data to fill
         std::vector<Vertex> vertices;
         std::vector<GLuint> indices;
+        //Athena::Vector3 avg;
 
         // walk through each of the mesh's vertices
         for(GLuint i = 0; i < mesh->mNumVertices; ++i)
@@ -193,6 +206,11 @@ namespace Odysseus
             vector.coordinates.x = mesh->mVertices[i].x;
             vector.coordinates.y = mesh->mVertices[i].y;
             vector.coordinates.z = mesh->mVertices[i].z;
+
+            //Get average vertex position
+            //avg.coordinates.x += mesh->mVertices[i].x;
+            //avg.coordinates.y += mesh->mVertices[i].y;
+            //avg.coordinates.z += mesh->mVertices[i].z;
             vertex.Position = vector;
             // normals
             if (mesh->HasNormals())
@@ -237,6 +255,21 @@ namespace Odysseus
         //process materials
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
         auto objMesh = obj->addComponent<Odysseus::Mesh>();
+
+        //GLTF positions
+        objMesh->transform->position.coordinates.x = position.coordinates.x;
+        objMesh->transform->position.coordinates.y = position.coordinates.y;
+        objMesh->transform->position.coordinates.z = position.coordinates.z;
+
+        //FBX positions
+        //objMesh->transform->position.coordinates.x = position.coordinates.x / 100;
+        //objMesh->transform->position.coordinates.y = position.coordinates.y / 100;
+        //objMesh->transform->position.coordinates.z = position.coordinates.z / 100;
+
+        //OBJ positions
+        //objMesh->transform->position.coordinates.x = avg.coordinates.x / mesh->mNumVertices;
+        //objMesh->transform->position.coordinates.y = avg.coordinates.y / mesh->mNumVertices;
+        //objMesh->transform->position.coordinates.z = avg.coordinates.z / mesh->mNumVertices;
         objMesh->setShader(this->shader);
         objMesh->setVertices(vertices);
         objMesh->setIndices(indices);

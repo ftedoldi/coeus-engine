@@ -55,14 +55,15 @@ int main()
     //-------------------------------------------------------
     //Shaders setup
 
-    //Odysseus::Shader* modelShader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
+    Odysseus::Shader* modelShader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
     Odysseus::Shader* PBRshader = new Odysseus::Shader(".\\Shader\\PBRshader.vert", ".\\Shader\\PBRshader.frag");
 
     //-------------------------------------------------------
     //Models setup
 
-    Odysseus::Model myModel("Assets/Models/PBRsphere/PBRsphere.obj", PBRshader, true);
-    Odysseus::Model myModel1("Assets/Models/matAndTex/matAndTex.obj", PBRshader, true);
+    //Odysseus::Model myModel("Assets/Models/PBRsphere/PBRsphere.obj", PBRshader, true);
+    //Odysseus::Model myModel1("Assets/Models/matAndTex/matAndTex.obj", PBRshader, true);
+    Odysseus::Model myModel1("Assets/Models/testFiles/posCubesColored.gltf", modelShader, false);
     //myModel.setIfPBR(true);
 
     //-------------------------------------------------------
@@ -74,7 +75,7 @@ int main()
     auto pLight = light->addComponent<Odysseus::PointLight>();
     
     pLight->setPosition(Athena::Vector3(0.0f, 2.0f, 0.0f));
-    pLight->setShader(PBRshader);
+    pLight->setShader(modelShader);
     pLight->setAmbient(Athena::Vector3(0.2f, 0.2f, 0.2f));
     pLight->setDiffuse(Athena::Vector3(0.8f, 0.8f, 0.8f));
     pLight->setSpecular(Athena::Vector3(0.3f, 0.3f, 0.3f));

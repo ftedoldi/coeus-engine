@@ -48,8 +48,9 @@ namespace Odysseus
 
         void setMeshPBRtextures(aiMaterial* material, PhysicsMaterial& mat);
         void setMeshPBRmaterial(aiMaterial* material, PhysicsMaterial& mat);
-        void processMesh(aiMesh* mesh, const aiScene* scene, SceneObject* sceneObject);
-        void processNode(aiNode* node, const aiScene* scene, Transform* parent=nullptr);   
+        void processMesh(aiMesh* mesh, const aiScene* scene, SceneObject* sceneObject, Athena::Vector3& transform);
+        void processNode(aiNode* node, const aiScene* scene, Transform* parent=nullptr);
+        void processTransformations(aiNode* node, aiMatrix4x4& transformation); 
 
     };
 }
