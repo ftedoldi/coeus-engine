@@ -659,48 +659,57 @@ namespace System {
 
                     Athena::Matrix4 view = Odysseus::Camera::main->getViewMatrix();
 
+                    auto worldTransform = Odysseus::Transform::GetWorldTransform(this->transformToShow, this->transformToShow);
+
                     Athena::Matrix4 translateMatrix(
                                                         Athena::Vector4(1, 0, 0, 0),
                                                         Athena::Vector4(0, 1, 0, 0),
                                                         Athena::Vector4(0, 0, 1, 0),
                                                         Athena::Vector4(
-                                                                            this->transformToShow->position.coordinates.x, 
-                                                                            this->transformToShow->position.coordinates.y, 
-                                                                            this->transformToShow->position.coordinates.z,                                             
+                                                                            worldTransform->position.coordinates.x, 
+                                                                            worldTransform->position.coordinates.y, 
+                                                                            worldTransform->position.coordinates.z,                                             
                                                                             1
                                                                         )
                                                     );
 
                     Athena::Matrix4 scaleMatrix(
-                                                    Athena::Vector4(this->transformToShow->localScale.coordinates.x, 0, 0, 0),
-                                                    Athena::Vector4(0, this->transformToShow->localScale.coordinates.y, 0, 0),
-                                                    Athena::Vector4(0, 0, this->transformToShow->localScale.coordinates.z, 0),
-                                                    Athena::Vector4(0, 0, 0,                                               1)
+                                                    Athena::Vector4(worldTransform->localScale.coordinates.x, 0, 0, 0),
+                                                    Athena::Vector4(0, worldTransform->localScale.coordinates.y, 0, 0),
+                                                    Athena::Vector4(0, 0, worldTransform->localScale.coordinates.z, 0),
+                                                    Athena::Vector4(0, 0, 0,                                        1)
                                                 );
 
-                    Athena::Matrix4 rotationMatrix = this->transformToShow->rotation.toMatrix4();
+                    Athena::Matrix4 rotationMatrix = worldTransform->rotation.toMatrix4();
 
                     Athena::Matrix4 objTransform = scaleMatrix * rotationMatrix * translateMatrix;
 
                     if (gizmoOperation == ImGuizmo::OPERATION::TRANSLATE)
-                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, &objTransform.data[0]);
+                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::WORLD, &objTransform.data[0]);
                     else if (gizmoOperation == ImGuizmo::OPERATION::SCALE)
-                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::SCALE, ImGuizmo::LOCAL, &objTransform.data[0]);
+                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::SCALE, ImGuizmo::WORLD, &objTransform.data[0]);
                     else if (gizmoOperation == ImGuizmo::OPERATION::ROTATE)
-                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::ROTATE, ImGuizmo::LOCAL, &objTransform.data[0]);
+                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::ROTATE, ImGuizmo::WORLD, &objTransform.data[0]);
 
                     if (ImGuizmo::IsUsing()) {
                         Athena::Vector3 scale, translate;
                         Athena::Quaternion rotation;
                         if (Athena::Matrix4::DecomposeMatrixInScaleRotateTranslateComponents(objTransform, scale, rotation, translate))
                         {
-                            this->transformToShow->position = translate;
-                            this->transformToShow->localScale = scale;
-                            this->transformToShow->rotation = rotation.conjugated();
+                            auto deltaTranslation = worldTransform->position - this->transformToShow->position;
+                            auto deltaScale = worldTransform->localScale - this->transformToShow->localScale;
+                            // This is how to calculate a quaternion delta
+                            auto deltaRotation = worldTransform->rotation * this->transformToShow->rotation.inverse();
+
+                            this->transformToShow->position = translate - deltaTranslation;
+                            this->transformToShow->localScale = scale - deltaScale;
+                            // This is how to add a delta of quaternions
+                            this->transformToShow->rotation = rotation.conjugated() * deltaRotation.conjugated();
                         }
                         else
                         {
                             Debug::LogError("Could not decompose transformation matrix, please try again!");
+                            statusBar->addStatus("Could not decompose transformation matrix, please try again!", TextColor::RED);
                         }
 
                     }
