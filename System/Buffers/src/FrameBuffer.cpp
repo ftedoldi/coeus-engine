@@ -90,7 +90,7 @@ namespace System::Buffers
         // create a color attachment texture
         glGenTextures(1, &this->_textureID);
         glBindTexture(GL_TEXTURE_2D, this->_textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _frameBufferSize.width, _frameBufferSize.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, _frameBufferSize.width, _frameBufferSize.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->_textureID, 0);
@@ -113,7 +113,7 @@ namespace System::Buffers
         // create a multisampled color attachment texture
         glGenTextures(1, &this->_textureMultisampleID);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->_textureMultisampleID);
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, _frameBufferSize.width, _frameBufferSize.height, GL_TRUE);
+        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB16F, _frameBufferSize.width, _frameBufferSize.height, GL_TRUE);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, this->_textureMultisampleID, 0);
         // create a (also multisampled) renderbuffer object for depth and stencil attachments
@@ -162,7 +162,7 @@ namespace System::Buffers
     void FrameBuffer::refreshFrameBufferTextureSize()
     {
         glBindTexture(GL_TEXTURE_2D, this->_textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->_frameBufferSize.width, this->_frameBufferSize.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, this->_frameBufferSize.width, this->_frameBufferSize.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
     }
 
     void FrameBuffer::bindStandardFrameBuffer()
