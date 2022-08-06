@@ -5,12 +5,9 @@ struct Material
 {
     sampler2D diffuseTex;
     sampler2D specularTex;
-    sampler2D shininessTex;
-    sampler2D ambientTex;
     sampler2D normalTex;
     vec3 diffuse;
     vec3 specular;
-    vec3 ambient;
     float shininess;
 };
 
@@ -66,6 +63,7 @@ uniform int numLights;
 uniform PointLight pointLights[MAX_LIGHTS];
 
 uniform bool hasTexture;
+uniform bool hasNormalTexture;
 
 vec3 getNormalFromMap()
 {
@@ -104,47 +102,50 @@ void main()
     {
         result += calcPointLight(material, pointLights[i], viewDir);
     }*/
-
     FragColor = vec4(result, 1.0);
 }
 
 vec3 calcDirectionalLight(Material material, DirectionalLight light, vec3 viewDir)
 {
     vec3 matTexDiffuse;
-    vec3 matTexAmbient;
     vec3 matTexSpecular;
     float matTexShininess;
     vec3 norm;
     if(hasTexture)
     {
         matTexDiffuse = texture(material.diffuseTex, fs_in.TexCoords).rgb;
-        matTexAmbient = texture(material.ambientTex, fs_in.TexCoords).rgb;
         matTexSpecular = texture(material.specularTex, fs_in.TexCoords).rgb;
         matTexShininess = 32;
-        norm = getNormalFromMap();
+        if(hasNormalTexture)
+            norm = getNormalFromMap();
+        else
+            norm = normalize(fs_in.Normal);
     }
     else
     {
         matTexDiffuse = material.diffuse;
-        matTexAmbient = material.ambient;
         matTexSpecular = material.specular;
         matTexShininess = material.shininess;
         norm = normalize(fs_in.Normal);
     }
-    vec3 ambient = light.ambient * matTexAmbient;
     
+    //light direction is calculated only by the choosed direction
+    vec3 lightDir = normalize(-light.direction);
     //diffuse 
     //the direction of light now is not calculated with the light position, but with the light direction
-    vec3 lightDir = normalize(-light.direction);
-
+    
     float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = light.diffuse * diff * matTexDiffuse;
     
     //specular with halfway direction by Blinn
     vec3 halfwayDir = normalize(lightDir + viewDir);
     float spec = pow(max(dot(norm, halfwayDir), 0.0), matTexShininess);
 
-    vec3 specular = light.specular * spec * matTexSpecular;  
+    if(diff == 0.0)
+        spec = 0.0;
+    
+    vec3 diffuse = light.diffuse * diff * matTexDiffuse;
+    vec3 specular = light.specular * spec * matTexSpecular;
+    vec3 ambient = light.ambient * matTexDiffuse;
         
     return (ambient + diffuse + specular);
 }
@@ -152,22 +153,22 @@ vec3 calcDirectionalLight(Material material, DirectionalLight light, vec3 viewDi
 vec3 calcPointLight(Material material, PointLight light, vec3 viewDir)
 {
     vec3 matTexDiffuse;
-    vec3 matTexAmbient;
     vec3 matTexSpecular;
     float matTexShininess;
     vec3 norm;
     if(hasTexture)
     {
         matTexDiffuse = texture(material.diffuseTex, fs_in.TexCoords).rgb;
-        matTexAmbient = texture(material.ambientTex, fs_in.TexCoords).rgb;
         matTexSpecular = texture(material.specularTex, fs_in.TexCoords).rgb;
         matTexShininess = 32;
-        norm = getNormalFromMap();
+        if(hasNormalTexture)
+            norm = getNormalFromMap();
+        else
+            norm = normalize(fs_in.Normal);    
     }
     else
     {
         matTexDiffuse = material.diffuse;
-        matTexAmbient = material.ambient;
         matTexSpecular = material.specular;
         matTexShininess = material.shininess;
         norm = normalize(fs_in.Normal);
@@ -183,13 +184,16 @@ vec3 calcPointLight(Material material, PointLight light, vec3 viewDir)
     vec3 halfwayDir = normalize(lightDir + viewDir);
     float spec = pow(max(dot(norm, halfwayDir), 0.0), matTexShininess);
 
+    //revomes the specular contribuition if the diffuse contribution is 0
+    if(diff == 0.0)
+        spec = 0.0;
+
     //attenuation coefficent
     //attenuation is used to obtain smoother edges simulating real lights
     float distance = length(light.position - fs_in.FragPos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + 
-  			                light.quadratic * (distance * distance));
+    float attenuation = 1 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
     
-    vec3 ambient = light.ambient * matTexAmbient;
+    vec3 ambient = light.ambient * matTexDiffuse;
     vec3 diffuse = light.diffuse * diff * matTexDiffuse;
     vec3 specular = light.specular * spec * matTexSpecular;
 
@@ -202,22 +206,22 @@ vec3 calcPointLight(Material material, PointLight light, vec3 viewDir)
 vec3 calcSpotLight(Material material, SpotLight light, vec3 viewDir)
 {
     vec3 matTexDiffuse;
-    vec3 matTexAmbient;
     vec3 matTexSpecular;
     float matTexShininess;
     vec3 norm;
     if(hasTexture)
     {
         matTexDiffuse = texture(material.diffuseTex, fs_in.TexCoords).rgb;
-        matTexAmbient = texture(material.ambientTex, fs_in.TexCoords).rgb;
         matTexSpecular = texture(material.specularTex, fs_in.TexCoords).rgb;
         matTexShininess = 32;
-        norm = getNormalFromMap();
+        if(hasNormalTexture)
+            norm = getNormalFromMap();
+        else
+            norm = normalize(fs_in.Normal);
     }
     else
     {
         matTexDiffuse = material.diffuse;
-        matTexAmbient = material.ambient;
         matTexSpecular = material.specular;
         matTexShininess = material.shininess;
         norm = normalize(fs_in.Normal);
@@ -229,13 +233,15 @@ vec3 calcSpotLight(Material material, SpotLight light, vec3 viewDir)
 
     //spotFactor is used to modify, based on cutOff angle and spot exponent, intensity of the light
     float spotFactor = 1.0;
+    float distance = length(light.position - fs_in.FragPos);
+    float attenuation = 1 / (distance * distance);
 
     //we check if the light is inside the light cone
     if(theta > light.cutOff)
     {
         spotFactor = pow(theta, light.spotExponent);
         //ambient
-        vec3 ambient = light.ambient * matTexAmbient;
+        vec3 ambient = light.ambient * matTexDiffuse;
 
         //diffuse
         float diff = max(dot(norm, lightDir), 0.0);
@@ -244,12 +250,18 @@ vec3 calcSpotLight(Material material, SpotLight light, vec3 viewDir)
         //specular with halfway direction by Blinn
         vec3 halfwayDir = normalize(lightDir + viewDir);
         float spec = pow(max(dot(norm, halfwayDir), 0.0), matTexShininess);
-        vec3 specular = spotFactor * light.specular * spec * matTexSpecular; 
+        if(diff == 0.0)
+            spec = 0.0;
+        vec3 specular = spotFactor * light.specular * spec * matTexSpecular;
+
+        ambient *= attenuation;
+        specular *= attenuation;
+        diffuse*= attenuation;
             
         return(ambient + diffuse + specular);
     }
     else
     {
-        return matTexAmbient * light.ambient;
+        return matTexDiffuse * light.ambient * attenuation;
     }
 }
