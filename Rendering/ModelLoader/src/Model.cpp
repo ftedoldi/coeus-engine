@@ -12,7 +12,7 @@ namespace Odysseus
     void Model::loadModel(const std::string& path)
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace /*| aiProcess_FlipUVs*/);
+        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace | aiProcess_FlipUVs);
         //checking for errors in the scene creation
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
@@ -84,14 +84,6 @@ namespace Odysseus
             std::vector<Texture2D> specularMaps = loadTexture(material, aiTextureType_SPECULAR, this->_gammaCorrect);
             std::cout << "Has texture specular" << std::endl;
             mat.Textures.insert(mat.Textures.end(), specularMaps.begin(), specularMaps.end());
-        }
-        //ambient
-        if(material->GetTextureCount(aiTextureType_AMBIENT) > 0)
-        {
-            this->_gammaCorrect = true;
-            std::vector<Texture2D> ambientMaps = loadTexture(material, aiTextureType_AMBIENT, this->_gammaCorrect);
-            std::cout << "Has texture ambient" << std::endl;
-            mat.Textures.insert(mat.Textures.end(), ambientMaps.begin(), ambientMaps.end());
         }
 
         if(material->GetTextureCount(aiTextureType_NORMALS) > 0)
@@ -257,9 +249,9 @@ namespace Odysseus
         auto objMesh = obj->addComponent<Odysseus::Mesh>();
 
         //GLTF positions
-        objMesh->transform->position.coordinates.x = position.coordinates.x;
-        objMesh->transform->position.coordinates.y = position.coordinates.y;
-        objMesh->transform->position.coordinates.z = position.coordinates.z;
+        //objMesh->transform->position.coordinates.x = position.coordinates.x;
+        //objMesh->transform->position.coordinates.y = position.coordinates.y;
+        //objMesh->transform->position.coordinates.z = position.coordinates.z;
 
         //FBX positions
         //objMesh->transform->position.coordinates.x = position.coordinates.x / 100;
@@ -312,7 +304,6 @@ namespace Odysseus
             if(!skip)
             {
                 Texture2D tex(this->directory, str.C_Str(), type);
-                std::cout << tex.ID << std::endl;
                 tex.loadTextureFromFile(gammaCorrect);
                 textures.push_back(tex);
                 textures_loaded.push_back(tex);
