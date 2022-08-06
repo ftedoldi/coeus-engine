@@ -15,6 +15,7 @@
 
 #include <IO/Input.hpp>
 #include <Folder.hpp>
+#include <Buffers/FrameBuffer.hpp>
 
 #include <SceneGraph.hpp>
 #include <Shader.hpp>
@@ -48,38 +49,19 @@ namespace System {
         friend class Dockspace;
 
         private:
-            static Odysseus::Shader* screenShader;
-
-            GLuint framebuffer;
-            GLuint intermediateFBO;
-            GLuint screenVAO, screenVBO;
-            GLuint rbo;
-            GLuint textureColorBufferMultisample;
-            GLuint texture;
-
-            int sizeX, sizeY;
-
             Dockspace* dockspace;
-
-            static GLuint textureColorbuffer;
-
-            static void framebufferShaderCallback(const ImDrawList*, const ImDrawCmd* command);
             
             void setWindowIcon();
             void initializeImGUI();
 
-            void initializeFrameBuffer();
-            void initializeMSAAframebuffer();
-            void initializeQuad();
-
-            void resetFrameBufferTexture();
-
         public:
             static GLFWwindow* window;
             static Screen screen;
-            static Screen frameBufferSize;
             
             static bool refreshFrameBuffer;
+
+            static Buffers::FrameBuffer* sceneFrameBuffer;
+            static Buffers::FrameBuffer* gameFrameBuffer;
 
             Window(std::string name = "MyApplication", bool cursorDisabled = false);
             Window(const int& width, const int& height, std::string name = "MyApplication", bool cursorDisabled = false);
@@ -88,6 +70,9 @@ namespace System {
 
             void clear();
             void update();
+
+            void bindGameFrameBuffer();
+            void updateGameFrameBuffer();
 
             ~Window();
     };
