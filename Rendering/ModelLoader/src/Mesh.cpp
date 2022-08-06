@@ -46,8 +46,13 @@ namespace Odysseus
         this->shader->setVec4("rotation", tmp->rotation.asVector4());
         this->shader->setVec3("scale", tmp->localScale);
 
-        Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, System::Window::frameBufferSize.width / System::Window::frameBufferSize.height, 0.1f, 100.0f);
-        projection.data[0] = projection.data[0] / (System::Window::frameBufferSize.width / (float)System::Window::frameBufferSize.height);
+        Athena::Matrix4 projection = Odysseus::Camera::perspective(
+                                                                    45.0f, 
+                                                                    System::Window::sceneFrameBuffer->frameBufferSize.width / System::Window::sceneFrameBuffer->frameBufferSize.height, 
+                                                                    0.1f, 
+                                                                    100.0f
+                                                                );
+        projection.data[0] = projection.data[0] / (System::Window::sceneFrameBuffer->frameBufferSize.width / (float)System::Window::sceneFrameBuffer->frameBufferSize.height);
         projection.data[5] = projection.data[0];
 
         this->shader->setMat4("projection", projection);
@@ -93,8 +98,13 @@ namespace Odysseus
         this->shader->setVec3("scale", tmp->localScale);
 
         //TODO: call this inside framebuffer callback to avoid creating a perspective even if not needed
-        Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, System::Window::frameBufferSize.width / System::Window::frameBufferSize.height, 0.1f, 100.0f);
-        projection.data[0] = projection.data[0] / (System::Window::frameBufferSize.width / (float)System::Window::frameBufferSize.height);
+        Athena::Matrix4 projection = Odysseus::Camera::perspective(
+                                                                    45.0f, 
+                                                                    System::Window::sceneFrameBuffer->frameBufferSize.width / System::Window::sceneFrameBuffer->frameBufferSize.height, 
+                                                                    0.1f, 
+                                                                    100.0f
+                                                                );
+        projection.data[0] = projection.data[0] / (System::Window::sceneFrameBuffer->frameBufferSize.width / (float)System::Window::sceneFrameBuffer->frameBufferSize.height);
         projection.data[5] = projection.data[0];
 
         this->shader->setMat4("projection", projection);

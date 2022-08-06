@@ -93,6 +93,9 @@ namespace System {
             void createGameWindow();
             void createProjectSettingsWindow();
 
+            //----------------------Window Creation-------------------------------//
+            void createObjectsGUIZMO();
+
             //----------------------Utils Methods--------------------------------//
             void dfsOverFolders(std::filesystem::path sourceFolder, int index = 1);
             int countNestedFolders(std::filesystem::path sourceFolder);

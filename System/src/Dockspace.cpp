@@ -594,18 +594,18 @@ namespace System {
         ImGui::Begin("Scene");
             ImGui::BeginChild("Game Render", { 0, 0 }, false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
                 ImDrawList* drawList = ImGui::GetWindowDrawList();
-                drawList->AddCallback(&Window::framebufferShaderCallback, nullptr);
+                drawList->AddCallback((ImDrawCallback)&Window::sceneFrameBuffer->framebufferShaderCallback, Window::sceneFrameBuffer);
                 ImVec2 wSize = ImGui::GetWindowSize();
 
                 ImGuiWindow* w = ImGui::GetCurrentWindow();
 
-                if (wSize.x < wSize.y) {
-                    Window::frameBufferSize.width = wSize.y;
-                    Window::frameBufferSize.height = wSize.y;
-                } else {
-                    Window::frameBufferSize.width = wSize.x;
-                    Window::frameBufferSize.height = wSize.x;
-                }
+                auto initialFrameBufferWidth = Window::sceneFrameBuffer->frameBufferSize.width;
+                auto initialFrameBufferHeight = Window::sceneFrameBuffer->frameBufferSize.height;
+
+                if (wSize.x < wSize.y)
+                    Window::sceneFrameBuffer->setNewBufferSize(wSize.y, wSize.y);
+                else
+                    Window::sceneFrameBuffer->setNewBufferSize(wSize.x, wSize.x);
 
                 ImGui::SetScrollY(0);
 
@@ -615,102 +615,144 @@ namespace System {
                 
                 #pragma warning(push)
                 #pragma warning(disable : 4312)
-                ImGui::Image((ImTextureID)Window::textureColorbuffer, { (float)Window::frameBufferSize.width, (float)Window::frameBufferSize.height }, ImVec2(0, 1), ImVec2(1, 0));
+                ImGui::Image(
+                                (ImTextureID)Window::sceneFrameBuffer->textureID, 
+                                { 
+                                    (float)Window::sceneFrameBuffer->frameBufferSize.width, 
+                                    (float)Window::sceneFrameBuffer->frameBufferSize.height 
+                                }, 
+                                ImVec2(0, 1), 
+                                ImVec2(1, 0)
+                            );
                 #pragma warning(pop) 
                 drawList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
-                Window::refreshFrameBuffer = true;
 
-                if (this->transformToShow != nullptr) {
-                    ImGuizmo::SetOrthographic(false);
-                    ImGuizmo::SetDrawlist();
-                    ImGuizmo::AllowAxisFlip(false);
-                    ImVec2 size = ImGui::GetContentRegionAvail();
-                    ImVec2 cursorPos = ImGui::GetCursorScreenPos();  
-                    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, Window::frameBufferSize.width, Window::frameBufferSize.height);
+                if (
+                        Window::sceneFrameBuffer->frameBufferSize.width != initialFrameBufferWidth 
+                        || Window::sceneFrameBuffer->frameBufferSize.height != initialFrameBufferHeight
+                    )
+                    Window::refreshFrameBuffer = true;
 
-                    Athena::Matrix4 projection = Odysseus::Camera::perspective(45.0f, Window::frameBufferSize.width / Window::frameBufferSize.height, 0.1f, 100.0f);
-                    projection.data[0] = projection.data[0] / (System::Window::frameBufferSize.width / (float)System::Window::frameBufferSize.height);
-                    projection.data[5] = projection.data[0];
+                if (this->transformToShow != nullptr)
+                    this->createObjectsGUIZMO();
 
-                    Athena::Matrix4 view = Odysseus::Camera::main->getViewMatrix();
-
-                    auto worldTransform = Odysseus::Transform::GetWorldTransform(this->transformToShow, this->transformToShow);
-
-                    Athena::Matrix4 translateMatrix(
-                                                        Athena::Vector4(1, 0, 0, 0),
-                                                        Athena::Vector4(0, 1, 0, 0),
-                                                        Athena::Vector4(0, 0, 1, 0),
-                                                        Athena::Vector4(
-                                                                            worldTransform->position.coordinates.x, 
-                                                                            worldTransform->position.coordinates.y, 
-                                                                            worldTransform->position.coordinates.z,                                             
-                                                                            1
-                                                                        )
-                                                    );
-
-                    Athena::Matrix4 scaleMatrix(
-                                                    Athena::Vector4(worldTransform->localScale.coordinates.x, 0, 0, 0),
-                                                    Athena::Vector4(0, worldTransform->localScale.coordinates.y, 0, 0),
-                                                    Athena::Vector4(0, 0, worldTransform->localScale.coordinates.z, 0),
-                                                    Athena::Vector4(0, 0, 0,                                        1)
-                                                );
-
-                    Athena::Matrix4 rotationMatrix = worldTransform->rotation.toMatrix4();
-
-                    Athena::Matrix4 objTransform = scaleMatrix * rotationMatrix * translateMatrix;
-
-                    if (gizmoOperation == ImGuizmo::OPERATION::TRANSLATE)
-                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, &objTransform.data[0]);
-                    else if (gizmoOperation == ImGuizmo::OPERATION::SCALE)
-                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::SCALE, ImGuizmo::LOCAL, &objTransform.data[0]);
-                    else if (gizmoOperation == ImGuizmo::OPERATION::ROTATE)
-                        ImGuizmo::Manipulate(&view.data[0], &projection.data[0], ImGuizmo::OPERATION::ROTATE, ImGuizmo::LOCAL, &objTransform.data[0]);
-
-                    if (ImGuizmo::IsUsing()) {
-                        Athena::Vector3 scale, translate;
-                        Athena::Quaternion rotation;
-                        if (Athena::Matrix4::DecomposeMatrixInScaleRotateTranslateComponents(objTransform, scale, rotation, translate))
-                        {
-                            Athena::Vector3 deltaTranslation, deltaScale;
-                            Athena::Quaternion deltaRotation(0, 0, 0, 1);
-
-                            Odysseus::Transform* parent = this->transformToShow->parent;
-
-                            while (parent != nullptr)
-                            {
-                                deltaTranslation += worldTransform->position - this->transformToShow->position;
-                                deltaScale += worldTransform->localScale - this->transformToShow->localScale;
-                                // This is how to calculate a quaternion delta
-                                deltaRotation = deltaRotation * (worldTransform->rotation * this->transformToShow->rotation.inverse());
-
-                                parent = parent->parent;
-                            }
-
-                            this->transformToShow->position = translate - deltaTranslation;
-                            this->transformToShow->localScale = scale - deltaScale;
-                            // This is how to add a delta of quaternions
-                            this->transformToShow->rotation = rotation.conjugated() * deltaRotation.conjugated();
-                            this->transformToShow->eulerRotation = this->transformToShow->rotation.toEulerAngles();
-                        }
-                        else
-                        {
-                            Debug::LogError("Could not decompose transformation matrix, please try again!");
-                            statusBar->addStatus("Could not decompose transformation matrix, please try again!", TextColor::RED);
-                        }
-
-                    }
-                }
             ImGui::EndChild();
         ImGui::End();
     }
     
+    void Dockspace::createObjectsGUIZMO()
+    {
+        ImGuizmo::SetOrthographic(false);
+        ImGuizmo::SetDrawlist();
+        ImGuizmo::AllowAxisFlip(false);
+        ImVec2 size = ImGui::GetContentRegionAvail();
+        ImVec2 cursorPos = ImGui::GetCursorScreenPos();  
+        ImGuizmo::SetRect(
+                            ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, 
+                            Window::sceneFrameBuffer->frameBufferSize.width, 
+                            Window::sceneFrameBuffer->frameBufferSize.height
+                        );
+
+        Athena::Matrix4 projection = Odysseus::Camera::perspective(
+                                                                    45.0f, 
+                                                                    Window::sceneFrameBuffer->frameBufferSize.width / Window::sceneFrameBuffer->frameBufferSize.height, 
+                                                                    0.1f, 
+                                                                    100.0f
+                                                                );
+        projection.data[0] = projection.data[0] / (Window::sceneFrameBuffer->frameBufferSize.width / (float)Window::sceneFrameBuffer->frameBufferSize.height);
+        projection.data[5] = projection.data[0];
+
+        Athena::Matrix4 view = Odysseus::Camera::main->getViewMatrix();
+
+        auto worldTransform = Odysseus::Transform::GetWorldTransform(this->transformToShow, this->transformToShow);
+
+        // TODO: Make a method in Matrix4 in order to generate a transform matrix from position, scale and rotation
+        Athena::Matrix4 translateMatrix(
+                                            Athena::Vector4(1, 0, 0, 0),
+                                            Athena::Vector4(0, 1, 0, 0),
+                                            Athena::Vector4(0, 0, 1, 0),
+                                            Athena::Vector4(
+                                                                worldTransform->position.coordinates.x, 
+                                                                worldTransform->position.coordinates.y, 
+                                                                worldTransform->position.coordinates.z,                                             
+                                                                1
+                                                            )
+                                        );
+
+        Athena::Matrix4 scaleMatrix(
+                                        Athena::Vector4(worldTransform->localScale.coordinates.x, 0, 0, 0),
+                                        Athena::Vector4(0, worldTransform->localScale.coordinates.y, 0, 0),
+                                        Athena::Vector4(0, 0, worldTransform->localScale.coordinates.z, 0),
+                                        Athena::Vector4(0, 0, 0,                                        1)
+                                    );
+
+        Athena::Matrix4 rotationMatrix = worldTransform->rotation.toMatrix4();
+
+        Athena::Matrix4 objTransform = scaleMatrix * rotationMatrix * translateMatrix;
+
+        //--------------------------------------Snapping Function-----------------------------------------//
+        // TODO: Set snapValue customizable - Place it in Options
+        bool snap = Input::keyboard->isKeyPressed(Key::LEFT_CONTROL);
+        float snapValue = 0.5f; // Snap to 0.5m for translation/scale
+        if (gizmoOperation == ImGuizmo::OPERATION::ROTATE)
+            snapValue = 45.0f; // Snap to 45.0f degree for rotation
+
+        float snapValues[3] = { snapValue, snapValue, snapValue };
+
+        ImGuizmo::Manipulate(
+                                &view.data[0], 
+                                &projection.data[0], 
+                                gizmoOperation, 
+                                ImGuizmo::LOCAL, 
+                                &objTransform.data[0], 
+                                nullptr, snap ? snapValues : nullptr
+                            );
+
+        if (ImGuizmo::IsUsing()) {
+            Athena::Vector3 scale, translate;
+            Athena::Quaternion rotation;
+            if (Athena::Matrix4::DecomposeMatrixInScaleRotateTranslateComponents(objTransform, scale, rotation, translate))
+            {
+                Athena::Vector3 deltaTranslation, deltaScale;
+                Athena::Quaternion deltaRotation(0, 0, 0, 1);
+
+                Odysseus::Transform* parent = this->transformToShow->parent;
+
+                while (parent != nullptr)
+                {
+                    deltaTranslation += worldTransform->position - this->transformToShow->position;
+                    deltaScale += worldTransform->localScale - this->transformToShow->localScale;
+                    // This is how to calculate a quaternion delta
+                    deltaRotation = deltaRotation * (worldTransform->rotation * this->transformToShow->rotation.inverse());
+
+                    parent = parent->parent;
+                }
+
+                this->transformToShow->position = translate - deltaTranslation;
+                this->transformToShow->localScale = scale - deltaScale;
+                // This is how to add a delta of quaternions
+                this->transformToShow->rotation = rotation.conjugated() * deltaRotation.conjugated();
+                this->transformToShow->eulerRotation = this->transformToShow->rotation.toEulerAngles();
+            }
+            else
+            {
+                Debug::LogError("Could not decompose transformation matrix, please try again!");
+                statusBar->addStatus("Could not decompose transformation matrix, please try again!", TextColor::RED);
+            }
+        }
+    }
+
     // TODO: setup framebuffer for game scene
     void Dockspace::createGameWindow()
     {
         ImGui::Begin("Game");
             ImGui::BeginChild("Game Render");
-                ImDrawList* dList = ImGui::GetWindowDrawList();
-                dList->AddCallback(&Window::framebufferShaderCallback, nullptr);
+                ImDrawList* dList = ImGui::GetWindowDrawList();        
+                ImGuizmo::SetRect(
+                            ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, 
+                            Window::gameFrameBuffer->frameBufferSize.width, 
+                            Window::gameFrameBuffer->frameBufferSize.height
+                        );
                 ImVec2 size = ImGui::GetWindowSize();
 
                 // Window::frameBufferSize.width = size.x;
@@ -718,7 +760,7 @@ namespace System {
                 
                 #pragma warning(push)
                 #pragma warning(disable : 4312)
-                ImGui::Image((ImTextureID)Window::textureColorbuffer, size, ImVec2(0, 1), ImVec2(1, 0));
+                ImGui::Image((ImTextureID)Window::sceneFrameBuffer->textureID, size, ImVec2(0, 1), ImVec2(1, 0));
                 #pragma warning(pop)
 
                 dList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
