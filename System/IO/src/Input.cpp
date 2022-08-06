@@ -19,6 +19,11 @@ namespace System {
         glfwSetKeyCallback(Window::window, keyboardCallback);
     }
 
+    bool Keyboard::isKeyPressed(const Key& keyToCheck)
+    {
+        return _pressedKey == static_cast<int>(keyToCheck);
+    }
+
     int Keyboard::getPressedKey()
     {
         return _pressedKey;
