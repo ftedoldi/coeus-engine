@@ -381,16 +381,22 @@ namespace Athena
                        data[12] * vec[0] + data[13] * vec[1] + data[14] * vec[2] + data[15] * vec[3]);
     }
 
-    // TODO: Add retrurn for skew and euler angles
     bool Matrix4::DecomposeMatrixInScaleRotateTranslateComponents(
-        const Matrix4& modelMatrix, 
-        Vector3& scale, 
-        Quaternion& rotation, 
-        Vector3& translation)
+                                                                    const Matrix4& modelMatrix, 
+                                                                    Vector3& scale, 
+                                                                    Quaternion& rotation, 
+                                                                    Vector3& translation,
+                                                                    Vector3* eulerAnglesRotation, 
+                                                                    Vector3* skew
+                                                                )
     {
+        if (skew == nullptr)
+            skew = new Athena::Vector3();
+
+        if (eulerAnglesRotation == nullptr)
+            eulerAnglesRotation = new Athena::Vector3();
+
         Matrix4 temp(modelMatrix);
-        Athena::Vector3 skew;
-        Athena::Vector3 eulerAngles;
 
         if (temp.data[15] < std::numeric_limits<float>::min())
             return false;
@@ -414,22 +420,22 @@ namespace Athena
 
         row[0].normalize();
 
-        skew.coordinates.z = row[0].dot(row[1]);
-        row[1] = row[1] * 1 + row[0] * (-skew.coordinates.z);
+        skew->coordinates.z = row[0].dot(row[1]);
+        row[1] = row[1] * 1 + row[0] * (-skew->coordinates.z);
 
         scale.coordinates.y = row[1].magnitude();
         row[1].normalize();
-        skew.coordinates.z /= scale.coordinates.y;
+        skew->coordinates.z /= scale.coordinates.y;
          
-        skew.coordinates.y = row[0].dot(row[2]);
-        row[2] = row[2] * 1 + row[0] * (-skew.coordinates.y);
-        skew.coordinates.x = row[1].dot(row[2]);
-        row[2] = row[2] * 1 + row[1] * (-skew.coordinates.x);
+        skew->coordinates.y = row[0].dot(row[2]);
+        row[2] = row[2] * 1 + row[0] * (-skew->coordinates.y);
+        skew->coordinates.x = row[1].dot(row[2]);
+        row[2] = row[2] * 1 + row[1] * (-skew->coordinates.x);
 
         scale.coordinates.z = row[2].magnitude();
         row[2].normalize();
-        skew.coordinates.y /= scale.coordinates.z;
-        skew.coordinates.x /= scale.coordinates.z;
+        skew->coordinates.y /= scale.coordinates.z;
+        skew->coordinates.x /= scale.coordinates.z;
 
         pdum = row[1].cross(row[2]);
         if (row[0].dot(pdum) < 0)
@@ -440,16 +446,16 @@ namespace Athena
             }
         
         //---------------------Getting Euler Angles------------------------//
-        eulerAngles.coordinates.y = std::asin(-row[0][2]);
-        if (std::cos(eulerAngles.coordinates.y) != 0) 
+        eulerAnglesRotation->coordinates.y = std::asin(-row[0][2]);
+        if (std::cos(eulerAnglesRotation->coordinates.y) != 0) 
         {
-            eulerAngles.coordinates.x = std::atan2(row[1][2], row[2][2]);
-            eulerAngles.coordinates.z = std::atan2(row[0][1], row[0][0]);
+            eulerAnglesRotation->coordinates.x = std::atan2(row[1][2], row[2][2]);
+            eulerAnglesRotation->coordinates.z = std::atan2(row[0][1], row[0][0]);
         }
         else
         {
-            eulerAngles.coordinates.x = std::atan2(-row[2][0], row[1][1]);
-            eulerAngles.coordinates.z = 0;
+            eulerAnglesRotation->coordinates.x = std::atan2(-row[2][0], row[1][1]);
+            eulerAnglesRotation->coordinates.z = 0;
         }
 
         //---------------------Getting Quaternion-------------------------//
