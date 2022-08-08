@@ -14,8 +14,8 @@
 namespace System {
     namespace Buffers {
         struct FrameBufferSize {
-            int width;
-            int height;
+            float width;
+            float height;
         };
 
         class FrameBuffer {
@@ -24,6 +24,8 @@ namespace System {
                 GLuint _MSAAid;
                 GLuint _textureID;
                 GLuint _textureMultisampleID;
+                GLuint _textureObjectID;
+                GLuint _textureObjectIDMultisampled;
                 GLuint _renderBufferObjectID;
 
                 bool _isMSAA_Buffer;
@@ -50,6 +52,8 @@ namespace System {
                 const GLuint& ID;
                 const GLuint& MSAA_ID;
                 const GLuint& textureID;
+                const GLuint& textureObjectID;
+                const GLuint& textureObjectIDMultisampled;
                 const GLuint& textureMultisampleID;
                 const GLuint& renderBufferObjectID;
 

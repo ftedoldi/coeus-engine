@@ -7,6 +7,8 @@ namespace System::Buffers
                                  MSAA_ID(_MSAAid), 
                                  textureID(_textureID), 
                                  textureMultisampleID(_textureMultisampleID), 
+                                 textureObjectID(_textureObjectID),
+                                 textureObjectIDMultisampled(_textureObjectIDMultisampled),
                                  renderBufferObjectID(_renderBufferObjectID), 
                                  frameBufferShader(_frameBufferShader),
                                  frameBufferSize(_frameBufferSize)
@@ -35,6 +37,8 @@ namespace System::Buffers
                                 MSAA_ID(_MSAAid), 
                                 textureID(_textureID), 
                                 textureMultisampleID(_textureMultisampleID), 
+                                textureObjectID(_textureObjectID),
+                                textureObjectIDMultisampled(_textureObjectIDMultisampled),
                                 renderBufferObjectID(_renderBufferObjectID), 
                                 frameBufferShader(_frameBufferShader),
                                 frameBufferSize(_frameBufferSize)
@@ -59,14 +63,14 @@ namespace System::Buffers
     void FrameBuffer::initializeScreenQuad()
     {
         const float screenVertices[] = {
-        // positions   // texCoords
-        -0.3f,  1.0f,  0.0f, 1.0f,
-        -0.3f,  0.7f,  0.0f, 0.0f,
-         0.3f,  0.7f,  1.0f, 0.0f,
-
-        -0.3f,  1.0f,  0.0f, 1.0f,
-         0.3f,  0.7f,  1.0f, 0.0f,
-         0.3f,  1.0f,  1.0f, 1.0f
+            // positions   // texCoords
+            -0.3f,  1.0f,  0.0f, 1.0f,
+            -0.3f,  0.7f,  0.0f, 0.0f,
+             0.3f,  0.7f,  1.0f, 0.0f,
+    
+            -0.3f,  1.0f,  0.0f, 1.0f,
+             0.3f,  0.7f,  1.0f, 0.0f,
+             0.3f,  1.0f,  1.0f, 1.0f
         };
 
         glGenVertexArrays(1, &this->_screenQuadVAO);
@@ -95,6 +99,16 @@ namespace System::Buffers
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->_textureID, 0);
 
+        glGenTextures(1, &this->_textureObjectID);
+        glBindTexture(GL_TEXTURE_2D, this->_textureObjectID);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _frameBufferSize.width, _frameBufferSize.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, this->_textureObjectID, 0);
+
+        GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+        glDrawBuffers(2, drawBuffers);
+
         // TODO: Add log to console & StatusBar
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
@@ -114,8 +128,18 @@ namespace System::Buffers
         glGenTextures(1, &this->_textureMultisampleID);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->_textureMultisampleID);
         glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, _frameBufferSize.width, _frameBufferSize.height, GL_TRUE);
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, this->_textureMultisampleID, 0);
+        // glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+
+        glGenTextures(1, &this->_textureObjectIDMultisampled);
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->_textureObjectIDMultisampled);
+        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, _frameBufferSize.width, _frameBufferSize.height, GL_TRUE);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D_MULTISAMPLE, this->_textureObjectIDMultisampled, 0);
+        // glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+
+        GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+        glDrawBuffers(2, drawBuffers);
+
         // create a (also multisampled) renderbuffer object for depth and stencil attachments
         glGenRenderbuffers(1, &this->_renderBufferObjectID);
         glBindRenderbuffer(GL_RENDERBUFFER, this->_renderBufferObjectID);
@@ -125,8 +149,11 @@ namespace System::Buffers
 
         // TODO: Print this to console and Status Bar
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            std::cout << "ERROR::FRAMEBUFFER:: MSAA Framebuffer is not complete!" << std::endl;
+            std::cout << "ERROR::FRAMEBUFFER:: MSAA Framebuffer is not complete! Error: " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        _frameBufferShader->use();
+        _frameBufferShader->setInt("screenTexture", 0);
     }
 
     void FrameBuffer::setNewBufferWidth(const Athena::Scalar& width)
@@ -163,6 +190,12 @@ namespace System::Buffers
     {
         glBindTexture(GL_TEXTURE_2D, this->_textureID);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->_frameBufferSize.width, this->_frameBufferSize.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        // glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->_textureMultisampleID);
+        // glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, _frameBufferSize.width, _frameBufferSize.height, GL_TRUE);
+        glBindTexture(GL_TEXTURE_2D, this->_textureObjectID);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->_frameBufferSize.width, this->_frameBufferSize.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        // glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->_textureObjectIDMultisampled);
+        // glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, _frameBufferSize.width, _frameBufferSize.height, GL_TRUE);
     }
 
     void FrameBuffer::bindStandardFrameBuffer()
@@ -177,6 +210,7 @@ namespace System::Buffers
 
     void FrameBuffer::bindMSAAFrameBuffer()
     {
+        // this->frameBufferShader->use();
         glBindFramebuffer(GL_FRAMEBUFFER, this->_MSAAid);
         glViewport(0, 0, this->_frameBufferSize.width, this->_frameBufferSize.height);
         glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
@@ -188,28 +222,32 @@ namespace System::Buffers
     void FrameBuffer::bind()
     {
         if (this->_isMSAA_Buffer)
+        {
             this->bindMSAAFrameBuffer();
+        }
         else
+        {
             this->bindStandardFrameBuffer();
+        }
     }
 
     void FrameBuffer::blitStandardFrameBuffer()
     {
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, this->_id);
-        glBlitFramebuffer(0, 0, _frameBufferSize.width, _frameBufferSize.height, 0, 0, _frameBufferSize.width, _frameBufferSize.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        // glBindFramebuffer(GL_READ_FRAMEBUFFER, this->_id);
+        // glBlitFramebuffer(0, 0, _frameBufferSize.width, _frameBufferSize.height, 0, 0, _frameBufferSize.width, _frameBufferSize.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        // glViewport(0, 0, _frameBufferSize.width, _frameBufferSize.height);
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
-        glClear(GL_COLOR_BUFFER_BIT);
+        glViewport(0, 0, _frameBufferSize.width, _frameBufferSize.height);
+        // glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
+        // glClear(GL_COLOR_BUFFER_BIT);
         
-        glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+        // glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
         
-        this->_frameBufferShader->use();
-        glBindVertexArray(this->_screenQuadVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, this->_textureID);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        // this->_frameBufferShader->use();
+        // glBindVertexArray(this->_screenQuadVAO);
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, this->_textureID);
+        // glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
     void FrameBuffer::framebufferShaderCallback(const ImDrawList* dummy, const ImDrawCmd* command)
@@ -244,48 +282,59 @@ namespace System::Buffers
     {
         glBindFramebuffer(GL_READ_FRAMEBUFFER, this->_MSAAid);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->_id);
+
+        // glDrawBuffer(GL_COLOR_ATTACHMENT1);
         glBlitFramebuffer(0, 0, _frameBufferSize.width, _frameBufferSize.height, 0, 0, _frameBufferSize.width, _frameBufferSize.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
+
+        // glBindFragDataLocation(this->_frameBufferShader->ID, GL_COLOR_ATTACHMENT0, "fgColor");
+        // glBindFragDataLocation(this->_frameBufferShader->ID, GL_COLOR_ATTACHMENT1, "idColor");
+
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, _frameBufferSize.width, _frameBufferSize.height);
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
-        glClear(GL_COLOR_BUFFER_BIT);
+        // glViewport(0, 0, _frameBufferSize.width, _frameBufferSize.height);
+        // glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
+        // glClear(GL_COLOR_BUFFER_BIT);
         
-        glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+        // glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
         
-        this->_frameBufferShader->use();
-        glBindVertexArray(this->_screenQuadVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, this->_textureID);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        // this->_frameBufferShader->use();
+        // glBindVertexArray(this->_screenQuadVAO);
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, this->_textureID);
+        // glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
     void FrameBuffer::copyAnotherFrameBuffer(const GLuint& idToCopy)
     {
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, idToCopy);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->_id);
-        glBlitFramebuffer(0, 0, _frameBufferSize.width, _frameBufferSize.height, 0, 0, _frameBufferSize.width, _frameBufferSize.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        // glBindFramebuffer(GL_READ_FRAMEBUFFER, idToCopy);
+        // glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->_id);
+        // glBlitFramebuffer(0, 0, _frameBufferSize.width, _frameBufferSize.height, 0, 0, _frameBufferSize.width, _frameBufferSize.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, _frameBufferSize.width, _frameBufferSize.height);
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
-        glClear(GL_COLOR_BUFFER_BIT);
+        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // glViewport(0, 0, _frameBufferSize.width, _frameBufferSize.height);
+        // glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
+        // glClear(GL_COLOR_BUFFER_BIT);
         
-        glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+        // glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
         
-        this->_frameBufferShader->use();
-        glBindVertexArray(this->_screenQuadVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, this->_textureID);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        // this->_frameBufferShader->use();
+        // glBindVertexArray(this->_screenQuadVAO);
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, this->_textureID);
+        // glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
     void FrameBuffer::blit()
     {
         if (this->_isMSAA_Buffer)
+        {
             this->blitMSAAFrameBuffer();
+        }
         else
+        {
             this->blitStandardFrameBuffer();
+        }
     }
 
 } // namespace System::Buffers

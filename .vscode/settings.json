@@ -94,7 +94,8 @@
       "__tuple": "cpp",
       "numeric": "cpp",
       "random": "cpp",
-      "__split_buffer": "cpp"
+      "__split_buffer": "cpp",
+      "__memory": "cpp"
     },
     "terminal.integrated.profiles.windows": {
         "my-pwsh": {

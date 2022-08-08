@@ -201,10 +201,8 @@ namespace System {
 
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-        std::cout << "Hi" << std::endl;
         sceneFrameBuffer = new Buffers::FrameBuffer(mode->width * 2, mode->height * 2, true);
         gameFrameBuffer = new Buffers::FrameBuffer(mode->width * 2, mode->height * 2, true);
-        std::cout << "Bye" << std::endl;
 
         dockspace = new Dockspace();
 
@@ -230,7 +228,26 @@ namespace System {
     {
         sceneFrameBuffer->blit();
 
-        gameFrameBuffer->copyAnotherFrameBuffer(this->sceneFrameBuffer->ID);
+        // glBindFramebuffer(GL_READ_FRAMEBUFFER, this->sceneFrameBuffer->ID);
+        // glReadBuffer(GL_COLOR_ATTACHMENT1);
+        // float pixelColor[4];
+        // glReadPixels(Input::mouse.xPosition, Input::mouse.yPosition, 1, 1, GL_RGB, GL_FLOAT, &pixelColor);
+        // std::cout << "Pixel Color: ( " << pixelColor[0] << ", " << pixelColor[1] << ", " << pixelColor[2] << ", " << pixelColor[3] << " )" << std::endl;
+        // glReadBuffer(GL_NONE);
+        // glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+        // TODO: Finish this -> how to read to a texture that we write
+        // glBindFramebuffer(GL_READ_FRAMEBUFFER, sceneFrameBuffer->ID);
+        // glReadBuffer(GL_COLOR_ATTACHMENT0);
+        // PixelData pixel;
+        // glReadPixels(ImGui::GetMousePos().x, ImGui::GetMousePos().y, 1, 1, GL_RGB, GL_FLOAT, &pixel);
+        // // std::cout << ImGui::GetMousePos().x << ", " << ImGui::GetMousePos().y << std::endl;
+        // glReadBuffer(GL_NONE);
+        // glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+        // std::cout << pixel.primitiveID << std::endl;
+
+        // gameFrameBuffer->copyAnotherFrameBuffer(this->sceneFrameBuffer->ID);
 
         dockspace->createDockspace();
 

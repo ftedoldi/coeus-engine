@@ -2,7 +2,6 @@
 #define __ENGINE_TIME_H__
 
 #include <Scalar.hpp>
-#include <SceneGraph.hpp>
 
 namespace System {
     class Time {

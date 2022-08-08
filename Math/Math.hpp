@@ -57,6 +57,18 @@ namespace Athena
             {
                 return static_cast<Scalar>(1) / static_cast<Scalar>(std::sqrt(static_cast<double>(value)));
             }
+
+            // Linear interpolation: where t = 0 = a and t = 1 = b
+            static Scalar lerp(const Scalar& a, const Scalar& b, const Scalar& t)
+            {
+                return (1.0f - t) * a + t * b;
+            }
+
+            // Linear interpolation: where t = a = 0 and t = b = 1
+            static Scalar inverseLerp(const Scalar& a, const Scalar& b, const Scalar& t)
+            {
+                return (t - a) / (b - a);
+            }
     };
 }
 

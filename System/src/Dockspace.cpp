@@ -599,6 +599,12 @@ namespace System {
 
                 ImGuiWindow* w = ImGui::GetCurrentWindow();
 
+                auto xMousePos = ImGui::GetMousePos().x < ImGui::GetWindowPos().x ? 0 : Athena::Math::inverseLerp(ImGui::GetWindowPos().x, ImGui::GetWindowPos().x + ImGui::GetWindowSize().x, ImGui::GetMousePos().x) > 1 ? 1 : Athena::Math::inverseLerp(ImGui::GetWindowPos().x, ImGui::GetWindowPos().x + ImGui::GetWindowSize().x, ImGui::GetMousePos().x);
+                auto yMousePos = ImGui::GetMousePos().y < ImGui::GetWindowPos().y ? 0 : Athena::Math::inverseLerp(ImGui::GetWindowPos().y, ImGui::GetWindowPos().y + ImGui::GetWindowSize().y, ImGui::GetMousePos().y) > 1 ? 1 : Athena::Math::inverseLerp(ImGui::GetWindowPos().y, ImGui::GetWindowPos().y + ImGui::GetWindowSize().y, ImGui::GetMousePos().y);
+                ImVec2 mousePosRelativeToWindow = ImVec2(xMousePos, yMousePos);
+
+                // std::cout << "Mouse Relative Position: ( " << mousePosRelativeToWindow.x << ", " << mousePosRelativeToWindow.y << " )" << std::endl;
+
                 auto initialFrameBufferWidth = Window::sceneFrameBuffer->frameBufferSize.width;
                 auto initialFrameBufferHeight = Window::sceneFrameBuffer->frameBufferSize.height;
 
@@ -747,17 +753,19 @@ namespace System {
     {
         ImGui::Begin("Game");
             ImGui::BeginChild("Game Render");
-                ImDrawList* dList = ImGui::GetWindowDrawList();        
+                ImDrawList* dList = ImGui::GetWindowDrawList();
                 ImGuizmo::SetRect(
                             ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, 
-                            Window::gameFrameBuffer->frameBufferSize.width, 
-                            Window::gameFrameBuffer->frameBufferSize.height
+                            Window::sceneFrameBuffer->frameBufferSize.width, 
+                            Window::sceneFrameBuffer->frameBufferSize.height
                         );
                 ImVec2 size = ImGui::GetWindowSize();
 
                 // Window::frameBufferSize.width = size.x;
                 // Window::frameBufferSize.height = size.y;
                 
+                // Window::sceneFrameBuffer->blit();
+
                 #pragma warning(push)
                 #pragma warning(disable : 4312)
                 ImGui::Image((ImTextureID)Window::sceneFrameBuffer->textureID, size, ImVec2(0, 1), ImVec2(1, 0));

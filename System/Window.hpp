@@ -16,6 +16,7 @@
 #include <IO/Input.hpp>
 #include <Folder.hpp>
 #include <Buffers/FrameBuffer.hpp>
+#include <PixelData.hpp>
 
 #include <SceneGraph.hpp>
 #include <Shader.hpp>

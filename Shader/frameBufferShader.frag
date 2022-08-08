@@ -1,21 +1,25 @@
-#version 410 core
+#version 330 core
 
-out vec4 FragColor;
+layout (location = 0) out vec4 fragColor;
+layout (location = 1) out vec4 idColor;
   
 in vec2 Frag_UV;
-// in vec4 Frag_Color;
+// flat in int ObjectID;
 
 uniform sampler2D screenTexture;
+// uniform int ObjectID;
 
 void main()
 { 
     float gamma = 2.2;
     float exposure = 1.0;
     
-    vec3 color = texture(screenTexture, Frag_UV.st).rgb;
+    vec4 color = texture(screenTexture, Frag_UV.st);
     // HDR tonemapping
-    color = vec3(1.0) - exp(-color * exposure);
+    color.rgb = vec3(1.0) - exp(-color.rgb * exposure);
     // gamma correction
-    color = pow(color, vec3(1.0 / gamma));
-    FragColor = vec4(color, 1.0);
+    color.rgb = pow(color.rgb, vec3(1.0 / gamma));
+    // f_objectID = ObjectID;
+    fragColor = vec4(color.rgb, 1.0);
+    idColor = vec4(0, 1, 0, 1.0);
 }
