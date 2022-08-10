@@ -226,13 +226,13 @@ namespace System {
         if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
         {
             glBindFramebuffer(GL_READ_FRAMEBUFFER, Window::sceneFrameBuffer->ID);
-            glReadBuffer(GL_COLOR_ATTACHMENT0);
+            glReadBuffer(GL_COLOR_ATTACHMENT1);
             float pixelColor[4];
             glReadPixels(Input::mouse.xPositionRelativeToSceneWindow, Input::mouse.yPositionRelativeToSceneWindow, 1, 1, GL_RGBA, GL_FLOAT, &pixelColor);
             if (System::Picking::PickableObject::getPickableObject(pixelColor[0], &Input::mouse.selectedObject))
             {
                 this->transformToShow = Input::mouse.selectedObject->transform;
-                std::cout << "Selected Object: " << Input::mouse.selectedObject->transform->name << std::endl;
+                statusBar->addStatus("Selected Object: " + Input::mouse.selectedObject->transform->name);
             }
             else
                 Input::mouse.selectedObject = nullptr;
@@ -646,7 +646,7 @@ namespace System {
                 #pragma warning(push)
                 #pragma warning(disable : 4312)
                 ImGui::Image(
-                                (ImTextureID)Window::sceneFrameBuffer->textureObjectID, 
+                                (ImTextureID)Window::sceneFrameBuffer->texturesID[0], 
                                 { 
                                     (float)Window::sceneFrameBuffer->frameBufferSize.width, 
                                     (float)Window::sceneFrameBuffer->frameBufferSize.height 
@@ -794,7 +794,7 @@ namespace System {
 
                 #pragma warning(push)
                 #pragma warning(disable : 4312)
-                ImGui::Image((ImTextureID)Window::sceneFrameBuffer->textureID, size, ImVec2(0, 1), ImVec2(1, 0));
+                ImGui::Image((ImTextureID)Window::sceneFrameBuffer->texturesID[1], size, ImVec2(0, 1), ImVec2(1, 0));
                 #pragma warning(pop)
 
                 dList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
