@@ -35,6 +35,8 @@
 #include <algorithm>
 #include <random>
 
+#include <PickableObject.hpp>
+
 #include <stb/stb_image.h>
 
 namespace System {
@@ -54,6 +56,9 @@ namespace System {
             
             void setWindowIcon();
             void initializeImGUI();
+
+            void initializeMouseCallback();
+            void initializeDebugCallback();
 
         public:
             static GLFWwindow* window;

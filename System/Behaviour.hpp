@@ -11,7 +11,7 @@ namespace System
 
         virtual void setOrderOfExecution(const short& newOrderOfExecution) = 0;
 
-        virtual short getUniqueID() = 0;
+        virtual int getUniqueID() = 0;
 
         virtual std::string toString() = 0;
     };

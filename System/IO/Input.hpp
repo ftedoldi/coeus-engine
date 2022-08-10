@@ -1,6 +1,8 @@
 #ifndef __INPUT_H__
 #define __INPUT_H__
 
+#include <SceneObject.hpp>
+
 #include <Window.hpp>
 
 #include <Scalar.hpp>
@@ -138,8 +140,10 @@ namespace System
         Athena::Scalar xPosition;
         Athena::Scalar yPosition;
 
-        Athena::Scalar xOffsetFromLastPosition;
-        Athena::Scalar yOffsetFromLastPosition;
+        Athena::Scalar xPositionRelativeToSceneWindow;
+        Athena::Scalar yPositionRelativeToSceneWindow;
+
+        Odysseus::SceneObject* selectedObject;
     };
 
     class Keyboard

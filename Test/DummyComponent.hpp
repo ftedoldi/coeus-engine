@@ -23,7 +23,7 @@ class DummyComponent : public System::Component {
         virtual void start();
         virtual void update();
 
-        virtual short getUniqueID();
+        virtual int getUniqueID();
 
         virtual std::string toString();
 

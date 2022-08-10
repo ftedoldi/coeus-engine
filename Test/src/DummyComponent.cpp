@@ -20,7 +20,7 @@
         _orderOfExecution = newOrderOfExecution;
     }
 
-    short DummyComponent::getUniqueID()
+    int DummyComponent::getUniqueID()
     {
         return _uniqueID;
     }

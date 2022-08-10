@@ -18,7 +18,6 @@
 
 #include <SceneGraph.hpp>
 #include <Shader.hpp>
-#include <SceneGraph.hpp>
 #include <Transform.hpp>
 #include <Component.hpp>
 #include <Texture2D.hpp>
@@ -62,8 +61,6 @@ namespace System {
 
     class Dockspace {
         private:
-            Odysseus::Transform* transformToShow;
-
             std::vector<Component*> inspectorParams;
 
             Console* console;
@@ -105,6 +102,8 @@ namespace System {
             void initializeButtonImageTextures();
 
         public:
+            Odysseus::Transform* transformToShow;
+            
             Dockspace();
             
             void createDockspace();
