@@ -15,14 +15,14 @@ namespace Odysseus
     {
         shader->setVec3("material.diffuse", this->Diffuse);
         shader->setVec3("material.specular", this->Specular);
-        shader->setVec3("material.ambient", this->Diffuse);
         shader->setFloat("material.shininess", this->Shininess);
         shader->setBool("hasTexture", false);
     }
 
     void PhongMaterial::loadShaderTexture(Odysseus::Shader* shader)
     {
-        //shader->setFloat("material.shininess", this->Shininess);
+        bool hasNormalTexture = false;
+        shader->setFloat("material.shininess", this->Shininess);
         for(GLuint i = 0; i < this->Textures.size(); ++i)
             {
                 //activate texture
@@ -38,17 +38,19 @@ namespace Odysseus
                     case aiTextureType_SPECULAR:
                         name = "material.specularTex";
                         break;
-                    case aiTextureType_AMBIENT:
-                        name = "material.ambientTex";
-                        break;
                     case aiTextureType_NORMALS:
-                        name = "material.normalTex";
+                        {
+                            name = "material.normalTex";
+                            hasNormalTexture = true;
+                        }
+                        break;
                     default:
                         break;
                 }
                 //set shader uniform
                 shader->setInt(name.c_str(), i);
                 shader->setBool("hasTexture", true);
+                shader->setBool("hasNormalTexture", hasNormalTexture);
                 //bind texture
                 this->Textures[i].BindTexture();
             }

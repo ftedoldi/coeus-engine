@@ -16,9 +16,11 @@ namespace System {
 
         if(!glfwInit())
             std::cerr << "Failed to initialize GLFW" << std::endl;
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // TODO: Erase this
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
         #ifdef __APPLE__
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -50,31 +52,10 @@ namespace System {
             }
         };
 
-        Input::mouse.isFirstMovement = true;
-        Input::mouse.xPosition = screen.width / 2;
-        Input::mouse.yPosition = screen.height / 2;
-
-        auto mouseCallback = [](GLFWwindow *window, double xposIn, double yposIn) {
-            float xpos = static_cast<Athena::Scalar>(xposIn);
-            float ypos = static_cast<Athena::Scalar>(yposIn);
-
-            if (Input::mouse.isFirstMovement)
-            {
-                Input::mouse.xPosition = xpos;
-                Input::mouse.yPosition = ypos;
-                Input::mouse.isFirstMovement = false;
-            }
-
-            Input::mouse.xOffsetFromLastPosition = xpos - Input::mouse.xPosition;
-            Input::mouse.yOffsetFromLastPosition = Input::mouse.yPosition - ypos; // reversed since y-coordinates go from bottom to top
-
-            Input::mouse.xPosition = xpos;
-            Input::mouse.yPosition = ypos;
-        };
+        initializeMouseCallback();
 
         glfwMakeContextCurrent(this->window);
         glfwSetFramebufferSizeCallback(this->window, frameBufferCallback);
-        glfwSetCursorPosCallback(this->window, mouseCallback);
 
         if (cursorDisabled)
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -84,6 +65,8 @@ namespace System {
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
             std::cerr << "Failed to initialize GLAD" << std::endl;
         
+        initializeDebugCallback();
+
         // Enable depth test
         glEnable(GL_DEPTH_TEST);
 
@@ -98,9 +81,11 @@ namespace System {
         screen.height = height;
 
         glfwInit();
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // TODO: Erease this
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
         #ifdef __APPLE__
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -132,9 +117,37 @@ namespace System {
             }
         };
 
+        initializeMouseCallback();
+
+        glfwMakeContextCurrent(this->window);
+        glfwSetFramebufferSizeCallback(this->window, frameBufferCallback);
+
+        if (cursorDisabled)
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        else
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+            std::cerr << "Failed to initialize GLAD" << std::endl;
+
+        initializeDebugCallback();
+
+        // Enable depth test
+        glEnable(GL_DEPTH_TEST);
+
+        initializeImGUI();
+
+        setWindowIcon();
+    }
+
+    void Window::initializeMouseCallback()
+    {
         Input::mouse.isFirstMovement = true;
         Input::mouse.xPosition = screen.width / 2;
         Input::mouse.yPosition = screen.height / 2;
+        Input::mouse.xPositionRelativeToSceneWindow = 0;
+        Input::mouse.yPositionRelativeToSceneWindow = 0;
+        Input::mouse.selectedObject = nullptr;
 
         auto mouseCallback = [](GLFWwindow *window, double xposIn, double yposIn) {
             float xpos = static_cast<float>(xposIn);
@@ -147,31 +160,23 @@ namespace System {
                 Input::mouse.isFirstMovement = false;
             }
 
-            Input::mouse.xOffsetFromLastPosition = xpos - Input::mouse.xPosition;
-            Input::mouse.yOffsetFromLastPosition = Input::mouse.yPosition - ypos; // reversed since y-coordinates go from bottom to top
-
             Input::mouse.xPosition = xpos;
             Input::mouse.yPosition = ypos;
         };
 
-        glfwMakeContextCurrent(this->window);
-        glfwSetFramebufferSizeCallback(this->window, frameBufferCallback);
         glfwSetCursorPosCallback(this->window, mouseCallback);
+    }
 
-        if (cursorDisabled)
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        else
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    void Window::initializeDebugCallback()
+    {
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-            std::cerr << "Failed to initialize GLAD" << std::endl;
+        auto messageCallback = [](GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
+            if (severity == GL_DEBUG_SEVERITY_HIGH || severity == GL_DEBUG_SEVERITY_MEDIUM)
+                std::cerr << std::endl << "[OpenGL Error](" << type << "): " << message << std::endl;
+        };
 
-        // Enable depth test
-        glEnable(GL_DEPTH_TEST);
-
-        initializeImGUI();
-
-        setWindowIcon();
+        glDebugMessageCallback(messageCallback, 0);
     }
 
     void Window::setWindowIcon()
@@ -227,25 +232,6 @@ namespace System {
     void Window::update()
     {
         sceneFrameBuffer->blit();
-
-        // glBindFramebuffer(GL_READ_FRAMEBUFFER, this->sceneFrameBuffer->ID);
-        // glReadBuffer(GL_COLOR_ATTACHMENT1);
-        // float pixelColor[4];
-        // glReadPixels(Input::mouse.xPosition, Input::mouse.yPosition, 1, 1, GL_RGB, GL_FLOAT, &pixelColor);
-        // std::cout << "Pixel Color: ( " << pixelColor[0] << ", " << pixelColor[1] << ", " << pixelColor[2] << ", " << pixelColor[3] << " )" << std::endl;
-        // glReadBuffer(GL_NONE);
-        // glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-
-        // TODO: Finish this -> how to read to a texture that we write
-        // glBindFramebuffer(GL_READ_FRAMEBUFFER, sceneFrameBuffer->ID);
-        // glReadBuffer(GL_COLOR_ATTACHMENT0);
-        // PixelData pixel;
-        // glReadPixels(ImGui::GetMousePos().x, ImGui::GetMousePos().y, 1, 1, GL_RGB, GL_FLOAT, &pixel);
-        // // std::cout << ImGui::GetMousePos().x << ", " << ImGui::GetMousePos().y << std::endl;
-        // glReadBuffer(GL_NONE);
-        // glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-
-        // std::cout << pixel.primitiveID << std::endl;
 
         // gameFrameBuffer->copyAnotherFrameBuffer(this->sceneFrameBuffer->ID);
 

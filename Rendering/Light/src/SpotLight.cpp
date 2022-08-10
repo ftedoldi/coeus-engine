@@ -72,11 +72,12 @@ namespace Odysseus
         //here there is an interective graphic representation
         //of how cutOff angle work with spotExponent
         shader->use();
+        auto worldPosition = Transform::GetWorldTransform(this->transform, this->transform);
         
         shader->setVec3("spotLight.diffuse", this->_diffuse);
         shader->setVec3("spotLight.specular", this->_specular);
         shader->setVec3("spotLight.ambient", this->_ambient);
-        shader->setVec3("spotLight.position", this->transform->position);
+        shader->setVec3("spotLight.position", worldPosition->position);
         shader->setVec3("spotLight.direction", this->_direction);
         shader->setFloat("spotLight.spotExponent", this->_spotExponent);
         //We calculate the cosine value here because its needed in the fragment shader and also because calculating it in the shader would be expensive

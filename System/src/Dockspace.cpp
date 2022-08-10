@@ -222,6 +222,24 @@ namespace System {
 
         ImGui::End();
 
+        // TODO: Refactor this
+        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
+        {
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, Window::sceneFrameBuffer->ID);
+            glReadBuffer(GL_COLOR_ATTACHMENT0);
+            float pixelColor[4];
+            glReadPixels(Input::mouse.xPositionRelativeToSceneWindow, Input::mouse.yPositionRelativeToSceneWindow, 1, 1, GL_RGBA, GL_FLOAT, &pixelColor);
+            if (System::Picking::PickableObject::getPickableObject(pixelColor[0], &Input::mouse.selectedObject))
+            {
+                this->transformToShow = Input::mouse.selectedObject->transform;
+                std::cout << "Selected Object: " << Input::mouse.selectedObject->transform->name << std::endl;
+            }
+            else
+                Input::mouse.selectedObject = nullptr;
+            glReadBuffer(GL_NONE);
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+        }
+
         createHierarchyWindow();
         createConsoleWindow();
         createContentBrowser(); // TODO: find texture icons and add these icons over textures
@@ -599,10 +617,6 @@ namespace System {
 
                 ImGuiWindow* w = ImGui::GetCurrentWindow();
 
-                auto xMousePos = ImGui::GetMousePos().x < ImGui::GetWindowPos().x ? 0 : Athena::Math::inverseLerp(ImGui::GetWindowPos().x, ImGui::GetWindowPos().x + ImGui::GetWindowSize().x, ImGui::GetMousePos().x) > 1 ? 1 : Athena::Math::inverseLerp(ImGui::GetWindowPos().x, ImGui::GetWindowPos().x + ImGui::GetWindowSize().x, ImGui::GetMousePos().x);
-                auto yMousePos = ImGui::GetMousePos().y < ImGui::GetWindowPos().y ? 0 : Athena::Math::inverseLerp(ImGui::GetWindowPos().y, ImGui::GetWindowPos().y + ImGui::GetWindowSize().y, ImGui::GetMousePos().y) > 1 ? 1 : Athena::Math::inverseLerp(ImGui::GetWindowPos().y, ImGui::GetWindowPos().y + ImGui::GetWindowSize().y, ImGui::GetMousePos().y);
-                ImVec2 mousePosRelativeToWindow = ImVec2(xMousePos, yMousePos);
-
                 // std::cout << "Mouse Relative Position: ( " << mousePosRelativeToWindow.x << ", " << mousePosRelativeToWindow.y << " )" << std::endl;
 
                 auto initialFrameBufferWidth = Window::sceneFrameBuffer->frameBufferSize.width;
@@ -615,14 +629,24 @@ namespace System {
 
                 ImGui::SetScrollY(0);
 
-                // auto imageSize = ImVec2((float)Window::frameBufferSize.width, (float)Window::frameBufferSize.height);
-                // auto imagePos = ImVec2((ImGui::GetWindowSize().x - imageSize.x) * 0.5f, (ImGui::GetWindowSize().y - imageSize.y) * 0.5f);
+                auto imageSize = ImVec2((float)Window::sceneFrameBuffer->frameBufferSize.width, (float)Window::sceneFrameBuffer->frameBufferSize.height);
+                auto imagePos = ImVec2((ImGui::GetWindowSize().x - imageSize.x) * 0.5f, (ImGui::GetWindowSize().y - imageSize.y) * 0.5f);
                 // ImGui::SetCursorPos(imagePos);
-                
+
+                // TODO: Refactor Mouse Over Texture Logic
+                //-----------------------------------------------------MOUSE OVER TEXTURE LOGIC------------------------------------------------------------------------//
+                auto xMousePos = ImGui::GetMousePos().x < ImGui::GetWindowPos().x ? 0 : Athena::Math::inverseLerp(ImGui::GetWindowPos().x, ImGui::GetWindowPos().x + ImGui::GetWindowSize().x, ImGui::GetMousePos().x) > 1 ? 1 : Athena::Math::inverseLerp(ImGui::GetWindowPos().x, ImGui::GetWindowPos().x + ImGui::GetWindowSize().x, ImGui::GetMousePos().x);
+                auto yMousePos = ImGui::GetMousePos().y < ImGui::GetWindowPos().y ? 0 : Athena::Math::inverseLerp(ImGui::GetWindowPos().y, ImGui::GetWindowPos().y + ImGui::GetWindowSize().y, ImGui::GetMousePos().y) > 1 ? 1 : Athena::Math::inverseLerp(ImGui::GetWindowPos().y, ImGui::GetWindowPos().y + ImGui::GetWindowSize().y, ImGui::GetMousePos().y);
+                yMousePos = std::abs(yMousePos - 1.0f);
+                ImVec2 mousePosRelativeToWindow = ImVec2(xMousePos, yMousePos);
+                Input::mouse.xPositionRelativeToSceneWindow = (xMousePos * wSize.x);
+                Input::mouse.yPositionRelativeToSceneWindow = (yMousePos * wSize.y) + std::abs(imagePos.y * 2);
+                //----------------------------------------------------------------------------------------------------------------------------------------------------//
+
                 #pragma warning(push)
                 #pragma warning(disable : 4312)
                 ImGui::Image(
-                                (ImTextureID)Window::sceneFrameBuffer->textureID, 
+                                (ImTextureID)Window::sceneFrameBuffer->textureObjectID, 
                                 { 
                                     (float)Window::sceneFrameBuffer->frameBufferSize.width, 
                                     (float)Window::sceneFrameBuffer->frameBufferSize.height 
@@ -630,7 +654,8 @@ namespace System {
                                 ImVec2(0, 1), 
                                 ImVec2(1, 0)
                             );
-                #pragma warning(pop) 
+                #pragma warning(pop)
+
                 drawList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
 
                 if (
@@ -754,6 +779,7 @@ namespace System {
         ImGui::Begin("Game");
             ImGui::BeginChild("Game Render");
                 ImDrawList* dList = ImGui::GetWindowDrawList();
+                dList->AddCallback((ImDrawCallback)&Window::sceneFrameBuffer->framebufferShaderCallback, Window::sceneFrameBuffer);
                 ImGuizmo::SetRect(
                             ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, 
                             Window::sceneFrameBuffer->frameBufferSize.width, 
