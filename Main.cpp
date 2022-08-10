@@ -61,10 +61,11 @@ int main()
     //-------------------------------------------------------
     //Models setup
 
-    Odysseus::Model myModel("Assets/Models/PBRsphere/PBRsphere.obj", PBRshader, true);
-    Odysseus::Model myModel1("Assets/Models/matAndTex/matAndTex.obj", PBRshader, true);
+    Odysseus::Model myModel("Assets/Models/PBRsphere/PBRsphere.obj", modelShader, false);
+    Odysseus::Model myModel1("Assets/Models/matAndTex/matAndTex.obj", modelShader, false);
     // Odysseus::Model myModel1("Assets/Models/testFiles/posCubesColored.gltf", modelShader, false);
     // myModel.setIfPBR(true);
+    // myModel1.setIfPBR(true);
 
     //-------------------------------------------------------
     //Light setup
@@ -111,8 +112,8 @@ int main()
     stbi_set_flip_vertically_on_load(true);
     
     //HDR map setup
-    Odysseus::Cubemap* HDRImap = new Odysseus::Cubemap();
-    HDRImap->setPBRshader(PBRshader);
+    // Odysseus::Cubemap* HDRImap = new Odysseus::Cubemap();
+    // HDRImap->setPBRshader(PBRshader);
 
     //Setup everything before initializeScene call
     Odysseus::SceneGraph::initializeScene();
@@ -127,7 +128,7 @@ int main()
         
         Odysseus::SceneGraph::drawScene();
 
-        HDRImap->update();
+        // HDRImap->update();
         
         window->update();
     }

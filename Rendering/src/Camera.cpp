@@ -1,4 +1,5 @@
-#include "Camera.hpp"
+#include "..\Camera.hpp"
+
 namespace Odysseus
 {
     Camera* Camera::main;
@@ -105,7 +106,7 @@ namespace Odysseus
         _orderOfExecution = newOrderOfExecution;
     }
 
-    short Camera::getUniqueID()
+    int Camera::getUniqueID()
     {
         return this->_uniqueID;
     }

@@ -6,9 +6,14 @@
 #include <Camera.hpp> 
 #include <vector>
 #include "../Texture/Texture2D.hpp"
+#include <Component.hpp>
 #include <PhongMaterial.hpp>
 #include <PhysicsMaterial.hpp>
 #include <Time.hpp>
+
+#include <PickableObject.hpp>
+
+#include <random>
 
 namespace System {
     class Component;
@@ -52,7 +57,7 @@ namespace Odysseus
 
         virtual void setOrderOfExecution(const short& newOrderOfExecution);
 
-        virtual short getUniqueID();
+        virtual int getUniqueID();
 
         virtual std::string toString();
 
@@ -62,6 +67,8 @@ namespace Odysseus
 
         bool hasTexture;
         bool _isPBR;
+
+        float _uniqueFloatID;
 
         //Inizialize VAO, VBO, EBO
         void setupMesh();

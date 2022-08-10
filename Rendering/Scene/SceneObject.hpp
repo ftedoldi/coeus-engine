@@ -1,12 +1,13 @@
 #ifndef __SCENEOBJECT_H__
 #define __SCENEOBJECT_H__
 
+#include <Component.hpp>
+#include <Container.hpp>
+
 #include <Dockspace.hpp>
 
 #include <UUID.hpp>
 
-#include "Component.hpp"
-#include "Container.hpp"
 #include <Transform.hpp>
 #include <SceneGraph.hpp>
 

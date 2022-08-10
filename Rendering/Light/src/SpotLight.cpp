@@ -56,7 +56,7 @@ namespace Odysseus
 
     }
 
-    short SpotLight::getUniqueID()
+    int SpotLight::getUniqueID()
     {
         return this->_uniqueID;
     }

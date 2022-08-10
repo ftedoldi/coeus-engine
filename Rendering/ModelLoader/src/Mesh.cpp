@@ -5,6 +5,14 @@ namespace Odysseus
     Mesh::Mesh()
     {
         std::cout << "Mesh created" << std::endl;
+
+        // TODO: Generate random int
+        std::random_device rd;
+        std::mt19937 rng(rd());
+        std::uniform_int_distribution<int> uni;
+
+        this->_uniqueID = uni(rng);
+        this->_uniqueFloatID = static_cast<float>(this->_uniqueID);
     }
 
     void Mesh::start()
@@ -35,6 +43,8 @@ namespace Odysseus
             }
         }
 
+        System::Picking::PickableObject::insertPickableObject(this->_uniqueFloatID, this->sceneObject);
+
         auto tmp = Odysseus::Camera::main->getViewTransform(Transform::GetWorldTransform(this->transform, this->transform));
 
         this->shader->setVec3("viewPos", Odysseus::Camera::main->transform->position);
@@ -45,6 +55,8 @@ namespace Odysseus
         this->shader->setVec3("position", tmp->position);
         this->shader->setVec4("rotation", tmp->rotation.asVector4());
         this->shader->setVec3("scale", tmp->localScale);
+
+        this->shader->setFloat("ID", this->_uniqueFloatID);
 
         Athena::Matrix4 projection = Odysseus::Camera::perspective(
                                                                     45.0f, 
@@ -97,6 +109,10 @@ namespace Odysseus
         this->shader->setVec4("rotation", tmp->rotation.asVector4());
         this->shader->setVec3("scale", tmp->localScale);
 
+        //TODO: Swap uniform set with attribute set -> ID is more an attribute than a Uniform variable
+        //TODO: Find a way to pass the UUID instead of this useless value
+        this->shader->setFloat("ID", this->_uniqueFloatID);
+
         //TODO: call this inside framebuffer callback to avoid creating a perspective even if not needed
         Athena::Matrix4 projection = Odysseus::Camera::perspective(
                                                                     45.0f, 
@@ -123,7 +139,7 @@ namespace Odysseus
 
     }
 
-    short Mesh::getUniqueID()
+    int Mesh::getUniqueID()
     {
         return this->_uniqueID;
     }

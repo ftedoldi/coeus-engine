@@ -64,7 +64,7 @@ void CameraMovement::setOrderOfExecution(const short& newOrderOfExecution)
     _orderOfExecution = newOrderOfExecution;
 }
 
-short CameraMovement::getUniqueID()
+int CameraMovement::getUniqueID()
 {
     return 12;
 }

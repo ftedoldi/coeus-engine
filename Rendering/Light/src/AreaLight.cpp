@@ -21,7 +21,7 @@ namespace Odysseus
 
     }
 
-    short AreaLight::getUniqueID()
+    int AreaLight::getUniqueID()
     {
         return this->_uniqueID;
     }

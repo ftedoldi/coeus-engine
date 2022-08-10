@@ -42,7 +42,7 @@ class CameraMovement : public System::Behaviour {
 
         virtual void setOrderOfExecution(const short& newOrderOfExecution);
 
-        virtual short getUniqueID();
+        virtual int getUniqueID();
         virtual std::string toString();
 
         void setShader(Odysseus::Shader* shader);

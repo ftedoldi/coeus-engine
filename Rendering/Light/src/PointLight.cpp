@@ -61,7 +61,7 @@ namespace Odysseus
 
     }
 
-    short PointLight::getUniqueID()
+    int PointLight::getUniqueID()
     {
         return this->_uniqueID;
     }

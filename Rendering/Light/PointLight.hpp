@@ -20,7 +20,7 @@ namespace Odysseus
 
             virtual void setOrderOfExecution(const short& newOrderOfExecution);
 
-            virtual short getUniqueID();
+            virtual int getUniqueID();
 
             virtual std::string toString();
             

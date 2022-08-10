@@ -31,7 +31,7 @@ namespace Odysseus
 
     }
 
-    short DirectionalLight::getUniqueID()
+    int DirectionalLight::getUniqueID()
     {
         return this->_uniqueID;
     }

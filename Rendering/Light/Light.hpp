@@ -4,6 +4,7 @@
 #include <Vector3.hpp>
 #include <Shader.hpp>
 #include <Camera.hpp>
+#include <Component.hpp>
 
 namespace System {
     class Component;

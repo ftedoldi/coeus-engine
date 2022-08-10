@@ -10,8 +10,14 @@ namespace Odysseus {
         System::Time::deltaTime = static_cast<Athena::Scalar>(glfwGetTime());
 
         for (int i = 0; i < objectsInScene.size(); i++)
+        {
+            objectsInScene[i]->transform->name = "SceneObj" + std::to_string(i); 
             for (int j = 0; j < objectsInScene[i]->_container->components.size(); j++)
+            {
                 objectsInScene[i]->_container->components[j]->start();
+                glUseProgram(0);
+            }
+        }
     }
 
     void SceneGraph::drawScene()
@@ -22,6 +28,9 @@ namespace Odysseus {
 
         for (int i = 0; i < objectsInScene.size(); i++)
             for (int j = 0; j < objectsInScene[i]->_container->components.size(); j++)
+            {
                 objectsInScene[i]->_container->components[j]->update();
+                glUseProgram(0);
+            }
     }
 }
