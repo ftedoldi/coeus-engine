@@ -1,4 +1,5 @@
-#version 330 core
+#version 450 core
+
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoords;
@@ -13,6 +14,7 @@ uniform vec3 WorldPosition;
 uniform vec3 WorldScale;
 uniform vec4 WorldRotation;
 
+uniform float ID; 
 
 out VS_OUT
 {
@@ -20,6 +22,8 @@ out VS_OUT
 	vec2 TexCoords;
 	vec3 FragPos;
 } vs_out;
+
+flat out float vID;
 
 vec4 calcViewPosition(vec3 vector, vec4 conj);
 vec4 calcWorldPosition(vec3 vector, vec4 worldConj);
@@ -29,6 +33,7 @@ void main()
 	//TODO make comments
 	//Calculate texture coordinates
 	vs_out.TexCoords = aTexCoords;
+	vID = ID;
 
 	//Calculate conjugate with world rotation, to apply later
 	vec4 worldConj = vec4(-WorldRotation.x, -WorldRotation.y, -WorldRotation.z, WorldRotation.w);

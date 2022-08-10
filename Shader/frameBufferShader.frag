@@ -1,7 +1,6 @@
-#version 330 core
+#version 450 core
 
 layout (location = 0) out vec4 fragColor;
-layout (location = 1) out vec4 idColor;
   
 in vec2 Frag_UV;
 // flat in int ObjectID;
@@ -21,5 +20,4 @@ void main()
     color.rgb = pow(color.rgb, vec3(1.0 / gamma));
     // f_objectID = ObjectID;
     fragColor = vec4(color.rgb, 1.0);
-    idColor = vec4(0, 1, 0, 1.0);
 }

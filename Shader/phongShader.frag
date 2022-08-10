@@ -1,5 +1,7 @@
-#version 330 core
-out vec4 FragColor;
+#version 450 core
+
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 idColor;
 
 struct Material
 {
@@ -49,6 +51,8 @@ in VS_OUT
     vec2 TexCoords;
     vec3 FragPos;
 } fs_in;
+
+flat in float vID;
 
 uniform vec3 viewPos;
 
@@ -102,6 +106,7 @@ void main()
     {
         result += calcPointLight(material, pointLights[i], viewDir);
     }*/
+    idColor = vec4(vID);
     FragColor = vec4(result, 1.0);
 }
 
