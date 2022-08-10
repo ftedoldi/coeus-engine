@@ -11,6 +11,8 @@
 
 #include <Shader.hpp>
 
+#include <vector>
+
 namespace System {
     namespace Buffers {
         struct FrameBufferSize {
@@ -22,11 +24,14 @@ namespace System {
             private:
                 GLuint _id;
                 GLuint _MSAAid;
-                GLuint _textureID;
-                GLuint _textureMultisampleID;
-                GLuint _textureObjectID;
-                GLuint _textureObjectIDMultisampled;
                 GLuint _renderBufferObjectID;
+                std::vector<GLuint> _texturesID;
+                std::vector<GLuint> _texturesMultisampledID;
+
+                GLint _internalTextureFormat;
+                GLenum _textureFormat, _pixelValueType;
+
+                int _numberOfColorAttachments;
 
                 bool _isMSAA_Buffer;
 
@@ -51,11 +56,11 @@ namespace System {
             public:
                 const GLuint& ID;
                 const GLuint& MSAA_ID;
-                const GLuint& textureID;
-                const GLuint& textureObjectID;
-                const GLuint& textureObjectIDMultisampled;
-                const GLuint& textureMultisampleID;
-                const GLuint& renderBufferObjectID;
+
+                const GLint& internalTextureFormat;
+                const GLenum& textureFormat, pixelValueType;
+
+                const std::vector<GLuint>& texturesID;
 
                 const FrameBufferSize& frameBufferSize;
 
@@ -67,7 +72,11 @@ namespace System {
                 FrameBuffer(
                                 const Athena::Scalar& width, 
                                 const Athena::Scalar& height, 
-                                bool isMSAA_Buffer = false, 
+                                bool isMSAA_Buffer = false,
+                                int numberOfColorAttachment = 2,
+                                GLint internalTexFormat = GL_RGBA32F,
+                                GLenum texFormat = GL_RGBA,
+                                GLenum pixelValType = GL_FLOAT,
                                 Athena::Vector4 refreshColor = Athena::Vector4(0.4f, 0.2f, 0.6f, 0.5f)
                             );
 

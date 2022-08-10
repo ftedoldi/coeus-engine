@@ -6,14 +6,13 @@ namespace System::Buffers
 {
     
     FrameBuffer::FrameBuffer() : ID(_id), 
-                                 MSAA_ID(_MSAAid), 
-                                 textureID(_textureID), 
-                                 textureMultisampleID(_textureMultisampleID), 
-                                 textureObjectID(_textureObjectID),
-                                 textureObjectIDMultisampled(_textureObjectIDMultisampled),
-                                 renderBufferObjectID(_renderBufferObjectID), 
+                                 MSAA_ID(_MSAAid),
                                  frameBufferShader(_frameBufferShader),
-                                 frameBufferSize(_frameBufferSize)
+                                 frameBufferSize(_frameBufferSize),
+                                 texturesID(_texturesID),
+                                 internalTextureFormat(_internalTextureFormat),
+                                 textureFormat(_textureFormat),
+                                 pixelValueType(_pixelValueType)
     {
         _frameBufferShader = new Odysseus::Shader(".\\Shader\\frameBufferShader.vert", ".\\Shader\\frameBufferShader.frag");
 
@@ -26,6 +25,12 @@ namespace System::Buffers
 
         _isMSAA_Buffer = true;
 
+        this->_internalTextureFormat = GL_RGBA32F;
+        this->_textureFormat = GL_RGBA;
+        this->_pixelValueType = GL_FLOAT; 
+
+        this->_numberOfColorAttachments = 2;
+
         this->initializeMSAABuffer();
         this->initializeStandardBuffer();
     }
@@ -33,17 +38,20 @@ namespace System::Buffers
     FrameBuffer::FrameBuffer(
                                 const Athena::Scalar& width, 
                                 const Athena::Scalar& height, 
-                                bool isMSAA_Buffer, 
+                                bool isMSAA_Buffer,
+                                int numberOfColorAttachments,
+                                GLint internalTexFormat,
+                                GLenum texFormat,
+                                GLenum pixelValType,
                                 Athena::Vector4 refreshColor
-                            ) : ID(_id), 
-                                MSAA_ID(_MSAAid), 
-                                textureID(_textureID), 
-                                textureMultisampleID(_textureMultisampleID), 
-                                textureObjectID(_textureObjectID),
-                                textureObjectIDMultisampled(_textureObjectIDMultisampled),
-                                renderBufferObjectID(_renderBufferObjectID), 
+                            ) : ID(_id),
+                                MSAA_ID(_MSAAid),
                                 frameBufferShader(_frameBufferShader),
-                                frameBufferSize(_frameBufferSize)
+                                frameBufferSize(_frameBufferSize),
+                                texturesID(_texturesID),
+                                internalTextureFormat(_internalTextureFormat),
+                                textureFormat(_textureFormat),
+                                pixelValueType(_pixelValueType)
     {
         _frameBufferShader = new Odysseus::Shader(".\\Shader\\frameBufferShader.vert", ".\\Shader\\frameBufferShader.frag");
 
@@ -55,6 +63,12 @@ namespace System::Buffers
         this->initializeScreenQuad();
 
         this->_isMSAA_Buffer = isMSAA_Buffer;
+
+        this->_numberOfColorAttachments = numberOfColorAttachments < 1 ? 1 : numberOfColorAttachments > 12 ? 12 : numberOfColorAttachments;
+
+        this->_internalTextureFormat = internalTexFormat;
+        this->_textureFormat = texFormat;
+        this->_pixelValueType = pixelValType; 
 
         if (isMSAA_Buffer)
             this->initializeMSAABuffer();
@@ -93,25 +107,35 @@ namespace System::Buffers
         glGenFramebuffers(1, &this->_id);
         glBindFramebuffer(GL_FRAMEBUFFER, this->_id);
 
-        // create a color attachment texture
-        glGenTextures(1, &this->_textureID);
-        glBindTexture(GL_TEXTURE_2D, this->_textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, _frameBufferSize.width, _frameBufferSize.height, 0, GL_RGBA, GL_FLOAT, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->_textureID, 0);
+        for (int i = 0; i < this->_numberOfColorAttachments; i++)
+        {
+            GLuint texID = 0;
+            // create a color attachment texture
+            glGenTextures(1, &texID);
+            glBindTexture(GL_TEXTURE_2D, texID);
+            glTexImage2D(
+                            GL_TEXTURE_2D, 
+                            0, 
+                            this->_internalTextureFormat, 
+                            _frameBufferSize.width, 
+                            _frameBufferSize.height, 
+                            0, 
+                            this->_textureFormat, 
+                            this->_pixelValueType, 
+                            NULL
+                        );
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, texID, 0);
+            _texturesID.push_back(texID);
+        }
 
-        glGenTextures(1, &this->_textureObjectID);
-        glBindTexture(GL_TEXTURE_2D, this->_textureObjectID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, _frameBufferSize.width, _frameBufferSize.height, 0, GL_RGBA, GL_FLOAT, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, this->_textureObjectID, 0);
+        GLenum drawBuffers[GL_MAX_COLOR_ATTACHMENTS];
+        for (int i = 0; i < this->_numberOfColorAttachments; i++)
+            drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
 
-        GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-        glDrawBuffers(2, drawBuffers);
+        glDrawBuffers(this->_numberOfColorAttachments, drawBuffers);
 
         // TODO: Add log to console & StatusBar
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -128,21 +152,23 @@ namespace System::Buffers
         // --------------------------
         glGenFramebuffers(1, &this->_MSAAid);
         glBindFramebuffer(GL_FRAMEBUFFER, this->_MSAAid);
-        // create a multisampled color attachment texture
-        glGenTextures(1, &this->_textureMultisampleID);
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->_textureMultisampleID);
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA32F, _frameBufferSize.width, _frameBufferSize.height, GL_TRUE);
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, this->_textureMultisampleID, 0);
 
-        glGenTextures(1, &this->_textureObjectIDMultisampled);
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->_textureObjectIDMultisampled);
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA32F, _frameBufferSize.width, _frameBufferSize.height, GL_TRUE);
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D_MULTISAMPLE, this->_textureObjectIDMultisampled, 0);
+        for (int i = 0; i < this->_numberOfColorAttachments; i++)
+        {
+            GLuint texMultisampledID = 0;
+            // create a multisampled color attachment texture
+            glGenTextures(1, &texMultisampledID);
+            glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, texMultisampledID);
+            glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, this->_internalTextureFormat, _frameBufferSize.width, _frameBufferSize.height, GL_TRUE);
+            glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D_MULTISAMPLE, texMultisampledID, 0);
+            _texturesMultisampledID.push_back(texMultisampledID);
+        }
 
-        GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-        glDrawBuffers(2, drawBuffers);
+        GLenum drawBuffers[GL_MAX_COLOR_ATTACHMENTS];
+        for (int i = 0; i < this->_numberOfColorAttachments; i++)
+            drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
+        glDrawBuffers(this->_numberOfColorAttachments, drawBuffers);
 
         // create a (also multisampled) renderbuffer object for depth and stencil attachments
         glGenRenderbuffers(1, &this->_renderBufferObjectID);
@@ -155,9 +181,6 @@ namespace System::Buffers
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             std::cout << "ERROR::FRAMEBUFFER:: MSAA Framebuffer is not complete! Error: " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        // _frameBufferShader->use();
-        // _frameBufferShader->setInt("screenTexture", 0);
     }
 
     void FrameBuffer::setNewBufferWidth(const Athena::Scalar& width)
@@ -192,18 +215,30 @@ namespace System::Buffers
 
     void FrameBuffer::refreshFrameBufferTextureSize()
     {
-        glBindTexture(GL_TEXTURE_2D, this->_textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, this->_frameBufferSize.width, this->_frameBufferSize.height, 0, GL_RGBA, GL_FLOAT, NULL);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->_textureMultisampleID);
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA32F, _frameBufferSize.width, _frameBufferSize.height, GL_TRUE);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glBindTexture(GL_TEXTURE_2D, this->_textureObjectID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, this->_frameBufferSize.width, this->_frameBufferSize.height, 0, GL_RGBA, GL_FLOAT, NULL);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->_textureObjectIDMultisampled);
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA32F, _frameBufferSize.width, _frameBufferSize.height, GL_TRUE);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        //----------------------------------------------Clearing Texture Content------------------------------------------------------------------//
+        for (int i = 0; i < this->_numberOfColorAttachments; i++)
+        {
+            glBindTexture(GL_TEXTURE_2D, this->_texturesID[i]);
+            glTexImage2D(
+                            GL_TEXTURE_2D, 
+                            0, 
+                            this->_internalTextureFormat, 
+                            this->_frameBufferSize.width, 
+                            this->_frameBufferSize.height, 
+                            0, 
+                            this->_textureFormat, 
+                            this->_pixelValueType, 
+                            NULL
+                        );
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+
+        for (int i = 0; i < this->_numberOfColorAttachments; i++)
+        {
+            glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->_texturesMultisampledID[i]);
+            glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, this->_internalTextureFormat, _frameBufferSize.width, _frameBufferSize.height, GL_TRUE);
+            glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+        }
     }
 
     void FrameBuffer::bindStandardFrameBuffer()
@@ -221,24 +256,13 @@ namespace System::Buffers
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
         glDisable(GL_BLEND);
-        // this->frameBufferShader->use();
+
         glBindFramebuffer(GL_FRAMEBUFFER, this->_MSAAid);
         glViewport(0, 0, this->_frameBufferSize.width, this->_frameBufferSize.height);
         glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
 
         glClearColor(refreshColor.coordinates.x, refreshColor.coordinates.y, refreshColor.coordinates.z, refreshColor.coordinates.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-        // glClearTexImage(this->_textureID, 0, GL_RGBA, GL_FLOAT, 0);
-        // glClearTexImage(this->_textureObjectID, 0, GL_RGBA, GL_FLOAT, 0);
-        
-        // float clearValue[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
-        // glClearTexImage(0, 0, GL_RGBA16, GL_FLOAT, &clearValue);
-        // GLenum error = glGetError();
-        // if (error != GL_NO_ERROR)
-        //     std::cerr << "Error in clearing texture" << error << std::endl;
-        // glClearTexImage(this->_textureObjectID, 0, GL_RGBA, GL_FLOAT, &refreshColor);
-
     }
 
     void FrameBuffer::bind()
@@ -255,21 +279,12 @@ namespace System::Buffers
 
     void FrameBuffer::blitStandardFrameBuffer()
     {
-        // glBindFramebuffer(GL_READ_FRAMEBUFFER, this->_id);
-        // glBlitFramebuffer(0, 0, _frameBufferSize.width, _frameBufferSize.height, 0, 0, _frameBufferSize.width, _frameBufferSize.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, _frameBufferSize.width, _frameBufferSize.height);
-        // glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
-        // glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
+        glClear(GL_COLOR_BUFFER_BIT);
         
-        // glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
-        
-        // this->_frameBufferShader->use();
-        // glBindVertexArray(this->_screenQuadVAO);
-        // glActiveTexture(GL_TEXTURE0);
-        // glBindTexture(GL_TEXTURE_2D, this->_textureID);
-        // glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
     }
 
     void FrameBuffer::framebufferShaderCallback(const ImDrawList* dummy, const ImDrawCmd* command)
@@ -302,24 +317,18 @@ namespace System::Buffers
 
     void FrameBuffer::blitMSAAFrameBuffer()
     {
-        // glBindFramebuffer(GL_READ_FRAMEBUFFER, this->_MSAAid);
-        // glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->_id);
-        // glBlitFramebuffer(0, 0, _frameBufferSize.width, _frameBufferSize.height, 0, 0, _frameBufferSize.width, _frameBufferSize.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-
         glBindFramebuffer(GL_READ_FRAMEBUFFER, this->_MSAAid);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->_id);
-        glReadBuffer(GL_COLOR_ATTACHMENT1);
-        glDrawBuffer(GL_COLOR_ATTACHMENT0);
-        glBlitFramebuffer(0, 0, _frameBufferSize.width, _frameBufferSize.height, 0, 0, _frameBufferSize.width, _frameBufferSize.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-        glReadBuffer(GL_COLOR_ATTACHMENT0);
-        glDrawBuffer(GL_COLOR_ATTACHMENT1);
-        glBlitFramebuffer(0, 0, _frameBufferSize.width, _frameBufferSize.height, 0, 0, _frameBufferSize.width, _frameBufferSize.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+        for (int i = 0; i < this->_numberOfColorAttachments; i++)
+        {
+            glReadBuffer(GL_COLOR_ATTACHMENT0 + i);
+            glDrawBuffer(GL_COLOR_ATTACHMENT0 + i);
+            glBlitFramebuffer(0, 0, _frameBufferSize.width, _frameBufferSize.height, 0, 0, _frameBufferSize.width, _frameBufferSize.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        }
 
         glReadBuffer(GL_NONE);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        // glViewport(0, 0, _frameBufferSize.width, _frameBufferSize.height);
-        // glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
-        // glClear(GL_COLOR_BUFFER_BIT);
 
         glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 
@@ -328,7 +337,7 @@ namespace System::Buffers
         this->_frameBufferShader->use();
         glBindVertexArray(this->_screenQuadVAO);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, this->_textureID);
+        glBindTexture(GL_TEXTURE_2D, this->_texturesID[0]);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glUseProgram(0);
     }
@@ -345,12 +354,6 @@ namespace System::Buffers
         glClear(GL_COLOR_BUFFER_BIT);
         
         glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
-        
-        // this->_frameBufferShader->use();
-        // glBindVertexArray(this->_screenQuadVAO);
-        // glActiveTexture(GL_TEXTURE0);
-        // glBindTexture(GL_TEXTURE_2D, this->_textureID);
-        // glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
     void FrameBuffer::blit()
