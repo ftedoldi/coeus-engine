@@ -76,12 +76,12 @@ namespace System {
 
             void createStyle();
 
-            //----------------------Menu Creation---------------------------------//
+            //----------------------Menu Creation--------------------------------//
             void createMainMenuBar();
             void createToolMenuBar();
             void createStatusMenuBar();
 
-            //----------------------Window Creation-------------------------------//
+            //----------------------Window Creation------------------------------//
             void createHierarchyWindow();
             void createInspectorWindow();
             void createConsoleWindow();
@@ -90,7 +90,10 @@ namespace System {
             void createGameWindow();
             void createProjectSettingsWindow();
 
-            //----------------------Window Creation-------------------------------//
+            //----------------------Mouse Picking--------------------------------//
+            void handleMousePicking();
+
+            //----------------------Guizmo Creation------------------------------//
             void createObjectsGUIZMO();
 
             //----------------------Utils Methods--------------------------------//

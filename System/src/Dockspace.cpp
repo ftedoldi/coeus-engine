@@ -222,6 +222,19 @@ namespace System {
 
         ImGui::End();
 
+        handleMousePicking();
+
+        createHierarchyWindow();
+        createConsoleWindow();
+        createContentBrowser(); // TODO: find texture icons and add these icons over textures
+        createInspectorWindow();
+        createSceneWindow();
+        createProjectSettingsWindow();
+        createGameWindow();
+    }
+
+    void Dockspace::handleMousePicking()
+    {
         // TODO: Refactor this
         if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
         {
@@ -239,14 +252,6 @@ namespace System {
             glReadBuffer(GL_NONE);
             glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
         }
-
-        createHierarchyWindow();
-        createConsoleWindow();
-        createContentBrowser(); // TODO: find texture icons and add these icons over textures
-        createInspectorWindow();
-        createSceneWindow();
-        createProjectSettingsWindow();
-        createGameWindow();
     }
 
     // TODO: Setup menu properly
