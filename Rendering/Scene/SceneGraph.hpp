@@ -8,12 +8,15 @@
 #include <Time.hpp>
 
 #include <vector>
+#include <string>
 
 namespace Odysseus {
     class SceneObject;
     
+    // TODO: Refactor this with a non static class -> Entity Component System
     class SceneGraph {
         public:
+            static std::string name;
             static std::vector<SceneObject*> objectsInScene;
 
             static void initializeScene();

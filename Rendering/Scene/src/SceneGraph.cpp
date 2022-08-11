@@ -2,9 +2,12 @@
 
 namespace Odysseus {
     std::vector<SceneObject*> SceneGraph::objectsInScene;
+    std::string SceneGraph::name;
     
     void SceneGraph::initializeScene()
     {
+        name = "Untitled Scene";
+        
         System::Time::time = static_cast<Athena::Scalar>(glfwGetTime());
         System::Time::timeAtLastFrame = static_cast<Athena::Scalar>(glfwGetTime());
         System::Time::deltaTime = static_cast<Athena::Scalar>(glfwGetTime());
