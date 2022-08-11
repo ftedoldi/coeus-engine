@@ -325,6 +325,8 @@ namespace Athena {
             return this->immaginary.coordinates.y;
         if (i == 3)
             return this->immaginary.coordinates.z;
+
+        throw std::exception("Wrong Index specified in the Quaternion");
     }
 
     Scalar& Quaternion::operator [] (const short& i)
@@ -337,6 +339,8 @@ namespace Athena {
             return this->immaginary.coordinates.y;
         if (i == 3)
             return this->immaginary.coordinates.z;
+            
+        throw std::exception("Wrong Index specified in the Quaternion");
     }
 
     Quaternion Quaternion::operator /(const Scalar& k) const {
