@@ -11,6 +11,8 @@
 #include <Transform.hpp>
 #include <SceneGraph.hpp>
 
+#include <Serializer/Serializer.hpp>
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -22,6 +24,11 @@ namespace System {
     class UUID;
 }
 
+namespace System::Serialize
+{
+    class Serializer;
+}
+
 namespace Odysseus
 {
     class Container;
@@ -30,6 +37,7 @@ namespace Odysseus
     class SceneObject {
         friend class SceneGraph;
         friend class System::Dockspace;
+        friend class System::Serialize::Serializer;
 
         private:
             bool _active;
