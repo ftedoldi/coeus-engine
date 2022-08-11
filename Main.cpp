@@ -22,6 +22,8 @@
 #include <SpotLight.hpp>
 #include <AreaLight.hpp>
 
+#include <Serializer/Serializer.hpp>
+
 #include <iostream>
 #include <vector>
 
@@ -31,6 +33,8 @@
 
 int main()
 {
+    System::Serialize::Serializer serializer = System::Serialize::Serializer();
+
     // Where all the starts are runned
     System::Window* window = new System::Window("myWindow");
 
@@ -117,6 +121,9 @@ int main()
 
     //Setup everything before initializeScene call
     Odysseus::SceneGraph::initializeScene();
+    Odysseus::SceneGraph::name = "Base Scene";
+
+    serializer.serialize("Assets/Scenes/Test.coeus");
 
     // render loop
     // -----------
