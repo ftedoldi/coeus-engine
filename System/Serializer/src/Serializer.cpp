@@ -2,6 +2,8 @@
 
 #include <SceneGraph.hpp>
 
+#include <Mesh.hpp>
+
 namespace System::Serialize
 {
 
@@ -58,14 +60,57 @@ namespace System::Serialize
             out << YAML::EndMap;
             
             // TODO: Add hasmap that holds all the possible Components of the Engine
-            // TODO: Add serialization of the components parameters
+            // TODO: Add serialization of the components parameters (at least for the important compnents like mesh)
             for (auto component : objectTosSerialize._container->components)
             {
                 out << YAML::Key << "Component";
                 out << YAML::BeginMap;
                     out << YAML::Key << "Name" << YAML::Value << component->toString();
-                out << YAML::EndMap;   
+
+                    if (component->toString() == "Mesh")
+                    {
+                        out << YAML::Key << "Attributes" << YAML::Value;
+                        out << YAML::BeginMap;
+                            auto mesh = static_cast<Odysseus::Mesh*>(component);
+
+                            out << YAML::Key << "Vertices" << YAML::Value;
+                            out << YAML::Flow;
+                            out << YAML::BeginSeq;
+                                for (int i = 0; i < mesh->vertices.size(); i++)
+                                    serializeVector3(out, mesh->vertices[i].Position);
+                            out << YAML::EndSeq;
+
+                            out << YAML::Key << "Normals" << YAML::Value;
+                            out << YAML::Flow;
+                            out << YAML::BeginSeq;
+                                for (int i = 0; i < mesh->vertices.size(); i++)
+                                    serializeVector3(out, mesh->vertices[i].Normal);
+                            out << YAML::EndSeq;
+
+                            out << YAML::Key << "Tangents" << YAML::Value;
+                            out << YAML::Flow;
+                            out << YAML::BeginSeq;
+                                for (int i = 0; i < mesh->vertices.size(); i++)
+                                        serializeVector3(out, mesh->vertices[i].Tangent);
+                            out << YAML::EndSeq;
+
+                            out << YAML::Key << "Texture Coordinates" << YAML::Value;
+                            out << YAML::Flow;
+                            out << YAML::BeginSeq;
+                                for (int i = 0; i < mesh->vertices.size(); i++)
+                                    serializeVector2(out, mesh->vertices[i].TexCoords);
+                            out << YAML::EndSeq;
+                        out << YAML::EndMap;
+
+                        out << YAML::Key << "Shader Path" << YAML::Value;
+                        out << YAML::BeginMap;
+                            out << YAML::Key << "Vertex Shader" << YAML::Value << mesh->shader->vertexShaderPath;
+                            out << YAML::Key << "Vertex Shader" << YAML::Value << mesh->shader->fragmentShaderPath;
+                        out << YAML::EndMap;
+                    }
+                out << YAML::EndMap;
             }
+
         out << YAML::EndMap;
     }
 
