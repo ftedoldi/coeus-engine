@@ -5,11 +5,6 @@
 
 #include <string>
 
-namespace System
-{
-    class Component;
-}
-
 namespace Odysseus
 {   
     // TODO: Implement me

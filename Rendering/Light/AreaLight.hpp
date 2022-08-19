@@ -10,6 +10,7 @@ namespace Odysseus
     {
         public:
             std::vector<PointLight*> pointLights;
+            
             AreaLight();
             virtual void start();
             virtual void update();

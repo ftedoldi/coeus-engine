@@ -3,8 +3,6 @@
 
 #include <Component.hpp>
 
-#include <SerializableClass.hpp>
-
 #include <Vector3.hpp>
 #include <Shader.hpp>
 
@@ -29,8 +27,6 @@ namespace Odysseus
             void setShader(Shader* shader);
 
             virtual void setLightShader(Odysseus::Shader* shader) const = 0;
-
-            RTTR_ENABLE(System::Component);
     };
 }
 

@@ -34,22 +34,7 @@ namespace Odysseus
             void setQuadratic(float quadratic);
 
             void setLightShader(Odysseus::Shader* shader) const;
-
-            RTTR_ENABLE(Light);
     };
-
-    SERIALIZABLE_FIELDS
-    {
-        System::Serializable::SerializableClass::serialize<PointLight>()
-        .constructor<>()(rttr::policy::ctor::as_raw_ptr)
-        .property("_constant", &PointLight::_constant)
-        .property("_linear", &PointLight::_linear)
-        .property("_quadratic", &PointLight::_quadratic)
-        .property("_diffuse", &PointLight::_diffuse)
-        .property("_specular", &PointLight::_specular)
-        .property("_ambient", &PointLight::_ambient)
-        .property("shader", &PointLight::shader);
-    }
 }
 
 

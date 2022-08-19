@@ -1,21 +1,24 @@
 #ifndef __SERIALIZER_H__
 #define __SERIALIZER_H__
 
-#include <SceneObject.hpp>
-
 #include <coeus.hpp>
-#include <PointLight.hpp>
-#include <SpotLight.hpp>
-#include <DirectionalLight.hpp>
-#include <AreaLight.hpp>
-
-#include <ModelBase.hpp>
 
 #include <yaml-cpp/yaml.h>
 
 #include <fstream>
 #include <string>
 #include <unordered_map>
+
+namespace Odysseus
+{
+    class SceneObject;
+    class PointLight;
+    class SpotLight;
+    class DirectionalLight;
+    class AreaLight;
+    class ModelBase;
+    class Transform;
+}
 
 namespace System
 {

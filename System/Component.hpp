@@ -31,14 +31,7 @@ namespace System {
             virtual std::string toString() = 0;
 
             virtual ~Component() {}
-
-            RTTR_ENABLE();
     };
-
-    RTTR_REGISTRATION
-    {
-        rttr::registration::class_<Component>("Component");
-    }
 }
 
 

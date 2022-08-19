@@ -17,8 +17,6 @@ namespace System
             virtual int getUniqueID() = 0;
 
             virtual std::string toString() = 0;
-
-            RTTR_ENABLE(Component);
     };
 }
 

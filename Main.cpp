@@ -23,7 +23,6 @@
 #include <AreaLight.hpp>
 
 #include <Serializer/Serializer.hpp>
-#include <SerializableClass.hpp>
 
 #include <rttr/registration>
 

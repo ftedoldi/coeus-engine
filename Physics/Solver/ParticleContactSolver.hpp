@@ -1,7 +1,8 @@
 #ifndef PARTICLECONTACTSOLVER_HPP
 #define PARTICLECONTACTSOLVER_HPP
+
 #include <Scalar.hpp>
-#include <ParticleContact.hpp>
+#include <Constraints/ParticleContact.hpp>
 #include <Vector3.hpp>
 
 namespace Khronos

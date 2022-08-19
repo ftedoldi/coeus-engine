@@ -1,10 +1,20 @@
 #include "../Serializer.hpp"
 
+#include <SceneObject.hpp>
+
 #include <SceneManager.hpp>
 
+#include <PointLight.hpp>
+#include <SpotLight.hpp>
+#include <DirectionalLight.hpp>
+#include <AreaLight.hpp>
+
+#include <ModelBase.hpp>
 #include <Model.hpp>
 #include <Shader.hpp>
 #include <Scene.hpp>
+
+#include <Transform.hpp>
 
 #include <EditorCameraMovement.hpp>
 
