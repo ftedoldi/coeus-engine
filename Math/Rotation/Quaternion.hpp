@@ -1,5 +1,3 @@
-#pragma once 
-
 #ifndef QUATERNION_HPP
 #define QUATERNION_HPP
 
