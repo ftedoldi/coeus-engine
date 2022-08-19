@@ -2,7 +2,9 @@
 
     DummyComponent::DummyComponent()
     {
+        // _showComponentInEditor = true;
         var = 10;
+        std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++";
     }
 
     void DummyComponent::start()
