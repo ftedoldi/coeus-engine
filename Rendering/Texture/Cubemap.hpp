@@ -2,7 +2,7 @@
 #define CUBEMAP_HPP
 #include <Shader.hpp>
 #include <vector>
-#include <Camera.hpp>
+
 #include <Window.hpp>
 #include <Matrix4.hpp>
 #include <Quaternion.hpp>
@@ -13,6 +13,8 @@
 
 namespace Odysseus
 {
+    class EditorCamera;
+    
     class Cubemap
     {
         private:

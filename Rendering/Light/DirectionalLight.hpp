@@ -7,10 +7,9 @@ namespace Odysseus
 {
     class DirectionalLight : public Light
     {
-        private:
+        public:
             Athena::Vector3 _direction;
 
-        public:
             DirectionalLight();
 
             Athena::Vector3 getDirection() const;

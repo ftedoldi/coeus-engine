@@ -1,4 +1,7 @@
 #include "../Model.hpp"
+
+#include <ModelBase.hpp>
+
 namespace Odysseus
 {
 
@@ -25,6 +28,12 @@ namespace Odysseus
 
         processNode(scene->mRootNode, scene);
 
+        auto modelBase = objectsCreated[0]->addComponent<ModelBase>();
+
+        modelBase->isPBR = this->_isPBR;
+        modelBase->modelPath = path;
+        modelBase->vertexShaderPath = shader->vertexShaderPath;
+        modelBase->fragmentShaderPath = shader->fragmentShaderPath;
     }
 
     //process a node recursively and for each node processed, process his meshes

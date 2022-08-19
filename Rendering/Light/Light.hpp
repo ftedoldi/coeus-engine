@@ -1,28 +1,23 @@
 #ifndef LIGHT_HPP
 #define LIGHT_HPP
 
-#include <Vector3.hpp>
-#include <Shader.hpp>
-#include <Camera.hpp>
 #include <Component.hpp>
 
-namespace System {
-    class Component;
-}
+#include <SerializableClass.hpp>
+
+#include <Vector3.hpp>
+#include <Shader.hpp>
 
 namespace Odysseus
 {
-    class System::Component;
-
     class Light : public System::Component
     {
-        protected:
+        public:
             Athena::Vector3 _diffuse;
             Athena::Vector3 _ambient;
             Athena::Vector3 _specular;
             Shader* shader;
 
-        public:
             Athena::Vector3 getDiffuse() const;
             Athena::Vector3 getAmbient() const;
             Athena::Vector3 getSpecular() const;
@@ -35,6 +30,7 @@ namespace Odysseus
 
             virtual void setLightShader(Odysseus::Shader* shader) const = 0;
 
+            RTTR_ENABLE(System::Component);
     };
 }
 

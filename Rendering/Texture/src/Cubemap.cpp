@@ -1,5 +1,8 @@
 #include "../Cubemap.hpp"
+
 #include <stb/stb_image.h>
+
+#include <EditorCamera.hpp>
 
 namespace Odysseus
 {
@@ -263,15 +266,15 @@ namespace Odysseus
         //each quaternion looks to one of the 6 possible faces
         //the projection matrix with a FOV of 90, captures the entire face
         //What we'll do after is render a cube 6 times, storing the result in a floating point framebuffer
-        Athena::Matrix4 captureProjection = Odysseus::Camera::perspective(90.0f, 1.0f, 0.1f, 10.0f);
+        Athena::Matrix4 captureProjection = Odysseus::EditorCamera::perspective(90.0f, 1.0f, 0.1f, 10.0f);
         Athena::Quaternion captureQuatViews[] = 
         {
-            Athena::Quaternion::matToQuatCast(Odysseus::Camera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(1.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, -1.0f, 0.0f))),
-            Athena::Quaternion::matToQuatCast(Odysseus::Camera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(-1.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, -1.0f, 0.0f))),
-            Athena::Quaternion::matToQuatCast(Odysseus::Camera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, 1.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, 1.0f))),
-            Athena::Quaternion::matToQuatCast(Odysseus::Camera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, -1.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, -1.0f))),
-            Athena::Quaternion::matToQuatCast(Odysseus::Camera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, 1.0f), Athena::Vector3(0.0f, -1.0f, 0.0f))),
-            Athena::Quaternion::matToQuatCast(Odysseus::Camera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, -1.0f), Athena::Vector3(0.0f, -1.0f, 0.0f)))
+            Athena::Quaternion::matToQuatCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(1.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, -1.0f, 0.0f))),
+            Athena::Quaternion::matToQuatCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(-1.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, -1.0f, 0.0f))),
+            Athena::Quaternion::matToQuatCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, 1.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, 1.0f))),
+            Athena::Quaternion::matToQuatCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, -1.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, -1.0f))),
+            Athena::Quaternion::matToQuatCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, 1.0f), Athena::Vector3(0.0f, -1.0f, 0.0f))),
+            Athena::Quaternion::matToQuatCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, -1.0f), Athena::Vector3(0.0f, -1.0f, 0.0f)))
         };
 
         convertToCubemap(captureProjection, captureQuatViews);
@@ -279,7 +282,7 @@ namespace Odysseus
         createPrefilterMap(captureProjection, captureQuatViews);
         createLUTtexture();
 
-        Athena::Matrix4 projection = Odysseus::Camera::main->perspective(45.0f, System::Window::screen.width / System::Window::screen.height, 0.1f, 100.0f);
+        Athena::Matrix4 projection = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->perspective(45.0f, System::Window::screen.width / System::Window::screen.height, 0.1f, 100.0f);
         cubemapShader.use();
         cubemapShader.setMat4("projection", projection);
 
@@ -337,8 +340,8 @@ namespace Odysseus
 
         cubemapShader.use();
         
-        cubemapShader.setVec4("rotation", Odysseus::Camera::main->transform->rotation.inverse().asVector4());
-        //cubemapShader.setMat4("projection", Odysseus::Camera::main->perspective(45.0f, System::Window::screen.width / System::Window::screen.height, 0.1f, 100.0f));
+        cubemapShader.setVec4("rotation", Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->transform->rotation.inverse().asVector4());
+        //cubemapShader.setMat4("projection", Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->perspective(45.0f, System::Window::screen.width / System::Window::screen.height, 0.1f, 100.0f));
         cubemapShader.setInt("environmentMap", 0);
 
         // skybox cube

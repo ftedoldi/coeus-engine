@@ -2,7 +2,7 @@
 #define BASICCUBEMAP_HPP
 #include <Shader.hpp>
 #include <vector>
-#include <Camera.hpp>
+#include <EditorCamera.hpp>
 
 namespace Odysseus
 {

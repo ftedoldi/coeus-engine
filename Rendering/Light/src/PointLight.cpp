@@ -1,10 +1,13 @@
 #include "../PointLight.hpp"
 
+#include <SceneManager.hpp>
+#include <EditorCamera.hpp>
+
 namespace Odysseus
 {
     PointLight::PointLight()
     {
-
+        
     }
 
     Athena::Vector3 PointLight::getPosition() const
@@ -73,7 +76,7 @@ namespace Odysseus
 
     void PointLight::setLightShader(Odysseus::Shader* shader) const
     {
-        auto tmp = Odysseus::Camera::main->getViewTransform(this->transform);
+        auto tmp = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->getViewTransform(this->transform);
         auto worldPosition = Transform::GetWorldTransform(this->transform, this->transform);
         shader->use();
 

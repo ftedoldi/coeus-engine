@@ -8,21 +8,19 @@ namespace Odysseus
 {
     class AreaLight : public Light
     {
-        private:
-        std::vector<PointLight*> pointLights;
-
         public:
-        AreaLight();
-        virtual void start();
-        virtual void update();
-
-        virtual void setOrderOfExecution(const short& newOrderOfExecution);
-
-        virtual int getUniqueID();
-
-        virtual std::string toString();
-        void addLight(PointLight* pt);
-        void setLightShader(Odysseus::Shader* shader) const;
+            std::vector<PointLight*> pointLights;
+            AreaLight();
+            virtual void start();
+            virtual void update();
+    
+            virtual void setOrderOfExecution(const short& newOrderOfExecution);
+    
+            virtual int getUniqueID();
+    
+            virtual std::string toString();
+            void addLight(PointLight* pt);
+            void setLightShader(Odysseus::Shader* shader) const;
     };
 }
 

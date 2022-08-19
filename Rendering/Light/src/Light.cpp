@@ -1,4 +1,5 @@
 #include "../Light.hpp"
+
 namespace Odysseus
 {
     Athena::Vector3 Light::getDiffuse() const

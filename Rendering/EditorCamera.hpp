@@ -1,29 +1,23 @@
-#ifndef __CAMERA_HPP__
-#define __CAMERA_HPP__
+#ifndef __EDITORCAMERA_H__
+#define __EDITORCAMERA_H__
 
 #include <Component.hpp>
 
 #include <coeus.hpp>
 #include <vector>
 
-namespace System {
-    class Component;
-}
-
 namespace Odysseus
 {
     class Transform;
 
-    class Camera : public System::Component
+    class EditorCamera : public System::Component
     {
         public:
-            static Camera* main;
-
             Athena::Vector3& Front;
             Athena::Vector3& Right;
             Athena::Vector3& Up;
 
-            Camera();
+            EditorCamera();
 
             static Athena::Matrix4 lookAt(const Athena::Vector3& position, const Athena::Vector3& forward, const Athena::Vector3& up);
 
@@ -45,10 +39,15 @@ namespace Odysseus
 
             virtual std::string toString();
 
+            virtual ~EditorCamera() {}
+
         private:
+            static bool _hasAlreadyAnInstance;
+
             Athena::Vector3 _Front;
             Athena::Vector3 _Right;
             Athena::Vector3 _Up;
     };
 }
-#endif
+
+#endif // __EDITORCAMERA_H__

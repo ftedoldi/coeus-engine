@@ -1,5 +1,8 @@
 #include "../Mesh.hpp"
 
+#include <Component.hpp>
+#include <EditorCamera.hpp>
+
 namespace Odysseus
 {
     Mesh::Mesh()
@@ -45,9 +48,9 @@ namespace Odysseus
 
         System::Picking::PickableObject::insertPickableObject(this->_uniqueFloatID, this->sceneObject);
 
-        auto tmp = Odysseus::Camera::main->getViewTransform(Transform::GetWorldTransform(this->transform, this->transform));
+        auto tmp = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->getViewTransform(Transform::GetWorldTransform(this->transform, this->transform));
 
-        this->shader->setVec3("viewPos", Odysseus::Camera::main->transform->position);
+        this->shader->setVec3("viewPos", Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->transform->position);
         this->shader->setVec3("WorldPosition", this->transform->position);
         this->shader->setVec4("WorldRotation", this->transform->rotation.asVector4());
         this->shader->setVec3("WorldScale", this->transform->localScale);
@@ -58,7 +61,7 @@ namespace Odysseus
 
         this->shader->setFloat("ID", this->_uniqueFloatID);
 
-        Athena::Matrix4 projection = Odysseus::Camera::perspective(
+        Athena::Matrix4 projection = Odysseus::EditorCamera::perspective(
                                                                     45.0f, 
                                                                     System::Window::sceneFrameBuffer->frameBufferSize.width / System::Window::sceneFrameBuffer->frameBufferSize.height, 
                                                                     0.1f, 
@@ -98,9 +101,9 @@ namespace Odysseus
         }
 
         auto worldPosition = Transform::GetWorldTransform(this->transform, this->transform);
-        auto tmp = Odysseus::Camera::main->getViewTransform(worldPosition);
+        auto tmp = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->getViewTransform(worldPosition);
 
-        this->shader->setVec3("viewPos", Odysseus::Camera::main->transform->position);
+        this->shader->setVec3("viewPos", Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->transform->position);
         this->shader->setVec3("WorldPosition", worldPosition->position);
         this->shader->setVec4("WorldRotation", worldPosition->rotation.asVector4());
         this->shader->setVec3("WorldScale", worldPosition->localScale);
@@ -114,7 +117,7 @@ namespace Odysseus
         this->shader->setFloat("ID", this->_uniqueFloatID);
 
         //TODO: call this inside framebuffer callback to avoid creating a perspective even if not needed
-        Athena::Matrix4 projection = Odysseus::Camera::perspective(
+        Athena::Matrix4 projection = Odysseus::EditorCamera::perspective(
                                                                     45.0f, 
                                                                     System::Window::sceneFrameBuffer->frameBufferSize.width / System::Window::sceneFrameBuffer->frameBufferSize.height, 
                                                                     0.1f, 

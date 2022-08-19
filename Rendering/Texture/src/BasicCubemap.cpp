@@ -119,8 +119,8 @@ namespace Odysseus
         glDepthFunc(GL_LEQUAL);
         cubemapShader.use();
         
-        cubemapShader.setVec4("rotation", Odysseus::Camera::main->transform->rotation.inverse().asVector4());
-        cubemapShader.setMat4("projection", Odysseus::Camera::main->perspective(45.0f, System::Window::screen.width / System::Window::screen.height, 0.1f, 100.0f));
+        cubemapShader.setVec4("rotation", Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->transform->rotation.inverse().asVector4());
+        cubemapShader.setMat4("projection", Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->perspective(45.0f, System::Window::screen.width / System::Window::screen.height, 0.1f, 100.0f));
 
         // skybox cube
         glBindVertexArray(this->cubemapVAO);

@@ -1,27 +1,26 @@
 #ifndef MESH_HPP
 #define MESH_HPP
 
-#include <coeus.hpp>
-#include <shader.hpp>
-#include <Camera.hpp> 
-#include <vector>
-#include "../Texture/Texture2D.hpp"
 #include <Component.hpp>
+#include <coeus.hpp>
+#include <Shader.hpp>
+#include "../Texture/Texture2D.hpp"
 #include <PhongMaterial.hpp>
 #include <PhysicsMaterial.hpp>
 #include <Time.hpp>
 
 #include <PickableObject.hpp>
 
+#include <vector>
 #include <random>
 
-namespace System {
-    class Component;
-}
+// namespace System {
+//     class Component;
+// }
 
 namespace Odysseus
 {
-    class System::Component;
+    class EditorCamera;
 
     struct Vertex
     {

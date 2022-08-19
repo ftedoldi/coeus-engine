@@ -1,7 +1,6 @@
 #ifndef __SCENEOBJECT_H__
 #define __SCENEOBJECT_H__
 
-#include <Component.hpp>
 #include <Container.hpp>
 
 #include <Dockspace.hpp>
@@ -9,7 +8,8 @@
 #include <UUID.hpp>
 
 #include <Transform.hpp>
-#include <SceneGraph.hpp>
+#include <SceneManager.hpp>
+#include <Scene.hpp>
 
 #include <Serializer/Serializer.hpp>
 
@@ -17,6 +17,7 @@
 #include <string>
 #include <iostream>
 #include <ctime>
+#include <cinttypes>
 
 namespace System {
     class Component;
@@ -33,9 +34,11 @@ namespace Odysseus
 {
     class Container;
     class SceneGraph;
+    class Scene;
 
     class SceneObject {
-        friend class SceneGraph;
+        friend class Scene;
+        friend class SceneManager;
         friend class System::Dockspace;
         friend class System::Serialize::Serializer;
 
@@ -55,10 +58,13 @@ namespace Odysseus
             const bool& isActive;
             const bool& isStatic;
 
+            bool showInEditor;
+
             SceneObject();
             SceneObject(const std::string& name);
             SceneObject(const Transform& transform);
             SceneObject(const Transform& transform, const std::string& name);
+            SceneObject(const Transform& transform, const std::uint64_t& uuid);
             SceneObject(const SceneObject& sceneObject);
 
             static SceneObject* FindSceneObjectWithName(const std::string& name);
