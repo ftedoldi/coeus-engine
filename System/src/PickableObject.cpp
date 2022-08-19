@@ -1,5 +1,7 @@
 #include "../PickableObject.hpp"
 
+#include <SceneObject.hpp>
+
 namespace System::Picking 
 {
     std::unordered_map<float, Odysseus::SceneObject*> PickableObject::pickableObjects;

@@ -1,5 +1,8 @@
 #include "../Dockspace.hpp"
 
+#include <EditorCamera.hpp>
+#include <Transform.hpp>
+
 namespace System {
 
     Dockspace::Dockspace()
@@ -493,30 +496,41 @@ namespace System {
     void Dockspace::createHierarchyWindow()
     {
         ImGui::Begin("Hierarchy");
-            for (int i = 0; i < Odysseus::SceneGraph::objectsInScene.size(); i++) {
-                if (Odysseus::SceneGraph::objectsInScene[i]->transform->parent != nullptr)
+            for (int i = 0; i < Odysseus::SceneManager::activeScene->objectsInScene.size(); i++) {
+                if (
+                        Odysseus::SceneManager::activeScene->objectsInScene[i]->transform->parent != nullptr ||
+                        !Odysseus::SceneManager::activeScene->objectsInScene[i]->showInEditor
+                    )
                     continue;
 
-                if (countNestedChildren(Odysseus::SceneGraph::objectsInScene[i]->transform)) {
-                    auto isOpen = ImGui::TreeNodeEx(std::to_string(Odysseus::SceneGraph::objectsInScene[i]->ID).c_str(), ImGuiTreeNodeFlags_CollapsingHeader, Odysseus::SceneGraph::objectsInScene[i]->transform->name.c_str());
+                if (countNestedChildren(Odysseus::SceneManager::activeScene->objectsInScene[i]->transform)) {
+                    auto isOpen = ImGui::TreeNodeEx(
+                                                        std::to_string(Odysseus::SceneManager::activeScene->objectsInScene[i]->ID).c_str(), 
+                                                        ImGuiTreeNodeFlags_CollapsingHeader, 
+                                                        Odysseus::SceneManager::activeScene->objectsInScene[i]->transform->name.c_str()
+                                                    );
                     
                     if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
-                        this->transformToShow = Odysseus::SceneGraph::objectsInScene[i]->transform;
+                        this->transformToShow = Odysseus::SceneManager::activeScene->objectsInScene[i]->transform;
                         this->inspectorParams.clear();
-                        for (int j = 0; j < Odysseus::SceneGraph::objectsInScene[i]->_container->components.size(); j++)
-                            this->inspectorParams.push_back(Odysseus::SceneGraph::objectsInScene[i]->_container->components[j]);
+                        for (int j = 0; j < Odysseus::SceneManager::activeScene->objectsInScene[i]->_container->components.size(); j++)
+                            this->inspectorParams.push_back(Odysseus::SceneManager::activeScene->objectsInScene[i]->_container->components[j]);
                     }
                     
                     if (isOpen) {
-                        this->dfsOverChildren(Odysseus::SceneGraph::objectsInScene[i]->transform);
+                        this->dfsOverChildren(Odysseus::SceneManager::activeScene->objectsInScene[i]->transform);
                     }
                 } else {
-                    ImGui::TreeNodeEx(std::to_string(Odysseus::SceneGraph::objectsInScene[i]->ID).c_str(), ImGuiTreeNodeFlags_CollapsingHeader | ImGuiTreeNodeFlags_Bullet, Odysseus::SceneGraph::objectsInScene[i]->transform->name.c_str());
+                    ImGui::TreeNodeEx(
+                                        std::to_string(Odysseus::SceneManager::activeScene->objectsInScene[i]->ID).c_str(), 
+                                        ImGuiTreeNodeFlags_CollapsingHeader | ImGuiTreeNodeFlags_Bullet, 
+                                        Odysseus::SceneManager::activeScene->objectsInScene[i]->transform->name.c_str()
+                                    );
                     if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
-                        this->transformToShow = Odysseus::SceneGraph::objectsInScene[i]->transform;
+                        this->transformToShow = Odysseus::SceneManager::activeScene->objectsInScene[i]->transform;
                         this->inspectorParams.clear();
-                        for (int j = 0; j < Odysseus::SceneGraph::objectsInScene[i]->_container->components.size(); j++)
-                            this->inspectorParams.push_back(Odysseus::SceneGraph::objectsInScene[i]->_container->components[j]);
+                        for (int j = 0; j < Odysseus::SceneManager::activeScene->objectsInScene[i]->_container->components.size(); j++)
+                            this->inspectorParams.push_back(Odysseus::SceneManager::activeScene->objectsInScene[i]->_container->components[j]);
                     }
                 }
             }
@@ -689,7 +703,7 @@ namespace System {
                             Window::sceneFrameBuffer->frameBufferSize.height
                         );
 
-        Athena::Matrix4 projection = Odysseus::Camera::perspective(
+        Athena::Matrix4 projection = Odysseus::EditorCamera::perspective(
                                                                     45.0f, 
                                                                     Window::sceneFrameBuffer->frameBufferSize.width / Window::sceneFrameBuffer->frameBufferSize.height, 
                                                                     0.1f, 
@@ -698,7 +712,7 @@ namespace System {
         projection.data[0] = projection.data[0] / (Window::sceneFrameBuffer->frameBufferSize.width / (float)Window::sceneFrameBuffer->frameBufferSize.height);
         projection.data[5] = projection.data[0];
 
-        Athena::Matrix4 view = Odysseus::Camera::main->getViewMatrix();
+        Athena::Matrix4 view = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->getViewMatrix();
 
         auto worldTransform = Odysseus::Transform::GetWorldTransform(this->transformToShow, this->transformToShow);
 
@@ -728,7 +742,7 @@ namespace System {
 
         //--------------------------------------Snapping Function-----------------------------------------//
         // TODO: Set snapValue customizable - Place it in Options
-        bool snap = Input::keyboard->isKeyPressed(Key::LEFT_CONTROL);
+        bool snap = Input::keyboard->isKeyPressed(Key::RIGHT_CONTROL);
         float snapValue = 0.5f; // Snap to 0.5m for translation/scale
         if (gizmoOperation == ImGuizmo::OPERATION::ROTATE)
             snapValue = 45.0f; // Snap to 45.0f degree for rotation

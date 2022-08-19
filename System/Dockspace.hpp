@@ -1,6 +1,8 @@
 #ifndef __DOCKSPACE_H__
 #define __DOCKSPACE_H__
 
+#include <Component.hpp>
+
 #include "Window.hpp"
 
 #include <imgui.h>
@@ -16,13 +18,10 @@
 
 #include "Debug.hpp"
 
-#include <SceneGraph.hpp>
+#include <SceneManager.hpp>
 #include <Shader.hpp>
-#include <Transform.hpp>
-#include <Component.hpp>
 #include <Texture2D.hpp>
 #include <Math.hpp>
-#include <Camera.hpp>
 #include <Matrix4.hpp>
 
 #include <iostream>
@@ -42,7 +41,6 @@ namespace Odysseus {
 namespace System {
     class Window;
     class Component;
-    class Odysseus::Transform;
     class Console;
     class StatusBar;
     

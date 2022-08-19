@@ -1,31 +1,26 @@
-#pragma once
-
 #ifndef __COMPONENT_HPP__
 #define __COMPONENT_HPP__
 
 #include <SceneObject.hpp>
 #include <Transform.hpp>
 
+#include <rttr/registration>
+
 #include <string>
 #include <vector>
 #include <ctime>
-
-namespace Odysseus {
-    class SceneObject;
-    class Transform;
-}
 
 namespace System {
 
     class Component {
         protected:
             int _uniqueID = 0;
-            short _orderOfExecution =  0;
+            short _orderOfExecution = 0;
 
         public:
             Odysseus::SceneObject* sceneObject;
             Odysseus::Transform* transform;
-            
+
             virtual void start() = 0;
             virtual void update() = 0;
 
@@ -36,7 +31,15 @@ namespace System {
             virtual std::string toString() = 0;
 
             virtual ~Component() {}
+
+            RTTR_ENABLE();
     };
+
+    RTTR_REGISTRATION
+    {
+        rttr::registration::class_<Component>("Component");
+    }
 }
+
 
 #endif // __COMPONENT_HPP__

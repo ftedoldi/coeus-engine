@@ -18,9 +18,8 @@
 #include <Buffers/FrameBuffer.hpp>
 #include <PixelData.hpp>
 
-#include <SceneGraph.hpp>
+#include <SceneManager.hpp>
 #include <Shader.hpp>
-#include <Component.hpp>
 #include <Transform.hpp>
 #include <Texture2D.hpp>
 #include <Math.hpp>

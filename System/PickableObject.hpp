@@ -1,23 +1,17 @@
 #ifndef __PICKABLEOBJECT_H__
 #define __PICKABLEOBJECT_H__
 
-#include <SceneObject.hpp>
-
 #include <unordered_map>
 
 namespace Odysseus 
 {
     class SceneObject;
-    class Mesh;
 }
 
 namespace System
 {
     namespace Picking
     {
-        class Odysseus::SceneObject;
-        class Odysseus::Mesh;
-
         class PickableObject 
         {
             private:
