@@ -97,7 +97,9 @@
       "__split_buffer": "cpp",
       "__memory": "cpp",
       "*.rh": "cpp",
-      "__threading_support": "cpp"
+      "__threading_support": "cpp",
+      "unordered_set": "cpp",
+      "registration": "cpp"
     },
     "terminal.integrated.profiles.windows": {
         "my-pwsh": {
