@@ -4,7 +4,15 @@ namespace Odysseus
 {
     SpotLight::SpotLight()
     {
+        _ambient = Athena::Vector3();
+        _diffuse = Athena::Vector3(0.5f, 0.5f, 0.5f);
+        _specular = Athena::Vector3();
 
+        _direction = Athena::Vector3(0.5f, 0.5f, 0.5f).normalized();
+        _spotExponent = 0.1f;
+        _cutOff = 0.1f;
+        
+        shader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
     }
 
     Athena::Vector3 SpotLight::getPosition() const

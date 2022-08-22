@@ -5,7 +5,13 @@ namespace Odysseus
 
     DirectionalLight::DirectionalLight()
     {
+        _ambient = Athena::Vector3();
+        _diffuse = Athena::Vector3(0.5f, 0.5f, 0.5f);
+        _specular = Athena::Vector3();
 
+        _direction = Athena::Vector3(0.5f, 0.5f, 0.5f).normalized();
+        
+        shader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
     }
     Athena::Vector3 DirectionalLight::getDirection() const
     {

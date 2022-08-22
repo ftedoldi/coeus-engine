@@ -16,6 +16,9 @@ namespace Odysseus
         private:
             std::vector<SceneObject*> _objectsInScene;
 
+            void deleteChildren(Transform* t);
+            int getSceneObjectIndex(SceneObject* obj);
+
         public:
             System::Editor* sceneEditor;
 
@@ -25,7 +28,9 @@ namespace Odysseus
             Scene();
             Scene(const std::string& name);
 
+            bool deleteSceneObject(const int& i);
             bool deleteSceneObject(SceneObject* obj);
+
             bool addSceneObject(SceneObject* obj);
 
             void initialiseScene();

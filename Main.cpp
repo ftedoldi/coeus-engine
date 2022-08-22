@@ -29,6 +29,8 @@
 #include <iostream>
 #include <vector>
 #include <thread>
+#include <any>
+#include <unordered_map>
 
 #include "Scripts/CameraMovement.hpp"
 

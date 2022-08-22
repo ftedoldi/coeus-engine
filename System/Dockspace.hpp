@@ -55,6 +55,11 @@ namespace System {
         int stopTextureID;
         int folderTextureID;
         int documentTextureID;
+        int pointLightTextureID;
+        int spotLightTextureID;
+        int directionalLightTextureID;
+        int areaLightTextureID;
+        int removeComponentTextureID;
     };
 
     class Dockspace {
@@ -99,6 +104,7 @@ namespace System {
             int countNestedFolders(std::filesystem::path sourceFolder);
             void dfsOverChildren(Odysseus::Transform* childrenTransform, int index = 1);
             int countNestedChildren(Odysseus::Transform* childrenTransform);
+            void loadInspectorParameters(Odysseus::Transform* transformToAnalyze);
 
             void initializeButtonImageTextures();
 

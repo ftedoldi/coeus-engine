@@ -566,12 +566,14 @@ namespace System::Serialize
         {
             auto ID = obj["Scene Object ID"].as<std::uint64_t>();
             auto transformComponent = obj["Transform"];
-                auto name = transformComponent["Name"].as<std::string>();
-                auto position = deserializeVector3(transformComponent["Position"]);
-                auto rotation = deserializeQuaternion(transformComponent["Rotation"]);
-                auto eulerAnglesRotation = deserializeVector3(transformComponent["Euler Angles Rotation"]);
-                auto scale = deserializeVector3(transformComponent["Scale"]);
+            auto name = transformComponent["Name"].as<std::string>();
+            auto position = deserializeVector3(transformComponent["Position"]);
+            auto rotation = deserializeQuaternion(transformComponent["Rotation"]);
+            auto eulerAnglesRotation = deserializeVector3(transformComponent["Euler Angles Rotation"]);
+            auto scale = deserializeVector3(transformComponent["Scale"]);
+            auto parent = transformComponent["Parent Scene Object"];
             
+            // TODO: Deserialize children only if they are not children of model
             auto components = obj["Components"];
             if (components)
             {
@@ -596,6 +598,7 @@ namespace System::Serialize
                     {
                         auto name = component["Component"].as<std::string>();
 
+                        
                         try
                         {
                             if (name == "PointLight")
@@ -635,6 +638,16 @@ namespace System::Serialize
                         Odysseus::Model model(modelPath, shader, isPBR);
                     }
                 }
+            }
+            else if (!parent)
+            {
+                // TODO: Fix name deserialization issues
+                Odysseus::Transform* serializedTransofrm = new Odysseus::Transform(position, rotation, scale);
+                serializedTransofrm->name = name;
+                serializedTransofrm->eulerRotation = eulerAnglesRotation;
+                Odysseus::SceneObject* serializedObject = new Odysseus::SceneObject(*serializedTransofrm, ID);
+
+                objectsInScene[serializedObject->ID] = serializedObject;
             }
         }
 

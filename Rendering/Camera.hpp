@@ -6,10 +6,6 @@
 #include <coeus.hpp>
 #include <vector>
 
-namespace System {
-    class Component;
-}
-
 namespace Odysseus
 {
     class Transform;

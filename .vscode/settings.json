@@ -99,7 +99,8 @@
       "*.rh": "cpp",
       "__threading_support": "cpp",
       "unordered_set": "cpp",
-      "registration": "cpp"
+      "registration": "cpp",
+      "any": "cpp"
     },
     "terminal.integrated.profiles.windows": {
         "my-pwsh": {

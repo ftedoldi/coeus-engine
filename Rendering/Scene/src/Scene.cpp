@@ -26,10 +26,60 @@ namespace Odysseus
         }
     }
 
+    bool Scene::deleteSceneObject(const int& i)
+    {
+        int size = _objectsInScene.size();
+
+        deleteChildren(_objectsInScene[i]->transform);
+
+        return _objectsInScene.size() < size;
+    }
+
     // TODO: Implement me
     bool Scene::deleteSceneObject(SceneObject* obj)
     {
+        for (int i = 0; i < _objectsInScene.size(); i++)
+        {
+            if (_objectsInScene[i]->ID == obj->ID)
+            {
+                deleteChildren(obj->transform);
+                return true;
+            }
+        }
+
         return false;
+    }
+
+    void Scene::deleteChildren(Transform* t)
+    {
+        if (t->children.size() == 0)
+        {
+            int sceneObjIndex = getSceneObjectIndex(t->sceneObject);
+            _objectsInScene.erase(_objectsInScene.begin() + sceneObjIndex);
+            return;
+        }
+
+        for (int i = 0; i < t->children.size(); i++)
+        {
+            deleteChildren(t->children[i]);
+        }
+
+        int sceneObjIndex = getSceneObjectIndex(t->sceneObject);
+        _objectsInScene.erase(_objectsInScene.begin() + sceneObjIndex);
+        return;
+    }
+
+    int Scene::getSceneObjectIndex(SceneObject* obj)
+    {
+        for (int i = 0; i < _objectsInScene.size(); i++)
+        {
+            if (_objectsInScene[i]->ID == obj->ID)
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     bool Scene::addSceneObject(SceneObject* obj)

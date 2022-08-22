@@ -152,6 +152,8 @@ namespace Odysseus
 
                 return false;
             }
+            
+            bool removeComponentWithName(const std::string& name);
 
             bool operator == (const SceneObject& object) const;
             bool operator != (const SceneObject& object) const;

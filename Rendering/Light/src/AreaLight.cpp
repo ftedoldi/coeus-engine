@@ -4,7 +4,15 @@ namespace Odysseus
 {
     AreaLight::AreaLight()
     {
+        _ambient = Athena::Vector3();
+        _diffuse = Athena::Vector3(0.5f, 0.5f, 0.5f);
+        _specular = Athena::Vector3();
 
+        auto pLight = new PointLight();
+
+        pointLights.push_back(pLight);
+        
+        shader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
     }
     void AreaLight::start()
     {

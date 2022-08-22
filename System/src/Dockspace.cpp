@@ -3,6 +3,11 @@
 #include <EditorCamera.hpp>
 #include <Transform.hpp>
 
+#include <PointLight.hpp>
+#include <SpotLight.hpp>
+#include <DirectionalLight.hpp>
+#include <AreaLight.hpp>
+
 namespace System {
 
     Dockspace::Dockspace()
@@ -62,6 +67,26 @@ namespace System {
                                                                                 ).ID;
         buttonImages.documentTextureID = Odysseus::Texture2D::loadTextureFromFile(
                                                                                     (Folder::getFolderPath("Icons").string() + "/document.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.pointLightTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/pointLight.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.spotLightTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/spotLight.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.directionalLightTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/directionalLight.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.areaLightTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/areaLight.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.removeComponentTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/remove.png").c_str(), 
                                                                                     true
                                                                                 ).ID;
     }
@@ -495,7 +520,27 @@ namespace System {
 
     void Dockspace::createHierarchyWindow()
     {
+        static Odysseus::Transform* selectedItem = nullptr;
+
         ImGui::Begin("Hierarchy");
+
+            if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+                ImGui::OpenPopup("PopupMenu");
+                
+            if (ImGui::BeginPopup("PopupMenu"))
+            {
+                if(ImGui::Selectable("Add New SceneObject"))
+                    Odysseus::SceneObject* o = new Odysseus::SceneObject("New Scene Object");
+
+                if (ImGui::Selectable("Delete SceneObject") && selectedItem != nullptr)
+                {
+                    Odysseus::SceneManager::activeScene->deleteSceneObject(selectedItem->sceneObject);
+                    this->transformToShow = nullptr;
+                }
+
+                ImGui::EndPopup();
+            }
+
             for (int i = 0; i < Odysseus::SceneManager::activeScene->objectsInScene.size(); i++) {
                 if (
                         Odysseus::SceneManager::activeScene->objectsInScene[i]->transform->parent != nullptr ||
@@ -510,11 +555,9 @@ namespace System {
                                                         Odysseus::SceneManager::activeScene->objectsInScene[i]->transform->name.c_str()
                                                     );
                     
-                    if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
+                    if (ImGui::IsItemHovered() && ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
                         this->transformToShow = Odysseus::SceneManager::activeScene->objectsInScene[i]->transform;
-                        this->inspectorParams.clear();
-                        for (int j = 0; j < Odysseus::SceneManager::activeScene->objectsInScene[i]->_container->components.size(); j++)
-                            this->inspectorParams.push_back(Odysseus::SceneManager::activeScene->objectsInScene[i]->_container->components[j]);
+                        this->loadInspectorParameters(this->transformToShow);
                     }
                     
                     if (isOpen) {
@@ -528,11 +571,12 @@ namespace System {
                                     );
                     if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
                         this->transformToShow = Odysseus::SceneManager::activeScene->objectsInScene[i]->transform;
-                        this->inspectorParams.clear();
-                        for (int j = 0; j < Odysseus::SceneManager::activeScene->objectsInScene[i]->_container->components.size(); j++)
-                            this->inspectorParams.push_back(Odysseus::SceneManager::activeScene->objectsInScene[i]->_container->components[j]);
+                        this->loadInspectorParameters(this->transformToShow);
                     }
                 }
+
+                if (ImGui::IsItemHovered() && ImGui::IsItemClicked(ImGuiMouseButton_Right))
+                    selectedItem = Odysseus::SceneManager::activeScene->objectsInScene[i]->transform;
             }
         ImGui::End();
     }
@@ -555,9 +599,7 @@ namespace System {
 
                 if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
                     this->transformToShow = childrenTransform->children[j];
-                    this->inspectorParams.clear();
-                    for (int k = 0; k < childrenTransform->children[j]->sceneObject->_container->components.size(); k++)
-                        this->inspectorParams.push_back(childrenTransform->children[j]->sceneObject->_container->components[k]);
+                    this->loadInspectorParameters(this->transformToShow);
                 }
 
                 if (childOpen)
@@ -573,14 +615,19 @@ namespace System {
 
                 if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
                     this->transformToShow = childrenTransform->children[j];
-                    this->inspectorParams.clear();
-                    for (int k = 0; k < childrenTransform->children[j]->sceneObject->_container->components.size(); k++)
-                        this->inspectorParams.push_back(childrenTransform->children[j]->sceneObject->_container->components[k]);
+                    this->loadInspectorParameters(this->transformToShow);
                 }
             }
         }
     }
-    
+
+    void Dockspace::loadInspectorParameters(Odysseus::Transform* transformToAnalyze)
+    {
+        this->inspectorParams.clear();
+        for (int k = 0; k < transformToAnalyze->sceneObject->_container->components.size(); k++)
+            this->inspectorParams.push_back(transformToAnalyze->sceneObject->_container->components[k]);
+    }
+
     int Dockspace::countNestedChildren(Odysseus::Transform* childrenTransform)
     {
         if (childrenTransform->children.size() == 0)
@@ -619,8 +666,123 @@ namespace System {
 
                 ImGui::Separator();
                 for (int i = 0; i < this->inspectorParams.size(); i++) {
+                    if (this->inspectorParams[i]->toString() == "PointLight")
+                    {
+                        ImGui::Image((ImTextureID)this->buttonImages.pointLightTextureID, {12, 12});
+                        ImGui::SameLine();
+                    }
+                    else if(this->inspectorParams[i]->toString() == "SpotLight")
+                    {
+                        ImGui::Image((ImTextureID)this->buttonImages.spotLightTextureID, {12, 12});
+                        ImGui::SameLine();
+                    }
+                    else if(this->inspectorParams[i]->toString() == "DirectionalLight")
+                    {
+                        ImGui::Image((ImTextureID)this->buttonImages.directionalLightTextureID, {12, 12});
+                        ImGui::SameLine();
+                    }
+                    else if(this->inspectorParams[i]->toString() == "AreaLight")
+                    {
+                        ImGui::Image((ImTextureID)this->buttonImages.areaLightTextureID, {12, 12});
+                        ImGui::SameLine();
+                    }
+
                     ImGui::Text(this->inspectorParams[i]->toString().c_str());
+                    ImGui::SameLine(ImGui::GetContentRegionAvail().x - 12);
+                    ImGui::PushStyleColor(ImGuiCol_Button, {0, 0, 0, 0});
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, {0, 0, 0, 0});
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, {0, 0, 0, 0});
+                    auto shouldDelete = ImGui::ImageButtonEx(
+                                12345,
+                                (ImTextureID)buttonImages.removeComponentTextureID, 
+                                { 12, 12 },
+                                { 0, 0 },
+                                { 1, 1 },
+                                { 0, 2 },
+                                { 0, 0, 0, 0 },
+                                { 1, 1, 1, 1 }
+                        );
+                    ImGui::PopStyleColor(3);
                     ImGui::Separator();
+
+                    if (shouldDelete)
+                    {
+                        this->transformToShow->sceneObject->removeComponentWithName(this->inspectorParams[i]->toString());
+                    }
+                }
+
+                if (inspectorParams.size() > this->transformToShow->sceneObject->_container->components.size())
+                    this->loadInspectorParameters(this->transformToShow);
+
+                static bool isAddComponentOpen = false;
+
+                if (lastTransform != transformToShow)
+                {
+                    isAddComponentOpen = false;
+                    lastTransform = transformToShow;
+                }
+
+                // TODO: Remove component button
+                if (ImGui::Button("Add Component", { ImGui::GetContentRegionAvail().x, 0 }))
+                {
+                    isAddComponentOpen = true;
+                    ImGui::OpenPopup("Component Popup");
+                }
+
+                if (isAddComponentOpen)
+                {
+                    if (ImGui::BeginPopup("Component Popup"))
+                    {
+                        auto pLight = ImGui::Selectable("##title");
+                        ImGui::SameLine();
+                        ImGui::Image((ImTextureID)this->buttonImages.pointLightTextureID, {12, 12});
+                        ImGui::SameLine();
+                        ImGui::Text("PointLight");
+
+                        if (pLight)
+                        {
+                            auto tmp = this->transformToShow->sceneObject->addComponent<Odysseus::PointLight>();
+                            this->inspectorParams.push_back(tmp);
+                        }
+
+                        auto sLight = ImGui::Selectable("##title1");
+                        ImGui::SameLine();
+                        ImGui::Image((ImTextureID)this->buttonImages.spotLightTextureID, {12, 12});
+                        ImGui::SameLine();
+                        ImGui::Text("Spot Light");
+
+                        if (sLight)
+                        {
+                            auto tmp = this->transformToShow->sceneObject->addComponent<Odysseus::SpotLight>();
+                            this->inspectorParams.push_back(tmp);
+                        }
+
+                        auto dLight = ImGui::Selectable("##title2");
+                        ImGui::SameLine();
+                        ImGui::Image((ImTextureID)this->buttonImages.directionalLightTextureID, {12, 12});
+                        ImGui::SameLine();
+                        ImGui::Text("Directional Light");
+
+                        if (dLight)
+                        {
+                            auto tmp = this->transformToShow->sceneObject->addComponent<Odysseus::DirectionalLight>();
+                            this->inspectorParams.push_back(tmp);
+                        }
+
+                        auto aLight = ImGui::Selectable("##title3");
+                        ImGui::SameLine();
+                        ImGui::Image((ImTextureID)this->buttonImages.areaLightTextureID, {12, 12});
+                        ImGui::SameLine();
+                        ImGui::Text("Area Light");
+
+                        if (aLight)
+                        {
+                            auto tmp = this->transformToShow->sceneObject->addComponent<Odysseus::AreaLight>();
+                            this->inspectorParams.push_back(tmp);
+                        }
+                        
+                        ImGui::EndPopup();
+                    }
                 }
             }
         ImGui::End();

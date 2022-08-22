@@ -106,6 +106,17 @@ namespace Odysseus {
         return nullptr;
     }
 
+    bool SceneObject::removeComponentWithName(const std::string& name)
+     {
+        for (int i = 0; i < _container->components.size(); i++)
+            if (_container->components[i]->toString() == name) {
+                _container->_components.erase(_container->_components.begin() + i);
+                return true;
+            }
+
+        return false;
+    }
+
     bool SceneObject::operator == (const SceneObject& object) const
     {
         return object._container == this->_container;

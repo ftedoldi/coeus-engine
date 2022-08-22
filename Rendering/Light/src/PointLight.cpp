@@ -7,7 +7,15 @@ namespace Odysseus
 {
     PointLight::PointLight()
     {
-        
+        _ambient = Athena::Vector3();
+        _diffuse = Athena::Vector3(0.5f, 0.5f, 0.5f);
+        _specular = Athena::Vector3();
+
+        _constant = 0.1f;
+        _linear = 0.1f;
+        _quadratic = 0.1f;
+
+        shader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
     }
 
     Athena::Vector3 PointLight::getPosition() const

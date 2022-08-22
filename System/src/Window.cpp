@@ -235,6 +235,7 @@ namespace System {
 
         // gameFrameBuffer->copyAnotherFrameBuffer(this->sceneFrameBuffer->ID);
 
+        ImGui::ShowDemoWindow();
         dockspace->createDockspace();
 
         ImGui::Render();
