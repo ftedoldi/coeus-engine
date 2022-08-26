@@ -24,6 +24,8 @@
 
 #include <Serializer/Serializer.hpp>
 
+#include <SerializableClass.hpp>
+
 #include <rttr/registration>
 
 #include <iostream>
@@ -76,7 +78,7 @@ int main()
     // obj->transform->name = "Object";
     // auto dummy = obj->addComponent<DummyComponent>();
 
-    //Camera setup
+    // Camera setup
     // Odysseus::SceneObject *cam = new Odysseus::SceneObject();
     // cam->transform->position = Athena::Vector3(0, 0, 20);
     // cam->transform->name = "EditorCamera";
@@ -146,6 +148,15 @@ int main()
     // sLight->setSpecular(Athena::Vector3(1.0f, 1.0f, 1.0f));
     // sLight->setCutOff(41.0f);
     // sLight->setSpotExponent(19.0f);
+
+    // Odysseus::SceneObject* obj = new Odysseus::SceneObject();
+    // TODO: Do this with rttr
+    // std::unique_ptr<System::Component> c = factory::Registry<System::Component>::New("DummyComponent");
+    // c->deserialize();
+    // Odysseus::SceneObject* obj = new Odysseus::SceneObject();
+    // obj->addComponent<DummyComponent>();
+
+    // std::cout << typeid(System::SerializableClass::registeredClasses["DummyComponent"]).name() << std::endl;
 
     stbi_set_flip_vertically_on_load(true);
     
