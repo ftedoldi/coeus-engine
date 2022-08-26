@@ -3,6 +3,8 @@
 
 #include <Component.hpp>
 
+#include <SerializableClass.hpp>
+
 #include <iostream>
 #include <string>
 
@@ -21,8 +23,15 @@ class DummyComponent : public System::Component {
         virtual int getUniqueID();
 
         virtual std::string toString();
+
+        virtual void showComponentFieldsInEditor();
+
+        virtual void serialize(YAML::Emitter& out);
+        virtual System::Component* deserialize(YAML::Node& node);
     
         virtual ~DummyComponent();
+
+        SERIALIZABLE_CLASS(System::Component);
 };
 
 #endif // __DUMMYCOMPONENT_H__
