@@ -38,3 +38,32 @@ In order to create a Serializable Component you have to use a two step registrat
 
 After the registration you may want to implement the methods of the ```System::Component``` interface that effectively serialize, deserialize and read a component
 into our Coeus Engine.
+
+Here an example with a DummyComponent, in the *.cpp* file:
+```
+void DummyComponent::showComponentFieldsInEditor()
+{
+    ImGui::InputFloat(NAMEOF(asd), &asd);
+    ImGui::InputInt(NAMEOF(var), &var);
+}
+
+void DummyComponent::serialize(YAML::Emitter& out)
+{
+    out << YAML::Key << this->toString();
+    out << YAML::BeginMap;
+        out << YAML::Key << NAMEOF(asd) << YAML::Value << this->asd;
+        out << YAML::Key << NAMEOF(var) << YAML::Value << this->var;
+    out << YAML::EndMap; 
+}
+
+System::Component* DummyComponent::deserialize(YAML::Node& node)
+{
+    auto component = node[this->toString()];
+    this->asd = component["asd"].as<int>();
+    this->var = component["var"].as<int>();
+
+    return this;
+}
+```
+
+In order to Serialize and Deserialize you should be aware of the syntax of the YAML-cpp library.
