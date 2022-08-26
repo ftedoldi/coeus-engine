@@ -24,3 +24,17 @@ Just simply press Ctrl + Shift + B in order to fully (re)compile and run the pro
 If you wish to compile only some components in order to avoid the full recompilation use the script <br />
 PartialMakefile.bat with subsequent parameters -> ex.: PartialMakefile.bat camera model <br />
 this command will recompile only Camera.cpp and Model.cpp classes resulting in a fast paced compilation.
+
+# Serializable Component Creation
+In order to create a Serializable Component you have to use a two step registration. <br />
+> First you have to register the class Ancestors (You have to always specify ```System::Component``` as an ancestor)
+> After this you can go ahead and do the registration in the *.cpp* file. Here a sample of the registration for the Mesh Component:
+```
+    SERIALIZE_CLASS
+    {
+        System::SerializableClass::registerClass<Mesh>();
+    }
+```
+
+After the registration you may want to implement the methods of the ```System::Component``` interface that effectively serialize, deserialize and read a component
+into our Coeus Engine.
