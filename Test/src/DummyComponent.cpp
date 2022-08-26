@@ -5,10 +5,18 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include <Folder.hpp>
+
 DummyComponent::DummyComponent()
 {
     // _showComponentInEditor = true;
     var = 10;
+
+    this->_editorTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                        (System::Folder::getFolderPath("Icons").string() + "/document.png").c_str(),
+                                                                        true
+                                                                    ).ID;
+    this->_hasEditorTexture = true;
 }
 
 void DummyComponent::start()

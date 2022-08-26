@@ -5,11 +5,6 @@
 
 #include <SerializableClass.hpp>
 
-#include <PointLight.hpp>
-#include <SpotLight.hpp>
-#include <DirectionalLight.hpp>
-#include <AreaLight.hpp>
-
 namespace System {
 
     Dockspace::Dockspace()
@@ -672,28 +667,14 @@ namespace System {
                 for (int i = 0; i < this->inspectorParams.size(); i++) {
                     #pragma warning(push)
                     #pragma warning(disable : 4312)
-                    if (this->inspectorParams[i]->toString() == "PointLight")
+                    if (this->inspectorParams[i]->hasEditorTexture())
                     {
-                        ImGui::Image((ImTextureID)this->buttonImages.pointLightTextureID, {12, 12});
-                        ImGui::SameLine();
-                    }
-                    else if(this->inspectorParams[i]->toString() == "SpotLight")
-                    {
-                        ImGui::Image((ImTextureID)this->buttonImages.spotLightTextureID, {12, 12});
-                        ImGui::SameLine();
-                    }
-                    else if(this->inspectorParams[i]->toString() == "DirectionalLight")
-                    {
-                        ImGui::Image((ImTextureID)this->buttonImages.directionalLightTextureID, {12, 12});
-                        ImGui::SameLine();
-                    }
-                    else if(this->inspectorParams[i]->toString() == "AreaLight")
-                    {
-                        ImGui::Image((ImTextureID)this->buttonImages.areaLightTextureID, {12, 12});
+                        ImGui::Image((ImTextureID)this->inspectorParams[i]->getEditorTextureID(), {12, 12});
                         ImGui::SameLine();
                     }
                     #pragma warning(pop)
 
+                    // FIXME: Deletion works only on the first component - fix this and apply deletion for all components independently from order
                     ImGui::Text(this->inspectorParams[i]->toString().c_str());
                     ImGui::SameLine(ImGui::GetContentRegionAvail().x - 12);
                     ImGui::PushStyleColor(ImGuiCol_Button, {0, 0, 0, 0});
@@ -746,42 +727,6 @@ namespace System {
                     #pragma warning(disable : 4312)
                     if (ImGui::BeginPopup("Component Popup"))
                     {
-                        auto pLight = ImGui::Selectable("##title");
-                        ImGui::SameLine();
-                        ImGui::Image((ImTextureID)this->buttonImages.pointLightTextureID, {12, 12});
-                        ImGui::SameLine();
-                        ImGui::Text("PointLight");
-
-                        if (pLight)
-                        {
-                            auto tmp = this->transformToShow->sceneObject->addComponent<Odysseus::PointLight>();
-                            this->inspectorParams.push_back(tmp);
-                        }
-
-                        auto dLight = ImGui::Selectable("##title2");
-                        ImGui::SameLine();
-                        ImGui::Image((ImTextureID)this->buttonImages.directionalLightTextureID, {12, 12});
-                        ImGui::SameLine();
-                        ImGui::Text("Directional Light");
-
-                        if (dLight)
-                        {
-                            auto tmp = this->transformToShow->sceneObject->addComponent<Odysseus::DirectionalLight>();
-                            this->inspectorParams.push_back(tmp);
-                        }
-
-                        auto aLight = ImGui::Selectable("##title3");
-                        ImGui::SameLine();
-                        ImGui::Image((ImTextureID)this->buttonImages.areaLightTextureID, {12, 12});
-                        ImGui::SameLine();
-                        ImGui::Text("Area Light");
-
-                        if (aLight)
-                        {
-                            auto tmp = this->transformToShow->sceneObject->addComponent<Odysseus::AreaLight>();
-                            this->inspectorParams.push_back(tmp);
-                        }
-
                         rttr::type componentType = rttr::type::get_by_name("Component");
 
                         for (auto derived : componentType.get_derived_classes())

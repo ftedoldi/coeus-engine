@@ -24,8 +24,14 @@ namespace Odysseus
 
             virtual std::string toString();
 
-            void setLightShader(Odysseus::Shader* shader) const;
+            virtual void showComponentFieldsInEditor();
 
+            virtual void serialize(YAML::Emitter& out);
+            virtual System::Component* deserialize(YAML::Node& node);
+
+            void setLightShader(Odysseus::Shader* shader) const;
+                        
+            SERIALIZABLE_CLASS(System::Component, Light);
     };
 }
 

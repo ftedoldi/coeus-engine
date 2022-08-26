@@ -1,6 +1,6 @@
 Scene: Start Scene
 Scene Objects:
-  - Scene Object ID: 13137575373119779653
+  - Scene Object ID: 7566790582131797551
     Transform:
       Name: SceneObj1
       Position:
@@ -21,7 +21,7 @@ Scene Objects:
         Y: 1
         Z: 1
       Children Scene Objects:
-        - 13995360316992605991
+        - 637807562088354837
     Components:
       - Component: ModelBase
         Model:
@@ -52,21 +52,21 @@ Scene Objects:
     Components:
       - Component: PointLight
         PointLight:
-          Constant: 1
-          Linear: 0.0900000036
-          Quadratic: 0.0320000015
           Diffuse:
-            X: 0.800000012
-            Y: 0.800000012
-            Z: 0.800000012
+            Red: 0.5
+            Green: 0.5
+            Blue: 0.5
           Ambient:
-            X: 0.200000003
-            Y: 0.200000003
-            Z: 0.200000003
+            Red: 0
+            Green: 0
+            Blue: 0
           Specular:
-            X: 0.300000012
-            Y: 0.300000012
-            Z: 0.300000012
+            Red: 0
+            Green: 0
+            Blue: 0
+          Constant: 0.100000001
+          Linear: 0.100000001
+          Quadratic: 0.100000001
           Vertex Shader Path: .\Shader\phongShader.vert
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 15637199354414536701
@@ -92,22 +92,22 @@ Scene Objects:
     Components:
       - Component: DirectionalLight
         DirectionalLight:
-          Direction:
-            X: 0
-            Y: -1
-            Z: 0
           Diffuse:
-            X: 0.5
-            Y: 0.5
-            Z: 0.5
+            Red: 0.5
+            Green: 0.5
+            Blue: 0.5
           Ambient:
-            X: 0.200000003
-            Y: 0.200000003
-            Z: 0.200000003
+            Red: 0
+            Green: 0
+            Blue: 0
           Specular:
-            X: 0.5
-            Y: 0.5
-            Z: 0.5
+            Red: 0.577350259
+            Green: 0.577350259
+            Blue: 0.577350259
+          Direction:
+            X: 0.577350259
+            Y: 0.577350259
+            Z: 0.577350259
           Vertex Shader Path: .\Shader\phongShader.vert
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 7292084055544433658
@@ -153,7 +153,7 @@ Scene Objects:
           CutOff: 0.100000001
           Vertex Shader Path: .\Shader\phongShader.vert
           Fragment Shader Path: .\Shader\phongShader.frag
-  - Scene Object ID: 13573113875052147287
+  - Scene Object ID: 12748841341077380869
     Transform:
       Name: SceneObj6
       Position:
@@ -174,13 +174,13 @@ Scene Objects:
         Y: 1
         Z: 1
       Children Scene Objects:
-        - 4384551639321901643
-        - 7030274025219834452
-        - 18289377891368109184
-        - 13382588270190873740
-        - 15849104849665741047
-        - 2404338124785706188
-        - 7707802115856188176
+        - 16077318123681396087
+        - 9739004186409568934
+        - 2074905558756426867
+        - 3458165696492162250
+        - 8977837318846015050
+        - 3582876433773575157
+        - 2556208173263731026
     Components:
       - Component: ModelBase
         Model:
@@ -188,7 +188,7 @@ Scene Objects:
           PBR: false
           Vertex Shader: .\Shader\phongShader.vert
           Fragment Shader: .\Shader\phongShader.frag
-  - Scene Object ID: 7030274025219834452
+  - Scene Object ID: 9739004186409568934
     Transform:
       Name: SceneObj8
       Position:
@@ -208,8 +208,8 @@ Scene Objects:
         X: 1
         Y: 1
         Z: 1
-      Parent Scene Object: 13573113875052147287
-  - Scene Object ID: 18289377891368109184
+      Parent Scene Object: 12748841341077380869
+  - Scene Object ID: 2074905558756426867
     Transform:
       Name: SceneObj9
       Position:
@@ -229,8 +229,8 @@ Scene Objects:
         X: 1
         Y: 1
         Z: 1
-      Parent Scene Object: 13573113875052147287
-  - Scene Object ID: 17439439063013694821
+      Parent Scene Object: 12748841341077380869
+  - Scene Object ID: 15092960333271744519
     Transform:
       Name: SceneObj14
       Position:
@@ -251,12 +251,12 @@ Scene Objects:
         Y: 1
         Z: 1
       Children Scene Objects:
-        - 8079798949579657971
-        - 5162355872435777573
-        - 11740238031879237517
-        - 16761037245495184611
-        - 11887855507854552429
-        - 15237531222345599933
+        - 17007100623550007731
+        - 10459268681831298115
+        - 4092169392289792870
+        - 4265965114199303724
+        - 12342711914642326999
+        - 5036816449783266242
     Components:
       - Component: ModelBase
         Model:
@@ -287,22 +287,22 @@ Scene Objects:
     Components:
       - Component: DirectionalLight
         DirectionalLight:
+          Diffuse:
+            Red: 0.5
+            Green: 0.5
+            Blue: 0.5
+          Ambient:
+            Red: 0
+            Green: 0
+            Blue: 0
+          Specular:
+            Red: 0.577350259
+            Green: 0.577350259
+            Blue: 0.577350259
           Direction:
             X: 0.577350259
             Y: 0.577350259
             Z: 0.577350259
-          Diffuse:
-            X: 0.5
-            Y: 0.5
-            Z: 0.5
-          Ambient:
-            X: 0
-            Y: 0
-            Z: 0
-          Specular:
-            X: 0
-            Y: 0
-            Z: 0
           Vertex Shader Path: .\Shader\phongShader.vert
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 17782837585363037712
@@ -330,3 +330,43 @@ Scene Objects:
         DummyComponent:
           asd: 15
           var: 14
+  - Scene Object ID: 2426417046733272916
+    Transform:
+      Name: SceneObj23
+      Position:
+        X: 0
+        Y: 0
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: PointLight
+        PointLight:
+          Diffuse:
+            Red: 0.5
+            Green: 0.5
+            Blue: 0.5
+          Ambient:
+            Red: 0
+            Green: 0
+            Blue: 0
+          Specular:
+            Red: 0
+            Green: 0
+            Blue: 0
+          Constant: 0.100000001
+          Linear: 2
+          Quadratic: 0.100000001
+          Vertex Shader Path: .\Shader\phongShader.vert
+          Fragment Shader Path: .\Shader\phongShader.frag

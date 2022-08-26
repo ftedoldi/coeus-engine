@@ -20,8 +20,16 @@ namespace Odysseus
             virtual int getUniqueID();
     
             virtual std::string toString();
+
+            virtual void showComponentFieldsInEditor();
+
+            virtual void serialize(YAML::Emitter& out);
+            virtual System::Component* deserialize(YAML::Node& node);
+            
             void addLight(PointLight* pt);
             void setLightShader(Odysseus::Shader* shader) const;
+                                    
+            SERIALIZABLE_CLASS(System::Component, Light);
     };
 }
 

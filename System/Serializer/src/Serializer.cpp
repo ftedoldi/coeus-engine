@@ -4,11 +4,6 @@
 
 #include <SceneManager.hpp>
 
-#include <PointLight.hpp>
-#include <SpotLight.hpp>
-#include <DirectionalLight.hpp>
-#include <AreaLight.hpp>
-
 #include <ModelBase.hpp>
 #include <Model.hpp>
 #include <Shader.hpp>
@@ -226,18 +221,10 @@ namespace System::Serialize
                         out << YAML::BeginMap;
                             out << YAML::Key << "Component" << YAML::Value << component->toString();
                             
-                            if (component->toString() == "PointLight")
-                                serializePointLight(out, dynamic_cast<Odysseus::PointLight*>(component));   
-                            else if (component->toString() == "DirectionalLight")
-                                serializeDirectionalLight(out, dynamic_cast<Odysseus::DirectionalLight*>(component));
-                            else if (component->toString() == "AreaLight")
-                                serializeAreaLight(out, dynamic_cast<Odysseus::AreaLight*>(component));   
-                            else if (component->toString() == "ModelBase")
+                            if (component->toString() == "ModelBase")
                                 serialzieModel(out, dynamic_cast<Odysseus::ModelBase*>(component));
                             else
-                            {
                                 component->serialize(out);
-                            }
                         out << YAML::EndMap;
                     }
                 out << YAML::EndSeq;
@@ -296,95 +283,6 @@ namespace System::Serialize
 
     }
 
-    void Serializer::serializePointLight(YAML::Emitter& out, Odysseus::PointLight* light)
-    {
-        out << YAML::Key << "PointLight";
-        out << YAML::BeginMap;
-            out << YAML::Key << "Constant" << YAML::Value << light->_constant; 
-            out << YAML::Key << "Linear" << YAML::Value << light->_linear; 
-            out << YAML::Key << "Quadratic" << YAML::Value << light->_quadratic; 
-            out << YAML::Key << "Diffuse";
-            serializeVector3(out, light->_diffuse);
-            out << YAML::Key << "Ambient";
-            serializeVector3(out, light->_ambient);
-            out << YAML::Key << "Specular";
-            serializeVector3(out, light->_specular);
-            out << YAML::Key << "Vertex Shader Path" << YAML::Value << light->shader->vertexShaderPath;
-            out << YAML::Key << "Fragment Shader Path" << YAML::Value << light->shader->fragmentShaderPath;
-        out << YAML::EndMap;
-    }
-
-    void Serializer::serializeSpotLight(YAML::Emitter& out, Odysseus::SpotLight* light)
-    {
-        out << YAML::Key << "SpotLight";
-        out << YAML::BeginMap;
-            out << YAML::Key << "Cut Off" << YAML::Value << light->_cutOff; 
-            out << YAML::Key << "Exponent" << YAML::Value << light->_spotExponent; 
-            out << YAML::Key << "Direction";
-            serializeVector3(out, light->_direction); 
-            out << YAML::Key << "Diffuse";
-            serializeVector3(out, light->_diffuse);
-            out << YAML::Key << "Ambient";
-            serializeVector3(out, light->_ambient);
-            out << YAML::Key << "Specular";
-            serializeVector3(out, light->_specular);
-            out << YAML::Key << "Vertex Shader Path" << YAML::Value << light->shader->vertexShaderPath;
-            out << YAML::Key << "Fragment Shader Path" << YAML::Value << light->shader->fragmentShaderPath;
-        out << YAML::EndMap;   
-    }
-
-    void Serializer::serializeDirectionalLight(YAML::Emitter& out, Odysseus::DirectionalLight* light)
-    {
-        out << YAML::Key << "DirectionalLight";
-        out << YAML::BeginMap;
-            out << YAML::Key << "Direction";
-            serializeVector3(out, light->_direction);
-            out << YAML::Key << "Diffuse";
-            serializeVector3(out, light->_diffuse);
-            out << YAML::Key << "Ambient";
-            serializeVector3(out, light->_ambient);
-            out << YAML::Key << "Specular";
-            serializeVector3(out, light->_specular);
-            out << YAML::Key << "Vertex Shader Path" << YAML::Value << light->shader->vertexShaderPath;
-            out << YAML::Key << "Fragment Shader Path" << YAML::Value << light->shader->fragmentShaderPath;
-        out << YAML::EndMap;   
-    }
-
-    void Serializer::serializeAreaLight(YAML::Emitter& out, Odysseus::AreaLight* light)
-    {
-        out << YAML::Key << "AreaLight";
-        out << YAML::BeginMap;
-            out << YAML::Key << "Point Lights" << YAML::Value;
-            out << YAML::BeginSeq;
-                for (auto l : light->pointLights)
-                {
-                    out << YAML::Key << "PointLight";
-                    out << YAML::BeginMap;
-                        out << YAML::Key << "Constant" << YAML::Value << l->_constant; 
-                        out << YAML::Key << "Linear" << YAML::Value << l->_linear; 
-                        out << YAML::Key << "Quadratic" << YAML::Value << l->_quadratic; 
-                        out << YAML::Key << "Diffuse";
-                        serializeVector3(out, l->_diffuse);
-                        out << YAML::Key << "Ambient";
-                        serializeVector3(out, l->_ambient);
-                        out << YAML::Key << "Specular";
-                        serializeVector3(out, l->_specular);
-                        out << YAML::Key << "Vertex Shader Path" << YAML::Value << l->shader->vertexShaderPath;
-                        out << YAML::Key << "Fragment Shader Path" << YAML::Value << l->shader->fragmentShaderPath;
-                    out << YAML::EndMap;
-                }
-            out << YAML::EndSeq;
-            out << YAML::Key << "Diffuse";
-            serializeVector3(out, light->_diffuse);
-            out << YAML::Key << "Ambient";
-            serializeVector3(out, light->_ambient);
-            out << YAML::Key << "Specular";
-            serializeVector3(out, light->_specular);
-            out << YAML::Key << "Vertex Shader Path" << YAML::Value << light->shader->vertexShaderPath;
-            out << YAML::Key << "Fragment Shader Path" << YAML::Value << light->shader->fragmentShaderPath;
-        out << YAML::EndMap;
-    }
-
     void Serializer::serialzieModel(YAML::Emitter& out, Odysseus::ModelBase* model)
     {
         out << YAML::Key << "Model";
@@ -399,138 +297,6 @@ namespace System::Serialize
     void Serializer::deserializeModel(YAML::Node& node)
     {
 
-    }
-
-    Odysseus::PointLight* Serializer::deserializePointLight(YAML::Node& node)
-    {
-        auto constant = node["Constant"].as<float>();
-        auto linear = node["Linear"].as<float>();
-        auto quadratic = node["Quadratic"].as<float>();
-        auto diffuseVector = node["Diffuse"];
-        auto diffuse = Athena::Vector3(
-                                            diffuseVector["X"].as<float>(), 
-                                            diffuseVector["Y"].as<float>(), 
-                                            diffuseVector["Z"].as<float>()
-                                        );
-        auto ambientVector = node["Ambient"];
-        auto ambient = Athena::Vector3(
-                                            ambientVector["X"].as<float>(), 
-                                            ambientVector["Y"].as<float>(), 
-                                            ambientVector["Z"].as<float>()
-                                        );
-        auto specularVector = node["Specular"];
-        auto specular = Athena::Vector3(
-                                            specularVector["X"].as<float>(), 
-                                            specularVector["Y"].as<float>(), 
-                                            specularVector["Z"].as<float>()
-                                        );
-
-        auto vShaderPath = node["Vertex Shader Path"].as<std::string>();
-        auto fShaderPath = node["Fragment Shader Path"].as<std::string>();
-
-        Odysseus::PointLight* pLight = new Odysseus::PointLight();
-        pLight->_constant = constant;
-        pLight->_linear = linear;
-        pLight->_quadratic = quadratic;
-
-        pLight->_diffuse = diffuse;
-        pLight->_ambient = ambient;
-        pLight->_specular = specular;
-        pLight->shader = new Odysseus::Shader(vShaderPath.c_str(), fShaderPath.c_str());
-
-        return pLight;
-    }
-
-    Odysseus::SpotLight* Serializer::deserializeSpotLight(YAML::Node& node)
-    {
-        auto exponent = node["Exponent"].as<float>();
-        auto cutoff = node["Cut Off"].as<float>();
-        auto directionVector = node["Direction"];
-        auto direction = Athena::Vector3(
-                                            directionVector["X"].as<float>(), 
-                                            directionVector["Y"].as<float>(), 
-                                            directionVector["Z"].as<float>()
-                                        );
-        auto diffuseVector = node["Diffuse"];
-        auto diffuse = Athena::Vector3(
-                                            diffuseVector["X"].as<float>(), 
-                                            diffuseVector["Y"].as<float>(), 
-                                            diffuseVector["Z"].as<float>()
-                                        );
-        auto ambientVector = node["Ambient"];
-        auto ambient = Athena::Vector3(
-                                            ambientVector["X"].as<float>(), 
-                                            ambientVector["Y"].as<float>(), 
-                                            ambientVector["Z"].as<float>()
-                                        );
-        auto specularVector = node["Specular"];
-        auto specular = Athena::Vector3(
-                                            specularVector["X"].as<float>(), 
-                                            specularVector["Y"].as<float>(), 
-                                            specularVector["Z"].as<float>()
-                                        );
-
-        auto vShaderPath = node["Vertex Shader Path"].as<std::string>();
-        auto fShaderPath = node["Fragment Shader Path"].as<std::string>();
-
-        Odysseus::SpotLight* sLight = new Odysseus::SpotLight();
-        sLight->_spotExponent = exponent;
-        sLight->_cutOff = cutoff;
-        sLight->_direction = direction;
-
-        sLight->_diffuse = diffuse;
-        sLight->_ambient = ambient;
-        sLight->_specular = specular;
-        sLight->shader = new Odysseus::Shader(vShaderPath.c_str(), fShaderPath.c_str());
-
-        return sLight;
-    }
-
-    Odysseus::DirectionalLight* Serializer::deserializeDirectionalLight(YAML::Node& node)
-    {
-        auto directionVector = node["Direction"];
-        auto direction = Athena::Vector3(
-                                            directionVector["X"].as<float>(), 
-                                            directionVector["Y"].as<float>(), 
-                                            directionVector["Z"].as<float>()
-                                        );
-        auto diffuseVector = node["Diffuse"];
-        auto diffuse = Athena::Vector3(
-                                            diffuseVector["X"].as<float>(), 
-                                            diffuseVector["Y"].as<float>(), 
-                                            diffuseVector["Z"].as<float>()
-                                        );
-        auto ambientVector = node["Ambient"];
-        auto ambient = Athena::Vector3(
-                                            ambientVector["X"].as<float>(), 
-                                            ambientVector["Y"].as<float>(), 
-                                            ambientVector["Z"].as<float>()
-                                        );
-        auto specularVector = node["Specular"];
-        auto specular = Athena::Vector3(
-                                            specularVector["X"].as<float>(), 
-                                            specularVector["Y"].as<float>(), 
-                                            specularVector["Z"].as<float>()
-                                        );
-
-        auto vShaderPath = node["Vertex Shader Path"].as<std::string>();
-        auto fShaderPath = node["Fragment Shader Path"].as<std::string>();
-
-        Odysseus::DirectionalLight* dLight = new Odysseus::DirectionalLight();
-        dLight->_direction = direction;
-
-        dLight->_diffuse = diffuse;
-        dLight->_ambient = ambient;
-        dLight->_specular = specular;
-        dLight->shader = new Odysseus::Shader(vShaderPath.c_str(), fShaderPath.c_str());
-
-        return dLight;
-    }
-
-    // TODO: Implement me
-    Odysseus::AreaLight* Serializer::deserializeAreaLight(YAML::Node& node)
-    {
-        return nullptr;
     }
 
     bool Serializer::deserialize(const std::string& filepath)
@@ -606,18 +372,9 @@ namespace System::Serialize
 
                         try
                         {
-                            if (name == "PointLight")
-                                serializedObject->addCopyOfExistingComponent<Odysseus::PointLight>(deserializePointLight(component["PointLight"]));
-                            else if (name == "DirectionalLight")
-                                serializedObject->addCopyOfExistingComponent<Odysseus::DirectionalLight>(deserializeDirectionalLight(component["DirectionalLight"]));
-                            else if (name == "AreaLight")
-                                serializedObject->addCopyOfExistingComponent<Odysseus::AreaLight>(deserializeAreaLight(component["AreaLight"]));
-                            else
-                            {
-                                auto componentToAdd = c->deserialize(component);
-                                if (componentToAdd != nullptr)
-                                    serializedObject->addCopyOfExistingComponent<System::Component>(componentToAdd);
-                            }
+                            auto componentToAdd = c->deserialize(component);
+                            if (componentToAdd != nullptr)
+                                serializedObject->addCopyOfExistingComponent<System::Component>(componentToAdd);
 
                         }
                         catch(const std::exception& e)

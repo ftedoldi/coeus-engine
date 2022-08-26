@@ -22,6 +22,11 @@ namespace Odysseus
             virtual int getUniqueID();
 
             virtual std::string toString();
+
+            virtual void showComponentFieldsInEditor();
+
+            virtual void serialize(YAML::Emitter& out);
+            virtual System::Component* deserialize(YAML::Node& node);
             
             Athena::Vector3 getPosition() const;
             float getConstant() const;
@@ -34,6 +39,8 @@ namespace Odysseus
             void setQuadratic(float quadratic);
 
             void setLightShader(Odysseus::Shader* shader) const;
+            
+            SERIALIZABLE_CLASS(System::Component, Light);
     };
 }
 
