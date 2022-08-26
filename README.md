@@ -26,9 +26,9 @@ PartialMakefile.bat with subsequent parameters -> ex.: PartialMakefile.bat camer
 this command will recompile only Camera.cpp and Model.cpp classes resulting in a fast paced compilation.
 
 # Serializable Component Creation
-In order to create a Serializable Component you have to use a two step registration. <br />
-> First you have to register the class Ancestors (You have to always specify ```System::Component``` as an ancestor)
-> After this you can go ahead and do the registration in the *.cpp* file. Here a sample of the registration for the Mesh Component:
+> In order to create a Serializable Component you have to use a two step registration. <br />
+> - First you have to register the class Ancestors (You have to always specify ```System::Component``` as an ancestor)
+> - After this you can go ahead and do the registration in the *.cpp* file. Here a sample of the registration for the Mesh Component:
 ```
     SERIALIZE_CLASS
     {
