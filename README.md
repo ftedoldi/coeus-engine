@@ -66,4 +66,4 @@ System::Component* DummyComponent::deserialize(YAML::Node& node)
 }
 ```
 
-In order to Serialize and Deserialize you should be aware of the syntax of the YAML-cpp library.
+> In order to Serialize and Deserialize you should be aware of the syntax of the YAML-cpp library.
