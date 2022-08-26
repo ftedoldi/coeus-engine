@@ -228,14 +228,16 @@ namespace System::Serialize
                             
                             if (component->toString() == "PointLight")
                                 serializePointLight(out, dynamic_cast<Odysseus::PointLight*>(component));   
-                            else if (component->toString() == "SpotLight")
-                                serializeSpotLight(out, dynamic_cast<Odysseus::SpotLight*>(component));
                             else if (component->toString() == "DirectionalLight")
                                 serializeDirectionalLight(out, dynamic_cast<Odysseus::DirectionalLight*>(component));
                             else if (component->toString() == "AreaLight")
                                 serializeAreaLight(out, dynamic_cast<Odysseus::AreaLight*>(component));   
                             else if (component->toString() == "ModelBase")
                                 serialzieModel(out, dynamic_cast<Odysseus::ModelBase*>(component));
+                            else
+                            {
+                                component->serialize(out);
+                            }
                         out << YAML::EndMap;
                     }
                 out << YAML::EndSeq;
@@ -598,17 +600,25 @@ namespace System::Serialize
                     {
                         auto name = component["Component"].as<std::string>();
 
-                        
+                        rttr::type t = rttr::type::get_by_name(name);
+                        rttr::variant v = t.create();
+                        System::Component* c = v.convert<System::Component*>();
+
                         try
                         {
                             if (name == "PointLight")
                                 serializedObject->addCopyOfExistingComponent<Odysseus::PointLight>(deserializePointLight(component["PointLight"]));
-                            else if (name == "SpotLight")
-                                serializedObject->addCopyOfExistingComponent<Odysseus::SpotLight>(deserializeSpotLight(component["SpotLight"]));
                             else if (name == "DirectionalLight")
                                 serializedObject->addCopyOfExistingComponent<Odysseus::DirectionalLight>(deserializeDirectionalLight(component["DirectionalLight"]));
                             else if (name == "AreaLight")
                                 serializedObject->addCopyOfExistingComponent<Odysseus::AreaLight>(deserializeAreaLight(component["AreaLight"]));
+                            else
+                            {
+                                auto componentToAdd = c->deserialize(component);
+                                if (componentToAdd != nullptr)
+                                    serializedObject->addCopyOfExistingComponent<System::Component>(componentToAdd);
+                            }
+
                         }
                         catch(const std::exception& e)
                         {
