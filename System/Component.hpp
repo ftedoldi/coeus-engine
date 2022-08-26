@@ -4,6 +4,7 @@
 #include <SceneObject.hpp>
 #include <Transform.hpp>
 
+#include <yaml-cpp/yaml.h>
 #include <rttr/registration>
 
 #include <string>
@@ -11,11 +12,13 @@
 #include <ctime>
 
 namespace System {
-
     class Component {
         protected:
             int _uniqueID = 0;
             short _orderOfExecution = 0;
+
+            int _editorTextureID = 0;
+            bool _hasEditorTexture = false;
 
         public:
             Odysseus::SceneObject* sceneObject;
@@ -30,8 +33,25 @@ namespace System {
 
             virtual std::string toString() = 0;
 
+            // ----------------------------------- Serializable Class Fields ------------------------------------ //
+            int getEditorTextureID() { return _editorTextureID; }
+            bool hasEditorTexture() { return _hasEditorTexture; }
+
+            virtual void showComponentFieldsInEditor() {}
+
+            virtual void serialize(YAML::Emitter& out) {}
+            virtual System::Component* deserialize(YAML::Node& node) { return nullptr; }
+            // ------------------------------------------------------------------------------------------------- //
+
             virtual ~Component() {}
+
+            RTTR_ENABLE();
     };
+
+    RTTR_REGISTRATION
+    {
+        rttr::registration::class_<Component>("Component");
+    }
 }
 
 
