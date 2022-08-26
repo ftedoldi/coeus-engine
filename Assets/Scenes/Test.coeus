@@ -1,0 +1,332 @@
+Scene: Start Scene
+Scene Objects:
+  - Scene Object ID: 4378185362015283921
+    Transform:
+      Name: SceneObj1
+      Position:
+        X: 0
+        Y: 0
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+      Children Scene Objects:
+        - 13344284741016946098
+    Components:
+      - Component: ModelBase
+        Model:
+          Path: Assets/Models/PBRsphere/PBRsphere.obj
+          PBR: false
+          Vertex Shader: .\Shader\phongShader.vert
+          Fragment Shader: .\Shader\phongShader.frag
+  - Scene Object ID: 16961462977533525045
+    Transform:
+      Name: SceneObj3
+      Position:
+        X: 2.43985844
+        Y: 5.19256783
+        Z: 2.43985844
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: PointLight
+        PointLight:
+          Constant: 1
+          Linear: 0.0900000036
+          Quadratic: 0.0320000015
+          Diffuse:
+            X: 0.800000012
+            Y: 0.800000012
+            Z: 0.800000012
+          Ambient:
+            X: 0.200000003
+            Y: 0.200000003
+            Z: 0.200000003
+          Specular:
+            X: 0.300000012
+            Y: 0.300000012
+            Z: 0.300000012
+          Vertex Shader Path: .\Shader\phongShader.vert
+          Fragment Shader Path: .\Shader\phongShader.frag
+  - Scene Object ID: 15637199354414536701
+    Transform:
+      Name: SceneObj4
+      Position:
+        X: -6.99582672
+        Y: 6.72266817
+        Z: -6.99582672
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: DirectionalLight
+        DirectionalLight:
+          Direction:
+            X: 0
+            Y: -1
+            Z: 0
+          Diffuse:
+            X: 0.5
+            Y: 0.5
+            Z: 0.5
+          Ambient:
+            X: 0.200000003
+            Y: 0.200000003
+            Z: 0.200000003
+          Specular:
+            X: 0.5
+            Y: 0.5
+            Z: 0.5
+          Vertex Shader Path: .\Shader\phongShader.vert
+          Fragment Shader Path: .\Shader\phongShader.frag
+  - Scene Object ID: 7292084055544433658
+    Transform:
+      Name: SceneObj5
+      Position:
+        X: -3.55127263
+        Y: 4.15697098
+        Z: -3.55127263
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: SpotLight
+        SpotLight:
+          Diffuse:
+            Red: 0.5
+            Green: 0.5
+            Blue: 0.5
+          Ambient:
+            Red: 0
+            Green: 0
+            Blue: 0
+          Specular:
+            Red: 0
+            Green: 0
+            Blue: 0
+          Direction:
+            X: 0.577350259
+            Y: 0.577350259
+            Z: 0.577350259
+          Spot Exponent: 0.100000001
+          CutOff: 0.100000001
+          Vertex Shader Path: .\Shader\phongShader.vert
+          Fragment Shader Path: .\Shader\phongShader.frag
+  - Scene Object ID: 8122914817959171935
+    Transform:
+      Name: SceneObj6
+      Position:
+        X: 0
+        Y: 0
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+      Children Scene Objects:
+        - 10795855627789302503
+        - 5918823721954029093
+        - 3492498275203731219
+        - 15148767123431221526
+        - 6314483167716812192
+        - 8707643749138314036
+        - 11263631527959317841
+    Components:
+      - Component: ModelBase
+        Model:
+          Path: Assets/Models/testFiles/posCubesColored.gltf
+          PBR: false
+          Vertex Shader: .\Shader\phongShader.vert
+          Fragment Shader: .\Shader\phongShader.frag
+  - Scene Object ID: 5918823721954029093
+    Transform:
+      Name: SceneObj8
+      Position:
+        X: 0
+        Y: 0
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+      Parent Scene Object: 8122914817959171935
+  - Scene Object ID: 3492498275203731219
+    Transform:
+      Name: SceneObj9
+      Position:
+        X: 0
+        Y: 0
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+      Parent Scene Object: 8122914817959171935
+  - Scene Object ID: 14116832676141000431
+    Transform:
+      Name: SceneObj14
+      Position:
+        X: 0
+        Y: 0
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+      Children Scene Objects:
+        - 11434639426837846610
+        - 17256241145993980986
+        - 3958245568055842648
+        - 8802822570176514264
+        - 2606077905226139901
+        - 11877457873289029433
+    Components:
+      - Component: ModelBase
+        Model:
+          Path: Assets/Models/matAndTex/matAndTex.obj
+          PBR: false
+          Vertex Shader: .\Shader\phongShader.vert
+          Fragment Shader: .\Shader\phongShader.frag
+  - Scene Object ID: 8754901149741182942
+    Transform:
+      Name: SceneObj21
+      Position:
+        X: -4.72364569
+        Y: 4.18686676
+        Z: -4.72364569
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: DirectionalLight
+        DirectionalLight:
+          Direction:
+            X: 0.577350259
+            Y: 0.577350259
+            Z: 0.577350259
+          Diffuse:
+            X: 0.5
+            Y: 0.5
+            Z: 0.5
+          Ambient:
+            X: 0
+            Y: 0
+            Z: 0
+          Specular:
+            X: 0
+            Y: 0
+            Z: 0
+          Vertex Shader Path: .\Shader\phongShader.vert
+          Fragment Shader Path: .\Shader\phongShader.frag
+  - Scene Object ID: 17782837585363037712
+    Transform:
+      Name: SceneObj22
+      Position:
+        X: -4.25807238
+        Y: 2.40307188
+        Z: -4.25807238
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: DummyComponent
+        DummyComponent:
+          asd: 15
+          var: 14
