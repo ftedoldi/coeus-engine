@@ -3,6 +3,8 @@
 
 #include <Component.hpp>
 
+#include <SerializableClass.hpp>
+
 #include <Vector3.hpp>
 #include <Shader.hpp>
 

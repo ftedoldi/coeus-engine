@@ -3,6 +3,8 @@
 
 #include <Component.hpp>
 
+#include <SerializableClass.hpp>
+
 #include <coeus.hpp>
 #include <vector>
 
@@ -45,6 +47,8 @@ namespace Odysseus
             Athena::Vector3 _Front;
             Athena::Vector3 _Right;
             Athena::Vector3 _Up;
+
+        SERIALIZABLE_CLASS(System::Component);
     };
 }
 #endif

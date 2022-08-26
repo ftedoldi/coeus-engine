@@ -27,6 +27,11 @@ namespace Odysseus
 
             virtual std::string toString();
 
+            virtual void showComponentFieldsInEditor();
+
+            virtual void serialize(YAML::Emitter& out);
+            virtual System::Component* deserialize(YAML::Node& node);
+
             void setPosition(Athena::Vector3& position);
             void setDirection(Athena::Vector3& direction);
             void setCutOff(float cutOff);
@@ -34,6 +39,7 @@ namespace Odysseus
 
             void setLightShader(Odysseus::Shader* shader) const;
 
+            SERIALIZABLE_CLASS(System::Component, Light);
     };
 }
 

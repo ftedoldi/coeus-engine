@@ -2,6 +2,9 @@
 #define MESH_HPP
 
 #include <Component.hpp>
+
+#include <SerializableClass.hpp>
+
 #include <coeus.hpp>
 #include <Shader.hpp>
 #include "../Texture/Texture2D.hpp"
@@ -14,10 +17,6 @@
 #include <vector>
 #include <random>
 
-// namespace System {
-//     class Component;
-// }
-
 namespace Odysseus
 {
     class EditorCamera;
@@ -29,7 +28,7 @@ namespace Odysseus
         Athena::Vector2 TexCoords;
         Athena::Vector3 Tangent;
     };
-    
+
     class Mesh : public System::Component
     {
     public:
@@ -38,30 +37,29 @@ namespace Odysseus
         PhongMaterial phongMaterial;
         PhysicsMaterial physicsMaterial;
 
-        Shader* shader;
+        Shader *shader;
         GLuint VAO;
 
         Mesh();
         ~Mesh() noexcept;
 
-        void setVertices(std::vector<Vertex>& vertices);
-        void setIndices(std::vector<GLuint>& indices);
-        void setPhongMaterial(PhongMaterial& mat);
-        void setPhysicsMaterial(PhysicsMaterial& mat);
-        void setShader(Shader* shader);
+        void setVertices(std::vector<Vertex> &vertices);
+        void setIndices(std::vector<GLuint> &indices);
+        void setPhongMaterial(PhongMaterial &mat);
+        void setPhysicsMaterial(PhysicsMaterial &mat);
+        void setShader(Shader *shader);
         void setIfPBR(bool isPBR);
 
         virtual void start();
         virtual void update();
 
-        virtual void setOrderOfExecution(const short& newOrderOfExecution);
+        virtual void setOrderOfExecution(const short &newOrderOfExecution);
 
         virtual int getUniqueID();
 
         virtual std::string toString();
 
     private:
-
         GLuint VBO, EBO;
 
         bool hasTexture;
@@ -69,11 +67,12 @@ namespace Odysseus
 
         float _uniqueFloatID;
 
-        //Inizialize VAO, VBO, EBO
+        // Inizialize VAO, VBO, EBO
         void setupMesh();
 
         void freeGPUresources();
 
+        // SERIALIZABLE_CLASS(System::Component);
     };
 }
 #endif

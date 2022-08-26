@@ -32,4 +32,8 @@ namespace Odysseus
         return "ModelBase";
     }
 
+    // SERIALIZE_CLASS
+    // {
+    //     System::SerializableClass::registerClass<ModelBase>();
+    // }
 }

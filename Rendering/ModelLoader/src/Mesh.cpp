@@ -229,4 +229,9 @@ namespace Odysseus
             glDeleteBuffers(1, &this->EBO);
         }
     }
+
+    // SERIALIZE_CLASS
+    // {
+    //     System::SerializableClass::registerClass<Mesh>();
+    // }
 }

@@ -3,6 +3,8 @@
 
 #include <Component.hpp>
 
+#include <SerializableClass.hpp>
+
 #include <string>
 
 namespace Odysseus
@@ -30,6 +32,8 @@ namespace Odysseus
             virtual std::string toString();
 
             virtual ~ModelBase() {}
+
+            // SERIALIZABLE_CLASS(System::Component);
     };
 } // namespace Odysseus
 
