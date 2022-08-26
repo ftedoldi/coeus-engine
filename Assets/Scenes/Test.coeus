@@ -1,6 +1,6 @@
 Scene: Start Scene
 Scene Objects:
-  - Scene Object ID: 4378185362015283921
+  - Scene Object ID: 13137575373119779653
     Transform:
       Name: SceneObj1
       Position:
@@ -21,7 +21,7 @@ Scene Objects:
         Y: 1
         Z: 1
       Children Scene Objects:
-        - 13344284741016946098
+        - 13995360316992605991
     Components:
       - Component: ModelBase
         Model:
@@ -134,7 +134,7 @@ Scene Objects:
       - Component: SpotLight
         SpotLight:
           Diffuse:
-            Red: 0.5
+            Red: 0.600000024
             Green: 0.5
             Blue: 0.5
           Ambient:
@@ -153,7 +153,7 @@ Scene Objects:
           CutOff: 0.100000001
           Vertex Shader Path: .\Shader\phongShader.vert
           Fragment Shader Path: .\Shader\phongShader.frag
-  - Scene Object ID: 8122914817959171935
+  - Scene Object ID: 13573113875052147287
     Transform:
       Name: SceneObj6
       Position:
@@ -174,13 +174,13 @@ Scene Objects:
         Y: 1
         Z: 1
       Children Scene Objects:
-        - 10795855627789302503
-        - 5918823721954029093
-        - 3492498275203731219
-        - 15148767123431221526
-        - 6314483167716812192
-        - 8707643749138314036
-        - 11263631527959317841
+        - 4384551639321901643
+        - 7030274025219834452
+        - 18289377891368109184
+        - 13382588270190873740
+        - 15849104849665741047
+        - 2404338124785706188
+        - 7707802115856188176
     Components:
       - Component: ModelBase
         Model:
@@ -188,7 +188,7 @@ Scene Objects:
           PBR: false
           Vertex Shader: .\Shader\phongShader.vert
           Fragment Shader: .\Shader\phongShader.frag
-  - Scene Object ID: 5918823721954029093
+  - Scene Object ID: 7030274025219834452
     Transform:
       Name: SceneObj8
       Position:
@@ -208,8 +208,8 @@ Scene Objects:
         X: 1
         Y: 1
         Z: 1
-      Parent Scene Object: 8122914817959171935
-  - Scene Object ID: 3492498275203731219
+      Parent Scene Object: 13573113875052147287
+  - Scene Object ID: 18289377891368109184
     Transform:
       Name: SceneObj9
       Position:
@@ -229,8 +229,8 @@ Scene Objects:
         X: 1
         Y: 1
         Z: 1
-      Parent Scene Object: 8122914817959171935
-  - Scene Object ID: 14116832676141000431
+      Parent Scene Object: 13573113875052147287
+  - Scene Object ID: 17439439063013694821
     Transform:
       Name: SceneObj14
       Position:
@@ -251,12 +251,12 @@ Scene Objects:
         Y: 1
         Z: 1
       Children Scene Objects:
-        - 11434639426837846610
-        - 17256241145993980986
-        - 3958245568055842648
-        - 8802822570176514264
-        - 2606077905226139901
-        - 11877457873289029433
+        - 8079798949579657971
+        - 5162355872435777573
+        - 11740238031879237517
+        - 16761037245495184611
+        - 11887855507854552429
+        - 15237531222345599933
     Components:
       - Component: ModelBase
         Model:
