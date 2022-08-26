@@ -3,6 +3,8 @@
 #include <EditorCamera.hpp>
 #include <Transform.hpp>
 
+#include <SerializableClass.hpp>
+
 #include <PointLight.hpp>
 #include <SpotLight.hpp>
 #include <DirectionalLight.hpp>
@@ -664,8 +666,12 @@ namespace System {
                 ImGui::InputFloat3("Scale", scale);
                 this->transformToShow->localScale = Athena::Vector3(scale[0], scale[1], scale[2]);
 
+                // TODO: Do this for every component
+                // TODO: Show components serializable fields with protocol buffers
                 ImGui::Separator();
                 for (int i = 0; i < this->inspectorParams.size(); i++) {
+                    #pragma warning(push)
+                    #pragma warning(disable : 4312)
                     if (this->inspectorParams[i]->toString() == "PointLight")
                     {
                         ImGui::Image((ImTextureID)this->buttonImages.pointLightTextureID, {12, 12});
@@ -686,12 +692,15 @@ namespace System {
                         ImGui::Image((ImTextureID)this->buttonImages.areaLightTextureID, {12, 12});
                         ImGui::SameLine();
                     }
+                    #pragma warning(pop)
 
                     ImGui::Text(this->inspectorParams[i]->toString().c_str());
                     ImGui::SameLine(ImGui::GetContentRegionAvail().x - 12);
                     ImGui::PushStyleColor(ImGuiCol_Button, {0, 0, 0, 0});
                     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, {0, 0, 0, 0});
                     ImGui::PushStyleColor(ImGuiCol_ButtonActive, {0, 0, 0, 0});
+                    #pragma warning(push)
+                    #pragma warning(disable : 4312)
                     auto shouldDelete = ImGui::ImageButtonEx(
                                 12345,
                                 (ImTextureID)buttonImages.removeComponentTextureID, 
@@ -702,6 +711,8 @@ namespace System {
                                 { 0, 0, 0, 0 },
                                 { 1, 1, 1, 1 }
                         );
+                    #pragma warning(pop)
+                    this->inspectorParams[i]->showComponentFieldsInEditor();
                     ImGui::PopStyleColor(3);
                     ImGui::Separator();
 
@@ -731,6 +742,8 @@ namespace System {
 
                 if (isAddComponentOpen)
                 {
+                    #pragma warning(push)
+                    #pragma warning(disable : 4312)
                     if (ImGui::BeginPopup("Component Popup"))
                     {
                         auto pLight = ImGui::Selectable("##title");
@@ -742,18 +755,6 @@ namespace System {
                         if (pLight)
                         {
                             auto tmp = this->transformToShow->sceneObject->addComponent<Odysseus::PointLight>();
-                            this->inspectorParams.push_back(tmp);
-                        }
-
-                        auto sLight = ImGui::Selectable("##title1");
-                        ImGui::SameLine();
-                        ImGui::Image((ImTextureID)this->buttonImages.spotLightTextureID, {12, 12});
-                        ImGui::SameLine();
-                        ImGui::Text("Spot Light");
-
-                        if (sLight)
-                        {
-                            auto tmp = this->transformToShow->sceneObject->addComponent<Odysseus::SpotLight>();
                             this->inspectorParams.push_back(tmp);
                         }
 
@@ -780,9 +781,36 @@ namespace System {
                             auto tmp = this->transformToShow->sceneObject->addComponent<Odysseus::AreaLight>();
                             this->inspectorParams.push_back(tmp);
                         }
+
+                        rttr::type componentType = rttr::type::get_by_name("Component");
+
+                        for (auto derived : componentType.get_derived_classes())
+                        {
+                            rttr::type t = rttr::type::get_by_name(derived.get_name());
+                            rttr::variant v = t.create();
+
+                            System::Component* newComponent = v.convert<System::Component*>();
+
+                            std::string derivedID("##title" + derived.get_name().to_string());
+                            auto componentSelectable = ImGui::Selectable(derivedID.c_str());
+                            if (newComponent->hasEditorTexture())
+                            {
+                                ImGui::SameLine();
+                                ImGui::Image((ImTextureID)newComponent->getEditorTextureID(), {12, 12});
+                            }
+                            ImGui::SameLine();
+                            ImGui::Text(derived.get_name().to_string().c_str());
+
+                            if (componentSelectable)
+                            {
+                                auto tmp = this->transformToShow->sceneObject->addCopyOfExistingComponent<System::Component>(newComponent);
+                                this->inspectorParams.push_back(tmp);
+                            }
+                        }
                         
                         ImGui::EndPopup();
                     }
+                    #pragma warning(pop)
                 }
             }
         ImGui::End();
