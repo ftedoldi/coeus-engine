@@ -101,7 +101,9 @@ $RECYCLE.BIN/
 *.lnk
 
 # Asset Folders
-Assets/
+Assets/Fonts/
+Assets/Import/
+Assets/Models/
 
 # Configuration Files
 *.ini
