@@ -117,6 +117,20 @@ namespace Odysseus {
         return false;
     }
 
+    bool SceneObject::removeComponentWithIndex(const int& index)
+     {
+        if (index < 0 || index >= _container->components.size())
+            return false;
+            
+        for (int i = 0; i < _container->components.size(); i++)
+            if (i == index) {
+                _container->_components.erase(_container->_components.begin() + i);
+                return true;
+            }
+
+        return false;
+    }
+
     bool SceneObject::operator == (const SceneObject& object) const
     {
         return object._container == this->_container;
