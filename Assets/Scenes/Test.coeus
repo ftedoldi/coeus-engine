@@ -1,4 +1,5 @@
 Scene: Start Scene
+Scene Path: ./Assets/Scenes/Test.coeus
 Scene Objects:
   - Scene Object ID: 16961462977533525045
     Transform:
@@ -460,9 +461,9 @@ Scene Objects:
     Transform:
       Name: SceneObj13
       Position:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 1.87017822
+        Y: 0.452485979
+        Z: 1.87017822
       Rotation:
         X: 0
         Y: 0
