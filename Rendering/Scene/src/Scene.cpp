@@ -1,16 +1,27 @@
 #include "../Scene.hpp"
 
+#include <iostream>
+#include <fstream>
+
 namespace Odysseus
 {
 
     Scene::Scene() : objectsInScene(_objectsInScene)
     {
-        name = "Sample Scene";
+        name = "EmptyScene";
+        this->path = "./Assets/Scenes/" + path;
     }
 
     Scene::Scene(const std::string& name) : objectsInScene(_objectsInScene)
     {
         this->name = name;
+        this->path = "./Assets/Scenes/" + name;
+    }
+
+    Scene::Scene(const std::string& path, const std::string& name) : objectsInScene(_objectsInScene)
+    {
+        this->name = name;
+        this->path = path;
     }
 
     void Scene::initialiseScene()

@@ -22,11 +22,14 @@ namespace Odysseus
         public:
             System::Editor* sceneEditor;
 
+            std::string path;
+
             std::string name;
             const std::vector<SceneObject*>& objectsInScene;
 
             Scene();
             Scene(const std::string& name);
+            Scene(const std::string& path, const std::string& name);
 
             bool deleteSceneObject(const int& i);
             bool deleteSceneObject(SceneObject* obj);
