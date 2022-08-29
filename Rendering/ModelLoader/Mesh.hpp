@@ -59,6 +59,13 @@ namespace Odysseus
 
         virtual std::string toString();
 
+        virtual void showComponentFieldsInEditor();
+
+        virtual void serialize(YAML::Emitter& out);
+        virtual System::Component* deserialize(YAML::Node& node);
+
+        SERIALIZABLE_CLASS(System::Component);
+
     private:
         GLuint VBO, EBO;
 
@@ -71,8 +78,6 @@ namespace Odysseus
         void setupMesh();
 
         void freeGPUresources();
-
-        // SERIALIZABLE_CLASS(System::Component);
     };
 }
 #endif
