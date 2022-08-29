@@ -164,8 +164,7 @@ namespace System::Serialize
 
                 for (auto sceneObject : Odysseus::SceneManager::activeScene->objectsInScene)
                 {
-                    if (sceneObject->getComponent<Odysseus::Mesh>() == nullptr)
-                        this->serializeSceneObject(out, *sceneObject);
+                    this->serializeSceneObject(out, *sceneObject);
                 }
 
             out << YAML::EndSeq;
@@ -174,6 +173,7 @@ namespace System::Serialize
 
         std::ofstream fout(filepath);
         fout << out.c_str();
+        fout.close();
     }
 
     void Serializer::serializeSceneObject(YAML::Emitter& out, const Odysseus::SceneObject& objectTosSerialize)
@@ -340,6 +340,13 @@ namespace System::Serialize
             auto eulerAnglesRotation = deserializeVector3(transformComponent["Euler Angles Rotation"]);
             auto scale = deserializeVector3(transformComponent["Scale"]);
             auto parent = transformComponent["Parent Scene Object"];
+
+            Odysseus::Transform* serializedTransofrm = new Odysseus::Transform(position, rotation, scale);
+            serializedTransofrm->name = name;
+            serializedTransofrm->eulerRotation = eulerAnglesRotation;
+            Odysseus::SceneObject* serializedObject = new Odysseus::SceneObject(*serializedTransofrm, ID);
+
+            objectsInScene[serializedObject->ID] = serializedObject;
             
             // TODO: Deserialize children only if they are not children of model
             auto components = obj["Components"];
@@ -352,95 +359,52 @@ namespace System::Serialize
                     if (model)
                         isModel = true;
                 }
-
-                if (!isModel)
+                
+                for (auto component : components)
                 {
-                    Odysseus::Transform* serializedTransofrm = new Odysseus::Transform(position, rotation, scale);
-                    serializedTransofrm->name = name;
-                    serializedTransofrm->eulerRotation = eulerAnglesRotation;
-                    Odysseus::SceneObject* serializedObject = new Odysseus::SceneObject(*serializedTransofrm, ID);
+                    auto name = component["Component"].as<std::string>();
 
-                    objectsInScene[serializedObject->ID] = serializedObject;
+                    if (name == "ModelBase")
+                        continue;
 
-                    for (auto component : components)
+                    std::cout << name << std::endl;
+
+                    rttr::type t = rttr::type::get_by_name(name);
+                    rttr::variant v = t.create();
+                    System::Component* c = v.convert<System::Component*>();
+
+                    try
                     {
-                        auto name = component["Component"].as<std::string>();
+                        auto componentToAdd = c->deserialize(component);
+                        if (componentToAdd != nullptr)
+                            serializedObject->addCopyOfExistingComponent<System::Component>(componentToAdd);
 
-                        rttr::type t = rttr::type::get_by_name(name);
-                        rttr::variant v = t.create();
-                        System::Component* c = v.convert<System::Component*>();
-
-                        try
-                        {
-                            auto componentToAdd = c->deserialize(component);
-                            if (componentToAdd != nullptr)
-                                serializedObject->addCopyOfExistingComponent<System::Component>(componentToAdd);
-
-                        }
-                        catch(const std::exception& e)
-                        {
-                            std::cerr << e.what() << '\n';
-                        }
-                        
                     }
-                }
-                else
-                {
-                    auto name = components[0]["Component"].as<std::string>();
+                    catch(const std::exception& e)
+                    {
+                        std::cerr << e.what() << '\n';
+                    }
                     
-                    auto model = components[0]["Model"];
-                    if (model)
-                    {
-                        auto vShaderPath = model["Vertex Shader"].as<std::string>();
-                        auto fShaderPath = model["Fragment Shader"].as<std::string>();
-
-                        Odysseus::Shader* shader = new Odysseus::Shader(vShaderPath.c_str(), fShaderPath.c_str());
-
-                        bool isPBR = model["PBR"].as<bool>();
-
-                        std::cout << "Is PBR: " << isPBR << std::endl;
-
-                        std::string modelPath = model["Path"].as<std::string>();
-
-                        Odysseus::Model model(modelPath, shader, isPBR);
-                    }
                 }
-            }
-            else if (!parent)
-            {
-                // TODO: Fix name deserialization issues
-                Odysseus::Transform* serializedTransofrm = new Odysseus::Transform(position, rotation, scale);
-                serializedTransofrm->name = name;
-                serializedTransofrm->eulerRotation = eulerAnglesRotation;
-                Odysseus::SceneObject* serializedObject = new Odysseus::SceneObject(*serializedTransofrm, ID);
-
-                objectsInScene[serializedObject->ID] = serializedObject;
             }
         }
 
-        // for (auto obj : sceneObjects)
-        // {
-        //     auto ID = obj["Scene Object ID"].as<std::uint64_t>();
-        //     auto transformComponent = obj["Transform"];
+        for (auto obj : sceneObjects)
+        {
+            auto ID = obj["Scene Object ID"].as<std::uint64_t>();
+            auto transformComponent = obj["Transform"];
 
-        //     std::cout << objectsInScene[ID]->transform->name;
+            if (objectsInScene[ID]->getComponent<Odysseus::ModelBase>() == nullptr)
+            {
+                auto parent = transformComponent["Parent Scene Object"];
+                if (parent)
+                {
+                    objectsInScene[ID]->transform->parent = objectsInScene[parent.as<std::uint64_t>()]->transform;
+                    objectsInScene[ID]->transform->parent->children.push_back(objectsInScene[ID]->transform);
+                }
+            }
 
-        //     if (objectsInScene[ID]->getComponent<Odysseus::ModelBase>() == nullptr)
-        //     {
-        //         auto parent = transformComponent["Parent Scene Object"];
-        //         if (parent)
-        //             objectsInScene[ID]->transform->parent = objectsInScene[parent.as<std::uint64_t>()]->transform;
-
-        //         auto children = transformComponent["Children Scene Objects"];
-        //         if (children)
-        //             for (auto c : children)
-        //             {
-        //                 auto childID = c.as<std::uint64_t>();
-        //                 objectsInScene[ID]->transform->children.push_back(objectsInScene[childID]->transform);
-        //             }
-        //     }
-
-        // }
+        }
 
         return true;
     }
