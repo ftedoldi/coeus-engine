@@ -674,7 +674,6 @@ namespace System {
                     }
                     #pragma warning(pop)
 
-                    // FIXME: Deletion works only on the first component - fix this and apply deletion for all components independently from order
                     ImGui::Text(this->inspectorParams[i]->toString().c_str());
                     ImGui::SameLine(ImGui::GetContentRegionAvail().x - 12);
                     ImGui::PushStyleColor(ImGuiCol_Button, {0, 0, 0, 0});
@@ -682,8 +681,8 @@ namespace System {
                     ImGui::PushStyleColor(ImGuiCol_ButtonActive, {0, 0, 0, 0});
                     #pragma warning(push)
                     #pragma warning(disable : 4312)
-                    auto shouldDelete = ImGui::ImageButtonEx(
-                                12345,
+                    bool shouldDeleteComponent = ImGui::ImageButtonEx(
+                                i + 1,
                                 (ImTextureID)buttonImages.removeComponentTextureID, 
                                 { 12, 12 },
                                 { 0, 0 },
@@ -697,9 +696,11 @@ namespace System {
                     ImGui::PopStyleColor(3);
                     ImGui::Separator();
 
-                    if (shouldDelete)
+                    if (shouldDeleteComponent)
                     {
-                        this->transformToShow->sceneObject->removeComponentWithName(this->inspectorParams[i]->toString());
+                        std::cout << "Deleting: " << this->inspectorParams[i]->toString() << std::endl;
+                        this->transformToShow->sceneObject->removeComponentWithIndex(i);
+                        this->loadInspectorParameters(this->transformToShow);
                     }
                 }
 
