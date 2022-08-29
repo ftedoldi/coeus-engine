@@ -63,7 +63,19 @@ int main()
     // Where all the starts are runned
     System::Window* window = new System::Window("myWindow");
 
-    serializer.deserialize("./Assets/Scenes/Test.coeus");
+    std::ifstream stream("./Assets/projectSettings.coeus");
+    std::stringstream strStream;
+    strStream << stream.rdbuf();
+
+    YAML::Node data = YAML::Load(strStream.str());
+    std::string scenePathToLoad;
+
+    if (!data["Default Scene"] || !std::filesystem::exists(data["Default Scene"].as<std::string>()))
+        scenePathToLoad = "./Assets/Scenes/EmptyScene.coeus";
+    else
+        scenePathToLoad = data["Default Scene"].as<std::string>();
+
+    serializer.deserialize(scenePathToLoad);
 
     // Odysseus::Scene* startScene = new Odysseus::Scene(std::string("Start Scene"));
     // Odysseus::SceneManager::addScene(startScene);
@@ -182,7 +194,7 @@ int main()
         window->update();
     }
 
-    serializer.serialize("Assets/Scenes/Test.coeus");
+    serializer.serialize(Odysseus::SceneManager::activeScene->path);
 
     delete window;
     return 0;
