@@ -159,6 +159,7 @@ namespace System::Serialize
 
         out << YAML::BeginMap; // Begin map
             out << YAML::Key << "Scene" << YAML::Value << Odysseus::SceneManager::activeScene->name;
+            out << YAML::Key << "Scene Path" << YAML::Value << Odysseus::SceneManager::activeScene->path;
             out << YAML::Key << "Scene Objects" << YAML::Value;
             out << YAML::BeginSeq; // Begin sequence of values
 
@@ -310,9 +311,10 @@ namespace System::Serialize
             return false;
 
         std::string sceneName = data["Scene"].as<std::string>();
+        std::string scenePath = data["Scene Path"].as<std::string>();
         std::cout << "Deserializing scene: " << sceneName << std::endl;
 
-        Odysseus::Scene* deserializedScene = new Odysseus::Scene(sceneName);
+        Odysseus::Scene* deserializedScene = new Odysseus::Scene(scenePath, sceneName);
         Odysseus::SceneManager::addScene(deserializedScene);
         std::cout << Odysseus::SceneManager::setActiveScene(0) << std::endl;
         std::cout << "Scene Name: " << Odysseus::SceneManager::activeScene->name << std::endl;
