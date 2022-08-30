@@ -8,8 +8,8 @@ namespace Odysseus
 
     EditorCamera::EditorCamera() : Front(_Front), Right(_Right), Up(_Up)
     {
-        if (EditorCamera::_hasAlreadyAnInstance)
-            throw std::invalid_argument("An EditorCamera was already instanced!");
+        // if (EditorCamera::_hasAlreadyAnInstance)
+        //     throw std::invalid_argument("An EditorCamera was already instanced!");
 
         _Front = Athena::Vector3(0, 0, -1);
         _Right = Athena::Vector3::right();
