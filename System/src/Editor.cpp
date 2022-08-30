@@ -14,5 +14,6 @@ namespace System
         this->editorCamera = editorCameraObject->addComponent<Odysseus::EditorCamera>();
         auto cameraMovement = editorCameraObject->addComponent<EditorCameraMovement>();
         cameraMovement->editorCamera = editorCamera;
+        editorCameraObject->showInEditor = false;
     }
 } // namespace System
