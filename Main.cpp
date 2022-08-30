@@ -63,7 +63,7 @@ int main()
     // Where all the starts are runned
     System::Window* window = new System::Window("myWindow");
 
-    std::ifstream stream("./Assets/projectSettings.coeus");
+    std::ifstream stream("./Assets/projectSettings.meta");
     std::stringstream strStream;
     strStream << stream.rdbuf();
 
@@ -75,7 +75,7 @@ int main()
     else
         scenePathToLoad = data["Default Scene"].as<std::string>();
 
-    serializer.deserialize(scenePathToLoad);
+    serializer.deserialize(scenePathToLoad);    
 
     // Odysseus::Scene* startScene = new Odysseus::Scene(std::string("Start Scene"));
     // Odysseus::SceneManager::addScene(startScene);
