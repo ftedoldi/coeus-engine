@@ -845,6 +845,9 @@ namespace System {
                     
                     System::Serialize::Serializer serializer = System::Serialize::Serializer();
 
+                    this->inspectorParams.clear();
+                    this->transformToShow = nullptr;
+
                     serializer.deserialize(pathToLoad);
                 }
                 else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MODEL_FILE"))
@@ -1194,6 +1197,9 @@ namespace System {
                             if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                             {
                                 System::Serialize::Serializer serializer = System::Serialize::Serializer();
+
+                                this->inspectorParams.clear();
+                                this->transformToShow = nullptr;
 
                                 serializer.deserialize(path.string());
                             }
