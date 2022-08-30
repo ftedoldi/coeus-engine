@@ -3,7 +3,7 @@ Scene Path: ./Assets/Scenes/EmptyScene.coeus
 Scene Objects:
   - Scene Object ID: 5228180916899197899
     Transform:
-      Name: Scene Object
+      Name: SceneObj1
       Position:
         X: -0.336086392
         Y: 3.30950165

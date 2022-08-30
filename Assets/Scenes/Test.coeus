@@ -504,9 +504,9 @@ Scene Objects:
     Transform:
       Name: SceneObj14
       Position:
-        X: 0
-        Y: 0
-        Z: 0
+        X: -0.168037713
+        Y: -0.504115224
+        Z: -0.168037713
       Rotation:
         X: 0
         Y: 0
