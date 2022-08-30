@@ -302,6 +302,9 @@ namespace System::Serialize
 
     bool Serializer::deserialize(const std::string& filepath)
     {
+        if (Odysseus::SceneManager::activeScene != nullptr)
+            serialize(Odysseus::SceneManager::activeScene->path);
+
         std::ifstream stream(filepath);
         std::stringstream strStream;
         strStream << stream.rdbuf();
