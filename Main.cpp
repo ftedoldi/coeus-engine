@@ -61,7 +61,7 @@ int main()
     System::Serialize::Serializer serializer = System::Serialize::Serializer();
 
     // Where all the starts are runned
-    System::Window* window = new System::Window("myWindow");
+    System::Window* window = new System::Window("Coeus Engine");
 
     std::ifstream stream("./Assets/projectSettings.meta");
     std::stringstream strStream;
