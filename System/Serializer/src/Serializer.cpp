@@ -314,13 +314,21 @@ namespace System::Serialize
         std::string scenePath = data["Scene Path"].as<std::string>();
         std::cout << "Deserializing scene: " << sceneName << std::endl;
 
-        Odysseus::Scene* deserializedScene = new Odysseus::Scene(scenePath, sceneName);
-        Odysseus::SceneManager::addScene(deserializedScene);
-        std::cout << Odysseus::SceneManager::setActiveScene(0) << std::endl;
-        std::cout << "Scene Name: " << Odysseus::SceneManager::activeScene->name << std::endl;
-
-        Editor* editor = new Editor();
-        Odysseus::SceneManager::activeScene->sceneEditor = editor;
+        try
+        {
+                Odysseus::Scene* deserializedScene = new Odysseus::Scene(scenePath, sceneName);
+                Odysseus::SceneManager::addScene(deserializedScene);
+                Odysseus::SceneManager::activeScene = deserializedScene;
+                Editor* editor = new Editor();
+                Odysseus::SceneManager::activeScene->sceneEditor = editor;
+                std::cout << "Scene Name: " << Odysseus::SceneManager::activeScene->name << std::endl;
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+        }
+        
+        // TODO: Fix bug of swapping scenes
 
         auto sceneObjects = data["Scene Objects"];
         if (!sceneObjects)
@@ -408,6 +416,7 @@ namespace System::Serialize
 
         }
 
+        Odysseus::SceneManager::initializeActiveScene();
         return true;
     }
 
