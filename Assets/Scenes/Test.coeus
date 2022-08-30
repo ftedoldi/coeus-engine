@@ -257,9 +257,9 @@ Scene Objects:
     Transform:
       Name: SceneObj8
       Position:
-        X: -2.25656033
-        Y: -0.550701499
-        Z: -2.25656033
+        X: -4.53792763
+        Y: 0.683480144
+        Z: -4.53792763
       Rotation:
         X: 0
         Y: 0

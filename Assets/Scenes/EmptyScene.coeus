@@ -1,4 +1,47 @@
 Scene: Start Scene
 Scene Path: ./Assets/Scenes/EmptyScene.coeus
 Scene Objects:
-  []
+  - Scene Object ID: 5228180916899197899
+    Transform:
+      Name: Scene Object
+      Position:
+        X: -0.336086392
+        Y: 3.30950165
+        Z: -0.336086392
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: DummyComponent
+        DummyComponent:
+          asd: 0
+          var: 13
+      - Component: PointLight
+        PointLight:
+          Diffuse:
+            Red: 0.5
+            Green: 0.5
+            Blue: 0.5
+          Ambient:
+            Red: 0
+            Green: 0
+            Blue: 0
+          Specular:
+            Red: 0
+            Green: 0
+            Blue: 0
+          Constant: 0.100000001
+          Linear: 0.100000001
+          Quadratic: 0.100000001
+          Vertex Shader Path: .\Shader\phongShader.vert
+          Fragment Shader Path: .\Shader\phongShader.frag
