@@ -61,6 +61,7 @@ namespace System {
         int areaLightTextureID;
         int removeComponentTextureID;
         int sceneTextureID;
+        int modelTextureID;
     };
 
     class Dockspace {

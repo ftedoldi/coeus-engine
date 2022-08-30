@@ -3,6 +3,8 @@
 #include <EditorCamera.hpp>
 #include <Transform.hpp>
 
+#include <Model.hpp>
+
 #include <SerializableClass.hpp>
 
 #include <Serializer/Serializer.hpp>
@@ -90,6 +92,10 @@ namespace System {
                                                                                 ).ID;
         buttonImages.sceneTextureID = Odysseus::Texture2D::loadTextureFromFile(
                                                                                     (Folder::getFolderPath("Icons").string() + "/scene.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.modelTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/model.png").c_str(), 
                                                                                     true
                                                                                 ).ID;
     }
@@ -296,9 +302,10 @@ namespace System {
             if (ImGui::BeginMenuBar())
             {
                 ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Menu bar background color
-                if (ImGui::BeginMenu("Options"))
+                if (ImGui::BeginMenu("File"))
                 {
-                    // ImGui::MenuItem("Padding", NULL, &opt_padding);
+                    ImGui::MenuItem("New Scene...");
+                    ImGui::MenuItem("Open Scene...");
                     ImGui::Separator();
 
                     // if (ImGui::MenuItem("Flag: NoSplit",                "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0))                 
@@ -840,6 +847,13 @@ namespace System {
 
                     serializer.deserialize(pathToLoad);
                 }
+                else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MODEL_FILE"))
+                {
+                    const char* pathToLoad = static_cast<const char*>(payload->Data);
+                    Odysseus::Shader* modelShader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
+                    Odysseus::Model myModel(pathToLoad, modelShader, false);
+                    Odysseus::SceneManager::initializeActiveScene();
+                }
 
                 ImGui::EndDragDropTarget();
             }
@@ -1190,14 +1204,46 @@ namespace System {
 
                             if (ImGui::BeginDragDropSource())
                             {
-                                // std::cout << currentPath.c_str() << std::endl;
-                                // std::cout << currentPath.size() + 8 << std::endl;
                                 ImGui::SetDragDropPayload("SCENE_FILE", currentPath.c_str(), (strlen(currentPath.c_str()) + 1) * sizeof(char));
                                 ImGui::EndDragDropSource();
                             }
                             else
                                 currentPath = "";
 
+                        }
+                        else if (lowercaseFilenameString.find(".obj") != std::string::npos || lowercaseFilenameString.find(".fbx") != std::string::npos)
+                        {
+                            #pragma warning(push)
+                            #pragma warning(disable : 4312)                
+                            ImGui::ImageButton(
+                                                    (ImTextureID)buttonImages.modelTextureID, 
+                                                    { thumbnailSize, thumbnailSize },
+                                                    { 0, 0 },
+                                                    { 1, 1 },
+                                                    10,
+                                                    { 0, 0, 0, 0 },
+                                                    { 1, 1, 1, 1 }
+                                                );
+                            #pragma warning(pop)
+
+                            static std::string currentPath("");
+                            if (ImGui::IsItemHovered())
+                                currentPath = path.string();
+                            
+                            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+                            {
+                                Odysseus::Shader* modelShader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
+                                Odysseus::Model myModel(path.string(), modelShader, false);
+                                Odysseus::SceneManager::initializeActiveScene();
+                            }
+
+                            if (ImGui::BeginDragDropSource())
+                            {
+                                ImGui::SetDragDropPayload("MODEL_FILE", currentPath.c_str(), (strlen(currentPath.c_str()) + 1) * sizeof(char));
+                                ImGui::EndDragDropSource();
+                            }
+                            else
+                                currentPath = "";
                         }
                         else
                         {
