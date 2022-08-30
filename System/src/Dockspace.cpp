@@ -5,6 +5,8 @@
 
 #include <SerializableClass.hpp>
 
+#include <Serializer/Serializer.hpp>
+
 namespace System {
 
     Dockspace::Dockspace()
@@ -84,6 +86,10 @@ namespace System {
                                                                                 ).ID;
         buttonImages.removeComponentTextureID = Odysseus::Texture2D::loadTextureFromFile(
                                                                                     (Folder::getFolderPath("Icons").string() + "/remove.png").c_str(), 
+                                                                                    true
+                                                                                ).ID;
+        buttonImages.sceneTextureID = Odysseus::Texture2D::loadTextureFromFile(
+                                                                                    (Folder::getFolderPath("Icons").string() + "/scene.png").c_str(), 
                                                                                     true
                                                                                 ).ID;
     }
@@ -823,6 +829,20 @@ namespace System {
                     this->createObjectsGUIZMO();
 
             ImGui::EndChild();
+
+            if (ImGui::BeginDragDropTarget())
+            {
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCENE_FILE"))
+                {
+                    const char* pathToLoad = static_cast<const char*>(payload->Data);
+                    
+                    System::Serialize::Serializer serializer = System::Serialize::Serializer();
+
+                    serializer.deserialize(pathToLoad);
+                }
+
+                ImGui::EndDragDropTarget();
+            }
         ImGui::End();
     }
     
@@ -1137,23 +1157,67 @@ namespace System {
                         }
                     }
                     else if (lowercaseFilenameString.find(filterContent) != std::string::npos){
-
-                        #pragma warning(push)
-                        #pragma warning(disable : 4312)                
-                        ImGui::ImageButtonEx(
-                                                    UUID(),
-                                                    (ImTextureID)buttonImages.documentTextureID, 
-                                                    { thumbnailSize, thumbnailSize },
-                                                    { 0, 0 },
-                                                    { 1, 1 },
-                                                    { 10, 10 },
-                                                    { 0, 0, 0, 0 },
-                                                    { 1, 1, 1, 1 }
-                                            );
-                        #pragma warning(pop)
                         
-                        if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-                            system(path.string().c_str());
+                        if (lowercaseFilenameString.find(".coeus") != std::string::npos)
+                        {
+                            #pragma warning(push)
+                            #pragma warning(disable : 4312)                
+                            ImGui::ImageButton(
+                                                        (ImTextureID)buttonImages.sceneTextureID, 
+                                                        { thumbnailSize, thumbnailSize },
+                                                        { 0, 0 },
+                                                        { 1, 1 },
+                                                        10,
+                                                        { 0, 0, 0, 0 },
+                                                        { 1, 1, 1, 1 }
+                                                );
+                            #pragma warning(pop)
+
+                            ImGuiWindow* window = ImGui::GetCurrentWindow();
+                            ImGui::ButtonBehavior(ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax()), ImGui::GetItemID(), NULL, NULL, 
+                             ImGuiButtonFlags_MouseButtonMiddle | ImGuiButtonFlags_MouseButtonRight | ImGuiButtonFlags_MouseButtonLeft);
+
+                            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+                            {
+                                System::Serialize::Serializer serializer = System::Serialize::Serializer();
+
+                                serializer.deserialize(path.string());
+                            }
+
+                            static std::string currentPath("");
+                            if (ImGui::IsItemHovered())
+                                currentPath = path.string();
+
+                            if (ImGui::BeginDragDropSource())
+                            {
+                                // std::cout << currentPath.c_str() << std::endl;
+                                // std::cout << currentPath.size() + 8 << std::endl;
+                                ImGui::SetDragDropPayload("SCENE_FILE", currentPath.c_str(), (strlen(currentPath.c_str()) + 1) * sizeof(char));
+                                ImGui::EndDragDropSource();
+                            }
+                            else
+                                currentPath = "";
+
+                        }
+                        else
+                        {
+                            #pragma warning(push)
+                            #pragma warning(disable : 4312)                
+                            ImGui::ImageButtonEx(
+                                                        UUID(),
+                                                        (ImTextureID)buttonImages.documentTextureID, 
+                                                        { thumbnailSize, thumbnailSize },
+                                                        { 0, 0 },
+                                                        { 1, 1 },
+                                                        { 10, 10 },
+                                                        { 0, 0, 0, 0 },
+                                                        { 1, 1, 1, 1 }
+                                                );
+                            #pragma warning(pop)
+                            
+                            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+                                system(path.string().c_str());
+                        }
                     }
                     ImGui::PopStyleColor(2);
 
