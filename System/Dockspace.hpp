@@ -107,6 +107,12 @@ namespace System {
             void dfsOverChildren(Odysseus::Transform* childrenTransform, int index = 1);
             int countNestedChildren(Odysseus::Transform* childrenTransform);
             void loadInspectorParameters(Odysseus::Transform* transformToAnalyze);
+            void initializeShortcutActions();
+            void saveSceneToSourceFile();
+            void saveSceneViaFileDialog();
+            void openSceneViaFileDialog();
+            void openNewSceneViaFileDialog();
+            void openNewScene();
 
             void initializeButtonImageTextures();
 

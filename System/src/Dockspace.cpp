@@ -9,6 +9,12 @@
 
 #include <Serializer/Serializer.hpp>
 
+#include <Utils/WindowUtils.hpp>
+
+#include <regex>
+
+// TODO: Refactor all of this
+// TODO: Implement file cancellation within the editor
 namespace System {
 
     Dockspace::Dockspace()
@@ -263,7 +269,7 @@ namespace System {
 
         createHierarchyWindow();
         createConsoleWindow();
-        createContentBrowser(); // TODO: find texture icons and add these icons over textures
+        createContentBrowser();
         createInspectorWindow();
         createSceneWindow();
         createProjectSettingsWindow();
@@ -291,9 +297,112 @@ namespace System {
         }
     }
 
+    void Dockspace::initializeShortcutActions()
+    {
+        if (glfwGetKey(Window::window, GLFW_KEY_LEFT_CONTROL) && glfwGetKey(Window::window, GLFW_KEY_S))
+            this->saveSceneToSourceFile();
+        
+        if (glfwGetKey(Window::window, GLFW_KEY_LEFT_CONTROL) && glfwGetKey(Window::window, GLFW_KEY_D))
+            this->saveSceneViaFileDialog();
+        
+        if (glfwGetKey(Window::window, GLFW_KEY_LEFT_CONTROL) && glfwGetKey(Window::window, GLFW_KEY_O))
+            this->openSceneViaFileDialog();
+
+        if (glfwGetKey(Window::window, GLFW_KEY_LEFT_CONTROL) && glfwGetKey(Window::window, GLFW_KEY_LEFT_SHIFT) && glfwGetKey(Window::window, GLFW_KEY_N))
+            this->openNewSceneViaFileDialog();
+        else if (glfwGetKey(Window::window, GLFW_KEY_LEFT_CONTROL) && glfwGetKey(Window::window, GLFW_KEY_N))
+            this->openNewScene();
+    }
+
+    void Dockspace::saveSceneToSourceFile()
+    {
+        if (!Odysseus::SceneManager::activeScene->path.empty())
+        {
+            System::Serialize::Serializer serializer = System::Serialize::Serializer();
+            serializer.serialize(Odysseus::SceneManager::activeScene->path);
+            this->statusBar->addStatus("Scene Saved!", System::TextColor::GREEN);
+        }
+        else
+            this->saveSceneViaFileDialog();
+    }
+
+    void Dockspace::saveSceneViaFileDialog()
+    {
+        std::string filePath = Utils::FileDialogs::SaveFile("Coeus Scene (*.coeus)\0*.coeus\0", "Save Scene As", "\\Assets\\Scenes");
+
+        if (filePath.empty())
+            return;
+
+        std::string filePathWithExtension = filePath + ".coeus";
+        auto index = filePathWithExtension.find(Folder::getApplicationAbsolutePath());
+        filePathWithExtension.replace(index, Folder::getApplicationAbsolutePath().length(), ".");
+        Odysseus::SceneManager::activeScene->path = filePathWithExtension;
+
+        System::Serialize::Serializer serializer = System::Serialize::Serializer();
+        serializer.serialize(Odysseus::SceneManager::activeScene->path);
+
+        this->statusBar->addStatus("Scene Saved at new Path: " + filePathWithExtension, System::TextColor::GREEN);
+    }
+
+    void Dockspace::openSceneViaFileDialog()
+    {
+        std::string filePath = Utils::FileDialogs::OpenFile("Coeus Scene (*.coeus)\0*.coeus\0", "Open Scene At", "\\Assets\\Scenes");
+
+        if (filePath.empty())
+            return;
+
+        auto index = filePath.find(Folder::getApplicationAbsolutePath());
+        filePath.replace(index, Folder::getApplicationAbsolutePath().length(), ".");
+
+        System::Serialize::Serializer serializer = System::Serialize::Serializer();
+        serializer.deserialize(filePath);
+        
+        this->statusBar->addStatus("Opening scene at Path: " + filePath, System::TextColor::GREEN);
+    }
+
+    void Dockspace::openNewSceneViaFileDialog()
+    {
+        std::string filePath = Utils::FileDialogs::SaveFile("Coeus Scene (*.coeus)\0*.coeus\0", "New Scene At", "\\Assets\\Scenes");
+
+        if (filePath.empty())
+            return;
+
+        std::string filePathWithExtension = filePath + ".coeus";
+        auto index = filePathWithExtension.find(Folder::getApplicationAbsolutePath());
+        std::string scenePath = filePathWithExtension.replace(index, Folder::getApplicationAbsolutePath().length(), ".");
+
+        std::string scenesPath = ".\\Assets\\Scenes";
+        index = filePathWithExtension.find(scenesPath);
+        std::string sceneName = filePathWithExtension.replace(index, scenesPath.length(), "");
+
+        Odysseus::Scene* newScene = new Odysseus::Scene(scenePath, sceneName);
+        Odysseus::SceneManager::addScene(newScene);
+        Odysseus::SceneManager::activeScene = newScene;
+
+        Odysseus::SceneManager::initializeActiveScene();
+
+        System::Serialize::Serializer serializer = System::Serialize::Serializer();
+        serializer.serialize(Odysseus::SceneManager::activeScene->path);
+
+        this->statusBar->addStatus("Opening new scene at Path: " + scenePath, System::TextColor::GREEN);
+    }
+
+    void Dockspace::openNewScene()
+    {
+        Odysseus::Scene* newScene = new Odysseus::Scene("New Scene");
+        Odysseus::SceneManager::addScene(newScene);
+        Odysseus::SceneManager::activeScene = newScene;
+
+        Odysseus::SceneManager::initializeActiveScene();
+
+        this->statusBar->addStatus("Opening New Scene", System::TextColor::GREEN);
+    }
+
     // TODO: Setup menu properly
     void Dockspace::createMainMenuBar()
     {
+        this->initializeShortcutActions();
+
         ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Menu bar background color
         ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0,0,0,255));
         ImGui::PushStyleColor(ImGuiCol_Border, IM_COL32(255,255,255,255));
@@ -304,9 +413,23 @@ namespace System {
                 ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Menu bar background color
                 if (ImGui::BeginMenu("File"))
                 {
-                    ImGui::MenuItem("New Scene...");
-                    ImGui::MenuItem("Open Scene...");
+                    // The ... means that we are going to open a File Dialog
+
+                    // TODO: Open a new empty scene
+                    // TODO: Generate a Modal that asks if we really wanna leave the current scene without saving
+                    if (ImGui::MenuItem("New", "CTRL+N"))
+                        this->openNewScene();
+                    if (ImGui::MenuItem("New Scene...", "CTRL+SHIFT+N"))
+                        this->openNewSceneViaFileDialog();
+                    if (ImGui::MenuItem("Open Scene...", "CTRL+O"))
+                        this->openSceneViaFileDialog();
+
                     ImGui::Separator();
+
+                    if (ImGui::MenuItem("Save", "CTRL+S"))
+                        this->saveSceneToSourceFile();
+                    if (ImGui::MenuItem("Save As...", "CTRL+D"))
+                        this->saveSceneViaFileDialog();
 
                     // if (ImGui::MenuItem("Flag: NoSplit",                "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0))                 
                     //     dockspace_flags ^= ImGuiDockNodeFlags_NoSplit;
@@ -996,12 +1119,14 @@ namespace System {
     
     void Dockspace::createProjectSettingsWindow()
     {
+        // TODO: Implement me
         ImGui::Begin("Project Settings");
-        ImGui::Text("Hello, right!");
+            char pathOfStandardScene[256] = {""};
+            strcpy(pathOfStandardScene, Odysseus::SceneManager::activeScene->path.c_str());
+            ImGui::InputText("Default Scene Path", pathOfStandardScene, sizeof(char) * 256);
         ImGui::End();
     }
 
-    // TODO: Fix forward button bug
     void Dockspace::createContentBrowser()
     {
         static int actionIndex = 0;
