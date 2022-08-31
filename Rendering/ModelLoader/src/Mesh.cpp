@@ -3,6 +3,11 @@
 #include <Component.hpp>
 #include <EditorCamera.hpp>
 
+#include <PointLight.hpp>
+
+#include <LightInfo.hpp>
+
+// TODO: Test if everythin works with PBR Materials
 namespace Odysseus
 {
     Mesh::Mesh()
@@ -40,7 +45,8 @@ namespace Odysseus
             {
                 physicsMaterial.loadShaderMaterial(this->shader);
             }
-        }else
+        }
+        else
         {
             if(this->phongMaterial.Textures.size() > 0)
             {
@@ -51,6 +57,8 @@ namespace Odysseus
                 phongMaterial.loadShaderMaterial(this->shader);
             }
         }
+        
+        LightInfo::computeLighting(this->shader);
 
         System::Picking::PickableObject::insertPickableObject(this->_uniqueFloatID, this->sceneObject);
 
@@ -103,8 +111,9 @@ namespace Odysseus
             {
                 phongMaterial.loadShaderMaterial(this->shader);
             }
-
         }
+
+        LightInfo::computeLighting(this->shader);
 
         auto worldPosition = Transform::GetWorldTransform(this->transform, this->transform);
         auto tmp = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->getViewTransform(worldPosition);
@@ -393,6 +402,7 @@ namespace Odysseus
                 aiTextureType textureType = static_cast<aiTextureType>(t["Type"].as<int>());
 
                 Texture2D physicsMaterialTexture = Texture2D(textureDirectory, texturePath, textureType);
+                physicsMaterialTexture.loadTextureFromFile(true);
                 this->physicsMaterial.PBR_textures.push_back(physicsMaterialTexture);
             }
         }
@@ -427,6 +437,7 @@ namespace Odysseus
                 std::cout << "TEXTURE TYPE: " << textureType << std::endl;
 
                 Texture2D phongMaterialTexture = Texture2D(textureDirectory, texturePath, textureType);
+                phongMaterialTexture.loadTextureFromFile(true);
                 this->phongMaterial.Textures.push_back(phongMaterialTexture);
             }
         }
