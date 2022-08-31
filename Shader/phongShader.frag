@@ -61,9 +61,8 @@ uniform DirectionalLight dirLight;
 uniform PointLight pointLight;
 uniform SpotLight spotLight;
 
-//Area light
 #define MAX_LIGHTS 128
-uniform int numLights;
+uniform int numberOfPointLights;
 uniform PointLight pointLights[MAX_LIGHTS];
 
 uniform bool hasTexture;
@@ -96,16 +95,28 @@ vec3 calcSpotLight(Material material, SpotLight light, vec3 viewDir);
 void main()
 {
     vec3 viewDir = normalize(viewPos - fs_in.FragPos);
-    vec3 result = vec3(0.0, 0.0, 0.0);
+    vec3 result = vec3(0, 0, 0);
 
     //result += calcDirectionalLight(material, dirLight, viewDir);
-    result += calcPointLight(material, pointLight, viewDir);
+    // result += calcPointLight(material, pointLight, viewDir);
+
+    // PointLight pL;
+    // pL.position = vec3(0, 0, 0);
+    // pL.ambient = vec3(0.1, 0.1, 0.1);
+    // pL.diffuse = vec3(0.34, 0.23, 0.67);
+    // pL.specular = vec3(0, 0, 0);
+    // pL.constant = 0.1;
+    // pL.linear = 0.2;
+    // pL.quadratic = 0;
+
+    // result += calcPointLight(material, pL, viewDir);
     //result += calcSpotLight(material, spotLight, viewDir);
 
-    /*for(int i = 0; i < numLights; ++i)
+    for(int i = 0; i < numberOfPointLights; ++i)
     {
         result += calcPointLight(material, pointLights[i], viewDir);
-    }*/
+    }
+
     idColor = vec4(vID);
     FragColor = vec4(result, 1.0);
 }

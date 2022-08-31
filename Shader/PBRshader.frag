@@ -42,6 +42,10 @@ in VS_OUT
 const float PI = 3.14159265359;
 const float nMaxLights = 1;
 
+#define MAX_LIGHTS 128
+uniform int numberOfPointLights;
+uniform PointLight pointLights[MAX_LIGHTS];
+
 //calculate normals in tangent space and transform them in world space
 vec3 getNormalFromMap()
 {
@@ -139,15 +143,15 @@ void main()
 
     vec3 Lo = vec3(0.0);
     
-    for(int i = 0; i < nMaxLights; ++i)
+    for(int i = 0; i < numberOfPointLights; ++i)
     {
         //calculate radiance
-        vec3 L = normalize(pointLight.position - fs_in.FragPos);
+        vec3 L = normalize(pointLights[i].position - fs_in.FragPos);
         vec3 H = normalize(V + L);
-        float distance = length(pointLight.position - fs_in.FragPos);
-        float attenuation = 1.0 / (pointLight.constant + pointLight.linear * distance + 
-                                pointLight.quadratic * (distance * distance));
-        vec3 radiance = pointLight.diffuse * attenuation;
+        float distance = length(pointLights[i].position - fs_in.FragPos);
+        float attenuation = 1.0 / (pointLights[i].constant + pointLights[i].linear * distance + 
+                                pointLights[i].quadratic * (distance * distance));
+        vec3 radiance = pointLights[i].diffuse * attenuation;
 
         //Cook-Torrance BRDF
         float NDF = DistributionGGX(N, H, roughness);
