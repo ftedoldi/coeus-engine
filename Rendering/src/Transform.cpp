@@ -580,8 +580,7 @@ namespace Odysseus {
 
     Transform::~Transform()
     {
-        this->_childrenTree->deleteTree();
-        delete this->_childrenTree;
+        
     }
 
     Transform* compositeTransformBetween (Transform* a, Transform* b)
