@@ -381,6 +381,82 @@ namespace Athena
                        data[12] * vec[0] + data[13] * vec[1] + data[14] * vec[2] + data[15] * vec[3]);
     }
 
+    Vector3 Matrix4::transformDirection(const Vector3& vec) const
+    {
+        return Vector3(
+            vec.coordinates.x * data[0] + 
+            vec.coordinates.y * data[1] +
+            vec.coordinates.z * data[2],
+
+            vec.coordinates.x * data[4] + 
+            vec.coordinates.y * data[5] +
+            vec.coordinates.z * data[6],
+
+            vec.coordinates.x * data[8] + 
+            vec.coordinates.y * data[9] +
+            vec.coordinates.z * data[10]
+        );
+    }
+
+    Vector3 Matrix4::transformInverseDirection(const Vector3& vec) const
+    {
+        return Vector3(
+            vec.coordinates.x * data[0] + 
+            vec.coordinates.y * data[4] +
+            vec.coordinates.z * data[8],
+
+            vec.coordinates.x * data[1] + 
+            vec.coordinates.y * data[5] +
+            vec.coordinates.z * data[9],
+
+            vec.coordinates.x * data[2] + 
+            vec.coordinates.y * data[6] +
+            vec.coordinates.z * data[10]
+        );
+    }
+
+    Vector3 Matrix4::localToWorldDir(const Vector3& local, const Matrix4 &transform) const
+    {
+        return transform.transformDirection(local);
+    }
+
+    Vector3 Matrix4::worldToLocalDir(const Vector3& world, const Matrix4 &transform) const
+    {
+        return transform.transformInverseDirection(world);
+    }
+
+    Vector3 Matrix4::transformInverse(const Vector3& vec) const
+    {
+        Vector3 tmp = vec;
+        tmp.coordinates.x -= data[3];
+        tmp.coordinates.y -= data[7];
+        tmp.coordinates.z -= data[11];
+
+        return Vector3(tmp.coordinates.x * data[0] +
+                       tmp.coordinates.y * data[4] +
+                       tmp.coordinates.z * data[8],
+                       
+                       tmp.coordinates.x * data[1] +
+                       tmp.coordinates.y * data[5] +
+                       tmp.coordinates.z * data[9],
+                       
+                       tmp.coordinates.x * data[2] +
+                       tmp.coordinates.y * data[6] +
+                       tmp.coordinates.z * data[10]);
+    }
+
+    Vector3 Matrix4::transform(const Vector3& vec) const
+    {
+        Vector4 tmp(vec, 1.0);
+        tmp = *this * tmp;
+        return tmp.xyz();
+    }
+
+    Vector3 Matrix4::getAxisVector(unsigned int index) const
+    {
+        return Vector3(data[index], data[index + 4], data[index + 8]);
+    }
+
     bool Matrix4::DecomposeMatrixInScaleRotateTranslateComponents(
                                                                     const Matrix4& modelMatrix, 
                                                                     Vector3& scale, 
