@@ -31,10 +31,10 @@ namespace Odysseus
             Scene(const std::string& name);
             Scene(const std::string& path, const std::string& name);
 
+            bool addSceneObject(SceneObject* obj);
+
             bool deleteSceneObject(const int& i);
             bool deleteSceneObject(SceneObject* obj);
-
-            bool addSceneObject(SceneObject* obj);
 
             void initialiseScene();
             void draw();

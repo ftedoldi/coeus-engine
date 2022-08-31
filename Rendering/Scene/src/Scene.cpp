@@ -66,7 +66,9 @@ namespace Odysseus
         if (t->children.size() == 0)
         {
             int sceneObjIndex = getSceneObjectIndex(t->sceneObject);
+            Odysseus::SceneObject* obj = _objectsInScene[sceneObjIndex];
             _objectsInScene.erase(_objectsInScene.begin() + sceneObjIndex);
+            delete obj;
             return;
         }
 
@@ -76,7 +78,9 @@ namespace Odysseus
         }
 
         int sceneObjIndex = getSceneObjectIndex(t->sceneObject);
+        Odysseus::SceneObject* obj = _objectsInScene[sceneObjIndex];
         _objectsInScene.erase(_objectsInScene.begin() + sceneObjIndex);
+        delete obj;
         return;
     }
 
