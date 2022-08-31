@@ -8,6 +8,8 @@
 #include <Vector3.hpp>
 #include <Shader.hpp>
 
+#include <UUID.hpp>
+
 namespace Odysseus
 {
     class Light : public System::Component
@@ -16,6 +18,9 @@ namespace Odysseus
             Athena::Vector3 _diffuse;
             Athena::Vector3 _ambient;
             Athena::Vector3 _specular;
+
+            System::UUID ID;
+
             Shader* shader;
 
             Athena::Vector3 getDiffuse() const;
@@ -28,7 +33,10 @@ namespace Odysseus
             void setSpecular(Athena::Vector3& spec);
             void setShader(Shader* shader);
 
+            bool operator == (const Light& light);
+
             virtual void setLightShader(Odysseus::Shader* shader) const = 0;
+            virtual void setLightShader(Odysseus::Shader* shader, int index) const {}
     };
 }
 

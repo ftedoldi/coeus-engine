@@ -32,4 +32,9 @@ namespace Odysseus
         this->shader = shader;
     }
 
+    bool Light::operator == (const Light& light)
+    {
+        return light.ID == this->ID;
+    }
+
 }
