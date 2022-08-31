@@ -65,6 +65,8 @@ namespace Athena
             void operator *= (const Scalar& k);
             void operator /= (const Scalar& k);
 
+            Vector3 xyz();
+
             Scalar angleBetween (const Vector4& vector) const;
 
             Vector4 lerp(const Vector4& vector, const Scalar& t) const;
