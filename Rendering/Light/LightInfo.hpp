@@ -13,6 +13,7 @@
 #include <vector>
 #include <set>
 
+// TODO: Write the code for lighting also for spot, directional and area lights
 namespace Odysseus
 {
     class LightInfo
