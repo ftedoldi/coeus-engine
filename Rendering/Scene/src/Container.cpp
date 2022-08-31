@@ -21,7 +21,10 @@ namespace Odysseus {
 
     Container::~Container()
     {
-
+        for (int i = this->_components.size() - 1; i >= 0; i--)
+        {
+            delete this->_components[i];
+        }
     }
 
 }
