@@ -302,9 +302,6 @@ namespace System::Serialize
 
     bool Serializer::deserialize(const std::string& filepath)
     {
-        if (Odysseus::SceneManager::activeScene != nullptr)
-            serialize(Odysseus::SceneManager::activeScene->path);
-
         std::ifstream stream(filepath);
         std::stringstream strStream;
         strStream << stream.rdbuf();
@@ -322,8 +319,6 @@ namespace System::Serialize
                 Odysseus::Scene* deserializedScene = new Odysseus::Scene(scenePath, sceneName);
                 Odysseus::SceneManager::addScene(deserializedScene);
                 Odysseus::SceneManager::activeScene = deserializedScene;
-                Editor* editor = new Editor();
-                Odysseus::SceneManager::activeScene->sceneEditor = editor;
                 std::cout << "Scene Name: " << Odysseus::SceneManager::activeScene->name << std::endl;
         }
         catch(const std::exception& e)
