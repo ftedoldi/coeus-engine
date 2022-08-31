@@ -164,6 +164,11 @@ namespace Athena {
         this->coordinates.z /= k;
     }
 
+    Vector3 Vector4::xyz()
+    {
+        return Vector3(this->coordinates.x, this->coordinates.y, this->coordinates.z);
+    }
+
     Scalar Vector4::angleBetween (const Vector4& vector) const {
         return Math::radiansToDegreeAngle(std::acos(this->normalized() * vector.normalized()));
     }

@@ -51,10 +51,22 @@ namespace Athena
         static Matrix3 toMatrix3(const Matrix4& mat);
         Matrix4 transposed() const;
 
-        static Matrix4 scale(const Matrix4& mat, const Vector3& scale);
-        static Matrix4 translate(const Matrix4& mat, const Vector3& translate);
-        static Matrix4 lookAt(const Vector3& position, const Vector3& forward, const Vector3& up);
-        static Matrix4 perspective(const float& fieldOfView, const float& aspectRatio, const float& nearPlane, const float& farPlane);
+        //We transform direction vectors not considering the translation part
+        Vector3 transformDirection(const Vector3& vec) const;
+        Vector3 transformInverseDirection(const Vector3& vec) const;
+        Vector3 localToWorldDir(const Vector3& local, const Matrix4& transform) const;
+        Vector3 worldToLocalDir(const Vector3& local, const Matrix4& transform) const;
+
+        /**
+         * This method performs the inverse transformation assuming that the matrix used
+         * has on the 3x3 only the rotation (no shear and scaling, since we'll use the transpose)
+         * and on the last column the translation component
+        */
+        Vector3 transformInverse(const Vector3& vec) const;
+
+        Vector3 transform(const Vector3& vec) const;
+
+        Vector3 getAxisVector(unsigned int index) const;
 
         // Decomposing a Matrix4 into 3 different components - Scale, Rotate & Translate 
         // in order to be able to break down matrices into engine usable components

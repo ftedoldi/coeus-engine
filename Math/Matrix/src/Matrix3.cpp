@@ -195,6 +195,21 @@ namespace Athena
         return result;
     }
 
+    void Matrix3::setComponents(const Vector3& vec1, const Vector3& vec2, const Vector3& vec3)
+    {
+        data[0] = vec1.coordinates.x;
+        data[3] = vec1.coordinates.y;
+        data[6] = vec1.coordinates.z;
+        
+        data[1] = vec2.coordinates.x;
+        data[4] = vec2.coordinates.y;
+        data[7] = vec2.coordinates.z;
+
+        data[2] = vec3.coordinates.x;
+        data[5] = vec3.coordinates.y;
+        data[8] = vec3.coordinates.z;
+    }
+
     void Matrix3::setInverse(const Matrix3& mat)
     {
         Scalar temp1 = mat.data[0] * mat.data[4];

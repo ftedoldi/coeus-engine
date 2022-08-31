@@ -69,6 +69,21 @@ namespace Athena
             {
                 return (t - a) / (b - a);
             }
+
+            static Scalar scalarAbs(const Scalar& sc)
+            {
+                return fabs(sc);
+            }
+
+            static Scalar scalarPow(const Scalar& sc, const Scalar& dt)
+            {
+                return powf(sc, dt);
+            }
+
+            static Scalar scalarSqrt(const Scalar& sc)
+            {
+                return sqrtf(sc);
+            }
     };
 }
 
