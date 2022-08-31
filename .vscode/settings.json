@@ -101,7 +101,8 @@
       "unordered_set": "cpp",
       "registration": "cpp",
       "any": "cpp",
-      "__functional_base_03": "cpp"
+      "__functional_base_03": "cpp",
+      "regex": "cpp"
     },
     "terminal.integrated.profiles.windows": {
         "my-pwsh": {
