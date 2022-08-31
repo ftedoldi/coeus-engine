@@ -75,6 +75,9 @@ namespace Athena
             Vector3 lerp(const Vector3& vector, const Scalar& t) const;
             
             bool isZero() const;
+            void clear();
+
+            void addScaledVector(const Vector3& vec, Scalar scale);
 
             Versor3 asVersor3() const;
             Point3 asPoint3() const;

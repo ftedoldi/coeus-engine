@@ -189,6 +189,20 @@ namespace Athena {
         return this->squareMagnitude() == 0;
     }
 
+    void Vector3::clear()
+    {
+        this->coordinates.x = 0;
+        this->coordinates.y = 0;
+        this->coordinates.z = 0;
+    }
+
+    void Vector3::addScaledVector(const Vector3& vec, Scalar scale)
+    {
+        this->coordinates.x += vec.coordinates.x * scale;
+        this->coordinates.y += vec.coordinates.y * scale;
+        this->coordinates.z += vec.coordinates.z * scale;
+    }
+
     Versor3 Vector3::asVersor3() const {
         return Versor3(coordinates.x, coordinates.y, coordinates.z);
     }
