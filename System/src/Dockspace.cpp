@@ -886,6 +886,7 @@ namespace System {
                             if (componentSelectable)
                             {
                                 auto tmp = this->transformToShow->sceneObject->addCopyOfExistingComponent<System::Component>(newComponent);
+                                tmp->start();
                                 this->inspectorParams.push_back(tmp);
                             }
                         }
