@@ -3,7 +3,7 @@ Scene Path: ./Assets/Scenes/Test.coeus
 Scene Objects:
   - Scene Object ID: 16961462977533525045
     Transform:
-      Name: SceneObj1
+      Name: SceneObj0
       Position:
         X: 2.43985844
         Y: 5.19256783
@@ -43,7 +43,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 15637199354414536701
     Transform:
-      Name: SceneObj2
+      Name: SceneObj1
       Position:
         X: -6.99582672
         Y: 6.72266817
@@ -84,7 +84,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 7292084055544433658
     Transform:
-      Name: SceneObj3
+      Name: SceneObj2
       Position:
         X: -3.55127263
         Y: 4.15697098
@@ -127,7 +127,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 8754901149741182942
     Transform:
-      Name: SceneObj4
+      Name: SceneObj3
       Position:
         X: -4.72364569
         Y: 4.18686676
@@ -168,7 +168,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 17782837585363037712
     Transform:
-      Name: SceneObj5
+      Name: SceneObj4
       Position:
         X: -4.25807238
         Y: 2.40307188
@@ -193,11 +193,11 @@ Scene Objects:
           var: 10
   - Scene Object ID: 2426417046733272916
     Transform:
-      Name: SceneObj6
+      Name: SceneObj5
       Position:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 0.907406747
+        Y: 0.403293669
+        Z: 0.907406747
       Rotation:
         X: 0
         Y: 0
@@ -233,7 +233,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 11888168846672259505
     Transform:
-      Name: SceneObj7
+      Name: SceneObj6
       Position:
         X: 0
         Y: 0
@@ -255,11 +255,11 @@ Scene Objects:
         - 13175015591498231632
   - Scene Object ID: 13175015591498231632
     Transform:
-      Name: SceneObj8
+      Name: SceneObj7
       Position:
-        X: -4.53792763
-        Y: 0.683480144
-        Z: -4.53792763
+        X: 0.327571034
+        Y: -0.264878452
+        Z: 0.327571034
       Rotation:
         X: 0
         Y: 0
@@ -303,7 +303,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 15174817271371581026
     Transform:
-      Name: SceneObj9
+      Name: SceneObj8
       Position:
         X: 0
         Y: 0
@@ -330,7 +330,7 @@ Scene Objects:
         - 9825708928404364276
   - Scene Object ID: 888632865377919211
     Transform:
-      Name: SceneObj10
+      Name: SceneObj9
       Position:
         X: -4.80588627
         Y: 0.604936242
@@ -373,7 +373,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 11979143433524644365
     Transform:
-      Name: SceneObj11
+      Name: SceneObj10
       Position:
         X: 0
         Y: 0
@@ -416,7 +416,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 1293047374708301628
     Transform:
-      Name: SceneObj12
+      Name: SceneObj11
       Position:
         X: -3.09189773
         Y: 1.47873437
@@ -459,7 +459,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 14220560762339356615
     Transform:
-      Name: SceneObj13
+      Name: SceneObj12
       Position:
         X: 1.87017822
         Y: 0.452485979
@@ -502,7 +502,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 16106145571490513017
     Transform:
-      Name: SceneObj14
+      Name: SceneObj13
       Position:
         X: -0.168037713
         Y: -0.504115224
@@ -547,7 +547,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 9825708928404364276
     Transform:
-      Name: SceneObj15
+      Name: SceneObj14
       Position:
         X: 0
         Y: 0
@@ -588,5 +588,45 @@ Scene Objects:
             - Directory: Assets/Models/matAndTex
               Path: d2.png
               Type: 1
+          Vertex Shader Path: .\Shader\phongShader.vert
+          Fragment Shader Path: .\Shader\phongShader.frag
+  - Scene Object ID: 3628797975554510978
+    Transform:
+      Name: SceneObj15
+      Position:
+        X: -3
+        Y: 5.98215103
+        Z: 8
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: PointLight
+        PointLight:
+          Diffuse:
+            Red: 1
+            Green: 1
+            Blue: 1
+          Ambient:
+            Red: 0.100000001
+            Green: 0.100000001
+            Blue: 0.100000001
+          Specular:
+            Red: 0
+            Green: 0
+            Blue: 0
+          Constant: 0.100000001
+          Linear: 0.100000001
+          Quadratic: 0.100000001
           Vertex Shader Path: .\Shader\phongShader.vert
           Fragment Shader Path: .\Shader\phongShader.frag
