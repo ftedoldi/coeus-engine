@@ -9,13 +9,13 @@ namespace Odysseus
     Scene::Scene() : objectsInScene(_objectsInScene)
     {
         name = "EmptyScene";
-        this->path = "./Assets/Scenes/" + path;
+        this->path = "";
     }
 
     Scene::Scene(const std::string& name) : objectsInScene(_objectsInScene)
     {
         this->name = name;
-        this->path = "./Assets/Scenes/" + name;
+        this->path = "";
     }
 
     Scene::Scene(const std::string& path, const std::string& name) : objectsInScene(_objectsInScene)

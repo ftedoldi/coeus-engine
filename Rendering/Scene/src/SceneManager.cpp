@@ -1,5 +1,7 @@
 #include <SceneManager.hpp>
 
+#include <Editor.hpp>
+
 namespace Odysseus {
     std::vector<Scene*> SceneManager::_loadedScenes;
     Scene* SceneManager::activeScene;
@@ -42,6 +44,9 @@ namespace Odysseus {
         System::Time::time = static_cast<Athena::Scalar>(glfwGetTime());
         System::Time::timeAtLastFrame = static_cast<Athena::Scalar>(glfwGetTime());
         System::Time::deltaTime = static_cast<Athena::Scalar>(glfwGetTime());
+
+        System::Editor* editor = new System::Editor();
+        activeScene->sceneEditor = editor;
 
         activeScene->initialiseScene();
     }
