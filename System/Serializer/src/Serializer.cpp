@@ -247,7 +247,7 @@ namespace System::Serialize
         out << YAML::BeginMap;
             out << YAML::Key << "X" << YAML::Value << vector.coordinates.x;
             out << YAML::Key << "Y" << YAML::Value << vector.coordinates.y;
-            out << YAML::Key << "Z" << YAML::Value << vector.coordinates.x;
+            out << YAML::Key << "Z" << YAML::Value << vector.coordinates.z;
         out << YAML::EndMap;
     }
 
