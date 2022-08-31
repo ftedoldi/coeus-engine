@@ -39,6 +39,9 @@ namespace Odysseus
             void setQuadratic(float quadratic);
 
             void setLightShader(Odysseus::Shader* shader) const;
+            void setLightShader(Odysseus::Shader* shader, int index) const;
+
+            ~PointLight();
             
             SERIALIZABLE_CLASS(System::Component, Light);
     };

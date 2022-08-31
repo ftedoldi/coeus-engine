@@ -3,6 +3,8 @@
 #include <SceneManager.hpp>
 #include <EditorCamera.hpp>
 
+#include <LightInfo.hpp>
+
 namespace Odysseus
 {
     PointLight::PointLight()
@@ -16,6 +18,9 @@ namespace Odysseus
         _quadratic = 0.1f;
 
         shader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
+
+        this->ID = System::UUID();
+
 
         this->_editorTextureID = Odysseus::Texture2D::loadTextureFromFile(
                                                                                     (System::Folder::getFolderPath("Icons").string() + "/pointLight.png").c_str(), 
@@ -66,8 +71,15 @@ namespace Odysseus
 
     void PointLight::start()
     {
+        if (LightInfo::existingPointLights.count(this) == 0)
+        {
+            LightInfo::pointLights.push_back(this);
+            LightInfo::existingPointLights.insert(this);
+            std::cout << "ADDING POINT LIGHT AT " << LightInfo::pointLights.size() << std::endl;
+        }
         this->setLightShader(this->shader);
     }
+
     void PointLight::update()
     {
         this->setLightShader(this->shader);
@@ -155,8 +167,8 @@ namespace Odysseus
         this->_linear = component["Linear"].as<float>();
         this->_quadratic = component["Quadratic"].as<float>();
 
-        auto vShaderPath= component["Vertex Shader Path"].as<std::string>();
-        auto fShaderPath= component["Fragment Shader Path"].as<std::string>();
+        auto vShaderPath = component["Vertex Shader Path"].as<std::string>();
+        auto fShaderPath = component["Fragment Shader Path"].as<std::string>();
 
         this->shader = new Odysseus::Shader(vShaderPath.c_str(), fShaderPath.c_str());
 
@@ -176,6 +188,41 @@ namespace Odysseus
         shader->setFloat("pointLight.constant", this->_constant);
         shader->setFloat("pointLight.linear", this->_linear);
         shader->setFloat("pointLight.quadratic", this->_quadratic);
+    }
+
+    void PointLight::setLightShader(Odysseus::Shader* shader, int index) const
+    {
+        auto tmp = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->getViewTransform(this->transform);
+        auto worldPosition = Transform::GetWorldTransform(this->transform, this->transform);
+        shader->use();
+
+        shader->setVec3("pointLights[" + std::to_string(index) + "].diffuse", this->_diffuse);
+        shader->setVec3("pointLights[" + std::to_string(index) + "].specular", this->_specular);
+        shader->setVec3("pointLights[" + std::to_string(index) + "].ambient", this->_ambient);
+        shader->setVec3("pointLights[" + std::to_string(index) + "].position", worldPosition->position);
+        shader->setFloat("pointLights[" + std::to_string(index) + "].constant", this->_constant);
+        shader->setFloat("pointLights[" + std::to_string(index) + "].linear", this->_linear);
+        shader->setFloat("pointLights[" + std::to_string(index) + "].quadratic", this->_quadratic);
+    }
+
+    PointLight::~PointLight()
+    {   
+        int indexToErease = -1;
+        for (int i = 0; i < LightInfo::pointLights.size(); i++)
+        {
+            if (LightInfo::pointLights[i] == this)
+            {
+                indexToErease = i;
+                break;
+            }
+        }
+
+        std::cout << "Destroying Point Light at " << indexToErease << std::endl;
+        if (indexToErease > -1)
+        {
+            LightInfo::pointLights.erase(LightInfo::pointLights.begin() + indexToErease);
+            LightInfo::existingPointLights.erase(this);
+        }
     }
 
     SERIALIZE_CLASS
