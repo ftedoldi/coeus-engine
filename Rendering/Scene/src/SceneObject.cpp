@@ -156,7 +156,6 @@ namespace Odysseus {
         _static = newState;
     }
 
-    // FIXME: Erease correctly form game scene, right now we erease the first element, we want to erase the i element
     void SceneObject::destroy()
     {
         SceneManager::activeScene->deleteSceneObject(this);
