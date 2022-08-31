@@ -27,7 +27,7 @@ void EditorCameraMovement::update()
 {
     float lastYaw = yaw;
     
-    if (glfwGetKey(System::Window::window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+    if (glfwGetKey(System::Window::window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
     {
         if (glfwGetKey(System::Window::window, GLFW_KEY_W) == GLFW_PRESS)
             editorCamera->transform->position += editorCamera->Front * movementSpeed * System::Time::deltaTime;
