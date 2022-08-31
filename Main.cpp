@@ -194,7 +194,7 @@ int main()
         window->update();
     }
 
-    serializer.serialize(Odysseus::SceneManager::activeScene->path);
+    // serializer.serialize(Odysseus::SceneManager::activeScene->path);
 
     delete window;
     return 0;
