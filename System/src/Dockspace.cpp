@@ -553,7 +553,7 @@ namespace System {
 
                     ImGui::SameLine();
                     cursor = ImGui::GetCursorPos();
-                    ImGui::SetCursorPos({ cursor.x + ImGui::GetContentRegionAvail().x / 3, cursor.y });
+                    ImGui::SetCursorPos({ ImGui::GetContentRegionAvail().x / 2, cursor.y });
 
                     #pragma warning(push)
                     #pragma warning(disable : 4312)                
@@ -1160,7 +1160,7 @@ namespace System {
 
                 #pragma warning(push)
                 #pragma warning(disable : 4312)
-                ImGui::Image((ImTextureID)Window::sceneFrameBuffer->texturesID[1], size, ImVec2(0, 1), ImVec2(1, 0));
+                ImGui::Image((ImTextureID)Window::sceneFrameBuffer->texturesID[0], size, ImVec2(0, 1), ImVec2(1, 0));
                 #pragma warning(pop)
 
                 dList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
