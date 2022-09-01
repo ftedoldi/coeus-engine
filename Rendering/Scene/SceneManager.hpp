@@ -15,10 +15,8 @@ namespace Odysseus {
     
     // TODO: Refactor this with a non static class -> Entity Component System
     class SceneManager {
-        private:
-            static std::vector<Scene*> _loadedScenes;
-
         public:
+            static std::vector<Scene*> _loadedScenes;
             static Scene* activeScene;
 
             static void addScene(Scene* sceneToLoad);

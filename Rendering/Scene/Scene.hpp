@@ -11,6 +11,14 @@ namespace Odysseus
 {
     class SceneObject;
 
+    enum SceneState
+    {
+        EDITOR,
+        RUNNING,
+        PAUSED,
+        STOPPED
+    };
+
     class Scene
     {
         private:
@@ -19,7 +27,17 @@ namespace Odysseus
             void deleteChildren(Transform* t);
             int getSceneObjectIndex(SceneObject* obj);
 
+            void initialiseEditorScene();
+            void initialiseRuntimeScene();
+
+            void updateEditorScene();
+            void updateRuntimeScene();
+
         public:
+            bool isRuntimeScene;
+
+            SceneState status;
+
             System::Editor* sceneEditor;
 
             std::string path;
@@ -30,6 +48,7 @@ namespace Odysseus
             Scene();
             Scene(const std::string& name);
             Scene(const std::string& path, const std::string& name);
+            Scene(Scene* sceneToCopy, SceneState state, bool runtimeScene=false);
 
             bool addSceneObject(SceneObject* obj);
 

@@ -10,21 +10,46 @@ namespace Odysseus
     {
         name = "EmptyScene";
         this->path = "";
+
+        this->isRuntimeScene = false;
+        
+        this->status = SceneState::EDITOR;
     }
 
     Scene::Scene(const std::string& name) : objectsInScene(_objectsInScene)
     {
         this->name = name;
         this->path = "";
+        
+        this->isRuntimeScene = false;
+        
+        this->status = SceneState::EDITOR;
     }
 
     Scene::Scene(const std::string& path, const std::string& name) : objectsInScene(_objectsInScene)
     {
         this->name = name;
         this->path = path;
+        
+        this->isRuntimeScene = false;
+
+        this->status = SceneState::EDITOR;
     }
 
-    void Scene::initialiseScene()
+    Scene::Scene(Scene* sceneToCopy, SceneState state, bool runtimeScene) : objectsInScene(_objectsInScene)
+    {
+        this->name = sceneToCopy->name;
+        this->path = sceneToCopy->path;
+
+        this->_objectsInScene = sceneToCopy->_objectsInScene;
+        this->sceneEditor = sceneToCopy->sceneEditor;
+        
+        this->isRuntimeScene = runtimeScene;
+
+        this->status = state;
+    }
+
+    void Scene::initialiseEditorScene()
     {
         for (int i = 0; i < _objectsInScene.size(); i++)
         {
@@ -34,6 +59,36 @@ namespace Odysseus
                 glUseProgram(0);
             }
         }
+    }
+
+    // TODO: Implement me
+    void Scene::initialiseRuntimeScene()
+    {
+
+    }
+
+    void Scene::updateEditorScene()
+    {
+        for (int i = 0; i < _objectsInScene.size(); i++)
+            for (int j = 0; j < _objectsInScene[i]->_container->components.size(); j++)
+            {
+                _objectsInScene[i]->_container->components[j]->update();
+                glUseProgram(0);
+            }
+    }
+
+    // TODO: Implement me
+    void Scene::updateRuntimeScene()
+    {
+
+    }
+
+    void Scene::initialiseScene()
+    {
+        this->initialiseEditorScene();
+
+        if (this->isRuntimeScene)
+            this->initialiseRuntimeScene();    
     }
 
     bool Scene::deleteSceneObject(const int& i)
@@ -107,12 +162,11 @@ namespace Odysseus
 
     void Scene::draw()
     {
-        for (int i = 0; i < _objectsInScene.size(); i++)
-            for (int j = 0; j < _objectsInScene[i]->_container->components.size(); j++)
-            {
-                _objectsInScene[i]->_container->components[j]->update();
-                glUseProgram(0);
-            }
+        this->updateEditorScene();
+
+        // TODO: Find a way to stop the scene when paused -> probably by using SceneManager time & SceneState or by creating some other funcitons
+        if (this->isRuntimeScene && this->status == SceneState::RUNNING)
+            this->updateRuntimeScene();
     }
 
 }
