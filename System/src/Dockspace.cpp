@@ -316,6 +316,9 @@ namespace System {
 
     void Dockspace::saveSceneToSourceFile()
     {
+        if (Odysseus::SceneManager::activeScene->isRuntimeScene)
+            return;
+
         if (!Odysseus::SceneManager::activeScene->path.empty())
         {
             System::Serialize::Serializer serializer = System::Serialize::Serializer();
@@ -328,6 +331,9 @@ namespace System {
 
     void Dockspace::saveSceneViaFileDialog()
     {
+        if (Odysseus::SceneManager::activeScene->isRuntimeScene)
+            return;
+
         std::string filePath = Utils::FileDialogs::SaveFile("Coeus Scene (*.coeus)\0*.coeus\0", "Save Scene As", "\\Assets\\Scenes");
 
         if (filePath.empty())
@@ -563,8 +569,14 @@ namespace System {
                         );
                     #pragma warning(pop)
 
-                    if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) || Input::keyboard->getPressedKey() == GLFW_KEY_P) {
+                    if (
+                            ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) ||
+                            Input::keyboard->getPressedKey() == GLFW_KEY_P) &&
+                            !Odysseus::SceneManager::activeScene->isRuntimeScene
+                        ) {
                         statusBar->addStatus("Starting simulation...");
+                        Odysseus::Scene* simulationScene = new Odysseus::Scene(Odysseus::SceneManager::activeScene, Odysseus::SceneState::RUNNING, true);
+                        Odysseus::SceneManager::activeScene = simulationScene;
                     }
                     
                     ImGui::SameLine();
@@ -583,8 +595,22 @@ namespace System {
                         );
                     #pragma warning(pop)
 
-                    if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))) {
+                    if (    
+                            (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) && 
+                            Odysseus::SceneManager::activeScene->isRuntimeScene &&
+                            Odysseus::SceneManager::activeScene->status == Odysseus::SceneState::RUNNING
+                        ) {
                         statusBar->addStatus("Pausing simulation...");
+                        Odysseus::SceneManager::activeScene->status = Odysseus::SceneState::PAUSED;
+                    } 
+                    else if (
+                                (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) && 
+                                Odysseus::SceneManager::activeScene->isRuntimeScene &&
+                                Odysseus::SceneManager::activeScene->status == Odysseus::SceneState::PAUSED
+                            )
+                    {
+                        statusBar->addStatus("Resuming simulation...");
+                        Odysseus::SceneManager::activeScene->status = Odysseus::SceneState::RUNNING;
                     }
                     
                     ImGui::SameLine();
@@ -603,8 +629,18 @@ namespace System {
                         );
                     #pragma warning(pop)
 
-                    if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))) {
+                    if (
+                            (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) && 
+                            Odysseus::SceneManager::activeScene->isRuntimeScene &&
+                            Odysseus::SceneManager::activeScene->status != Odysseus::SceneState::EDITOR
+                        ) {
                         statusBar->addStatus("Stopping simulation...");
+                        auto serializedScene = Odysseus::SceneManager::activeScene;
+                        Odysseus::SceneManager::activeScene->status = Odysseus::SceneState::STOPPED;
+                        System::Serialize::Serializer serializer = System::Serialize::Serializer();
+                        serializer.deserialize(Odysseus::SceneManager::_loadedScenes[Odysseus::SceneManager::_loadedScenes.size() - 1]->path);
+                        Odysseus::SceneManager::_loadedScenes.pop_back();
+                        delete serializedScene;
                     }
 
                     ImGui::PopStyleColor(3);
