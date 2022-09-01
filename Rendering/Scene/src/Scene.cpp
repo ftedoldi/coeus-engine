@@ -28,7 +28,6 @@ namespace Odysseus
     {
         for (int i = 0; i < _objectsInScene.size(); i++)
         {
-            _objectsInScene[i]->transform->name = "SceneObj" + std::to_string(i); 
             for (int j = 0; j < _objectsInScene[i]->_container->components.size(); j++)
             {
                 _objectsInScene[i]->_container->components[j]->start();
