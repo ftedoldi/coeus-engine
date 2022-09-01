@@ -79,7 +79,8 @@ namespace System {
 
             ImGuizmo::OPERATION gizmoOperation;
 
-            void createStyle();
+            void createStyleEditor();
+            void createStyleRuntime();
 
             //----------------------Menu Creation--------------------------------//
             void createMainMenuBar();
