@@ -17,8 +17,6 @@ namespace Odysseus
         _linear = 0.1f;
         _quadratic = 0.1f;
 
-        shader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
-
         this->ID = System::UUID();
 
 
@@ -75,14 +73,12 @@ namespace Odysseus
         {
             LightInfo::pointLights.push_back(this);
             LightInfo::existingPointLights.insert(this);
-            std::cout << "ADDING POINT LIGHT AT " << LightInfo::pointLights.size() << std::endl;
         }
-        this->setLightShader(this->shader);
     }
 
     void PointLight::update()
     {
-        this->setLightShader(this->shader);
+
     }
 
     void PointLight::setOrderOfExecution(const short& newOrderOfExecution)
@@ -142,8 +138,6 @@ namespace Odysseus
             out << YAML::Key << "Constant" << YAML::Value << this->_constant;
             out << YAML::Key << "Linear" << YAML::Value << this->_linear;
             out << YAML::Key << "Quadratic" << YAML::Value << this->_quadratic;
-            out << YAML::Key << "Vertex Shader Path" << YAML::Value << this->shader->vertexShaderPath;
-            out << YAML::Key << "Fragment Shader Path" << YAML::Value << this->shader->fragmentShaderPath;
         out << YAML::EndMap;
     }
 
@@ -166,11 +160,6 @@ namespace Odysseus
         this->_constant = component["Constant"].as<float>();
         this->_linear = component["Linear"].as<float>();
         this->_quadratic = component["Quadratic"].as<float>();
-
-        auto vShaderPath = component["Vertex Shader Path"].as<std::string>();
-        auto fShaderPath = component["Fragment Shader Path"].as<std::string>();
-
-        this->shader = new Odysseus::Shader(vShaderPath.c_str(), fShaderPath.c_str());
 
         return this;
     }
@@ -217,7 +206,6 @@ namespace Odysseus
             }
         }
 
-        std::cout << "Destroying Point Light at " << indexToErease << std::endl;
         if (indexToErease > -1)
         {
             LightInfo::pointLights.erase(LightInfo::pointLights.begin() + indexToErease);
