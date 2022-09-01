@@ -98,6 +98,8 @@ namespace Athena
             // Rotate the vector passed as input by this quaternion
             Vector3 rotateVectorByThisQuaternion(const Vector3& vectorToRotate) const;
 
+            void addScaledVector(const Vector3& vec, Scalar scale);
+
             Vector4 asVector4() const;
 
             Quaternion normalized() const;

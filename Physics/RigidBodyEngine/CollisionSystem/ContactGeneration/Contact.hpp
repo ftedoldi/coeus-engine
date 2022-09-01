@@ -5,6 +5,7 @@
 
 namespace Khronos
 {
+    class ContactResolution;
     /**
      * The contact class represents two bodies in contact.
      * It has no callable functions because it holds only
@@ -12,6 +13,7 @@ namespace Khronos
     */
     class Contact
     {
+        friend class ContactResolution;
     public:
         // Holds the bodies that are in contact
         RigidBody* body[2];
@@ -48,6 +50,23 @@ namespace Khronos
         Athena::Matrix3 contactToWorldSpace;
 
         /**
+         * Holds the closing velocity at the point of contact
+        */
+        Athena::Vector3 contactVelocity;
+
+        /**
+         * Holds the world space position of the contact point of the two
+         * objects colliding, reletive to their center.
+         * This is set when the calculateInternals function is run.
+        */
+        Athena::Vector3 relativeContactPosition[2];
+
+        /**
+         * Holds the required change in velocity of this contact to be resolved.
+        */
+        Athena::Scalar desiredDeltaVelocity;
+
+        /**
          * Construct an orthonormal basis for the contact.
          * This is a system of coordinates in contact space.
          * This basis is stored inside a 3x3 matrix where
@@ -59,6 +78,27 @@ namespace Khronos
          * they are at right angle to it
         */
         void calculateContactBasis();
+
+        Athena::Vector3 calculateFrictionlessImpulse(Athena::Matrix3* inverseInertiaTensor);
+
+        // Calculate and return the velocity of the contact point on the given rigid body
+        Athena::Vector3 calculateLocalVelocity(unsigned int bodyIndex, Athena::Scalar dt);
+
+        void calculateDesiredDeltaVelocity(Athena::Scalar dt);
+
+        void applyPositionChange(Athena::Vector3 linearChange[2], Athena::Vector3 angularChange[2], Athena::Scalar penetration);
+
+        /**
+         * Reverses the contact. This involves swapping the two rigid bodies
+         * and reversing the contact normal. This is done to make sure that 
+         * if there is only one rigid body in the collision, it is at the zero
+         * position of the array.
+         * After calling this method the internal values must be recalculated using
+         * calculateInternals method
+        */
+        void swapBodies();
+
+        void calculateInternals(Athena::Scalar dt);
 
     };
 }
