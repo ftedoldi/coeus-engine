@@ -271,6 +271,33 @@ namespace Khronos
         return this->velocity;
     }
 
+    void RigidBody::setRotation(const Athena::Vector3& rotation)
+    {
+        this->rotation = rotation;
+    }
+
+    void RigidBody::setRotation(const Athena::Scalar x, const Athena::Scalar y, const Athena::Scalar z)
+    {
+        this->rotation.coordinates.x = x;
+        this->rotation.coordinates.y = y;
+        this->rotation.coordinates.z = z;
+    }
+
+    Athena::Vector3 RigidBody::getRotation() const
+    {
+        return this->rotation;
+    }
+
+    void RigidBody::setLastFrameAcceleration(const Athena::Vector3& linearAcceleration)
+    {
+        this->lastFrameAcceleration = linearAcceleration;
+    }
+
+    Athena::Vector3 RigidBody::getLastFrameAcceleration() const
+    {
+        return this->lastFrameAcceleration;
+    }
+
     void RigidBody::calculateDerivedData()
     {
         //At each frame we calculate the transform matrix and transform the inverse inertia tensor into world coordinates

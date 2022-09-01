@@ -8,13 +8,12 @@
 
 namespace Khronos
 {
+    class CollisionDetector;
     /**
      * Class that holds fast intersection tests.
      * This tests can be used to early out in the
      * collision system
     */
-    class CollisionDetector;
-
     class IntersectionTests
     {
         friend class CollisionDetector;

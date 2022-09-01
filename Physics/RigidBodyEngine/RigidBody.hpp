@@ -56,7 +56,7 @@ namespace Khronos
         //Holds the acceleration of the rigid body
         Athena::Vector3 acceleration;
 
-        //Holds the acceleration at last frame of the rigid body
+        //Holds the linear acceleration at last frame of the rigid body
         Athena::Vector3 lastFrameAcceleration;
 
         bool hasFiniteMass() const;
@@ -93,6 +93,13 @@ namespace Khronos
         void setVelocity(const Athena::Vector3& velocity);
         void setVelocity(const Athena::Scalar x, const Athena::Scalar y, const Athena::Scalar z);
         Athena::Vector3 getVelocity() const;
+
+        void setRotation(const Athena::Vector3& rotation);
+        void setRotation(const Athena::Scalar x, const Athena::Scalar y, const Athena::Scalar z);
+        Athena::Vector3 getRotation() const;
+
+        void setLastFrameAcceleration(const Athena::Vector3& linearAcceleration);
+        Athena::Vector3 getLastFrameAcceleration() const;
 
         void calculateDerivedData();
 
