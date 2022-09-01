@@ -24,8 +24,13 @@ namespace System {
             Odysseus::SceneObject* sceneObject;
             Odysseus::Transform* transform;
 
+            // ----------------------------------- Editor Functions ----------------------------------------------- //
             virtual void start() = 0;
             virtual void update() = 0;
+
+            // ----------------------------------- Runtime Functions --------------------------------------------- //
+            virtual void startRuntime() {}
+            virtual void updateRuntime() {}
 
             virtual void setOrderOfExecution(const short& newOrderOfExecution) = 0;
 
