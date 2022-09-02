@@ -36,24 +36,12 @@ namespace System
                 static void serializeVector4(YAML::Emitter& out, const Athena::Vector4& vector);
                 static void serializeQuaternion(YAML::Emitter& out, const Athena::Quaternion& quaternion);
 
-                static void serialzieModel(YAML::Emitter& out, Odysseus::ModelBase* model);
-
-                static void serializePointLight(YAML::Emitter& out, Odysseus::PointLight* light);
-                static void serializeSpotLight(YAML::Emitter& out, Odysseus::SpotLight* light);
-                static void serializeDirectionalLight(YAML::Emitter& out, Odysseus::DirectionalLight* light);
-                static void serializeAreaLight(YAML::Emitter& out, Odysseus::AreaLight* light);
-
-                static Odysseus::PointLight* deserializePointLight(YAML::Node& node);
-                static Odysseus::SpotLight* deserializeSpotLight(YAML::Node& node);
-                static Odysseus::DirectionalLight* deserializeDirectionalLight(YAML::Node& node);
-                static Odysseus::AreaLight* deserializeAreaLight(YAML::Node& node);
+                static void serializeModel(YAML::Emitter& out, Odysseus::ModelBase* model);
 
                 static Athena::Vector2 deserializeVector2(YAML::Node& node);
                 static Athena::Vector3 deserializeVector3(YAML::Node& node);
                 static Athena::Vector4 deserializeVector4(YAML::Node& node);
                 static Athena::Quaternion deserializeQuaternion(YAML::Node& node);
-
-                static void deserializeModel(YAML::Node& node);
 
             public:
                 Serializer();

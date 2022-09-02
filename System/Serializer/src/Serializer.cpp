@@ -223,7 +223,7 @@ namespace System::Serialize
                             out << YAML::Key << "Component" << YAML::Value << component->toString();
                             
                             if (component->toString() == "ModelBase")
-                                serialzieModel(out, dynamic_cast<Odysseus::ModelBase*>(component));
+                                serializeModel(out, dynamic_cast<Odysseus::ModelBase*>(component));
                             else
                                 component->serialize(out);
                         out << YAML::EndMap;
@@ -284,7 +284,7 @@ namespace System::Serialize
 
     }
 
-    void Serializer::serialzieModel(YAML::Emitter& out, Odysseus::ModelBase* model)
+    void Serializer::serializeModel(YAML::Emitter& out, Odysseus::ModelBase* model)
     {
         out << YAML::Key << "Model";
         out << YAML::BeginMap;
@@ -293,11 +293,6 @@ namespace System::Serialize
             out << YAML::Key << "Vertex Shader" << YAML::Value << model->vertexShaderPath;
             out << YAML::Key << "Fragment Shader" << YAML::Value << model->fragmentShaderPath;
         out << YAML::EndMap;
-    }
-
-    void Serializer::deserializeModel(YAML::Node& node)
-    {
-
     }
 
     bool Serializer::deserialize(const std::string& filepath)
