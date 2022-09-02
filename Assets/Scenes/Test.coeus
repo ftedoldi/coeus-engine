@@ -545,9 +545,9 @@ Scene Objects:
     Transform:
       Name: Mesh
       Position:
-        X: 0.994286597
-        Y: -0.835253954
-        Z: -0.188907623
+        X: 1.73876476
+        Y: -1.83826184
+        Z: -0.00769424438
       Rotation:
         X: 0
         Y: 0
