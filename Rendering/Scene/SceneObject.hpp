@@ -5,6 +5,8 @@
 
 #include <Dockspace.hpp>
 
+#include <GUI.hpp>
+
 #include <UUID.hpp>
 
 #include <Transform.hpp>
@@ -23,6 +25,10 @@ namespace System {
     class Component;
     class Dockspace;
     class UUID;
+    namespace Utils
+    {
+        class GUI;
+    }
 }
 
 namespace System::Serialize
@@ -41,6 +47,7 @@ namespace Odysseus
         friend class SceneManager;
         friend class System::Dockspace;
         friend class System::Serialize::Serializer;
+        friend class System::Utils::GUI;
 
         private:
             bool _active;

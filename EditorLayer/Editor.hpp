@@ -6,7 +6,7 @@ namespace Odysseus
     class EditorCamera;
 }
 
-namespace System
+namespace EditorLayer
 {
     class Editor
     {

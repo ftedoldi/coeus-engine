@@ -134,6 +134,8 @@ namespace Odysseus
             // FIXME: Buggy function and quite useless TBH
             static Transform* GetLocalTransform(Transform* start, Transform* currentTransform);
 
+            static int CountNestedChildren(Transform* fatherTransform);
+
             ~Transform();
     };
 

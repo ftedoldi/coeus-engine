@@ -578,10 +578,14 @@ namespace Odysseus {
         }
     }
 
-    Transform::~Transform()
+    int Transform::CountNestedChildren(Transform* fatherTransform)
     {
+        if (fatherTransform->children.size() == 0)
+            return 0;
         
+        return fatherTransform->children.size();
     }
+
 
     Transform* compositeTransformBetween (Transform* a, Transform* b)
     {
@@ -600,6 +604,11 @@ namespace Odysseus {
                 a->localScale.coordinates.z * b->localScale.coordinates.z
             )
         );
+    }
+
+    Transform::~Transform()
+    {
+        
     }
 
 }

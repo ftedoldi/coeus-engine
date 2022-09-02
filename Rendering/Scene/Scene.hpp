@@ -38,7 +38,7 @@ namespace Odysseus
 
             SceneState status;
 
-            System::Editor* sceneEditor;
+            EditorLayer::Editor* sceneEditor;
 
             std::string path;
 

@@ -10,6 +10,7 @@
 #include <Serializer/Serializer.hpp>
 
 #include <Utils/WindowUtils.hpp>
+#include <Utils/GUI.hpp>
 
 #include <regex>
 
@@ -21,17 +22,18 @@ namespace System {
     {
         this->transformToShow = nullptr;
 
-        this->console = new Console();
+        this->console = new EditorLayer::Console();
         Debug::mainConsole = this->console;
 
-        this->assetDirectory = Folder::getFolderPath("Assets");
-        this->currentDirectory = this->assetDirectory;
+        statusBar = new EditorLayer::StatusBar();
+        mainMenuBar = new EditorLayer::MainMenuBar(this->statusBar);
+
+        Folder::assetDirectory = Folder::getFolderPath("Assets");
+        Folder::currentDirectory = Folder::assetDirectory;
 
         initializeButtonImageTextures();
 
         gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
-
-        statusBar = new StatusBar();
     }
 
     void Dockspace::initializeButtonImageTextures() 
@@ -106,156 +108,12 @@ namespace System {
                                                                                 ).ID;
     }
 
-    void Dockspace::createStyleEditor()
-    {
-        auto ColorFromBytes = [](uint8_t r, uint8_t g, uint8_t b)
-        {
-            return ImVec4((float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f, 1.0f);
-        };
-
-        auto& style = ImGui::GetStyle();
-
-        style.Colors[ImGuiCol_Text]                  = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
-        style.Colors[ImGuiCol_TextDisabled]          = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
-        style.Colors[ImGuiCol_WindowBg]              = ImVec4(0.13f, 0.14f, 0.15f, 1.00f);
-        style.Colors[ImGuiCol_ChildBg]               = ImVec4(0.13f, 0.14f, 0.15f, 1.00f);
-        style.Colors[ImGuiCol_PopupBg]               = ImVec4(0.13f, 0.14f, 0.15f, 1.00f);
-        style.Colors[ImGuiCol_Border]                = ImVec4(0.43f, 0.43f, 0.50f, 0.50f);
-        style.Colors[ImGuiCol_BorderShadow]          = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-        style.Colors[ImGuiCol_FrameBg]               = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
-        style.Colors[ImGuiCol_FrameBgHovered]        = ImVec4(0.38f, 0.38f, 0.38f, 1.00f);
-        style.Colors[ImGuiCol_FrameBgActive]         = ImVec4(0.67f, 0.67f, 0.67f, 0.39f);
-        style.Colors[ImGuiCol_TitleBg]               = ImVec4(0.08f, 0.08f, 0.09f, 1.00f);
-        style.Colors[ImGuiCol_TitleBgActive]         = ImVec4(0.08f, 0.08f, 0.09f, 1.00f);
-        style.Colors[ImGuiCol_TitleBgCollapsed]      = ImVec4(0.00f, 0.00f, 0.00f, 0.51f);
-        style.Colors[ImGuiCol_MenuBarBg]             = ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
-        style.Colors[ImGuiCol_ScrollbarBg]           = ImVec4(0.02f, 0.02f, 0.02f, 0.53f);
-        style.Colors[ImGuiCol_ScrollbarGrab]         = ImVec4(0.31f, 0.31f, 0.31f, 1.00f);
-        style.Colors[ImGuiCol_ScrollbarGrabHovered]  = ImVec4(0.41f, 0.41f, 0.41f, 1.00f);
-        style.Colors[ImGuiCol_ScrollbarGrabActive]   = ImVec4(0.51f, 0.51f, 0.51f, 1.00f);
-        style.Colors[ImGuiCol_CheckMark]             = ImVec4(0.11f, 0.64f, 0.92f, 1.00f);
-        style.Colors[ImGuiCol_SliderGrab]            = ImVec4(0.11f, 0.64f, 0.92f, 1.00f);
-        style.Colors[ImGuiCol_SliderGrabActive]      = ImVec4(0.08f, 0.50f, 0.72f, 1.00f);
-        style.Colors[ImGuiCol_Button]                = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
-        style.Colors[ImGuiCol_ButtonHovered]         = ImVec4(0.38f, 0.38f, 0.38f, 1.00f);
-        style.Colors[ImGuiCol_ButtonActive]          = ImVec4(0.67f, 0.67f, 0.67f, 0.39f);
-        style.Colors[ImGuiCol_Header]                = ColorFromBytes(121, 170, 247);
-        style.Colors[ImGuiCol_HeaderHovered]         = ColorFromBytes(199, 220, 252);
-        style.Colors[ImGuiCol_HeaderActive]          = ColorFromBytes(121, 170, 247);
-        style.Colors[ImGuiCol_Separator]             = style.Colors[ImGuiCol_Border];
-        style.Colors[ImGuiCol_SeparatorHovered]      = ImVec4(0.41f, 0.42f, 0.44f, 1.00f);
-        style.Colors[ImGuiCol_SeparatorActive]       = ImVec4(0.26f, 0.59f, 0.98f, 0.95f);
-        style.Colors[ImGuiCol_ResizeGrip]            = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-        style.Colors[ImGuiCol_ResizeGripHovered]     = ImVec4(0.29f, 0.30f, 0.31f, 0.67f);
-        style.Colors[ImGuiCol_ResizeGripActive]      = ImVec4(0.26f, 0.59f, 0.98f, 0.95f);
-        style.Colors[ImGuiCol_Tab]                   = ImVec4(0.08f, 0.08f, 0.09f, 0.83f);
-        style.Colors[ImGuiCol_TabHovered]            = ImVec4(0.33f, 0.34f, 0.36f, 0.83f);
-        style.Colors[ImGuiCol_TabActive]             = ImVec4(0.23f, 0.23f, 0.24f, 1.00f);
-        style.Colors[ImGuiCol_TabUnfocused]          = ImVec4(0.08f, 0.08f, 0.09f, 1.00f);
-        style.Colors[ImGuiCol_TabUnfocusedActive]    = ImVec4(0.13f, 0.14f, 0.15f, 1.00f);
-        style.Colors[ImGuiCol_DockingPreview]        = ImVec4(0.26f, 0.59f, 0.98f, 0.70f);
-        style.Colors[ImGuiCol_DockingEmptyBg]        = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
-        style.Colors[ImGuiCol_PlotLines]             = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
-        style.Colors[ImGuiCol_PlotLinesHovered]      = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
-        style.Colors[ImGuiCol_PlotHistogram]         = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
-        style.Colors[ImGuiCol_PlotHistogramHovered]  = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
-        style.Colors[ImGuiCol_TextSelectedBg]        = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
-        style.Colors[ImGuiCol_DragDropTarget]        = ImVec4(0.11f, 0.64f, 0.92f, 1.00f);
-        style.Colors[ImGuiCol_NavHighlight]          = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
-        style.Colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
-        style.Colors[ImGuiCol_NavWindowingDimBg]     = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
-        style.Colors[ImGuiCol_ModalWindowDimBg]      = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
-        style.Colors[ImGuiCol_Header]                = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
-        style.Colors[ImGuiCol_HeaderHovered]         = ImVec4(0.38f, 0.38f, 0.38f, 1.00f);
-        style.Colors[ImGuiCol_HeaderActive]          = ImVec4(0.67f, 0.67f, 0.67f, 0.39f);
-
-        style.WindowRounding    = 2.0f;
-        style.ChildRounding     = 2.0f;
-        style.FrameRounding     = 2.0f;
-        style.GrabRounding      = 2.0f;
-        style.PopupRounding     = 2.0f;
-        style.ScrollbarRounding = 2.0f;
-        style.TabRounding       = 2.0f;
-    }
-
-    void Dockspace::createStyleRuntime()
-    {
-        auto ColorFromBytes = [](uint8_t r, uint8_t g, uint8_t b)
-        {
-            return ImVec4((float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f, 1.0f);
-        };
-
-        auto& style = ImGui::GetStyle();
-
-        style.Colors[ImGuiCol_Text]                  = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
-        style.Colors[ImGuiCol_TextDisabled]          = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
-        style.Colors[ImGuiCol_WindowBg]              = ImVec4(0.13f - 0.08f, 0.14f - 0.08f, 0.15f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_ChildBg]               = ImVec4(0.13f - 0.08f, 0.14f - 0.08f, 0.15f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_PopupBg]               = ImVec4(0.13f - 0.08f, 0.14f - 0.08f, 0.15f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_Border]                = ImVec4(0.43f - 0.08f, 0.43f - 0.08f, 0.50f - 0.08f, 0.50f);
-        style.Colors[ImGuiCol_BorderShadow]          = ImVec4(0.00f - 0.08f, 0.00f - 0.08f, 0.00f - 0.08f, 0.00f);
-        style.Colors[ImGuiCol_FrameBg]               = ImVec4(0.25f - 0.08f, 0.25f - 0.08f, 0.25f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_FrameBgHovered]        = ImVec4(0.38f - 0.08f, 0.38f - 0.08f, 0.38f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_FrameBgActive]         = ImVec4(0.67f - 0.08f, 0.67f - 0.08f, 0.67f - 0.08f, 0.39f);
-        style.Colors[ImGuiCol_TitleBg]               = ImVec4(0.08f - 0.08f, 0.08f - 0.08f, 0.09f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_TitleBgActive]         = ImVec4(0.08f - 0.08f, 0.08f - 0.08f, 0.09f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_TitleBgCollapsed]      = ImVec4(0.00f - 0.08f, 0.00f - 0.08f, 0.00f - 0.08f, 0.51f);
-        style.Colors[ImGuiCol_MenuBarBg]             = ImVec4(0.14f - 0.08f, 0.14f - 0.08f, 0.14f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_ScrollbarBg]           = ImVec4(0.02f - 0.08f, 0.02f - 0.08f, 0.02f - 0.08f, 0.53f);
-        style.Colors[ImGuiCol_ScrollbarGrab]         = ImVec4(0.31f - 0.08f, 0.31f - 0.08f, 0.31f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_ScrollbarGrabHovered]  = ImVec4(0.41f - 0.08f, 0.41f - 0.08f, 0.41f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_ScrollbarGrabActive]   = ImVec4(0.51f - 0.08f, 0.51f - 0.08f, 0.51f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_CheckMark]             = ImVec4(0.11f - 0.08f, 0.64f - 0.08f, 0.92f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_SliderGrab]            = ImVec4(0.11f - 0.08f, 0.64f - 0.08f, 0.92f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_SliderGrabActive]      = ImVec4(0.08f - 0.08f, 0.50f - 0.08f, 0.72f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_Button]                = ImVec4(0.25f - 0.08f, 0.25f - 0.08f, 0.25f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_ButtonHovered]         = ImVec4(0.38f - 0.08f, 0.38f - 0.08f, 0.38f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_ButtonActive]          = ImVec4(0.67f - 0.08f, 0.67f - 0.08f, 0.67f - 0.08f, 0.39f);
-        style.Colors[ImGuiCol_Header]                = ColorFromBytes(121, 170, 247);
-        style.Colors[ImGuiCol_HeaderHovered]         = ColorFromBytes(199, 220, 252);
-        style.Colors[ImGuiCol_HeaderActive]          = ColorFromBytes(121, 170, 247);
-        style.Colors[ImGuiCol_Separator]             = style.Colors[ImGuiCol_Border];
-        style.Colors[ImGuiCol_SeparatorHovered]      = ImVec4(0.41f - 0.08f, 0.42f - 0.08f, 0.44f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_SeparatorActive]       = ImVec4(0.26f - 0.08f, 0.59f - 0.08f, 0.98f - 0.08f, 0.95f);
-        style.Colors[ImGuiCol_ResizeGrip]            = ImVec4(0.00f - 0.08f, 0.00f - 0.08f, 0.00f - 0.08f, 0.00f);
-        style.Colors[ImGuiCol_ResizeGripHovered]     = ImVec4(0.29f - 0.08f, 0.30f - 0.08f, 0.31f - 0.08f, 0.67f);
-        style.Colors[ImGuiCol_ResizeGripActive]      = ImVec4(0.26f - 0.08f, 0.59f - 0.08f, 0.98f - 0.08f, 0.95f);
-        style.Colors[ImGuiCol_Tab]                   = ImVec4(0.08f - 0.08f, 0.08f - 0.08f, 0.09f - 0.08f, 0.83f);
-        style.Colors[ImGuiCol_TabHovered]            = ImVec4(0.33f - 0.08f, 0.34f - 0.08f, 0.36f - 0.08f, 0.83f);
-        style.Colors[ImGuiCol_TabActive]             = ImVec4(0.23f - 0.08f, 0.23f - 0.08f, 0.24f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_TabUnfocused]          = ImVec4(0.08f - 0.08f, 0.08f - 0.08f, 0.09f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_TabUnfocusedActive]    = ImVec4(0.13f - 0.08f, 0.14f - 0.08f, 0.15f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_DockingPreview]        = ImVec4(0.26f - 0.08f, 0.59f - 0.08f, 0.98f - 0.08f, 0.70f);
-        style.Colors[ImGuiCol_DockingEmptyBg]        = ImVec4(0.20f - 0.08f, 0.20f - 0.08f, 0.20f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_PlotLines]             = ImVec4(0.61f - 0.08f, 0.61f - 0.08f, 0.61f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_PlotLinesHovered]      = ImVec4(1.00f - 0.08f, 0.43f - 0.08f, 0.35f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_PlotHistogram]         = ImVec4(0.90f - 0.08f, 0.70f - 0.08f, 0.00f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_PlotHistogramHovered]  = ImVec4(1.00f - 0.08f, 0.60f - 0.08f, 0.00f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_TextSelectedBg]        = ImVec4(0.26f - 0.08f, 0.59f - 0.08f, 0.98f - 0.08f, 0.35f);
-        style.Colors[ImGuiCol_DragDropTarget]        = ImVec4(0.11f - 0.08f, 0.64f - 0.08f, 0.92f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_NavHighlight]          = ImVec4(0.26f - 0.08f, 0.59f - 0.08f, 0.98f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f - 0.08f, 1.00f - 0.08f, 1.00f - 0.08f, 0.70f);
-        style.Colors[ImGuiCol_NavWindowingDimBg]     = ImVec4(0.80f - 0.08f, 0.80f - 0.08f, 0.80f - 0.08f, 0.20f);
-        style.Colors[ImGuiCol_ModalWindowDimBg]      = ImVec4(0.80f - 0.08f, 0.80f - 0.08f, 0.80f - 0.08f, 0.35f);
-        style.Colors[ImGuiCol_Header]                = ImVec4(0.0f, 0.0f, 0.0f, 0.f);
-        style.Colors[ImGuiCol_HeaderHovered]         = ImVec4(0.38f - 0.08f, 0.38f - 0.08f, 0.38f - 0.08f, 1.00f);
-        style.Colors[ImGuiCol_HeaderActive]          = ImVec4(0.67f - 0.08f, 0.67f - 0.08f, 0.67f - 0.08f, 0.39f);
-
-        style.WindowRounding    = 2.0f;
-        style.ChildRounding     = 2.0f;
-        style.FrameRounding     = 2.0f;
-        style.GrabRounding      = 2.0f;
-        style.PopupRounding     = 2.0f;
-        style.ScrollbarRounding = 2.0f;
-        style.TabRounding       = 2.0f;
-    }
-
     void Dockspace::createDockspace()
     {
         if (Odysseus::SceneManager::activeScene->isRuntimeScene)
-            createStyleRuntime();
+            Utils::GUI::setEngineRuntimeStyle();
         else
-            createStyleEditor();
+            Utils::GUI::setEngineEditorStyle();
 
         static bool opt_fullscreen = true;
         static bool opt_padding = false;
@@ -334,9 +192,9 @@ namespace System {
 	    	ImGui::DockBuilderFinish(dockspace_id);
 	    }
 
-        createMainMenuBar();
+        mainMenuBar->draw();
         createToolMenuBar();
-        createStatusMenuBar();
+        statusBar->draw();
 
         ImGui::End();
 
@@ -370,176 +228,6 @@ namespace System {
             glReadBuffer(GL_NONE);
             glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
         }
-    }
-
-    void Dockspace::initializeShortcutActions()
-    {
-        if (glfwGetKey(Window::window, GLFW_KEY_LEFT_CONTROL) && glfwGetKey(Window::window, GLFW_KEY_S))
-            this->saveSceneToSourceFile();
-        
-        if (glfwGetKey(Window::window, GLFW_KEY_LEFT_CONTROL) && glfwGetKey(Window::window, GLFW_KEY_D))
-            this->saveSceneViaFileDialog();
-        
-        if (glfwGetKey(Window::window, GLFW_KEY_LEFT_CONTROL) && glfwGetKey(Window::window, GLFW_KEY_O))
-            this->openSceneViaFileDialog();
-
-        if (glfwGetKey(Window::window, GLFW_KEY_LEFT_CONTROL) && glfwGetKey(Window::window, GLFW_KEY_LEFT_SHIFT) && glfwGetKey(Window::window, GLFW_KEY_N))
-            this->openNewSceneViaFileDialog();
-        else if (glfwGetKey(Window::window, GLFW_KEY_LEFT_CONTROL) && glfwGetKey(Window::window, GLFW_KEY_N))
-            this->openNewScene();
-    }
-
-    void Dockspace::saveSceneToSourceFile()
-    {
-        if (Odysseus::SceneManager::activeScene->isRuntimeScene)
-            return;
-
-        if (!Odysseus::SceneManager::activeScene->path.empty())
-        {
-            System::Serialize::Serializer serializer = System::Serialize::Serializer();
-            serializer.serialize(Odysseus::SceneManager::activeScene->path);
-            this->statusBar->addStatus("Scene Saved!", System::TextColor::GREEN);
-        }
-        else
-            this->saveSceneViaFileDialog();
-    }
-
-    void Dockspace::saveSceneViaFileDialog()
-    {
-        if (Odysseus::SceneManager::activeScene->isRuntimeScene)
-            return;
-
-        std::string filePath = Utils::FileDialogs::SaveFile("Coeus Scene (*.coeus)\0*.coeus\0", "Save Scene As", "\\Assets\\Scenes");
-
-        if (filePath.empty())
-            return;
-
-        std::string filePathWithExtension = filePath + ".coeus";
-        auto index = filePathWithExtension.find(Folder::getApplicationAbsolutePath());
-        filePathWithExtension.replace(index, Folder::getApplicationAbsolutePath().length(), ".");
-        Odysseus::SceneManager::activeScene->path = filePathWithExtension;
-
-        System::Serialize::Serializer serializer = System::Serialize::Serializer();
-        serializer.serialize(Odysseus::SceneManager::activeScene->path);
-
-        this->statusBar->addStatus("Scene Saved at new Path: " + filePathWithExtension, System::TextColor::GREEN);
-    }
-
-    void Dockspace::openSceneViaFileDialog()
-    {
-        std::string filePath = Utils::FileDialogs::OpenFile("Coeus Scene (*.coeus)\0*.coeus\0", "Open Scene At", "\\Assets\\Scenes");
-
-        if (filePath.empty())
-            return;
-
-        auto index = filePath.find(Folder::getApplicationAbsolutePath());
-        filePath.replace(index, Folder::getApplicationAbsolutePath().length(), ".");
-
-        System::Serialize::Serializer serializer = System::Serialize::Serializer();
-        serializer.deserialize(filePath);
-        
-        this->statusBar->addStatus("Opening scene at Path: " + filePath, System::TextColor::GREEN);
-    }
-
-    void Dockspace::openNewSceneViaFileDialog()
-    {
-        std::string filePath = Utils::FileDialogs::SaveFile("Coeus Scene (*.coeus)\0*.coeus\0", "New Scene At", "\\Assets\\Scenes");
-
-        if (filePath.empty())
-            return;
-
-        std::string filePathWithExtension = filePath + ".coeus";
-        auto index = filePathWithExtension.find(Folder::getApplicationAbsolutePath());
-        std::string scenePath = filePathWithExtension.replace(index, Folder::getApplicationAbsolutePath().length(), ".");
-
-        std::string scenesPath = ".\\Assets\\Scenes";
-        index = filePathWithExtension.find(scenesPath);
-        std::string sceneName = filePathWithExtension.replace(index, scenesPath.length(), "");
-
-        Odysseus::Scene* newScene = new Odysseus::Scene(scenePath, sceneName);
-        Odysseus::SceneManager::addScene(newScene);
-        Odysseus::SceneManager::activeScene = newScene;
-
-        Odysseus::SceneManager::initializeActiveScene();
-
-        System::Serialize::Serializer serializer = System::Serialize::Serializer();
-        serializer.serialize(Odysseus::SceneManager::activeScene->path);
-
-        this->statusBar->addStatus("Opening new scene at Path: " + scenePath, System::TextColor::GREEN);
-    }
-
-    void Dockspace::openNewScene()
-    {
-        Odysseus::Scene* newScene = new Odysseus::Scene("New Scene");
-        Odysseus::SceneManager::addScene(newScene);
-        Odysseus::SceneManager::activeScene = newScene;
-
-        Odysseus::SceneManager::initializeActiveScene();
-
-        this->statusBar->addStatus("Opening New Scene", System::TextColor::GREEN);
-    }
-
-    // TODO: Setup menu properly
-    void Dockspace::createMainMenuBar()
-    {
-        this->initializeShortcutActions();
-
-        ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Menu bar background color
-        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0,0,0,255));
-        ImGui::PushStyleColor(ImGuiCol_Border, IM_COL32(255,255,255,255));
-        if (ImGui::BeginViewportSideBar("Main Menu Bar", ImGui::GetMainViewport(), ImGuiDir_Up, ImGui::GetFrameHeight(), ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar))
-        {
-            if (ImGui::BeginMenuBar())
-            {
-                ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Menu bar background color
-                if (ImGui::BeginMenu("File"))
-                {
-                    // The ... means that we are going to open a File Dialog
-
-                    // TODO: Open a new empty scene
-                    // TODO: Generate a Modal that asks if we really wanna leave the current scene without saving
-                    if (ImGui::MenuItem("New", "CTRL+N"))
-                        this->openNewScene();
-                    if (ImGui::MenuItem("New Scene...", "CTRL+SHIFT+N"))
-                        this->openNewSceneViaFileDialog();
-                    if (ImGui::MenuItem("Open Scene...", "CTRL+O"))
-                        this->openSceneViaFileDialog();
-
-                    ImGui::Separator();
-
-                    if (ImGui::MenuItem("Save", "CTRL+S"))
-                        this->saveSceneToSourceFile();
-                    if (ImGui::MenuItem("Save As...", "CTRL+D"))
-                        this->saveSceneViaFileDialog();
-
-                    // if (ImGui::MenuItem("Flag: NoSplit",                "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0))                 
-                    //     dockspace_flags ^= ImGuiDockNodeFlags_NoSplit;
-
-                    // if (ImGui::MenuItem("Flag: NoResize",               "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0))                
-                    //     dockspace_flags ^= ImGuiDockNodeFlags_NoResize;
-
-                    // if (ImGui::MenuItem("Flag: NoDockingInCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_NoDockingInCentralNode) != 0))  
-                    //     dockspace_flags ^= ImGuiDockNodeFlags_NoDockingInCentralNode;
-
-                    // if (ImGui::MenuItem("Flag: AutoHideTabBar",         "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0))          
-                    //     dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar;
-
-                    // if (ImGui::MenuItem("Flag: PassthruCentralNode",    "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) 
-                    //     dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode;
-
-                    // ImGui::Separator();
-
-                    // if (ImGui::MenuItem("Close", NULL, false, p_open != NULL))
-                    //     *p_open = false;
-                    ImGui::EndMenu();
-                }
-                ImGui::PopStyleColor();
-                ImGui::EndMenuBar();
-            }
-            
-            ImGui::End();
-        }
-        ImGui::PopStyleColor(3);
     }
 
     // TODO: At each action add a log for the Status Bar
@@ -577,7 +265,7 @@ namespace System {
 
                     if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) || Input::keyboard->getPressedKey() == GLFW_KEY_T) {
                         gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
-                        statusBar->addStatus("Translate operation selected", TextColor::GREEN);
+                        statusBar->addStatus("Translate operation selected", EditorLayer::StatusBarTextColor::GREEN);
                     }
 
                     ImGui::SameLine();
@@ -600,7 +288,7 @@ namespace System {
 
                     if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) || Input::keyboard->getPressedKey() == GLFW_KEY_S) {
                         gizmoOperation = ImGuizmo::OPERATION::SCALE;
-                        statusBar->addStatus("Scale operation selected", TextColor::GREEN);
+                        statusBar->addStatus("Scale operation selected", EditorLayer::StatusBarTextColor::GREEN);
                     }
                     
                     ImGui::SameLine();
@@ -623,7 +311,7 @@ namespace System {
 
                     if ((ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) || Input::keyboard->getPressedKey() == GLFW_KEY_R) {
                         gizmoOperation = ImGuizmo::OPERATION::ROTATE;
-                        statusBar->addStatus("Rotate operation selected", TextColor::GREEN);
+                        statusBar->addStatus("Rotate operation selected", EditorLayer::StatusBarTextColor::GREEN);
                     }
 
                     ImGui::SameLine();
@@ -728,40 +416,6 @@ namespace System {
         ImGui::PopStyleVar();
     }
 
-    void Dockspace::createStatusMenuBar()
-    {
-        ImGui::PushStyleColor(ImGuiCol_Border, IM_COL32(255,255,255,0));
-
-        if (ImGui::BeginViewportSideBar("Status Bar", ImGui::GetMainViewport(), ImGuiDir_Down, ImGui::GetFrameHeight(), ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar))
-        {
-            if (ImGui::BeginMenuBar()) {
-                    static CurrentStatus statusToDisplay = statusBar->errorStatus;
-
-                    if (statusToDisplay.statusTextColor == TextColor::RED)
-                        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
-                    else if (statusToDisplay.statusTextColor == TextColor::GREEN)
-                        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
-                    else if (statusToDisplay.statusTextColor == TextColor::WHITE)
-                        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1));
-                    else if (statusToDisplay.statusTextColor == TextColor::YELLOW)
-                        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
-                        
-                    if (statusBar->getLastStatus().statusText != statusBar->errorStatus.statusText)
-                        statusToDisplay = statusBar->popStatus();
-
-                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetColumnWidth() - ImGui::CalcTextSize(statusToDisplay.statusText.c_str()).x 
-                        - ImGui::GetScrollX() - 2 * ImGui::GetStyle().ItemSpacing.x);
-
-                    ImGui::Text("%s", statusToDisplay.statusText.c_str());
-                    ImGui::PopStyleColor();
-                ImGui::EndMenuBar();
-            }
-            ImGui::End();
-        }
-
-        ImGui::PopStyleColor();
-    }
-
     void Dockspace::createHierarchyWindow()
     {
         static Odysseus::Transform* selectedItem = nullptr;
@@ -793,7 +447,7 @@ namespace System {
                     )
                     continue;
 
-                if (countNestedChildren(Odysseus::SceneManager::activeScene->objectsInScene[i]->transform)) {
+                if (Odysseus::Transform::CountNestedChildren(Odysseus::SceneManager::activeScene->objectsInScene[i]->transform)) {
                     auto isOpen = ImGui::TreeNodeEx(
                                                         std::to_string(Odysseus::SceneManager::activeScene->objectsInScene[i]->ID).c_str(), 
                                                         ImGuiTreeNodeFlags_CollapsingHeader, 
@@ -802,12 +456,12 @@ namespace System {
                     
                     if (ImGui::IsItemHovered() && ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
                         this->transformToShow = Odysseus::SceneManager::activeScene->objectsInScene[i]->transform;
-                        this->loadInspectorParameters(this->transformToShow);
+                        Utils::GUI::loadInspectorParameters(this->transformToShow);
                     }
                     
-                    if (isOpen) {
-                        this->dfsOverChildren(Odysseus::SceneManager::activeScene->objectsInScene[i]->transform);
-                    }
+                    if (isOpen)
+                        Utils::GUI::displayChildrenOfTransform(Odysseus::SceneManager::activeScene->objectsInScene[i]->transform, this->transformToShow);
+
                 } else {
                     ImGui::TreeNodeEx(
                                         std::to_string(Odysseus::SceneManager::activeScene->objectsInScene[i]->ID).c_str(), 
@@ -816,7 +470,7 @@ namespace System {
                                     );
                     if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
                         this->transformToShow = Odysseus::SceneManager::activeScene->objectsInScene[i]->transform;
-                        this->loadInspectorParameters(this->transformToShow);
+                        Utils::GUI::loadInspectorParameters(this->transformToShow);
                     }
                 }
 
@@ -824,61 +478,6 @@ namespace System {
                     selectedItem = Odysseus::SceneManager::activeScene->objectsInScene[i]->transform;
             }
         ImGui::End();
-    }
-    
-    void Dockspace::dfsOverChildren(Odysseus::Transform* childrenTransform, int index) 
-    {
-        for (int j = 0; j < childrenTransform->children.size(); j++) {
-
-            ImGui::Dummy({ 10 * static_cast<float>(index), 0 });
-            ImGui::SameLine();
-
-            if (this->countNestedChildren(childrenTransform->children[j])) {
-                auto childOpen = ImGui::TreeNodeEx(
-                                                    std::to_string(
-                                                                    childrenTransform->children[j]->sceneObject->ID
-                                                                ).c_str(), 
-                                                    ImGuiTreeNodeFlags_CollapsingHeader, 
-                                                    childrenTransform->children[j]->name.c_str()
-                                                );
-
-                if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
-                    this->transformToShow = childrenTransform->children[j];
-                    this->loadInspectorParameters(this->transformToShow);
-                }
-
-                if (childOpen)
-                    this->dfsOverChildren(childrenTransform->children[j], index + 1);           
-            } else {
-                auto childOpen = ImGui::TreeNodeEx(
-                                                    std::to_string(
-                                                                    childrenTransform->children[j]->sceneObject->ID
-                                                                ).c_str(), 
-                                                    ImGuiTreeNodeFlags_CollapsingHeader | ImGuiTreeNodeFlags_Bullet, 
-                                                    childrenTransform->children[j]->name.c_str()
-                                                );
-
-                if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) {
-                    this->transformToShow = childrenTransform->children[j];
-                    this->loadInspectorParameters(this->transformToShow);
-                }
-            }
-        }
-    }
-
-    void Dockspace::loadInspectorParameters(Odysseus::Transform* transformToAnalyze)
-    {
-        this->inspectorParams.clear();
-        for (int k = 0; k < transformToAnalyze->sceneObject->_container->components.size(); k++)
-            this->inspectorParams.push_back(transformToAnalyze->sceneObject->_container->components[k]);
-    }
-
-    int Dockspace::countNestedChildren(Odysseus::Transform* childrenTransform)
-    {
-        if (childrenTransform->children.size() == 0)
-            return 0;
-        
-        return childrenTransform->children.size();
     }
 
     void Dockspace::createConsoleWindow()
@@ -925,17 +524,17 @@ namespace System {
                 // TODO: Do this for every component
                 // TODO: Show components serializable fields with protocol buffers
                 ImGui::Separator();
-                for (int i = 0; i < this->inspectorParams.size(); i++) {
+                for (int i = 0; i < Utils::GUI::inspectorParameters.size(); i++) {
                     #pragma warning(push)
                     #pragma warning(disable : 4312)
-                    if (this->inspectorParams[i]->hasEditorTexture())
+                    if (Utils::GUI::inspectorParameters[i]->hasEditorTexture())
                     {
-                        ImGui::Image((ImTextureID)this->inspectorParams[i]->getEditorTextureID(), {12, 12});
+                        ImGui::Image((ImTextureID)Utils::GUI::inspectorParameters[i]->getEditorTextureID(), {12, 12});
                         ImGui::SameLine();
                     }
                     #pragma warning(pop)
 
-                    ImGui::Text(this->inspectorParams[i]->toString().c_str());
+                    ImGui::Text(Utils::GUI::inspectorParameters[i]->toString().c_str());
                     ImGui::SameLine(ImGui::GetContentRegionAvail().x - 12);
                     ImGui::PushStyleColor(ImGuiCol_Button, {0, 0, 0, 0});
                     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, {0, 0, 0, 0});
@@ -953,20 +552,20 @@ namespace System {
                                 { 1, 1, 1, 1 }
                         );
                     #pragma warning(pop)
-                    this->inspectorParams[i]->showComponentFieldsInEditor();
+                    Utils::GUI::inspectorParameters[i]->showComponentFieldsInEditor();
                     ImGui::PopStyleColor(3);
                     ImGui::Separator();
 
                     if (shouldDeleteComponent)
                     {
-                        std::cout << "Deleting: " << this->inspectorParams[i]->toString() << std::endl;
+                        std::cout << "Deleting: " << Utils::GUI::inspectorParameters[i]->toString() << std::endl;
                         this->transformToShow->sceneObject->removeComponentWithIndex(i);
-                        this->loadInspectorParameters(this->transformToShow);
+                        Utils::GUI::loadInspectorParameters(this->transformToShow);
                     }
                 }
 
-                if (inspectorParams.size() > this->transformToShow->sceneObject->_container->components.size())
-                    this->loadInspectorParameters(this->transformToShow);
+                if (Utils::GUI::inspectorParameters.size() > this->transformToShow->sceneObject->_container->components.size())
+                    Utils::GUI::loadInspectorParameters(this->transformToShow);
 
                 static bool isAddComponentOpen = false;
 
@@ -1012,7 +611,7 @@ namespace System {
                             {
                                 auto tmp = this->transformToShow->sceneObject->addCopyOfExistingComponent<System::Component>(newComponent);
                                 tmp->start();
-                                this->inspectorParams.push_back(tmp);
+                                Utils::GUI::inspectorParameters.push_back(tmp);
                             }
                             else
                             {
@@ -1098,7 +697,7 @@ namespace System {
                     
                     System::Serialize::Serializer serializer = System::Serialize::Serializer();
 
-                    this->inspectorParams.clear();
+                    Utils::GUI::inspectorParameters.clear();
                     this->transformToShow = nullptr;
 
                     serializer.deserialize(pathToLoad);
@@ -1213,7 +812,7 @@ namespace System {
             else
             {
                 Debug::LogError("Could not decompose transformation matrix, please try again!");
-                statusBar->addStatus("Could not decompose transformation matrix, please try again!", TextColor::RED);
+                statusBar->addStatus("Could not decompose transformation matrix, please try again!", EditorLayer::StatusBarTextColor::RED);
             }
         }
     }
@@ -1268,7 +867,7 @@ namespace System {
     void Dockspace::createContentBrowser()
     {
         static int actionIndex = 0;
-        static std::vector<std::filesystem::path> actions = { this->assetDirectory };
+        static std::vector<std::filesystem::path> actions = { Folder::assetDirectory };
 
         static ImGuiTextFilter filter;
         
@@ -1282,11 +881,11 @@ namespace System {
                 isFirstOpening = false;
             }
 
-            if(ImGui::CollapsingHeader(this->assetDirectory.filename().string().c_str())) {
+            if(ImGui::CollapsingHeader(Folder::assetDirectory.filename().string().c_str())) {
                 if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-                    this->currentDirectory = this->assetDirectory;
+                    Folder::currentDirectory = Folder::assetDirectory;
                 }
-                dfsOverFolders(this->assetDirectory);
+                Utils::GUI::displayFoldersAtPath(Folder::assetDirectory, Folder::currentDirectory);
             }
 
             ImGui::NextColumn();
@@ -1295,7 +894,7 @@ namespace System {
                 static float iconScale = 24;
 
                 ImGui::PushStyleColor(ImGuiCol_Button, { 0, 0, 0, 0 });
-                if (this->currentDirectory.string() != this->assetDirectory.string()) {
+                if (Folder::currentDirectory.string() != Folder::assetDirectory.string()) {
                     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.38f, 0.38f, 0.38f, 0.50f));
                     ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.67f, 0.67f, 0.67f, 0.39f));
                 }
@@ -1318,9 +917,9 @@ namespace System {
                                     );
                 #pragma warning(pop)
                 
-                if (this->currentDirectory.string() != this->assetDirectory.string())
+                if (Folder::currentDirectory.string() != Folder::assetDirectory.string())
                     if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-                        currentDirectory = currentDirectory.parent_path();
+                        Folder::currentDirectory = Folder::currentDirectory.parent_path();
 
                         actionIndex -= 1;
                     }
@@ -1343,7 +942,7 @@ namespace System {
 
                 if (actions.size() > 1 && (actionIndex + 1) < actions.size())
                     if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-                        currentDirectory = actions[++actionIndex];
+                        Folder::currentDirectory = actions[++actionIndex];
 
                 ImGui::SameLine();
 
@@ -1396,9 +995,9 @@ namespace System {
 
                 auto index = 0;
 
-                for (auto& directory : std::filesystem::directory_iterator(currentDirectory)) {
+                for (auto& directory : std::filesystem::directory_iterator(Folder::currentDirectory)) {
                     auto& path = directory.path();
-                    auto relativePath = std::filesystem::relative(path, currentDirectory);
+                    auto relativePath = std::filesystem::relative(path, Folder::currentDirectory);
                     std::string filenameString = relativePath.filename().string();
                     std::string lowercaseFilenameString(filenameString);
                     std::for_each(lowercaseFilenameString.begin(), lowercaseFilenameString.end(), [](char & c) {
@@ -1425,11 +1024,11 @@ namespace System {
 
                         if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                         {
-                            currentDirectory = path;
+                            Folder::currentDirectory = path;
                          
                             if (actionIndex == 0 && actions.size() > 1) {
                                 actions.clear();
-                                actions.push_back(this->assetDirectory);
+                                actions.push_back(Folder::assetDirectory);
                             }
 
                             actions.push_back(path);
@@ -1461,7 +1060,7 @@ namespace System {
                             {
                                 System::Serialize::Serializer serializer = System::Serialize::Serializer();
 
-                                this->inspectorParams.clear();
+                                Utils::GUI::inspectorParameters.clear();
                                 this->transformToShow = nullptr;
 
                                 serializer.deserialize(path.string());
@@ -1548,44 +1147,5 @@ namespace System {
 
             ImGui::Columns(1);
         ImGui::End();
-    }
-
-    void Dockspace::dfsOverFolders(std::filesystem::path sourceFolder, int index)
-    {
-        for (auto& directory : std::filesystem::directory_iterator(sourceFolder)) {
-            float marginX = 15.0f * static_cast<float>(index);
-            if (directory.is_directory()) {
-                ImGui::Dummy({ marginX, 0 });
-                ImGui::SameLine();
-                
-                if (countNestedFolders(directory.path()) > 0) {
-                    bool isOpen = ImGui::CollapsingHeader(directory.path().filename().string().c_str());
-                    if (!isOpen && ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-                            this->currentDirectory = directory.path();
-                    }
-                    if(isOpen) {
-                        dfsOverFolders(directory.path(), index + 1);
-                    }
-                }
-                else {
-                    ImGui::CollapsingHeader(directory.path().filename().string().c_str(), ImGuiTreeNodeFlags_Bullet);
-                    if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-                        this->currentDirectory = directory.path();
-                    }
-                }
-            }
-        }
-    }
-
-    int Dockspace::countNestedFolders(std::filesystem::path sourceFolder)
-    {
-        auto counter = 0;
-
-        for (auto& directory : std::filesystem::directory_iterator(sourceFolder)) {
-            if (directory.is_directory())
-                ++counter;
-        }
-
-        return counter;
     }
 }

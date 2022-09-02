@@ -14,7 +14,10 @@
 
 #include <IO/Input.hpp>
 #include <Folder.hpp>
+
 #include <StatusBar.hpp>
+#include <Console.hpp>
+#include <MainMenuBar.hpp>
 
 #include "Debug.hpp"
 
@@ -66,26 +69,16 @@ namespace System {
 
     class Dockspace {
         private:
-            std::vector<Component*> inspectorParams;
-
-            Console* console;
-
-            StatusBar* statusBar;
-
-            std::filesystem::path assetDirectory;
-            std::filesystem::path currentDirectory;
+            EditorLayer::Console* console;
+            EditorLayer::StatusBar* statusBar;
+            EditorLayer::MainMenuBar* mainMenuBar;
 
             ButtonImages buttonImages;
 
             ImGuizmo::OPERATION gizmoOperation;
 
-            void createStyleEditor();
-            void createStyleRuntime();
-
             //----------------------Menu Creation--------------------------------//
-            void createMainMenuBar();
             void createToolMenuBar();
-            void createStatusMenuBar();
 
             //----------------------Window Creation------------------------------//
             void createHierarchyWindow();
@@ -103,18 +96,6 @@ namespace System {
             void createObjectsGUIZMO();
 
             //----------------------Utils Methods--------------------------------//
-            void dfsOverFolders(std::filesystem::path sourceFolder, int index = 1);
-            int countNestedFolders(std::filesystem::path sourceFolder);
-            void dfsOverChildren(Odysseus::Transform* childrenTransform, int index = 1);
-            int countNestedChildren(Odysseus::Transform* childrenTransform);
-            void loadInspectorParameters(Odysseus::Transform* transformToAnalyze);
-            void initializeShortcutActions();
-            void saveSceneToSourceFile();
-            void saveSceneViaFileDialog();
-            void openSceneViaFileDialog();
-            void openNewSceneViaFileDialog();
-            void openNewScene();
-
             void initializeButtonImageTextures();
 
         public:

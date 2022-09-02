@@ -4,7 +4,7 @@
 #include <EditorCamera.hpp>
 #include <EditorCameraMovement.hpp>
 
-namespace System
+namespace EditorLayer
 {
     Editor::Editor()
     {

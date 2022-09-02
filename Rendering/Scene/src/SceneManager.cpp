@@ -45,7 +45,7 @@ namespace Odysseus {
         System::Time::timeAtLastFrame = static_cast<Athena::Scalar>(glfwGetTime());
         System::Time::deltaTime = static_cast<Athena::Scalar>(glfwGetTime());
 
-        System::Editor* editor = new System::Editor();
+        EditorLayer::Editor* editor = new EditorLayer::Editor();
         activeScene->sceneEditor = editor;
 
         activeScene->initialiseScene();

@@ -8,6 +8,9 @@
 namespace System {
     class Folder {
         public:
+            static std::filesystem::path assetDirectory;
+            static std::filesystem::path currentDirectory;
+
             static std::string getApplicationAbsolutePath() {
                 return std::filesystem::current_path().string();
             }
@@ -20,6 +23,18 @@ namespace System {
                 }
 
                 return nullptr;
+            }
+
+            static int countNestedFolders(std::filesystem::path sourceFolder)
+            {
+                auto counter = 0;
+
+                for (auto& directory : std::filesystem::directory_iterator(sourceFolder)) {
+                    if (directory.is_directory())
+                        ++counter;
+                }
+
+                return counter;
             }
     };
 }
