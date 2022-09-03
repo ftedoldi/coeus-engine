@@ -20,6 +20,9 @@
 #include <ToolBar.hpp>
 #include <ConsoleWindow.hpp>
 #include <ContentBrowserWindow.hpp>
+#include <InspectorWindow.hpp>
+#include <ProjectSettingsWindow.hpp>
+#include <InspectorSceneWindow.hpp>
 
 #include "Debug.hpp"
 
@@ -54,20 +57,6 @@ namespace System {
     class Component;
     class Console;
     class StatusBar;
-    
-    struct ButtonImages {
-        int leftArrowTextureID;
-        int reloadTextureID;
-        int folderTextureID;
-        int documentTextureID;
-        int pointLightTextureID;
-        int spotLightTextureID;
-        int directionalLightTextureID;
-        int areaLightTextureID;
-        int removeComponentTextureID;
-        int sceneTextureID;
-        int modelTextureID;
-    };
 
     class Dockspace {
         friend class EditorLayer::Editor;
@@ -80,27 +69,20 @@ namespace System {
             EditorLayer::HierarchyWindow* hierarchyWindow;
             EditorLayer::ConsoleWindow* consoleWindow;
             EditorLayer::ContentBrowserWindow* contentBrowserWindow;
-
-            ButtonImages buttonImages;
+            EditorLayer::InspectorWindow* inspectorWindow;
+            EditorLayer::ProjectSettingsWindow* projectSettingsWindow;
+            EditorLayer::InspectorSceneWindow* inspectorSceneWindow;
 
             ImGuizmo::OPERATION gizmoOperation;
 
+            // TODO: Refactor this
             //----------------------Window Creation------------------------------//
-            void createInspectorWindow();
-            void createSceneWindow();
             void createGameWindow();
-            void createProjectSettingsWindow();
-
-            //----------------------Guizmo Creation------------------------------//
-            void createObjectsGUIZMO();
-
-            //----------------------Utils Methods--------------------------------//
-            void initializeButtonImageTextures();
 
         public:
             Dockspace();
             
-            void createDockspace();
+            void draw();
     };
 }
 

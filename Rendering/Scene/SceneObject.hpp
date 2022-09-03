@@ -4,6 +4,7 @@
 #include <Container.hpp>
 
 #include <Dockspace.hpp>
+#include <InspectorWindow.hpp>
 
 #include <GUI.hpp>
 
@@ -48,6 +49,7 @@ namespace Odysseus
         friend class System::Dockspace;
         friend class System::Serialize::Serializer;
         friend class System::Utils::GUI;
+        friend class EditorLayer::InspectorWindow;
 
         private:
             bool _active;

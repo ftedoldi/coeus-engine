@@ -62,7 +62,7 @@ namespace EditorLayer
     {
         this->handleMousePicking();
         
-        dockedSpace->createDockspace();
+        dockedSpace->draw();
     }
 
 } // namespace System

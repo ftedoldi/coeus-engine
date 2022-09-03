@@ -23,6 +23,8 @@ namespace EditorLayer
 
     void ContentBrowserWindow::initializeIcons()
     {
+        stbi_set_flip_vertically_on_load(false);
+
         icons.leftArrowTextureID = Odysseus::Texture2D::loadTextureFromFile(
                                                                                 (System::Folder::getFolderPath("Icons").string() + "/leftArrow.png").c_str(),
                                                                                 true
@@ -47,6 +49,8 @@ namespace EditorLayer
                                                                             (System::Folder::getFolderPath("Icons").string() + "/model.png").c_str(),
                                                                             true
                                                                         ).ID;
+
+        stbi_set_flip_vertically_on_load(true);
     }
 
     // TODO: Refactor this
