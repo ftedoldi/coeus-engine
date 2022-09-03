@@ -7,16 +7,6 @@
 
 namespace EditorLayer
 {
-    
-    MainMenuBar::MainMenuBar()
-    {
-        this->backgroundColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-        this->textColor = IM_COL32(0, 0, 0, 255);
-        this->borderColor = IM_COL32(255, 255, 255, 255);
-
-        this->_statusBar = nullptr;
-    }
-
     MainMenuBar::MainMenuBar(EditorLayer::StatusBar* mainStatusBar)
     {
         this->backgroundColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);

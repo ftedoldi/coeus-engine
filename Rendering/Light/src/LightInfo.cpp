@@ -21,4 +21,17 @@ namespace Odysseus
             pointLights[i]->setLightShader(meshShader, i);
     }
 
+    void LightInfo::resetLightInfo()
+    {
+        pointLights.clear();
+        spotLights.clear();
+        areaLights.clear();
+        directionalLights.clear();
+
+        existingPointLights.clear();
+        existingSpotLights.clear();
+        existingDirectionalLights.clear();
+        existingAreaLights.clear();
+    }
+
 }

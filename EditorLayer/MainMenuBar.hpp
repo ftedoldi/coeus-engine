@@ -28,7 +28,6 @@ namespace EditorLayer
             void openNewScene();
 
         public:
-            MainMenuBar();
             MainMenuBar(EditorLayer::StatusBar* mainStatusBar);
 
             void setBackgroundColor(const ImVec4& bgColor);

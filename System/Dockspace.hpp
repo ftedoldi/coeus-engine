@@ -16,8 +16,10 @@
 #include <Folder.hpp>
 
 #include <StatusBar.hpp>
-#include <Console.hpp>
 #include <MainMenuBar.hpp>
+#include <ToolBar.hpp>
+#include <ConsoleWindow.hpp>
+#include <ContentBrowserWindow.hpp>
 
 #include "Debug.hpp"
 
@@ -41,6 +43,12 @@ namespace Odysseus {
     class Transform;
 }
 
+namespace EditorLayer
+{
+    class Editor;
+    class HierarchyWindow;
+}
+
 namespace System {
     class Window;
     class Component;
@@ -48,14 +56,8 @@ namespace System {
     class StatusBar;
     
     struct ButtonImages {
-        int translateTextureID;
-        int rotateTextureID;
-        int scaleTextureID;
         int leftArrowTextureID;
         int reloadTextureID;
-        int playTextureID;
-        int pauseTextureID;
-        int stopTextureID;
         int folderTextureID;
         int documentTextureID;
         int pointLightTextureID;
@@ -68,29 +70,26 @@ namespace System {
     };
 
     class Dockspace {
+        friend class EditorLayer::Editor;
+        
         private:
-            EditorLayer::Console* console;
             EditorLayer::StatusBar* statusBar;
             EditorLayer::MainMenuBar* mainMenuBar;
+            EditorLayer::ToolBar* toolBar;
+
+            EditorLayer::HierarchyWindow* hierarchyWindow;
+            EditorLayer::ConsoleWindow* consoleWindow;
+            EditorLayer::ContentBrowserWindow* contentBrowserWindow;
 
             ButtonImages buttonImages;
 
             ImGuizmo::OPERATION gizmoOperation;
 
-            //----------------------Menu Creation--------------------------------//
-            void createToolMenuBar();
-
             //----------------------Window Creation------------------------------//
-            void createHierarchyWindow();
             void createInspectorWindow();
-            void createConsoleWindow();
-            void createContentBrowser();
             void createSceneWindow();
             void createGameWindow();
             void createProjectSettingsWindow();
-
-            //----------------------Mouse Picking--------------------------------//
-            void handleMousePicking();
 
             //----------------------Guizmo Creation------------------------------//
             void createObjectsGUIZMO();
@@ -99,12 +98,9 @@ namespace System {
             void initializeButtonImageTextures();
 
         public:
-            Odysseus::Transform* transformToShow;
-            
             Dockspace();
             
             void createDockspace();
-
     };
 }
 

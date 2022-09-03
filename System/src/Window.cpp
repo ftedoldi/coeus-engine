@@ -209,7 +209,7 @@ namespace System {
         sceneFrameBuffer = new Buffers::FrameBuffer(mode->width * 2, mode->height * 2, true);
         gameFrameBuffer = new Buffers::FrameBuffer(mode->width * 2, mode->height * 2, true);
 
-        dockspace = new Dockspace();
+        // dockspace = new Dockspace();
 
         Input::keyboard = new Keyboard();
     }
@@ -236,7 +236,8 @@ namespace System {
         // gameFrameBuffer->copyAnotherFrameBuffer(this->sceneFrameBuffer->ID);
 
         // ImGui::ShowDemoWindow();
-        dockspace->createDockspace();
+        // dockspace->createDockspace();
+        Odysseus::SceneManager::activeScene->sceneEditor->onEditorUpdate();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

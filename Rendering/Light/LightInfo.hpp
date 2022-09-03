@@ -30,6 +30,8 @@ namespace Odysseus
             static std::set<Odysseus::AreaLight*> existingAreaLights;
 
             static void computeLighting(Shader* meshShader);
+
+            static void resetLightInfo();
     };
 } // namespace Odysseus
 

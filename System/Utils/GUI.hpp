@@ -25,6 +25,8 @@ namespace System
                 static void setEngineEditorStyle();
                 static void setEngineRuntimeStyle();
 
+                static void createDockableArea();
+
                 static void displayFoldersAtPath(std::filesystem::path sourceFolder, std::filesystem::path& currentDirectory, int index = 1);
                 static void displayChildrenOfTransform(Odysseus::Transform* childrenTransform, Odysseus::Transform*& transformToShow, int index = 1);
 
