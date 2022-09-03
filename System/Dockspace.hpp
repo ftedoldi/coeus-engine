@@ -1,10 +1,6 @@
 #ifndef __DOCKSPACE_H__
 #define __DOCKSPACE_H__
 
-#include <Component.hpp>
-
-#include "Window.hpp"
-
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <imgui_impl_glfw.h>
@@ -12,35 +8,16 @@
 
 #include <ImGuizmo.h>
 
-#include <IO/Input.hpp>
-#include <Folder.hpp>
-
 #include <StatusBar.hpp>
 #include <MainMenuBar.hpp>
 #include <ToolBar.hpp>
 #include <ConsoleWindow.hpp>
 #include <ContentBrowserWindow.hpp>
 #include <InspectorWindow.hpp>
+#include <HierarchyWindow.hpp>
 #include <ProjectSettingsWindow.hpp>
 #include <InspectorSceneWindow.hpp>
-
-#include "Debug.hpp"
-
-#include <SceneManager.hpp>
-#include <Shader.hpp>
-#include <Texture2D.hpp>
-#include <Math.hpp>
-#include <Matrix4.hpp>
-
-#include <iostream>
-#include <string>
-#include <cmath>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <random>
-
-#include <stb/stb_image.h>
+#include <GameSceneWindow.hpp>
 
 namespace Odysseus {
     class Transform;
@@ -72,12 +49,9 @@ namespace System {
             EditorLayer::InspectorWindow* inspectorWindow;
             EditorLayer::ProjectSettingsWindow* projectSettingsWindow;
             EditorLayer::InspectorSceneWindow* inspectorSceneWindow;
+            EditorLayer::GameSceneWindow* gameSceneWindow;
 
             ImGuizmo::OPERATION gizmoOperation;
-
-            // TODO: Refactor this
-            //----------------------Window Creation------------------------------//
-            void createGameWindow();
 
         public:
             Dockspace();
