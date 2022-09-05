@@ -11,6 +11,8 @@
 #include <Folder.hpp>
 #include <UUID.hpp>
 
+#include <stb/stb_image.h>
+
 #include <filesystem>
 
 namespace EditorLayer
