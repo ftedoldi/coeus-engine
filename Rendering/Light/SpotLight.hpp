@@ -7,13 +7,16 @@ namespace Odysseus
 {
     class SpotLight : public Light
     {
-        public:
+        private:
             Athena::Vector3 _direction;
-            float _spotExponent;
+
             //angle representing the size of the cone where there'll be light
             float _cutOff;
-            
+            float _spotExponent;
+
+        public:
             SpotLight();
+            
             Athena::Vector3 getPosition() const;
             Athena::Vector3 getDirection() const;
             float getCutOff() const;
@@ -38,6 +41,9 @@ namespace Odysseus
             void setSpotExponent(float spotExp);
 
             void setLightShader(Odysseus::Shader* shader) const;
+            void setLightShader(Odysseus::Shader* shader, int index) const;
+
+            ~SpotLight();
 
             SERIALIZABLE_CLASS(System::Component, Light);
     };

@@ -1,6 +1,11 @@
 #include "../SpotLight.hpp"
 
+#include <EditorCamera.hpp>
+
+#include <Texture2D.hpp>
 #include <Folder.hpp>
+
+#include <LightInfo.hpp>
 
 namespace Odysseus
 {
@@ -14,7 +19,7 @@ namespace Odysseus
         _spotExponent = 0.1f;
         _cutOff = 0.1f;
         
-        shader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
+        this->ID = System::UUID();
 
         this->_editorTextureID = Odysseus::Texture2D::loadTextureFromFile(
                                                                                     (System::Folder::getFolderPath("Icons").string() + "/spotLight.png").c_str(), 
@@ -60,11 +65,16 @@ namespace Odysseus
 
     void SpotLight::start()
     {
-
+        if (LightInfo::existingSpotLights.count(this) == 0)
+        {
+            LightInfo::spotLights.push_back(this);
+            LightInfo::existingSpotLights.insert(this);
+        }
     }
+
     void SpotLight::update()
     {
-        this->setLightShader(this->shader);
+
     }
 
     void SpotLight::setOrderOfExecution(const short& newOrderOfExecution)
@@ -131,8 +141,6 @@ namespace Odysseus
             out << YAML::EndMap;
             out << YAML::Key << "Spot Exponent" << YAML::Value << this->_spotExponent;
             out << YAML::Key << "CutOff" << YAML::Value << this->_cutOff;
-            out << YAML::Key << "Vertex Shader Path" << YAML::Value << this->shader->vertexShaderPath;
-            out << YAML::Key << "Fragment Shader Path" << YAML::Value << this->shader->fragmentShaderPath;
         out << YAML::EndMap;
     }
 
@@ -159,11 +167,6 @@ namespace Odysseus
         this->_spotExponent = component["Spot Exponent"].as<float>();
         this->_cutOff = component["CutOff"].as<float>();
 
-        auto vShaderPath= component["Vertex Shader Path"].as<std::string>();
-        auto fShaderPath= component["Fragment Shader Path"].as<std::string>();
-
-        this->shader = new Odysseus::Shader(vShaderPath.c_str(), fShaderPath.c_str());
-
         return this;
     }
 
@@ -183,6 +186,40 @@ namespace Odysseus
         shader->setFloat("spotLight.spotExponent", this->_spotExponent);
         //We calculate the cosine value here because its needed in the fragment shader and also because calculating it in the shader would be expensive
         shader->setFloat("spotLight.cutOff", std::cos(Athena::Math::degreeToRandiansAngle(_cutOff)));
+    }
+
+    void SpotLight::setLightShader(Odysseus::Shader* shader, int index) const
+    {
+        auto tmp = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->getViewTransform(this->transform);
+        auto worldPosition = Transform::GetWorldTransform(this->transform, this->transform);
+        shader->use();
+
+        shader->setVec3("spotLights[" + std::to_string(index) + "].diffuse", this->_diffuse);
+        shader->setVec3("spotLights[" + std::to_string(index) + "].specular", this->_specular);
+        shader->setVec3("spotLights[" + std::to_string(index) + "].ambient", this->_ambient);
+        shader->setVec3("spotLights[" + std::to_string(index) + "].position", worldPosition->position);
+        shader->setVec3("spotLights[" + std::to_string(index) + "].direction", this->_direction);
+        shader->setFloat("spotLights[" + std::to_string(index) + "].cutOff", this->_cutOff);
+        shader->setFloat("spotLights[" + std::to_string(index) + "].spotExponent", this->_spotExponent);
+    }
+
+    SpotLight::~SpotLight()
+    {   
+        int indexToErease = -1;
+        for (int i = 0; i < LightInfo::spotLights.size(); i++)
+        {
+            if (LightInfo::spotLights[i] == this)
+            {
+                indexToErease = i;
+                break;
+            }
+        }
+
+        if (indexToErease > -1)
+        {
+            LightInfo::spotLights.erase(LightInfo::spotLights.begin() + indexToErease);
+            LightInfo::existingSpotLights.erase(this);
+        }
     }
 
     SERIALIZE_CLASS
