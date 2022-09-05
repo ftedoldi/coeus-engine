@@ -1,17 +1,20 @@
 #ifndef COLLISIONDATA_HPP
 #define COLLISIONDATA_HPP
 #include <Contact.hpp>
+#include <vector>
 
 namespace Khronos
 {
     class CollisionData
     {
     public:
-        // Holds the first contact in the array
+        /*// Holds the first contact in the array
         Contact* contactArray;
 
         // Holds the contact array to write into
-        Contact* contacts;
+        Contact* contacts;*/
+
+        std::vector<Contact*> contactArray;
 
         // Holds the maximum number of contacts the array can take
         unsigned int contactsLeft;
@@ -30,6 +33,8 @@ namespace Khronos
         void resetData(unsigned int maxContacts);
 
         void addContacts(unsigned int count);
+
+        Contact* getContact();
     };
 }
 

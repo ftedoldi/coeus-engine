@@ -153,6 +153,8 @@ namespace Khronos
         }
 
         // Combine the bounce velocity with the removed acceleration velocity
+        // We need to substract the acceleration velocity to remove the amount
+        // of visual vibration for objects resting on the ground
         this->desiredDeltaVelocity = -contactVelocity.coordinates.x - 
             thisRestitution * (contactVelocity.coordinates.x - velocityFromAcc);
     }
@@ -263,6 +265,47 @@ namespace Khronos
         }
     }
 
+    void Contact::applyVelocityChange(Athena::Vector3 velocityChange[2], Athena::Vector3 rotationChange[2])
+    {
+        // Hold the inverse mass and inverse inertia tensor of both bodies in world coordinates
+        Athena::Matrix3 inverseInertiaTensor[2];
+        inverseInertiaTensor[0] = body[0]->getInverseInertiaTensorWorld();
+        if(body[1] != nullptr)
+        {
+            inverseInertiaTensor[1] = body[1]->getInverseInertiaTensorWorld();
+        }
+
+        // Calculate the impulse for each contact axis
+        Athena::Vector3 contactImpulse;
+
+        //TODO: consider friction contacts also
+        contactImpulse = calculateFrictionlessImpulse(inverseInertiaTensor);
+
+        // Convert impulse to world coordinates
+        Athena::Vector3 worldImpulse = this->contactToWorldSpace * contactImpulse;
+
+        // Split the impulse into linear and angular components
+        Athena::Vector3 impulsiveTorque = Athena::Vector3::cross(relativeContactPosition[0], worldImpulse);
+        rotationChange[0] = inverseInertiaTensor[0] * impulsiveTorque;
+        velocityChange[0].clear();
+        velocityChange[0].addScaledVector(worldImpulse, body[0]->getInverseMass());
+
+        body[0]->addVelocity(velocityChange[0]);
+        body[0]->addRotation(rotationChange[0]);
+
+        // If the second rigid body exists, repeat the same process
+        if(body[1] != nullptr)
+        {
+            Athena::Vector3 impulsiveTorque = Athena::Vector3::cross(relativeContactPosition[1], worldImpulse);
+            rotationChange[1] = inverseInertiaTensor[1] * impulsiveTorque;
+            velocityChange[1].clear();
+            velocityChange[1].addScaledVector(worldImpulse, body[1]->getInverseMass());
+
+            body[1]->addVelocity(velocityChange[1]);
+            body[1]->addRotation(rotationChange[1]);
+        }
+    }
+
     void Contact::swapBodies()
     {
         this->contactNormal *= -1;
@@ -270,6 +313,12 @@ namespace Khronos
         RigidBody* temp = body[0];
         body[0] = body[1];
         body[1] = temp;
+    }
+
+    void Contact::clear()
+    {
+        this->body[0] = nullptr;
+        this->body[1] = nullptr;
     }
 
     void Contact::calculateInternals(Athena::Scalar dt)
@@ -289,7 +338,7 @@ namespace Khronos
             this->relativeContactPosition[1] = contactPoint - body[1]->getPosition();
         }
 
-        // Find the relative velocity of the bodies at contact point
+        // Find the overall relative closing velocity at contact point
         this->contactVelocity = calculateLocalVelocity(0, dt);
         if(body[1] != nullptr)
         {

@@ -7,19 +7,25 @@ namespace Khronos
         return contactsLeft > 0;
     }
 
-    void CollisionData::resetData(unsigned int maxContacts)
+    void CollisionData::resetData(unsigned int start)
     {
-        contactsLeft = maxContacts;
-        contactCount = 0;
-        contacts = contactArray;
+        contactsLeft = contactArray.size() - start;
+        contactCount = start;
     }
 
     void CollisionData::addContacts(unsigned int count)
     {
         contactsLeft -= count;
         contactCount += count;
+    }
 
-        // Move the array forward by count positions
-        contacts += count;
+    Contact* CollisionData::getContact()
+    {
+        if(!hasContactsLeft())
+           throw std::exception("No contacts left");
+        
+        auto contact = contactArray.at(contactCount);
+        addContacts(1);
+        return contact;
     }
 }

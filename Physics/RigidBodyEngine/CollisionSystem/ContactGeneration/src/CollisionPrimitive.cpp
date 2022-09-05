@@ -6,4 +6,10 @@ namespace Khronos
     {
         return transform.getAxisVector(index);
     }
+
+    void CollisionPrimitive::calculateInternals()
+    {
+        this->transform = this->body->transformMatrix;
+    }
+
 }

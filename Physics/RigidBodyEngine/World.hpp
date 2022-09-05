@@ -1,6 +1,10 @@
 #ifndef WORLD_HPP
 #define WORLD_HPP
 #include <RigidBody.hpp>
+#include <ContactGenerator.hpp>
+#include <ContactResolver.hpp>
+#include <CollisionGenerator.hpp>
+#include <GravityForce.hpp>
 
 namespace Khronos
 {
@@ -11,16 +15,39 @@ namespace Khronos
     */
     class World
     {
-        //Holds a single rigid body in a linked list of rigid bodies
-        struct BodyRegistration
-        {
-            RigidBody* body;
-            BodyRegistration* next;
-        };
+        //void applyForces(Athena::Scalar dt);
 
-        //Holds the head of the list of registred bodies
-        BodyRegistration* head;
+        // Calls each of the registered contact generators to report
+        // their contacts. Return the number of generated contacts
+        unsigned int generateContacts();
+
     public:
+
+        //Holds a single rigid body in a vector of rigid bodies
+        std::vector<RigidBody*> bodies;
+
+        // Holds the resolver for sets of contacts
+        ContactResolver* resolver;
+
+        // Holds a list of the contact generators
+        //std::vector<CollisionGenerator*> collisionGenerators;
+        CollisionGenerator* collisionGenerator;
+
+        // Holds an array of contacts
+        std::vector<Contact*> contacts;
+
+        // Holds an array of forces
+        //std::vector<GravityForce*> forces;
+        GravityForce* gForce;
+
+        unsigned int maxContacts;
+
+        void clearContacts();
+
+        World(unsigned int maxContacts, unsigned int iterations = 0);
+
+        ~World();
+        
 
         /**
          * Initializes the world for a simulation frame.

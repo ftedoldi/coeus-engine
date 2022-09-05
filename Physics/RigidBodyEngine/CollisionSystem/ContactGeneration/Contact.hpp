@@ -5,7 +5,7 @@
 
 namespace Khronos
 {
-    class ContactResolution;
+    class ContactResolver;
     /**
      * The contact class represents two bodies in contact.
      * It has no callable functions because it holds only
@@ -13,7 +13,7 @@ namespace Khronos
     */
     class Contact
     {
-        friend class ContactResolution;
+        friend class ContactResolver;
     public:
         // Holds the bodies that are in contact
         RigidBody* body[2];
@@ -40,6 +40,8 @@ namespace Khronos
         Athena::Scalar penetration;
 
         void setBodyData(RigidBody* first, RigidBody* second, Athena::Scalar friction, Athena::Scalar restitution);
+
+        void clear();
 
         protected:
 
@@ -87,6 +89,8 @@ namespace Khronos
         void calculateDesiredDeltaVelocity(Athena::Scalar dt);
 
         void applyPositionChange(Athena::Vector3 linearChange[2], Athena::Vector3 angularChange[2], Athena::Scalar penetration);
+
+        void applyVelocityChange(Athena::Vector3 velocityChange[2], Athena::Vector3 rotationChange[2]);
 
         /**
          * Reverses the contact. This involves swapping the two rigid bodies

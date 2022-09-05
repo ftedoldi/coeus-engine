@@ -29,6 +29,8 @@ namespace Khronos
         // Function that allow us to get the column vector by the given index
         Athena::Vector3 getAxis(unsigned int index) const;
 
+        void calculateInternals();
+
     protected:
         /**
          * Returns the resultant transform of the primitive

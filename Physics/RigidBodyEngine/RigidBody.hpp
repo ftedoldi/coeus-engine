@@ -105,6 +105,7 @@ namespace Khronos
 
         void addForce(const Athena::Vector3& force);
         void addVelocity(const Athena::Vector3& velocity);
+        void addRotation(const Athena::Vector3& rotation);
         void addTorque(const Athena::Vector3& torque);
         void addForceAtBodyPoint(const Athena::Vector3& force, const Athena::Vector3& point);
         void addForceAtPoint(const Athena::Vector3& force, const Athena::Vector3& point);

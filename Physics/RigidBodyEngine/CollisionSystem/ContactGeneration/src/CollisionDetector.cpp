@@ -2,14 +2,14 @@
 
 namespace Khronos
 {
-    unsigned int CollisionDetector::sphereAndSphere(const CollisionSphere& firstSphere, const CollisionSphere& secondSphere, CollisionData* data)
+    void CollisionDetector::sphereAndSphere(const CollisionSphere& firstSphere, const CollisionSphere& secondSphere, CollisionData* data)
     {
         // Check if we have contacts
         if(data->contactsLeft <= 0)
-            return 0;
+            return;
 
-        //if(!IntersectionTests::sphereAndSphere(firstSphere, secondSphere))
-        //    return 0;
+        if(!IntersectionTests::sphereAndSphere(firstSphere, secondSphere))
+            return;
 
         // Retrieve the sphere positions based on their transform matrix (getting last column)
         Athena::Vector3 firstSpherePosition = firstSphere.getAxis(3);
@@ -20,12 +20,12 @@ namespace Khronos
         Athena::Scalar size = midline.magnitude();
         
         if(size <= 0.0f || size >= firstSphere.radius + secondSphere.radius)
-            return 0;
+            return;
 
         // The contact normal is given by the normal of the first face
         Athena::Vector3 normal = Athena::Vector3::normalize(midline);// * (((Athena::Scalar)1.0) / size);
 
-        Contact* contact = data->contacts;
+        auto contact = data->getContact();
         contact->contactNormal = normal;
         // Arbitrary point
         contact->contactPoint = firstSpherePosition + midline * Athena::Scalar(0.5);
@@ -36,18 +36,15 @@ namespace Khronos
         contact->body[1] = secondSphere.body;
         contact->friction = data->friction;
         contact->restitution = data->restitution;
-
-        data->addContacts(1);
-        return 1;
     }
 
-    unsigned int CollisionDetector::sphereAndHalfSpace(const CollisionSphere& sphere, const CollisionPlane& plane, CollisionData* data)
+    void CollisionDetector::sphereAndHalfSpace(const CollisionSphere& sphere, const CollisionPlane& plane, CollisionData* data)
     {
         if(data->contactsLeft <= 0)
-            return 0;
+            return;
 
-        //if(!IntersectionTests::sphereAndHalfSpace(sphere, plane))
-        //    return 0;
+        if(!IntersectionTests::sphereAndHalfSpace(sphere, plane))
+            return;
 
         Athena::Vector3 spherePosition = sphere.getAxis(3);
 
@@ -56,9 +53,9 @@ namespace Khronos
 
         // The sphere and the plane didn't collide
         if(sphereDistance >= 0)
-            return 0;
+            return;
 
-        Contact* contact = data->contacts;
+        auto contact = data->getContact();
         contact->contactNormal = plane.direction;
         contact->penetration = -sphereDistance;
         contact->contactPoint = spherePosition - plane.direction * (sphereDistance + sphere.radius);
@@ -67,26 +64,23 @@ namespace Khronos
         contact->body[1] = nullptr;
         contact->friction = data->friction;
         contact->restitution = data->restitution;
-
-        data->addContacts(1);
-        return 1;
     }
 
-    unsigned int CollisionDetector::boxAndHalfSpace(const CollisionBox& box, const CollisionPlane& plane, CollisionData* data)
+    void CollisionDetector::boxAndHalfSpace(const CollisionBox& box, const CollisionPlane& plane, CollisionData* data)
     {
         if(data->contactsLeft <= 0)
-            return 0;
+            return;
         
-        //if(!IntersectionTests::boxAndHalfSpace(box, plane))
-        //    return 0;
+        if(!IntersectionTests::boxAndHalfSpace(box, plane))
+            return;
         
         // Since the intersection test passed, we have an intersection
         // so we need to find the intersection points
         static Athena::Scalar mults[8][3] = {{1, 1, 1},{-1, 1, 1},{1, -1, 1},{-1, -1, 1},
                                {1, 1, -1},{-1, 1, -1},{1, -1, -1},{-1, -1, -1}};
         
-        Contact* contact = data->contacts;
-        unsigned int contactsUsed = 0;
+        //Contact* contact = data->contacts;
+        //unsigned int contactsUsed = 0;
         for(unsigned int i = 0; i < 8; ++i)
         {
             // Calculate the position of each vertex
@@ -102,6 +96,7 @@ namespace Khronos
 
             if(vertexDistance <= plane.offset)
             {
+                auto contact = data->getContact();
                 contact->contactPoint = plane.direction;
                 contact->contactPoint *= (vertexDistance - plane.offset);
                 contact->contactPoint += vertexPos;
@@ -113,19 +108,12 @@ namespace Khronos
                 contact->body[1] = nullptr;
                 contact->friction = data->friction;
                 contact->restitution = data->restitution;
-
-                // Move onto next contact
-                contact++;
-                contactsUsed++;
-                if(contactsUsed == data->contactsLeft)
-                    return contactsUsed;
+;
             }
         }
-        data->addContacts(contactsUsed);
-        return contactsUsed;
     }
 
-    unsigned int CollisionDetector::boxAndSphere(const CollisionBox& box, const CollisionSphere& sphere, CollisionData* data)
+    void CollisionDetector::boxAndSphere(const CollisionBox& box, const CollisionSphere& sphere, CollisionData* data)
     {
         /**
          * Firstly we need to transform the center of the sphere into the box coordinates
@@ -143,7 +131,7 @@ namespace Khronos
          Athena::Math::scalarAbs(relativeSphereCenter.coordinates.y) - sphere.radius > box.halfSize.coordinates.y ||
          Athena::Math::scalarAbs(relativeSphereCenter.coordinates.z) - sphere.radius > box.halfSize.coordinates.z)
         {
-            return 0;
+            return;
         }
 
         /** 
@@ -174,7 +162,7 @@ namespace Khronos
         // Now perform the check if we are in contact
         distance = (closestPoint - relativeSphereCenter).squareMagnitude();
         if(distance > sphere.radius * sphere.radius)
-            return 0;
+            return;
         
         /**
          * Since the contact properties need to be given in world coordinates
@@ -183,7 +171,7 @@ namespace Khronos
         */
        Athena::Vector3 closestPointWS = box.transform.transform(closestPoint);
 
-       Contact* contact = data->contacts;
+       auto contact = data->getContact();
        contact->contactNormal = closestPoint - center;
        contact->contactNormal.normalize();
        contact->contactPoint = closestPointWS;
@@ -193,12 +181,9 @@ namespace Khronos
        contact->body[1] = sphere.body;
        contact->friction = data->friction;
        contact->restitution = data->restitution;
-
-       data->addContacts(1);
-       return 1;
     }
 
-    unsigned int CollisionDetector::boxAndPoint(const CollisionBox& box, const Athena::Vector3& point, CollisionData* data)
+    void CollisionDetector::boxAndPoint(const CollisionBox& box, const Athena::Vector3& point, CollisionData* data)
     {
         // Transform the point into box coordinates
         Athena::Vector3 relativePointPosition = box.transform.transformInverse(point);
@@ -211,14 +196,14 @@ namespace Khronos
         Athena::Scalar min_depth = box.halfSize.coordinates.x - Athena::Math::scalarAbs(relativePointPosition.coordinates.x);
         // The point is not interpenetrated, we don't have a contact
         if(min_depth < 0)
-            return 0;
+            return;
         // The normal is in the direction of where the point is situated
         normal = box.getAxis(0) * ((relativePointPosition.coordinates.x < 0) ? -1 : 1);
 
         Athena::Scalar depth = box.halfSize.coordinates.y - Athena::Math::scalarAbs(relativePointPosition.coordinates.y);
         if(depth < 0)
         {
-            return 0;
+            return;
         }else if(depth < min_depth)
         {
             min_depth = depth;
@@ -228,14 +213,14 @@ namespace Khronos
         depth = box.halfSize.coordinates.z - Athena::Math::scalarAbs(relativePointPosition.coordinates.z);
         if(depth < 0)
         {
-            return 0;
+            return;
         }else if(depth < min_depth)
         {
             min_depth = depth;
             normal = box.getAxis(2) * ((relativePointPosition.coordinates.z < 0) ? -1 : 1);
         }
 
-        Contact* contact = data->contacts;
+        auto contact = data->getContact();
         contact->contactNormal = normal;
         contact->contactPoint = point;
         contact->penetration = min_depth;
@@ -246,9 +231,5 @@ namespace Khronos
         contact->body[1] = nullptr;
         contact->friction = data->friction;
         contact->restitution = data->restitution;
-
-        data->addContacts(1);
-        // Return 1 contact
-        return 1;
     }
 }

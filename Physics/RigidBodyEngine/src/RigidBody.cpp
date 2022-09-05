@@ -320,6 +320,11 @@ namespace Khronos
         this->velocity += velocity;
     }
 
+    void RigidBody::addRotation(const Athena::Vector3& rotation)
+    {
+        this->rotation += rotation;
+    }
+
     void RigidBody::addTorque(const Athena::Vector3& torque)
     {
         this->torqueAccum += torque;
