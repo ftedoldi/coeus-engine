@@ -1,6 +1,10 @@
 #include "../GUI.hpp"
 
+#include <Window.hpp>
+
 #include <Component.hpp>
+
+#include <Folder.hpp>
 
 namespace System::Utils
 {
@@ -208,7 +212,7 @@ namespace System::Utils
 
 	    	ImGui::DockBuilderRemoveNode(dockspace_id); // clear any previous layout
 	    	ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
-	    	ImGui::DockBuilderSetNodeSize(dockspace_id, ImVec2(Window::screen.width, Window::screen.height));
+	    	ImGui::DockBuilderSetNodeSize(dockspace_id, ImVec2(System::Window::screen.width, System::Window::screen.height));
 
 	    	// split the dockspace into 2 nodes -- DockBuilderSplitNode takes in the following args in the following order
 	    	//   window ID to split, direction, fraction (between 0 and 1), the final two setting let's us choose which id we want (which ever one we DON'T set as NULL, will be returned by the function)
@@ -238,7 +242,7 @@ namespace System::Utils
                 ImGui::Dummy({ marginX, 0 });
                 ImGui::SameLine();
                 
-                if (Folder::countNestedFolders(directory.path()) > 0) {
+                if (System::Folder::countNestedFolders(directory.path()) > 0) {
                     bool isOpen = ImGui::CollapsingHeader(directory.path().filename().string().c_str());
                     if (!isOpen && ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
                             currentDirectory = directory.path();

@@ -16,9 +16,13 @@ namespace Odysseus
     {
         meshShader->use();
         meshShader->setInt("numberOfPointLights", pointLights.size());
+        meshShader->setInt("numberOfSpotLights", spotLights.size());
 
         for (int i = 0; i < pointLights.size(); i++)
             pointLights[i]->setLightShader(meshShader, i);
+
+        for (int i = 0; i < spotLights.size(); i++)
+            spotLights[i]->setLightShader(meshShader, i);
     }
 
     void LightInfo::resetLightInfo()

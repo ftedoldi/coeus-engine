@@ -5,6 +5,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include <Texture2D.hpp>
 #include <Folder.hpp>
 
 DummyComponent::DummyComponent()

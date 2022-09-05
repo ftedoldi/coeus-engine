@@ -2,6 +2,8 @@
 
 #include <Window.hpp>
 
+#include <Component.hpp>
+
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <imgui_impl_glfw.h>
@@ -11,6 +13,8 @@
 #include <GUI.hpp>
 
 #include <Transform.hpp>
+
+#include <rttr/registration>
 
 namespace EditorLayer
 {

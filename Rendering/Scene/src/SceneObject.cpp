@@ -1,5 +1,7 @@
 #include "../SceneObject.hpp"
 
+#include <Component.hpp>
+
 namespace Odysseus {
 
     SceneObject::SceneObject() : isActive(_active), isStatic(_static)

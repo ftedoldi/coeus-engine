@@ -1,5 +1,9 @@
 #include "../Scene.hpp"
 
+#include <Window.hpp>
+
+#include <Component.hpp>
+
 #include <iostream>
 #include <fstream>
 

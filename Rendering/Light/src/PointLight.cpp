@@ -3,6 +3,9 @@
 #include <SceneManager.hpp>
 #include <EditorCamera.hpp>
 
+#include <Texture2D.hpp>
+#include <Folder.hpp>
+
 #include <LightInfo.hpp>
 
 namespace Odysseus
@@ -18,7 +21,6 @@ namespace Odysseus
         _quadratic = 0.1f;
 
         this->ID = System::UUID();
-
 
         this->_editorTextureID = Odysseus::Texture2D::loadTextureFromFile(
                                                                                     (System::Folder::getFolderPath("Icons").string() + "/pointLight.png").c_str(), 

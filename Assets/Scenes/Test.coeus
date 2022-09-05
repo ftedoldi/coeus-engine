@@ -121,8 +121,6 @@ Scene Objects:
             Z: 0.577350259
           Spot Exponent: 0.100000001
           CutOff: 0.100000001
-          Vertex Shader Path: .\Shader\phongShader.vert
-          Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 8754901149741182942
     Transform:
       Name: DirectionalLight
@@ -624,3 +622,44 @@ Scene Objects:
           Constant: 0.100000001
           Linear: 0.100000001
           Quadratic: 0.100000001
+  - Scene Object ID: 13328863739802516020
+    Transform:
+      Name: SpotLight2
+      Position:
+        X: -7.80921698
+        Y: 1.01327896e-06
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: SpotLight
+        SpotLight:
+          Diffuse:
+            Red: 50
+            Green: 0.5
+            Blue: 0.5
+          Ambient:
+            Red: 0
+            Green: 0
+            Blue: 0
+          Specular:
+            Red: 0
+            Green: 0
+            Blue: 0
+          Direction:
+            X: 0.577350259
+            Y: 0.577350259
+            Z: 0.577350259
+          Spot Exponent: 0.100000001
+          CutOff: 0.100000001

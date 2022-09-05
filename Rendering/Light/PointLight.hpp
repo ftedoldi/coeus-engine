@@ -7,11 +7,12 @@ namespace Odysseus
 {   
     class PointLight : public Light
     {
-        public:
+        private:
             float _constant;
             float _linear;
             float _quadratic;
 
+        public:
             PointLight();
 
             virtual void start();

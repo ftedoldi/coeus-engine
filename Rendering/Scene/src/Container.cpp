@@ -1,5 +1,7 @@
 #include <Container.hpp>
 
+#include <Component.hpp>
+
 namespace Odysseus {
 
     Container::Container(SceneObject& owner, Transform& ownerTransform) : components(_components)

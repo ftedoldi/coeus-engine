@@ -1,5 +1,6 @@
 #include "../DirectionalLight.hpp"
 
+#include <Texture2D.hpp>
 #include <Folder.hpp>
 
 namespace Odysseus

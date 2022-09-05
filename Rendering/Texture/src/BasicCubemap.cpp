@@ -1,4 +1,7 @@
 #include "../BasicCubemap.hpp"
+
+#include <Window.hpp>
+
 #include <stb/stb_image.h>
 
 namespace Odysseus

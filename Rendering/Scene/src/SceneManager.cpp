@@ -1,5 +1,7 @@
 #include <SceneManager.hpp>
 
+#include <Window.hpp>
+
 #include <Editor.hpp>
 
 namespace Odysseus {

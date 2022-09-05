@@ -1,9 +1,12 @@
 #include "../Mesh.hpp"
 
+#include <Window.hpp>
+
 #include <Component.hpp>
 #include <EditorCamera.hpp>
 
-#include <PointLight.hpp>
+#include <Texture2D.hpp>
+#include <Folder.hpp>
 
 #include <LightInfo.hpp>
 
