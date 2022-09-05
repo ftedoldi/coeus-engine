@@ -61,9 +61,12 @@ uniform DirectionalLight dirLight;
 uniform PointLight pointLight;
 uniform SpotLight spotLight;
 
-#define MAX_LIGHTS 128
+#define MAX_LIGHTS 64
 uniform int numberOfPointLights;
 uniform PointLight pointLights[MAX_LIGHTS];
+
+uniform int numberOfSpotLights;
+uniform SpotLight spotLights[MAX_LIGHTS];
 
 uniform bool hasTexture;
 uniform bool hasNormalTexture;
@@ -110,12 +113,13 @@ void main()
     // pL.quadratic = 0;
 
     // result += calcPointLight(material, pL, viewDir);
-    //result += calcSpotLight(material, spotLight, viewDir);
+    // result += calcSpotLight(material, spotLight, viewDir);
 
     for(int i = 0; i < numberOfPointLights; ++i)
-    {
         result += calcPointLight(material, pointLights[i], viewDir);
-    }
+
+    for(int i = 0; i < numberOfSpotLights; ++i)
+        result += calcSpotLight(material, spotLights[i], viewDir);
 
     idColor = vec4(vID);
     FragColor = vec4(result, 1.0);
