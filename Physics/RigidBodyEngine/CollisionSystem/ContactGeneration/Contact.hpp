@@ -1,5 +1,6 @@
 #ifndef CONTACT_HPP
 #define CONTACT_HPP
+
 #include <Vector3.hpp>
 #include <RigidBody.hpp>
 

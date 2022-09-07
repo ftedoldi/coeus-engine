@@ -1,6 +1,9 @@
 #ifndef CONTACTGENERATOR_HPP
 #define CONTACTGENERATOR_HPP
+
 #include <Contact.hpp>
+
+#include <vector>
 
 namespace Khronos
 {
