@@ -11,6 +11,11 @@
 #include <filesystem>
 #include <vector>
 
+namespace EditorLayer
+{
+    class HierarchyWindow;
+}
+
 namespace System
 {
     class Component;
@@ -28,7 +33,7 @@ namespace System
                 static void createDockableArea();
 
                 static void displayFoldersAtPath(std::filesystem::path sourceFolder, std::filesystem::path& currentDirectory, int index = 1);
-                static void displayChildrenOfTransform(Odysseus::Transform* childrenTransform, Odysseus::Transform*& transformToShow, int index = 1);
+                static void displayChildrenOfTransform(Odysseus::Transform* childrenTransform, Odysseus::Transform*& transformToShow, EditorLayer::HierarchyWindow* hierarchyWindow, int index = 1);
 
                 static void loadInspectorParameters(Odysseus::Transform* transformToAnalyze);
         };

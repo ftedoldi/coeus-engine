@@ -78,8 +78,6 @@ Scene Objects:
             X: 0.577350259
             Y: 0.577350259
             Z: 0.577350259
-          Vertex Shader Path: .\Shader\phongShader.vert
-          Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 7292084055544433658
     Transform:
       Name: SpotLight
@@ -123,7 +121,7 @@ Scene Objects:
           CutOff: 0.100000001
   - Scene Object ID: 8754901149741182942
     Transform:
-      Name: DirectionalLight
+      Name: DirectionalLight2
       Position:
         X: -4.72364569
         Y: 4.18686676
@@ -160,8 +158,6 @@ Scene Objects:
             X: 0.577350259
             Y: 0.577350259
             Z: 0.577350259
-          Vertex Shader Path: .\Shader\phongShader.vert
-          Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 17782837585363037712
     Transform:
       Name: DummyComponent
@@ -316,12 +312,12 @@ Scene Objects:
         Y: 1
         Z: 1
       Children Scene Objects:
-        - 888632865377919211
         - 11979143433524644365
-        - 1293047374708301628
-        - 14220560762339356615
         - 16106145571490513017
         - 9825708928404364276
+        - 1293047374708301628
+        - 14220560762339356615
+        - 888632865377919211
   - Scene Object ID: 888632865377919211
     Transform:
       Name: Mesh
