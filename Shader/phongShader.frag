@@ -45,6 +45,12 @@ struct SpotLight
     float spotExponent;
 };
 
+struct AreaLight
+{
+    int numberOfPointLights;
+    PointLight pointLights[16];
+};
+
 in VS_OUT
 {
     vec3 Normal;
@@ -57,16 +63,22 @@ flat in float vID;
 uniform vec3 viewPos;
 
 uniform Material material;
-uniform DirectionalLight dirLight;
-uniform PointLight pointLight;
-uniform SpotLight spotLight;
+// uniform DirectionalLight dirLight;
+// uniform PointLight pointLight;
+// uniform SpotLight spotLight;
 
-#define MAX_LIGHTS 64
+#define MAX_LIGHTS 32
 uniform int numberOfPointLights;
 uniform PointLight pointLights[MAX_LIGHTS];
 
 uniform int numberOfSpotLights;
 uniform SpotLight spotLights[MAX_LIGHTS];
+
+uniform int numberOfAreaLights;
+uniform AreaLight areaLights[4];
+
+uniform int numberOfDirectionalLights;
+uniform DirectionalLight directionalLights[8];
 
 uniform bool hasTexture;
 uniform bool hasNormalTexture;
@@ -91,7 +103,7 @@ vec3 getNormalFromMap()
     return normalize(TBN * tangentNormal);
 }
 
-vec3 calcDirectionalLight(Material material, DirectionalLight ligth, vec3 viewDir);
+vec3 calcDirectionalLight(Material material, DirectionalLight light, vec3 viewDir);
 vec3 calcPointLight(Material material, PointLight light, vec3 viewDir);
 vec3 calcSpotLight(Material material, SpotLight light, vec3 viewDir);
 
@@ -100,7 +112,7 @@ void main()
     vec3 viewDir = normalize(viewPos - fs_in.FragPos);
     vec3 result = vec3(0, 0, 0);
 
-    //result += calcDirectionalLight(material, dirLight, viewDir);
+    // result += calcDirectionalLight(material, dirLight, viewDir);
     // result += calcPointLight(material, pointLight, viewDir);
 
     // PointLight pL;
@@ -120,6 +132,13 @@ void main()
 
     for(int i = 0; i < numberOfSpotLights; ++i)
         result += calcSpotLight(material, spotLights[i], viewDir);
+
+    for(int i = 0; i < numberOfDirectionalLights; ++i)
+        result += calcDirectionalLight(material, directionalLights[i], viewDir);
+
+    for (int i = 0; i < numberOfAreaLights; i++)
+        for (int j = 0; j < areaLights[i].numberOfPointLights; j++)
+            result += calcPointLight(material, areaLights[i].pointLights[j], viewDir);
 
     idColor = vec4(vID);
     FragColor = vec4(result, 1.0);

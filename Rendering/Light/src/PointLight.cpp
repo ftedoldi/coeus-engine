@@ -1,5 +1,7 @@
 #include "../PointLight.hpp"
 
+#include <AreaLight.hpp>
+
 #include <SceneManager.hpp>
 #include <EditorCamera.hpp>
 

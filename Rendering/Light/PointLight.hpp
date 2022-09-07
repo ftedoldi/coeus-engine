@@ -5,8 +5,12 @@
 
 namespace Odysseus
 {   
+    class AreaLight;
+
     class PointLight : public Light
     {
+        friend class AreaLight;
+        
         private:
             float _constant;
             float _linear;

@@ -12,6 +12,7 @@ namespace Odysseus
             std::vector<PointLight*> pointLights;
             
             AreaLight();
+
             virtual void start();
             virtual void update();
     
@@ -28,6 +29,9 @@ namespace Odysseus
             
             void addLight(PointLight* pt);
             void setLightShader(Odysseus::Shader* shader) const;
+            void setLightShader(Odysseus::Shader* shader, int index) const;
+
+            ~AreaLight();
                                     
             SERIALIZABLE_CLASS(System::Component, Light);
     };

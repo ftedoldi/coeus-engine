@@ -1,7 +1,11 @@
 #include "../AreaLight.hpp"
 
+#include <EditorCamera.hpp>
+
 #include <Texture2D.hpp>
 #include <Folder.hpp>
+
+#include <LightInfo.hpp>
 
 namespace Odysseus
 {
@@ -10,12 +14,8 @@ namespace Odysseus
         _ambient = Athena::Vector3();
         _diffuse = Athena::Vector3(0.5f, 0.5f, 0.5f);
         _specular = Athena::Vector3();
-
-        auto pLight = new PointLight();
-
-        pointLights.push_back(pLight);
         
-        shader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
+        this->ID = System::UUID();
 
         this->_editorTextureID = Odysseus::Texture2D::loadTextureFromFile(
                                                                             (System::Folder::getFolderPath("Icons").string() + "/areaLight.png").c_str(),
@@ -23,14 +23,19 @@ namespace Odysseus
                                                                         ).ID;
         this->_hasEditorTexture = true;
     }
+
     void AreaLight::start()
     {
-        unsigned int numLights = this->pointLights.size();
-        shader->setInt("numLights", numLights);
+        if (LightInfo::existingAreaLights.count(this) == 0)
+        {
+            LightInfo::areaLights.push_back(this);
+            LightInfo::existingAreaLights.insert(this);
+        }
     }
+
     void AreaLight::update()
     {
-        this->setLightShader(this->shader);
+
     }
 
     void AreaLight::setOrderOfExecution(const short& newOrderOfExecution)
@@ -101,13 +106,9 @@ namespace Odysseus
                     pLight->serialize(out);
                 }
             out << YAML::EndSeq;
-            out << YAML::Key << "Vertex Shader Path" << YAML::Value << this->shader->vertexShaderPath;
-            out << YAML::Key << "Fragment Shader Path" << YAML::Value << this->shader->fragmentShaderPath;
         out << YAML::EndMap;
     }
 
-    // TODO: Check this implementation
-    // FIXME: Check this implementation
     System::Component* AreaLight::deserialize(YAML::Node& node)
     {
         auto component = node[this->toString()];
@@ -132,35 +133,71 @@ namespace Odysseus
             this->addLight(newPLight);
         }
 
-        auto vShaderPath= component["Vertex Shader Path"].as<std::string>();
-        auto fShaderPath= component["Fragment Shader Path"].as<std::string>();
-
-        this->shader = new Odysseus::Shader(vShaderPath.c_str(), fShaderPath.c_str());
-
         return this;
     }
 
     void AreaLight::addLight(PointLight* pt)
     {
-        this->pointLights.push_back(pt);
+        auto pLight = this->sceneObject->addCopyOfExistingComponent<PointLight>(pt);
+        this->pointLights.push_back(pLight);
     }
 
     void AreaLight::setLightShader(Odysseus::Shader* shader) const
     {
-        this->shader->use();
+        // this->shader->use();
         
-        for(unsigned int i = 0; i < this->pointLights.size(); ++i)
+        // for(unsigned int i = 0; i < this->pointLights.size(); ++i)
+        // {
+        //     std::cout << "pointlight" << i << " position: ";
+        //     pointLights[i]->getPosition().print();
+        //     std::cout << std::endl;
+        //     shader->setVec3("pointLights[i].position", pointLights[i]->getPosition());
+        //     shader->setVec3("pointLights[i].ambient", pointLights[i]->getAmbient());
+        //     shader->setVec3("pointLights[i].diffuse", pointLights[i]->getDiffuse());
+        //     shader->setVec3("pointLights[i].specular", pointLights[i]->getSpecular());
+        //     shader->setFloat("pointLights[i].constant", pointLights[i]->getConstant());
+        //     shader->setFloat("pointLights[i].linear", pointLights[i]->getLinear());
+        //     shader->setFloat("pointLights[i].quadratic", pointLights[i]->getQuadratic());
+        // }
+    }
+
+    void AreaLight::setLightShader(Odysseus::Shader* shader, int index) const
+    {
+        auto tmp = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->getViewTransform(this->transform);
+        auto worldPosition = Transform::GetWorldTransform(this->transform, this->transform);
+        shader->use();
+
+        shader->setInt("areaLights[" + std::to_string(index) + "].numberOfPointLights", this->pointLights.size());
+        for (int i = 0; i < this->pointLights.size(); i++)
         {
-            std::cout << "pointlight" << i << " position: ";
-            pointLights[i]->getPosition().print();
-            std::cout << std::endl;
-            shader->setVec3("pointLights[i].position", pointLights[i]->getPosition());
-            shader->setVec3("pointLights[i].ambient", pointLights[i]->getAmbient());
-            shader->setVec3("pointLights[i].diffuse", pointLights[i]->getDiffuse());
-            shader->setVec3("pointLights[i].specular", pointLights[i]->getSpecular());
-            shader->setFloat("pointLights[i].constant", pointLights[i]->getConstant());
-            shader->setFloat("pointLights[i].linear", pointLights[i]->getLinear());
-            shader->setFloat("pointLights[i].quadratic", pointLights[i]->getQuadratic());
+            auto tmp = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->getViewTransform(this->pointLights[i]->transform);
+            auto worldPosition = Transform::GetWorldTransform(this->pointLights[i]->transform, this->pointLights[i]->transform);
+            shader->setVec3("areaLights[" + std::to_string(index) + "].pointLights[" + std::to_string(i) + "].diffuse", this->pointLights[i]->_diffuse);
+            shader->setVec3("areaLights[" + std::to_string(index) + "].pointLights[" + std::to_string(i) + "].specular", this->pointLights[i]->_specular);
+            shader->setVec3("areaLights[" + std::to_string(index) + "].pointLights[" + std::to_string(i) + "].ambient", this->pointLights[i]->_ambient);
+            shader->setVec3("areaLights[" + std::to_string(index) + "].pointLights[" + std::to_string(i) + "].position", worldPosition->position);
+            shader->setFloat("areaLights[" + std::to_string(index) + "].pointLights[" + std::to_string(i) + "].constant", this->pointLights[i]->_constant);
+            shader->setFloat("areaLights[" + std::to_string(index) + "].pointLights[" + std::to_string(i) + "].linear", this->pointLights[i]->_linear);
+            shader->setFloat("areaLights[" + std::to_string(index) + "].pointLights[" + std::to_string(i) + "].quadratic", this->pointLights[i]->_quadratic);
+        }
+    }
+
+    AreaLight::~AreaLight()
+    {
+        int indexToErease = -1;
+        for (int i = 0; i < LightInfo::areaLights.size(); i++)
+        {
+            if (LightInfo::areaLights[i] == this)
+            {
+                indexToErease = i;
+                break;
+            }
+        }
+
+        if (indexToErease > -1)
+        {
+            LightInfo::areaLights.erase(LightInfo::areaLights.begin() + indexToErease);
+            LightInfo::existingAreaLights.erase(this);
         }
     }
 

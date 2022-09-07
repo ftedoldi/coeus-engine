@@ -1,7 +1,11 @@
 #include "../DirectionalLight.hpp"
 
+#include <EditorCamera.hpp>
+
 #include <Texture2D.hpp>
 #include <Folder.hpp>
+
+#include <LightInfo.hpp>
 
 namespace Odysseus
 {
@@ -14,7 +18,7 @@ namespace Odysseus
 
         _direction = Athena::Vector3(0.5f, 0.5f, 0.5f).normalized();
         
-        shader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
+        this->ID = System::UUID();
 
         this->_editorTextureID = Odysseus::Texture2D::loadTextureFromFile(
                                                                             (System::Folder::getFolderPath("Icons").string() + "/directionalLight.png").c_str(), 
@@ -34,11 +38,15 @@ namespace Odysseus
 
     void DirectionalLight::start()
     {
-
+        if (LightInfo::existingDirectionalLights.count(this) == 0)
+        {
+            LightInfo::directionalLights.push_back(this);
+            LightInfo::existingDirectionalLights.insert(this);
+        }
     }
     void DirectionalLight::update()
     {
-        this->setLightShader(this->shader);
+
     }
 
     void DirectionalLight::setOrderOfExecution(const short& newOrderOfExecution)
@@ -70,7 +78,7 @@ namespace Odysseus
         _specular = Athena::Vector3(spec[0], spec[1], spec[2]);
         float dir[] = { _direction.coordinates.x, _direction.coordinates.y, _direction.coordinates.z };
         ImGui::InputFloat3("Direction", dir);
-        _specular = Athena::Vector3(dir[0], dir[1], dir[2]);
+        _direction = Athena::Vector3(dir[0], dir[1], dir[2]);
     }
 
     void DirectionalLight::serialize(YAML::Emitter& out)
@@ -101,8 +109,6 @@ namespace Odysseus
                 out << YAML::Key << "Y" << YAML::Value << _direction.coordinates.y;
                 out << YAML::Key << "Z" << YAML::Value << _direction.coordinates.z;
             out << YAML::EndMap;
-            out << YAML::Key << "Vertex Shader Path" << YAML::Value << this->shader->vertexShaderPath;
-            out << YAML::Key << "Fragment Shader Path" << YAML::Value << this->shader->fragmentShaderPath;
         out << YAML::EndMap;
     }
 
@@ -127,11 +133,6 @@ namespace Odysseus
         this->_direction.coordinates.y = component["Direction"]["Y"].as<float>();
         this->_direction.coordinates.z = component["Direction"]["Z"].as<float>();
 
-        auto vShaderPath= component["Vertex Shader Path"].as<std::string>();
-        auto fShaderPath= component["Fragment Shader Path"].as<std::string>();
-
-        this->shader = new Odysseus::Shader(vShaderPath.c_str(), fShaderPath.c_str());
-
         return this;
     }
 
@@ -143,6 +144,38 @@ namespace Odysseus
         shader->setVec3("dirLight.specular", this->_specular);
         shader->setVec3("dirLight.ambient", this->_ambient);
         shader->setVec3("dirLight.direction", this->_direction);
+    }
+
+    void DirectionalLight::setLightShader(Odysseus::Shader* shader, int index) const
+    {
+        auto tmp = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->getViewTransform(this->transform);
+        auto worldPosition = Transform::GetWorldTransform(this->transform, this->transform);
+        shader->use();
+
+        shader->setVec3("directionalLights[" + std::to_string(index) + "].diffuse", this->_diffuse);
+        shader->setVec3("directionalLights[" + std::to_string(index) + "].specular", this->_specular);
+        shader->setVec3("directionalLights[" + std::to_string(index) + "].ambient", this->_ambient);
+        shader->setVec3("directionalLights[" + std::to_string(index) + "].position", worldPosition->position);
+        shader->setVec3("directionalLights[" + std::to_string(index) + "].direction", this->_direction);
+    }
+
+    DirectionalLight::~DirectionalLight()
+    {
+        int indexToErease = -1;
+        for (int i = 0; i < LightInfo::directionalLights.size(); i++)
+        {
+            if (LightInfo::directionalLights[i] == this)
+            {
+                indexToErease = i;
+                break;
+            }
+        }
+
+        if (indexToErease > -1)
+        {
+            LightInfo::directionalLights.erase(LightInfo::directionalLights.begin() + indexToErease);
+            LightInfo::existingDirectionalLights.erase(this);
+        }
     }
 
     SERIALIZE_CLASS

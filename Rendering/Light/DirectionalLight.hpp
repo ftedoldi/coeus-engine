@@ -7,9 +7,10 @@ namespace Odysseus
 {
     class DirectionalLight : public Light
     {
-        public:
+        private:
             Athena::Vector3 _direction;
 
+        public:
             DirectionalLight();
 
             Athena::Vector3 getDirection() const;
@@ -30,6 +31,9 @@ namespace Odysseus
             virtual System::Component* deserialize(YAML::Node& node);
 
             void setLightShader(Odysseus::Shader* shader) const;
+            void setLightShader(Odysseus::Shader* shader, int index) const;
+
+            ~DirectionalLight();
                         
             SERIALIZABLE_CLASS(System::Component, Light);
     };
