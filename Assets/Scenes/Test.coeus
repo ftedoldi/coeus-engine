@@ -312,15 +312,15 @@ Scene Objects:
         Y: 1
         Z: 1
       Children Scene Objects:
+        - 888632865377919211
         - 11979143433524644365
-        - 16106145571490513017
-        - 9825708928404364276
         - 1293047374708301628
         - 14220560762339356615
-        - 888632865377919211
+        - 16106145571490513017
+        - 9825708928404364276
   - Scene Object ID: 888632865377919211
     Transform:
-      Name: Mesh
+      Name: Mesh1
       Position:
         X: -5.88965321
         Y: -0.645562887
@@ -363,7 +363,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 11979143433524644365
     Transform:
-      Name: Mesh
+      Name: Mesh2
       Position:
         X: -2.15209651
         Y: 2.11176348
@@ -406,7 +406,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 1293047374708301628
     Transform:
-      Name: Mesh
+      Name: Mesh3
       Position:
         X: -3.09189773
         Y: 1.47873437
@@ -449,7 +449,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 14220560762339356615
     Transform:
-      Name: Mesh
+      Name: Mesh4
       Position:
         X: 1.87017822
         Y: 0.452485979
@@ -492,7 +492,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 16106145571490513017
     Transform:
-      Name: Mesh
+      Name: Mesh5
       Position:
         X: 1.56035018
         Y: 0.207573652
@@ -537,7 +537,7 @@ Scene Objects:
           Fragment Shader Path: .\Shader\phongShader.frag
   - Scene Object ID: 9825708928404364276
     Transform:
-      Name: Mesh
+      Name: Mesh6
       Position:
         X: 1.70514464
         Y: -1.468436
