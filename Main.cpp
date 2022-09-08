@@ -37,24 +37,21 @@
 #include "Scripts/CameraMovement.hpp"
 
 
-// #include <Python.h>
+#include <Python.h>
 
-// #include <Test.cuh>
+#include <Test.cuh>
+#include <FirstClass.cuh>
 
-// void runPythonScript()
-// {
-//     char filename[] = "test.py";
-//     FILE* fp;
+void runPythonScript()
+{
+    char filename[] = "test.py";
+    FILE* fp;
 
-//     Py_Initialize();
-//     fp = _Py_fopen(filename, "r");
-//     PyRun_SimpleFile(fp, filename);
-//     Py_Finalize();
-// }
-
-// TODO: Implement Editor Camera Movement
-// TODO: Avoid Showing editor camera in hierarchy
-// TODO: Store (or better) serialize Light components
+    Py_Initialize();
+    fp = _Py_fopen(filename, "r");
+    PyRun_SimpleFile(fp, filename);
+    Py_Finalize();
+}
 
 int main()
 {
@@ -76,6 +73,20 @@ int main()
         scenePathToLoad = data["Default Scene"].as<std::string>();
 
     serializer.deserialize(scenePathToLoad);    
+
+    call();
+    AddVectors();
+    Athena::Vector3 test = Athena::Vector3(1, 1, 1);
+    Athena::Vector3 test1 = Athena::Vector3(1, 2, 3);
+    Athena::Vector3 r = Athena::Vector3();
+    float t[3] = {test[0], test[1], test[2]};
+    float t1[3] = {test1[0], test1[1], test1[2]};
+    float result[3] = {r[0], r[1], r[2]};
+    auto res = AddVector3(t, t1, result);
+    r = Athena::Vector3(result[0], result[1], result[2]);
+    r.print();
+
+    std::thread thread(runPythonScript);
 
     // Odysseus::Scene* startScene = new Odysseus::Scene(std::string("Start Scene"));
     // Odysseus::SceneManager::addScene(startScene);
@@ -193,6 +204,8 @@ int main()
         
         window->update();
     }
+
+    thread.join();
 
     // serializer.serialize(Odysseus::SceneManager::activeScene->path);
 
