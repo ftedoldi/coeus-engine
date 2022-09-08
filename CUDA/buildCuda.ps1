@@ -1,3 +1,5 @@
+python .\CUDA\cudaFindAndBuild.py
+
 cd CUDA;
 
 foreach ($line in ls) {
@@ -8,6 +10,7 @@ foreach ($line in ls) {
         nvcc -o Shared/$name.dll --shared $line;
 
         mv Shared/$name.dll ../Build;
+        mv Shared/$name.lib ../Includes/Libraries;
     }
 }
 

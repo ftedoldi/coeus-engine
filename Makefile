@@ -15,7 +15,7 @@ IDIR = /I./Includes /I./Includes/CUDA /I./Math /I./CUDA /I./CUDA/Shared /I./Math
 CCFLAGS  = /Od /Zi /EHsc /MT /std:c++17
 
 # linker flags:
-LFLAGS = ./Resources/resource.res /LIBPATH:./Includes/Libraries assimp-vc142-mt.lib zlib.lib cuda.lib cudart.lib glfw3dll.lib glm_static.lib yaml-cpp.lib python39.lib python3.lib rttr_core.lib rttr_core_lib_s.lib rttr_core_s.lib librttr_core_s.lib ComDlg32.lib
+LFLAGS = ./Resources/resource.res /LIBPATH:./Includes/Libraries assimp-vc142-mt.lib zlib.lib cuda.lib cudart.lib glfw3dll.lib glm_static.lib yaml-cpp.lib python39.lib python3.lib rttr_core.lib rttr_core_lib_s.lib rttr_core_s.lib librttr_core_s.lib ComDlg32.lib Test.lib FirstClass.lib
 
 SOURCES = ./Includes/src/glad.c $(shell powershell -file .getCPPFilePaths.ps1)
 PARTIAL_SOURCES = $(shell python ./findAllObjs.py $(ARGS))
