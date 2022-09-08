@@ -263,7 +263,56 @@ namespace System::Utils
         }
     }
 
-    void GUI::displayChildrenOfTransform(Odysseus::Transform* childrenTransform, Odysseus::Transform*& transformToShow, EditorLayer::HierarchyWindow* hierarchyWindow, int index)
+
+    void GUI::beginDragAndDroppableTransform(
+                                                EditorLayer::HierarchyWindow* hierarchyWindow,
+                                                Odysseus::Transform* transformToSetOnPreview
+                                            )
+    {
+        if (ImGui::BeginDragDropSource())
+                {
+                    ImGui::SetDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F, nullptr, 0);
+                    ImGui::EndDragDropSource();
+                }
+
+                if (ImGui::BeginDragDropTarget())
+                {
+                    const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F, ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect);
+                    if (payload)
+                    {
+                        if (payload->IsPreview())
+                            hierarchyWindow->hoveredDraggingTransform = transformToSetOnPreview;
+                        if (payload->IsDelivery() && hierarchyWindow->hoveredDraggingTransform != nullptr)
+                        {
+                            if (hierarchyWindow->selectedItem->parent)
+                            {
+                                auto parent = hierarchyWindow->selectedItem->parent;
+                                int indexToPop = -1;
+                                for (int i = 0; i < parent->children.size(); i++)
+                                    if (parent->children[i] == hierarchyWindow->selectedItem)
+                                        indexToPop = i;
+                                parent->children.erase(parent->children.begin() + indexToPop);
+                            }
+
+                            hierarchyWindow->selectedItem->parent = hierarchyWindow->hoveredDraggingTransform;
+                            hierarchyWindow->hoveredDraggingTransform->children.push_back(hierarchyWindow->selectedItem);
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+    }
+
+    void GUI::selectTransform(EditorLayer::HierarchyWindow* hierarchyWindow, Odysseus::Transform*& transformToShow)
+    {
+        if (ImGui::IsItemHovered() && ImGui::IsItemClicked(ImGuiMouseButton_Left))
+        {
+            Odysseus::SceneManager::activeScene->sceneEditor->selectedTransform = transformToShow;
+            hierarchyWindow->selectedItem = transformToShow;
+            System::Utils::GUI::loadInspectorParameters(Odysseus::SceneManager::activeScene->sceneEditor->selectedTransform);
+        }
+    }
+
+    void GUI::displayChildrenOfTransform(Odysseus::Transform* childrenTransform, EditorLayer::HierarchyWindow* hierarchyWindow, int index)
     {
         for (int j = 0; j < childrenTransform->children.size(); j++) {
 
@@ -279,46 +328,12 @@ namespace System::Utils
                                                     childrenTransform->children[j]->name.c_str()
                                                 );
 
-                if (ImGui::IsItemHovered() && ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
-                    transformToShow = childrenTransform->children[j];
-                    hierarchyWindow->selectedItem = childrenTransform->children[j];
-                    loadInspectorParameters(transformToShow);
-                }
-
-                if (ImGui::BeginDragDropSource())
-                {
-                    ImGui::SetDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F, nullptr, 0);
-                    ImGui::EndDragDropSource();
-                }
-
-                if (ImGui::BeginDragDropTarget())
-                {
-                    const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F, ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect);
-                    if (payload)
-                        if (payload->IsPreview())
-                            hierarchyWindow->hoveredDraggingTransform = childrenTransform->children[j];
-                        if (payload->IsDelivery() && hierarchyWindow->hoveredDraggingTransform != nullptr)
-                        {
-                            if (hierarchyWindow->selectedItem->parent)
-                            {
-                                auto parent = hierarchyWindow->selectedItem->parent;
-                                int indexToPop = -1;
-                                for (int i = 0; i < parent->children.size(); i++)
-                                    if (parent->children[i] == hierarchyWindow->selectedItem)
-                                        indexToPop = i;
-                                parent->children.erase(parent->children.begin() + indexToPop);
-                            }
-
-                            hierarchyWindow->selectedItem->parent = hierarchyWindow->hoveredDraggingTransform;
-                            hierarchyWindow->hoveredDraggingTransform->children.push_back(hierarchyWindow->selectedItem);
-                            std::cout << hierarchyWindow->selectedItem->name << std::endl;
-                        }
-                    ImGui::EndDragDropTarget();
-                }
+                selectTransform(hierarchyWindow, childrenTransform->children[j]);
+                beginDragAndDroppableTransform(hierarchyWindow, childrenTransform->children[j]);
 
                 if (childOpen)
                 {
-                    displayChildrenOfTransform(childrenTransform->children[j], transformToShow, hierarchyWindow, index + 1);           
+                    displayChildrenOfTransform(childrenTransform->children[j], hierarchyWindow, index + 1);           
                 }
             } else {
                 auto childOpen = ImGui::TreeNodeEx(
@@ -329,41 +344,8 @@ namespace System::Utils
                                                     childrenTransform->children[j]->name.c_str()
                                                 );
 
-                if (ImGui::IsItemHovered() && ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
-                    transformToShow = childrenTransform->children[j];
-                    hierarchyWindow->selectedItem = childrenTransform->children[j];
-                    loadInspectorParameters(transformToShow);
-                }
-
-                if (ImGui::BeginDragDropSource())
-                {
-                    ImGui::SetDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F, nullptr, 0);
-                    ImGui::EndDragDropSource();
-                }
-
-                if (ImGui::BeginDragDropTarget())
-                {
-                    const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F, ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect);
-                    if (payload)
-                        if (payload->IsPreview())
-                            hierarchyWindow->hoveredDraggingTransform = childrenTransform->children[j];
-                        if (payload->IsDelivery() && hierarchyWindow->hoveredDraggingTransform != nullptr)
-                        {
-                            if (hierarchyWindow->selectedItem->parent)
-                            {
-                                auto parent = hierarchyWindow->selectedItem->parent;
-                                int indexToPop = -1;
-                                for (int i = 0; i < parent->children.size(); i++)
-                                    if (parent->children[i] == hierarchyWindow->selectedItem)
-                                        indexToPop = i;
-                                parent->children.erase(parent->children.begin() + indexToPop);
-                            }
-
-                            hierarchyWindow->selectedItem->parent = hierarchyWindow->hoveredDraggingTransform;
-                            hierarchyWindow->hoveredDraggingTransform->children.push_back(hierarchyWindow->selectedItem);
-                        }
-                    ImGui::EndDragDropTarget();
-                }
+                selectTransform(hierarchyWindow, childrenTransform->children[j]);
+                beginDragAndDroppableTransform(hierarchyWindow, childrenTransform->children[j]);
             }
         }
     }

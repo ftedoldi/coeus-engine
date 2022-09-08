@@ -32,8 +32,24 @@ namespace System
 
                 static void createDockableArea();
 
-                static void displayFoldersAtPath(std::filesystem::path sourceFolder, std::filesystem::path& currentDirectory, int index = 1);
-                static void displayChildrenOfTransform(Odysseus::Transform* childrenTransform, Odysseus::Transform*& transformToShow, EditorLayer::HierarchyWindow* hierarchyWindow, int index = 1);
+                static void displayFoldersAtPath(
+                                                    std::filesystem::path sourceFolder, 
+                                                    std::filesystem::path& currentDirectory, 
+                                                    int index = 1
+                                                );
+
+                static void displayChildrenOfTransform  (
+                                                            Odysseus::Transform* childrenTransform,
+                                                            EditorLayer::HierarchyWindow* hierarchyWindow, 
+                                                            int index = 1
+                                                        );
+
+                static void beginDragAndDroppableTransform(
+                                                            EditorLayer::HierarchyWindow* hierarchyWindow,
+                                                            Odysseus::Transform* transformToSetOnPreview
+                                                          );
+
+                static void selectTransform(EditorLayer::HierarchyWindow* hierarchyWindow, Odysseus::Transform*& transformToShow);
 
                 static void loadInspectorParameters(Odysseus::Transform* transformToAnalyze);
         };

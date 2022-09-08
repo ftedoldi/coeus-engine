@@ -37,20 +37,15 @@ namespace EditorLayer
         }
     }
 
-    // TODO: Draggable Scene Items
-    void HierarchyWindow::draw()
+    void HierarchyWindow::beginDragAndDropWindowEmptyArea()
     {
-        ImGui::Begin("Hierarchy");
-
         ImVec2 pos = ImGui::GetCursorPos();
         ImGui::Dummy(ImGui::GetContentRegionAvail());
         if (ImGui::BeginDragDropTarget())
         {
             const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F, ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect);
                 if (payload)
-                    if (payload->IsPreview())
-                        hoveredDraggingTransform = nullptr;
-                    if (payload->IsDelivery() && hoveredDraggingTransform == nullptr)
+                    if (payload->IsDelivery() && hoveredDraggingTransform == nullptr && !ImGui::IsAnyItemHovered())
                     {
                         if (selectedItem->parent)
                         {
@@ -68,7 +63,18 @@ namespace EditorLayer
             ImGui::EndDragDropTarget();
         }
         ImGui::SetCursorPos(pos);
+        
+        if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && !ImGui::IsAnyItemHovered())
+            hoveredDraggingTransform = nullptr;
+    }
 
+    // TODO: Draggable Scene Items
+    void HierarchyWindow::draw()
+    {
+        ImGui::Begin("Hierarchy");
+
+        this->beginDragAndDropWindowEmptyArea();
+        
         this->drawPopupMenu();
 
         for (int i = 0; i < Odysseus::SceneManager::activeScene->objectsInScene.size(); i++)
@@ -78,6 +84,7 @@ namespace EditorLayer
                 !Odysseus::SceneManager::activeScene->objectsInScene[i]->showInEditor)
                 continue;
 
+            // TODO: Refactor drag and drop code that is a mess
             if (Odysseus::Transform::CountNestedChildren(Odysseus::SceneManager::activeScene->objectsInScene[i]->transform))
             {
                 auto isOpen = ImGui::TreeNodeEx(
@@ -85,84 +92,15 @@ namespace EditorLayer
                     ImGuiTreeNodeFlags_CollapsingHeader,
                     Odysseus::SceneManager::activeScene->objectsInScene[i]->transform->name.c_str());
 
-                if (ImGui::IsItemHovered() && ImGui::IsItemClicked(ImGuiMouseButton_Left))
-                {
-                    Odysseus::SceneManager::activeScene->sceneEditor->selectedTransform = Odysseus::SceneManager::activeScene->objectsInScene[i]->transform;
-                    System::Utils::GUI::loadInspectorParameters(Odysseus::SceneManager::activeScene->sceneEditor->selectedTransform);
-                }
-
-                if (ImGui::IsItemHovered() && ImGui::IsItemClicked(ImGuiMouseButton_Left))
-                    selectedItem = Odysseus::SceneManager::activeScene->objectsInScene[i]->transform;
+                System::Utils::GUI::selectTransform(this, Odysseus::SceneManager::activeScene->objectsInScene[i]->transform);
+                System::Utils::GUI::beginDragAndDroppableTransform(this, Odysseus::SceneManager::activeScene->objectsInScene[i]->transform);
 
                 if (isOpen)
                 {
-                    if (ImGui::BeginDragDropSource())
-                    {
-                        ImGui::SetDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F, nullptr, 0);
-                        ImGui::EndDragDropSource();
-                    }
-
-                    if (ImGui::BeginDragDropTarget())
-                    {
-                        const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F, ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect);
-                        if (payload)
-                            if (payload->IsPreview())
-                                hoveredDraggingTransform = Odysseus::SceneManager::activeScene->objectsInScene[i]->transform;
-                            if (payload->IsDelivery() && hoveredDraggingTransform != nullptr)
-                            {
-                                if (selectedItem->parent)
-                                {
-                                    auto parent = selectedItem->parent;
-                                    int indexToPop = -1;
-                                    for (int i = 0; i < parent->children.size(); i++)
-                                        if (parent->children[i] == selectedItem)
-                                            indexToPop = i;
-                                    parent->children.erase(parent->children.begin() + indexToPop);
-                                }
-
-                                selectedItem->parent = hoveredDraggingTransform;
-                                hoveredDraggingTransform->children.push_back(selectedItem);
-                            }
-                        ImGui::EndDragDropTarget();
-                    }
-
                     System::Utils::GUI::displayChildrenOfTransform(
-                                                            Odysseus::SceneManager::activeScene->objectsInScene[i]->transform, 
-                                                            Odysseus::SceneManager::activeScene->sceneEditor->selectedTransform,
+                                                            Odysseus::SceneManager::activeScene->objectsInScene[i]->transform,
                                                             this
                                                         );
-                }
-                else
-                {
-                    if (ImGui::BeginDragDropSource())
-                    {
-                        ImGui::SetDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F, nullptr, 0);
-                        ImGui::EndDragDropSource();
-                    }
-        
-                    if (ImGui::BeginDragDropTarget())
-                    {
-                        const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F, ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect);
-                        if (payload)
-                            if (payload->IsPreview())
-                                hoveredDraggingTransform = Odysseus::SceneManager::activeScene->objectsInScene[i]->transform;
-                            if (payload->IsDelivery() && hoveredDraggingTransform != nullptr)
-                            {
-                                if (selectedItem->parent)
-                                {
-                                    auto parent = selectedItem->parent;
-                                    int indexToPop = -1;
-                                    for (int i = 0; i < parent->children.size(); i++)
-                                        if (parent->children[i] == selectedItem)
-                                            indexToPop = i;
-                                    parent->children.erase(parent->children.begin() + indexToPop);
-                                }
-        
-                                selectedItem->parent = hoveredDraggingTransform;
-                                hoveredDraggingTransform->children.push_back(selectedItem);
-                            }
-                        ImGui::EndDragDropTarget();
-                    }
                 }
             }
             else
@@ -172,45 +110,10 @@ namespace EditorLayer
                     ImGuiTreeNodeFlags_CollapsingHeader | ImGuiTreeNodeFlags_Bullet,
                     Odysseus::SceneManager::activeScene->objectsInScene[i]->transform->name.c_str());
 
-                if (ImGui::IsItemHovered() && ImGui::IsItemClicked(ImGuiMouseButton_Left))
-                {
-                    Odysseus::SceneManager::activeScene->sceneEditor->selectedTransform = Odysseus::SceneManager::activeScene->objectsInScene[i]->transform;
-                    selectedItem = Odysseus::SceneManager::activeScene->objectsInScene[i]->transform;
-                    System::Utils::GUI::loadInspectorParameters(Odysseus::SceneManager::activeScene->sceneEditor->selectedTransform);
-                }
-
-                if (ImGui::BeginDragDropSource())
-                {
-                    ImGui::SetDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F, nullptr, 0);
-                    ImGui::EndDragDropSource();
-                }
-
-                if (ImGui::BeginDragDropTarget())
-                {
-                    const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F, ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect);
-                    if (payload)
-                        if (payload->IsPreview())
-                            hoveredDraggingTransform = Odysseus::SceneManager::activeScene->objectsInScene[i]->transform;
-                        if (payload->IsDelivery() && hoveredDraggingTransform != nullptr)
-                        {
-                            if (selectedItem->parent)
-                            {
-                                auto parent = selectedItem->parent;
-                                int indexToPop = -1;
-                                for (int i = 0; i < parent->children.size(); i++)
-                                    if (parent->children[i] == selectedItem)
-                                        indexToPop = i;
-                                parent->children.erase(parent->children.begin() + indexToPop);
-                            }
-
-                            selectedItem->parent = hoveredDraggingTransform;
-                            hoveredDraggingTransform->children.push_back(selectedItem);
-                        }
-                    ImGui::EndDragDropTarget();
-                }
+                System::Utils::GUI::selectTransform(this, Odysseus::SceneManager::activeScene->objectsInScene[i]->transform);
+                System::Utils::GUI::beginDragAndDroppableTransform(this, Odysseus::SceneManager::activeScene->objectsInScene[i]->transform);
             }
         }
         ImGui::End();
     }
-
 } // namespace EditorLayer

@@ -19,6 +19,7 @@ namespace EditorLayer
             Odysseus::Transform* hoveredDraggingTransform;
 
             void drawPopupMenu();
+            void beginDragAndDropWindowEmptyArea();
             
         public:
             HierarchyWindow();
