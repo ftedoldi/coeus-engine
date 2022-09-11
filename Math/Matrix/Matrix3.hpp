@@ -61,6 +61,9 @@ namespace Athena
         void setTranspose(const Matrix3& mat);
         Matrix3 transpose() const;
         static Matrix3 transpose(const Matrix3& mat);
+        Vector3 transformTranspose(const Vector3& vec);
+        
+        void setSkewSymmetric(const Vector3& vec);
 
         // Sets the matrix columns by the given 3 vectors
         void setComponents(const Vector3& vec1, const Vector3& vec2, const Vector3& vec3);

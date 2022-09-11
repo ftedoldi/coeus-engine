@@ -195,6 +195,24 @@ namespace Athena
         return result;
     }
 
+    Vector3 Matrix3::transformTranspose(const Vector3& vec)
+    {
+        return Vector3(vec.coordinates.x * data[0] + vec.coordinates.y * data[3] + vec.coordinates.z * data[6],
+                       vec.coordinates.x * data[1] + vec.coordinates.y * data[4] + vec.coordinates.z * data[7],
+                       vec.coordinates.x * data[2] + vec.coordinates.y * data[5] + vec.coordinates.z * data[8]);
+    }
+
+    void Matrix3::setSkewSymmetric(const Vector3& vec)
+    {
+        data[0] = data[4] = data[8] = 0;
+        data[1] = -vec.coordinates.z;
+        data[2] = vec.coordinates.y;
+        data[3] = vec.coordinates.z;
+        data[5] = -vec.coordinates.x;
+        data[6] = -vec.coordinates.y;
+        data[7] = vec.coordinates.x;
+    }
+
     void Matrix3::setComponents(const Vector3& vec1, const Vector3& vec2, const Vector3& vec3)
     {
         data[0] = vec1.coordinates.x;
