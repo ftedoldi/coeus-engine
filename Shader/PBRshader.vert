@@ -10,9 +10,6 @@ uniform vec4 rotation;
 
 uniform mat4 projection;
 
-uniform vec3 pointLightPos;
-uniform vec3 DirLightDir;
-
 uniform vec3 WorldPosition;
 uniform vec3 WorldScale;
 uniform vec4 WorldRotation;
@@ -22,7 +19,6 @@ out VS_OUT
 	vec3 Normal;
 	vec2 TexCoords;
 	vec3 FragPos;
-	vec3 LightPos;
 } vs_out;
 
 vec4 calcViewPosition(vec3 vector, vec4 conj);

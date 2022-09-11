@@ -36,7 +36,6 @@ in VS_OUT
     vec3 Normal;
     vec2 TexCoords;
     vec3 FragPos;
-    vec3 LightPos;
 } fs_in;
 
 const float PI = 3.14159265359;
