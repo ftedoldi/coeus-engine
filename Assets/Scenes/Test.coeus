@@ -78,118 +78,13 @@ Scene Objects:
             X: 0.577350259
             Y: 0.577350259
             Z: 0.577350259
-  - Scene Object ID: 7292084055544433658
+  - Scene Object ID: 15811587013976240538
     Transform:
-      Name: SpotLight
+      Name: PointLight
       Position:
-        X: -3.55127263
-        Y: 4.15697098
-        Z: -3.55127263
-      Rotation:
         X: 0
-        Y: 0
+        Y: 2
         Z: 0
-        W: 1
-      Euler Angles Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-      Scale:
-        X: 1
-        Y: 1
-        Z: 1
-    Components:
-      - Component: SpotLight
-        SpotLight:
-          Diffuse:
-            Red: 0.600000024
-            Green: 0.5
-            Blue: 0.5
-          Ambient:
-            Red: 0
-            Green: 0
-            Blue: 0
-          Specular:
-            Red: 0
-            Green: 0
-            Blue: 0
-          Direction:
-            X: 0.577350259
-            Y: 0.577350259
-            Z: 0.577350259
-          Spot Exponent: 0.100000001
-          CutOff: 0.100000001
-  - Scene Object ID: 8754901149741182942
-    Transform:
-      Name: DirectionalLight2
-      Position:
-        X: -4.72364569
-        Y: 4.18686676
-        Z: -4.72364569
-      Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-        W: 1
-      Euler Angles Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-      Scale:
-        X: 1
-        Y: 1
-        Z: 1
-    Components:
-      - Component: DirectionalLight
-        DirectionalLight:
-          Diffuse:
-            Red: 0.5
-            Green: 0.5
-            Blue: 0.5
-          Ambient:
-            Red: 0
-            Green: 0
-            Blue: 0
-          Specular:
-            Red: 0.577350259
-            Green: 0.577350259
-            Blue: 0.577350259
-          Direction:
-            X: 0.577350259
-            Y: 0.577350259
-            Z: 0.577350259
-  - Scene Object ID: 17782837585363037712
-    Transform:
-      Name: DummyComponent
-      Position:
-        X: -4.66569948
-        Y: 4.44121027
-        Z: -4.25807238
-      Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-        W: 1
-      Euler Angles Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-      Scale:
-        X: 1
-        Y: 1
-        Z: 1
-    Components:
-      - Component: DummyComponent
-        DummyComponent:
-          asd: 2
-          var: 10
-  - Scene Object ID: 2426417046733272916
-    Transform:
-      Name: PointLight2
-      Position:
-        X: -2.55753517
-        Y: 0.692038119
-        Z: 0.907406747
       Rotation:
         X: 0
         Y: 0
@@ -207,26 +102,26 @@ Scene Objects:
       - Component: PointLight
         PointLight:
           Diffuse:
-            Red: 0.5
-            Green: 0.5
-            Blue: 0.5
+            Red: 0.800000012
+            Green: 0.800000012
+            Blue: 0.800000012
           Ambient:
-            Red: 0
-            Green: 0
-            Blue: 0
+            Red: 0.200000003
+            Green: 0.200000003
+            Blue: 0.200000003
           Specular:
-            Red: 0
-            Green: 0
-            Blue: 0
-          Constant: 0.100000001
-          Linear: 2
-          Quadratic: 0.100000001
-  - Scene Object ID: 11888168846672259505
+            Red: 0.300000012
+            Green: 0.300000012
+            Blue: 0.300000012
+          Constant: 1
+          Linear: 0.0900000036
+          Quadratic: 0.0320000015
+  - Scene Object ID: 17077945977894237923
     Transform:
-      Name: Sphere
+      Name: PointLight
       Position:
         X: 0
-        Y: 0
+        Y: 2
         Z: 0
       Rotation:
         X: 0
@@ -241,62 +136,30 @@ Scene Objects:
         X: 1
         Y: 1
         Z: 1
-      Children Scene Objects:
-        - 13175015591498231632
-  - Scene Object ID: 13175015591498231632
-    Transform:
-      Name: Mesh
-      Position:
-        X: -4.21755648
-        Y: 0.411144078
-        Z: 0.228842854
-      Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-        W: 1
-      Euler Angles Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-      Scale:
-        X: 1
-        Y: 1
-        Z: 1
-      Parent Scene Object: 11888168846672259505
     Components:
-      - Component: Mesh
-        Mesh:
-          Vertices Path: ./Assets/Scenes/Meshes/13175015591498231632.meta
-          Is PBR: false
+      - Component: PointLight
+        PointLight:
           Diffuse:
             Red: 0.800000012
             Green: 0.800000012
             Blue: 0.800000012
-          Specular:
-            Red: 0.5
-            Green: 0.5
-            Blue: 0.5
           Ambient:
-            Red: 1
-            Green: 1
-            Blue: 1
-          Shininess: 225
-          Textures:
-            - Directory: Assets/Models/PBRsphere
-              Path: rustediron2_basecolor.png
-              Type: 1
-            - Directory: Assets/Models/PBRsphere
-              Path: rustediron2_normal.png
-              Type: 6
-          Vertex Shader Path: .\Shader\phongShader.vert
-          Fragment Shader Path: .\Shader\phongShader.frag
-  - Scene Object ID: 15174817271371581026
+            Red: 0.200000003
+            Green: 0.200000003
+            Blue: 0.200000003
+          Specular:
+            Red: 0.300000012
+            Green: 0.300000012
+            Blue: 0.300000012
+          Constant: 1
+          Linear: 0.0900000036
+          Quadratic: 0.0320000015
+  - Scene Object ID: 18173832557426053557
     Transform:
-      Name: Cubes
+      Name: Scene Object
       Position:
-        X: -0.907404602
-        Y: 0.571328282
+        X: 0
+        Y: 0
         Z: 0
       Rotation:
         X: 0
@@ -312,42 +175,37 @@ Scene Objects:
         Y: 1
         Z: 1
       Children Scene Objects:
-        - 888632865377919211
-        - 11979143433524644365
-        - 1293047374708301628
-        - 14220560762339356615
-        - 16106145571490513017
-        - 9825708928404364276
-  - Scene Object ID: 888632865377919211
+        - 15677139307487324380
+  - Scene Object ID: 15677139307487324380
     Transform:
-      Name: Mesh1
+      Name: Scene Object
       Position:
-        X: -5.88965321
-        Y: -0.645562887
-        Z: -4.80588627
+        X: 0.102618463
+        Y: 1.67596519
+        Z: -0.913869083
       Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-        W: 1
+        X: -0.00136021082
+        Y: 0.00570513401
+        Z: 0.483622462
+        W: 0.875257075
       Euler Angles Rotation:
-        X: 0
-        Y: 0
-        Z: 0
+        X: -0.452589244
+        Y: 0.64757216
+        Z: 57.8408089
       Scale:
-        X: 1
-        Y: 1
+        X: 0.999994993
+        Y: 0.999998689
         Z: 1
-      Parent Scene Object: 15174817271371581026
+      Parent Scene Object: 18173832557426053557
     Components:
       - Component: Mesh
         Mesh:
-          Vertices Path: ./Assets/Scenes/Meshes/888632865377919211.meta
+          Vertices Path: ./Assets/Scenes/Meshes/15677139307487324380.meta
           Is PBR: false
           Diffuse:
-            Red: 0.00841899961
-            Green: 0.800000012
-            Blue: 0.034198001
+            Red: 1
+            Green: 0.5
+            Blue: 0.310000002
           Specular:
             Red: 0.5
             Green: 0.5
@@ -361,232 +219,13 @@ Scene Objects:
             []
           Vertex Shader Path: .\Shader\phongShader.vert
           Fragment Shader Path: .\Shader\phongShader.frag
-  - Scene Object ID: 11979143433524644365
+  - Scene Object ID: 17418809603869690825
     Transform:
-      Name: Mesh2
+      Name: PointLight
       Position:
-        X: -2.15209651
-        Y: 2.11176348
-        Z: -0.414253235
-      Rotation:
         X: 0
-        Y: 0
+        Y: 2
         Z: 0
-        W: 1
-      Euler Angles Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-      Scale:
-        X: 1
-        Y: 1
-        Z: 1
-      Parent Scene Object: 15174817271371581026
-    Components:
-      - Component: Mesh
-        Mesh:
-          Vertices Path: ./Assets/Scenes/Meshes/11979143433524644365.meta
-          Is PBR: false
-          Diffuse:
-            Red: 0.800000012
-            Green: 0.423332989
-            Blue: 0.00335499994
-          Specular:
-            Red: 0.5
-            Green: 0.5
-            Blue: 0.5
-          Ambient:
-            Red: 1
-            Green: 1
-            Blue: 1
-          Shininess: 225
-          Textures:
-            []
-          Vertex Shader Path: .\Shader\phongShader.vert
-          Fragment Shader Path: .\Shader\phongShader.frag
-  - Scene Object ID: 1293047374708301628
-    Transform:
-      Name: Mesh3
-      Position:
-        X: -3.09189773
-        Y: 1.47873437
-        Z: -3.09189773
-      Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-        W: 1
-      Euler Angles Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-      Scale:
-        X: 1
-        Y: 1
-        Z: 1
-      Parent Scene Object: 15174817271371581026
-    Components:
-      - Component: Mesh
-        Mesh:
-          Vertices Path: ./Assets/Scenes/Meshes/1293047374708301628.meta
-          Is PBR: false
-          Diffuse:
-            Red: 0.800000012
-            Green: 0.00789100025
-            Blue: 0.497523993
-          Specular:
-            Red: 0.5
-            Green: 0.5
-            Blue: 0.5
-          Ambient:
-            Red: 1
-            Green: 1
-            Blue: 1
-          Shininess: 225
-          Textures:
-            []
-          Vertex Shader Path: .\Shader\phongShader.vert
-          Fragment Shader Path: .\Shader\phongShader.frag
-  - Scene Object ID: 14220560762339356615
-    Transform:
-      Name: Mesh4
-      Position:
-        X: 1.87017822
-        Y: 0.452485979
-        Z: 1.87017822
-      Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-        W: 1
-      Euler Angles Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-      Scale:
-        X: 1
-        Y: 1
-        Z: 1
-      Parent Scene Object: 15174817271371581026
-    Components:
-      - Component: Mesh
-        Mesh:
-          Vertices Path: ./Assets/Scenes/Meshes/14220560762339356615.meta
-          Is PBR: false
-          Diffuse:
-            Red: 0.00458500022
-            Green: 0.0317840017
-            Blue: 0.800000012
-          Specular:
-            Red: 0.5
-            Green: 0.5
-            Blue: 0.5
-          Ambient:
-            Red: 1
-            Green: 1
-            Blue: 1
-          Shininess: 225
-          Textures:
-            []
-          Vertex Shader Path: .\Shader\phongShader.vert
-          Fragment Shader Path: .\Shader\phongShader.frag
-  - Scene Object ID: 16106145571490513017
-    Transform:
-      Name: Mesh5
-      Position:
-        X: 1.56035018
-        Y: 0.207573652
-        Z: -0.168037713
-      Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-        W: 1
-      Euler Angles Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-      Scale:
-        X: 1
-        Y: 1
-        Z: 1
-      Parent Scene Object: 15174817271371581026
-    Components:
-      - Component: Mesh
-        Mesh:
-          Vertices Path: ./Assets/Scenes/Meshes/16106145571490513017.meta
-          Is PBR: false
-          Diffuse:
-            Red: 0.800000012
-            Green: 0.800000012
-            Blue: 0.800000012
-          Specular:
-            Red: 0.5
-            Green: 0.5
-            Blue: 0.5
-          Ambient:
-            Red: 1
-            Green: 1
-            Blue: 1
-          Shininess: 225
-          Textures:
-            - Directory: Assets/Models/matAndTex
-              Path: cxcz.jpg
-              Type: 1
-          Vertex Shader Path: .\Shader\phongShader.vert
-          Fragment Shader Path: .\Shader\phongShader.frag
-  - Scene Object ID: 9825708928404364276
-    Transform:
-      Name: Mesh6
-      Position:
-        X: 1.70514464
-        Y: -1.468436
-        Z: -0.00769424438
-      Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-        W: 1
-      Euler Angles Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-      Scale:
-        X: 1
-        Y: 1
-        Z: 1
-      Parent Scene Object: 15174817271371581026
-    Components:
-      - Component: Mesh
-        Mesh:
-          Vertices Path: ./Assets/Scenes/Meshes/9825708928404364276.meta
-          Is PBR: false
-          Diffuse:
-            Red: 0.800000012
-            Green: 0.800000012
-            Blue: 0.800000012
-          Specular:
-            Red: 0.5
-            Green: 0.5
-            Blue: 0.5
-          Ambient:
-            Red: 1
-            Green: 1
-            Blue: 1
-          Shininess: 225
-          Textures:
-            - Directory: Assets/Models/matAndTex
-              Path: d2.png
-              Type: 1
-          Vertex Shader Path: .\Shader\phongShader.vert
-          Fragment Shader Path: .\Shader\phongShader.frag
-  - Scene Object ID: 3628797975554510978
-    Transform:
-      Name: PointLight3
-      Position:
-        X: -3
-        Y: 5.98215103
-        Z: 8
       Rotation:
         X: 0
         Y: 0
@@ -604,58 +243,17 @@ Scene Objects:
       - Component: PointLight
         PointLight:
           Diffuse:
-            Red: 1
-            Green: 1
-            Blue: 1
+            Red: 0.800000012
+            Green: 0.800000012
+            Blue: 0.800000012
           Ambient:
-            Red: 0.100000001
-            Green: 0.100000001
-            Blue: 0.100000001
+            Red: 0.200000003
+            Green: 0.200000003
+            Blue: 0.200000003
           Specular:
-            Red: 0
-            Green: 0
-            Blue: 0
-          Constant: 0.100000001
-          Linear: 0.100000001
-          Quadratic: 0.100000001
-  - Scene Object ID: 13328863739802516020
-    Transform:
-      Name: SpotLight2
-      Position:
-        X: -7.80921698
-        Y: 1.01327896e-06
-        Z: 0
-      Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-        W: 1
-      Euler Angles Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-      Scale:
-        X: 1
-        Y: 1
-        Z: 1
-    Components:
-      - Component: SpotLight
-        SpotLight:
-          Diffuse:
-            Red: 50
-            Green: 0.5
-            Blue: 0.5
-          Ambient:
-            Red: 0
-            Green: 0
-            Blue: 0
-          Specular:
-            Red: 0
-            Green: 0
-            Blue: 0
-          Direction:
-            X: 0.577350259
-            Y: 0.577350259
-            Z: 0.577350259
-          Spot Exponent: 0.100000001
-          CutOff: 0.100000001
+            Red: 0.300000012
+            Green: 0.300000012
+            Blue: 0.300000012
+          Constant: 1
+          Linear: 0.0900000036
+          Quadratic: 0.0320000015
