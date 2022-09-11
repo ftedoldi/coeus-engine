@@ -1,10 +1,9 @@
 #ifndef COLLISIONBOX_HPP
 #define COLLISIONBOX_HPP
-//#include <CollisionPrimitive.hpp>
+#include <CollisionPrimitive.hpp>
 
 namespace Khronos
 {
-    class CollisionPrimitive;
     class CollisionBox : public CollisionPrimitive
     {
         public:

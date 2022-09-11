@@ -11,7 +11,7 @@ namespace Khronos
     {
     public:
     
-        virtual unsigned int addContact(std::vector<RigidBody*>bodies, std::vector<Contact*> contacts, unsigned int next) = 0;
+        virtual unsigned int addContact(std::vector<RigidBody*>& bodies, std::vector<Contact*>& contacts, unsigned int next) = 0;
 
     };
 }

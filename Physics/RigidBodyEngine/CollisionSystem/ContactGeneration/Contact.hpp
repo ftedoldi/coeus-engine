@@ -83,6 +83,7 @@ namespace Khronos
         void calculateContactBasis();
 
         Athena::Vector3 calculateFrictionlessImpulse(Athena::Matrix3* inverseInertiaTensor);
+        Athena::Vector3 calculateFrictionImpulse(Athena::Matrix3* inverseInertiaTensor);
 
         // Calculate and return the velocity of the contact point on the given rigid body
         Athena::Vector3 calculateLocalVelocity(unsigned int bodyIndex, Athena::Scalar dt);

@@ -17,12 +17,12 @@ namespace Khronos
              * If they don't overlap than we have no collision.
              * This acts as an early out.
             */
-            static inline Athena::Scalar transformToAxis(const CollisionBox& box, const Athena::Vector3 &axis)
+            static inline Athena::Scalar transformToAxis(const CollisionBox* box, const Athena::Vector3 &axis)
             {
                 return 
-                    box.halfSize.coordinates.x * Athena::Math::scalarAbs(axis * box.getAxis(0)) +
-                    box.halfSize.coordinates.y * Athena::Math::scalarAbs(axis * box.getAxis(1)) +
-                    box.halfSize.coordinates.z * Athena::Math::scalarAbs(axis * box.getAxis(2));
+                    box->halfSize.coordinates.x * Athena::Math::scalarAbs(axis * box->getAxis(0)) +
+                    box->halfSize.coordinates.y * Athena::Math::scalarAbs(axis * box->getAxis(1)) +
+                    box->halfSize.coordinates.z * Athena::Math::scalarAbs(axis * box->getAxis(2));
             }
 
             /**
@@ -31,8 +31,8 @@ namespace Khronos
              * The parameter toCentre is used to pass in the vector between the 
              * boxes center points.
             */
-            static inline bool overlapOnAxis(const CollisionBox& firstBox,
-                                             const CollisionBox& secondBox,
+            static inline bool overlapOnAxis(const CollisionBox* firstBox,
+                                             const CollisionBox* secondBox,
                                              const Athena::Vector3& axis,
                                              const Athena::Vector3& toCentre)
             {
@@ -42,7 +42,6 @@ namespace Khronos
                 Athena::Scalar distance = Athena::Math::scalarAbs(toCentre * axis);
 
                 // Check for overlap
-                // Pag 313 image shows why this works
                 return (distance < firstBoxProjection + secondBoxProjection);
             }
     };

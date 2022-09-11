@@ -79,10 +79,10 @@ namespace Khronos
             deltaVelocityWorld = Athena::Vector3::cross(deltaVelocityWorld, relativeContactPosition[1]);
 
             // Add the change in velocity due to rotation
-            Athena::Scalar deltaVelocity = deltaVelocityWorld * contactNormal;
+            deltaVelocity += deltaVelocityWorld * contactNormal;
 
             // Add the linear component of velocity change
-            deltaVelocity += body[0]->getInverseMass();
+            deltaVelocity += body[1]->getInverseMass();
         }
         /**
          * Since we are interested only on the velocity in the direction of the contact normal
@@ -98,6 +98,85 @@ namespace Khronos
         return impulseContact;
     }
 
+    Athena::Vector3 Contact::calculateFrictionImpulse(Athena::Matrix3* inverseInertiaTensor)
+    {
+        Athena::Vector3 impulseContact;
+        Athena::Scalar inverseMass = body[0]->getInverseMass();
+
+        // The equivalent of a cross product in matrices is multiplication
+        // by a skew symmetric matrix - we build the matrix for converting
+        // between linear and angular quantities.
+        Athena::Matrix3 impulseToTorque;
+        impulseToTorque.setSkewSymmetric(relativeContactPosition[0]);
+
+        // Build the matrix to convert contact impulse to change in velocity
+        // in world coordinates.
+        Athena::Matrix3 deltaVelWorld = impulseToTorque;
+        deltaVelWorld *= inverseInertiaTensor[0];
+        deltaVelWorld *= impulseToTorque;
+        deltaVelWorld *= -1;
+
+        // Check if we need to add body two's data
+        if (body[1])
+        {
+            // Set the cross product matrix
+            impulseToTorque.setSkewSymmetric(relativeContactPosition[1]);
+
+            // Calculate the velocity change matrix
+            Athena::Matrix3 deltaVelWorld2 = impulseToTorque;
+            deltaVelWorld2 *= inverseInertiaTensor[1];
+            deltaVelWorld2 *= impulseToTorque;
+            deltaVelWorld2 *= -1;
+
+            // Add to the total delta velocity.
+            deltaVelWorld += deltaVelWorld2;
+
+            // Add to the inverse mass
+            inverseMass += body[1]->getInverseMass();
+        }
+
+        // Do a change of basis to convert into contact coordinates.
+        Athena::Matrix3 deltaVelocity = contactToWorldSpace.transpose();
+        deltaVelocity *= deltaVelWorld;
+        deltaVelocity *= contactToWorldSpace;
+
+        // Add in the linear velocity change
+        deltaVelocity.data[0] += inverseMass;
+        deltaVelocity.data[4] += inverseMass;
+        deltaVelocity.data[8] += inverseMass;
+
+        // Invert to get the impulse needed per unit velocity
+        Athena::Matrix3 impulseMatrix = deltaVelocity.inverse();
+
+        // Find the target velocities to kill
+        Athena::Vector3 velKill(desiredDeltaVelocity,
+            -contactVelocity.coordinates.y,
+            -contactVelocity.coordinates.z);
+
+        // Find the impulse to kill target velocities
+        impulseContact = impulseMatrix * velKill;
+
+        // Check for exceeding friction
+        Athena::Scalar planarImpulse = Athena::Math::scalarSqrt(
+            impulseContact.coordinates.y*impulseContact.coordinates.y +
+            impulseContact.coordinates.z*impulseContact.coordinates.z
+            );
+        if (planarImpulse > impulseContact.coordinates.x * friction)
+        {
+            // We need to use dynamic friction
+            impulseContact.coordinates.y /= planarImpulse;
+            impulseContact.coordinates.z /= planarImpulse;
+
+            impulseContact.coordinates.x = deltaVelocity.data[0] +
+                deltaVelocity.data[1]*friction*impulseContact.coordinates.y +
+                deltaVelocity.data[2]*friction*impulseContact.coordinates.z;
+            impulseContact.coordinates.x = desiredDeltaVelocity / impulseContact.coordinates.x;
+            impulseContact.coordinates.y *= friction * impulseContact.coordinates.x;
+            impulseContact.coordinates.z *= friction * impulseContact.coordinates.x;
+        }
+        return impulseContact;
+    }
+
     Athena::Vector3 Contact::calculateLocalVelocity(unsigned int bodyIndex, Athena::Scalar dt)
     {
         RigidBody* thisBody = this->body[bodyIndex];
@@ -110,13 +189,13 @@ namespace Khronos
         velocity += thisBody->getVelocity();
 
         // Turn the velocity into contact space
-        Athena::Vector3 contactVelocity = contactToWorldSpace.transpose() * velocity;
+        Athena::Vector3 contactVelocity = contactToWorldSpace.transformTranspose(velocity);
 
         // Calculate the amount of velocity due to only forces
         Athena::Vector3 accVelocity = thisBody->getLastFrameAcceleration() * dt;
 
         // Turn the acceleration velocity in contact space
-        accVelocity = contactToWorldSpace.transpose() * accVelocity;
+        accVelocity = contactToWorldSpace.transformTranspose(accVelocity);
 
         // We ignore the component acceleration in contact normal direction
         accVelocity.coordinates.x = 0;
@@ -137,12 +216,12 @@ namespace Khronos
         Athena::Scalar velocityFromAcc = 0.0;
 
         // Calculate the velocity in the current frame in the direction of the contact normal
-        velocityFromAcc += body[0]->getLastFrameAcceleration() * dt * contactNormal;
+        velocityFromAcc += Athena::Vector3::dot(body[0]->getLastFrameAcceleration() * dt, contactNormal);
 
         // Check if the second rigid body exists
         if(body[1] != nullptr)
         {
-            velocityFromAcc -= body[1]->getLastFrameAcceleration() * dt * contactNormal;
+            velocityFromAcc -= Athena::Vector3::dot(body[1]->getLastFrameAcceleration() * dt, contactNormal);
         }
 
         // If the velocity is very slow, limit the restitution
@@ -260,7 +339,9 @@ namespace Khronos
                 // Apply the change in orientation
                 Athena::Quaternion q = body[i]->getOrientation();
                 q.addScaledVector(angularChange[i], ((Athena::Scalar)1.0));
+                q.normalize();
                 body[i]->setOrientation(q);
+
             }
         }
     }
@@ -278,8 +359,14 @@ namespace Khronos
         // Calculate the impulse for each contact axis
         Athena::Vector3 contactImpulse;
 
-        //TODO: consider friction contacts also
-        contactImpulse = calculateFrictionlessImpulse(inverseInertiaTensor);
+        if(friction == (Athena::Scalar)0.0)
+        {
+            contactImpulse = calculateFrictionlessImpulse(inverseInertiaTensor);
+        }
+        else
+        {
+            contactImpulse = calculateFrictionImpulse(inverseInertiaTensor);
+        } 
 
         // Convert impulse to world coordinates
         Athena::Vector3 worldImpulse = this->contactToWorldSpace * contactImpulse;
@@ -287,8 +374,7 @@ namespace Khronos
         // Split the impulse into linear and angular components
         Athena::Vector3 impulsiveTorque = Athena::Vector3::cross(relativeContactPosition[0], worldImpulse);
         rotationChange[0] = inverseInertiaTensor[0] * impulsiveTorque;
-        velocityChange[0].clear();
-        velocityChange[0].addScaledVector(worldImpulse, body[0]->getInverseMass());
+        velocityChange[0] = worldImpulse * body[0]->getInverseMass();
 
         body[0]->addVelocity(velocityChange[0]);
         body[0]->addRotation(rotationChange[0]);
@@ -296,10 +382,9 @@ namespace Khronos
         // If the second rigid body exists, repeat the same process
         if(body[1] != nullptr)
         {
-            Athena::Vector3 impulsiveTorque = Athena::Vector3::cross(relativeContactPosition[1], worldImpulse);
+            Athena::Vector3 impulsiveTorque = Athena::Vector3::cross(worldImpulse, relativeContactPosition[1]);
             rotationChange[1] = inverseInertiaTensor[1] * impulsiveTorque;
-            velocityChange[1].clear();
-            velocityChange[1].addScaledVector(worldImpulse, body[1]->getInverseMass());
+            velocityChange[1] = worldImpulse * -body[1]->getInverseMass();
 
             body[1]->addVelocity(velocityChange[1]);
             body[1]->addRotation(rotationChange[1]);

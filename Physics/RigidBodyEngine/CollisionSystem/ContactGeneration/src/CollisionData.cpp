@@ -21,8 +21,7 @@ namespace Khronos
 
     Contact* CollisionData::getContact()
     {
-        if(!hasContactsLeft())
-           throw std::exception("No contacts left");
+        assert(hasContactsLeft() == true);
         
         auto contact = contactArray.at(contactCount);
         addContacts(1);

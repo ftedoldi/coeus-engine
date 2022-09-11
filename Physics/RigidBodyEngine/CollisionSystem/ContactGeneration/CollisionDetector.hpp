@@ -13,14 +13,14 @@ namespace Khronos
     {
     public:
 
-        static void sphereAndSphere(const CollisionSphere& firstSphere, const CollisionSphere& secondSphere, CollisionData* data);
+        static void sphereAndSphere(const CollisionSphere* firstSphere, const CollisionSphere* secondSphere, CollisionData* data);
 
         /**
          * Does a collision test on a collision sphere and a plane representing
          * a half-space (i.e. the normal of the plane
          * points out of the half-space).
          */
-        static void sphereAndHalfSpace(const CollisionSphere& sphere, const CollisionPlane& plane, CollisionData* data);
+        static void sphereAndHalfSpace(const CollisionSphere* sphere, const CollisionPlane* plane, CollisionData* data);
 
         /**
          * Box and half space collision is different from the sphere collision.
@@ -31,12 +31,9 @@ namespace Khronos
          * for each corner point of the box.
          * If an edge collides with the plane, we treat it as two point-face contact.
         */
-        static void boxAndHalfSpace(const CollisionBox& box, const CollisionPlane& plane, CollisionData* data);
+        static void boxAndHalfSpace(const CollisionBox* box, const CollisionPlane* plane, CollisionData* data);
 
-        /**
-         * 
-        */
-        static void boxAndSphere(const CollisionBox& box, const CollisionSphere& sphere, CollisionData* data);
+        static void boxAndSphere(const CollisionBox* box, const CollisionSphere* sphere, CollisionData* data);
 
         /**
          * This type of collision is used in the box box collision as the collision detection

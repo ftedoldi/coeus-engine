@@ -8,12 +8,7 @@ namespace Khronos
     class CollisionData
     {
     public:
-        /*// Holds the first contact in the array
-        Contact* contactArray;
-
         // Holds the contact array to write into
-        Contact* contacts;*/
-
         std::vector<Contact*> contactArray;
 
         // Holds the maximum number of contacts the array can take

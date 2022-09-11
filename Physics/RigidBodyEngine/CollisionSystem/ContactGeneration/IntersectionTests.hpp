@@ -18,11 +18,11 @@ namespace Khronos
     {
         friend class CollisionDetector;
 
-        static bool sphereAndSphere(const CollisionSphere& firstSphere, const CollisionSphere& secondSphere);
+        static bool sphereAndSphere(const CollisionSphere* firstSphere, const CollisionSphere* secondSphere);
 
-        static bool sphereAndHalfSpace(const CollisionSphere& sphere, const CollisionPlane& plane);
+        static bool sphereAndHalfSpace(const CollisionSphere* sphere, const CollisionPlane* plane);
 
-        static bool boxAndHalfSpace(const CollisionBox& box, const CollisionPlane& plane);
+        static bool boxAndHalfSpace(const CollisionBox* box, const CollisionPlane* plane);
     };
 }
 

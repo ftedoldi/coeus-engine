@@ -46,7 +46,7 @@ namespace Khronos
                (velocityEpsilon >= 0.0);
     }
 
-    void ContactResolver::prepareContacts(std::vector<Contact*> contacts, unsigned int numContacts, Athena::Scalar dt)
+    void ContactResolver::prepareContacts(std::vector<Contact*>& contacts, unsigned int numContacts, Athena::Scalar dt)
     {
         // Generate contact velocity and axis informations
         for(unsigned int i = 0; i < numContacts; ++i)
@@ -56,7 +56,7 @@ namespace Khronos
         }
     }
 
-    void ContactResolver::adjustPositions(std::vector<Contact*> contacts, unsigned int numContacts, Athena::Scalar dt)
+    void ContactResolver::adjustPositions(std::vector<Contact*>& contacts, unsigned int numContacts, Athena::Scalar dt)
     {
         // The idea is to resolve interpenetrations in order to severity
 
@@ -79,7 +79,7 @@ namespace Khronos
                     index = i;
                 }
             }
-            // Check if the current object's index is equal to the max number of contacts??????????????
+            // Check if the current object's index is equal to the number of contacts found
             if(index == numContacts)
                 break;
 
@@ -114,7 +114,7 @@ namespace Khronos
                                  * contact normal), then the penetration will be less;
                                  * if they overlapped the penetration will be increased
                                 */
-                                contacts.at(i)->penetration += deltaPosition.dot(contacts.at(i)->contactNormal) * ((b == 1)? 1 : -1);
+                                contacts.at(i)->penetration += deltaPosition.dot(contacts.at(i)->contactNormal) * (b != 0 ? 1 : -1);
                             }
                         }
                     }
@@ -124,7 +124,7 @@ namespace Khronos
         }
     }
 
-    void ContactResolver::adjustVelocities(std::vector<Contact*> contacts, unsigned int numContacts, Athena::Scalar dt)
+    void ContactResolver::adjustVelocities(std::vector<Contact*>& contacts, unsigned int numContacts, Athena::Scalar dt)
     {
         // This algorithm is very similar to the one used to resolve interpenetrations
         unsigned int i, index;
@@ -150,25 +150,24 @@ namespace Khronos
 
             contacts.at(index)->applyVelocityChange(velocityChange, rotationChange);
 
-            //TODO: comment
             for(i = 0; i < numContacts; ++i)
             {
                 // Check each body in the contact
                 for(unsigned int b = 0; b < 2; ++b)
                 {
-                    // Check for a match with each body in the newly
-                    // resolved contact
-                    for(unsigned int d = 0; d < 2; ++d)
+                    if(contacts.at(i)->body[b] != nullptr)
                     {
-                        if(contacts.at(i)->body[b] == contacts.at(index)->body[d])
+                        for(unsigned int d = 0; d < 2; ++d)
                         {
-                            deltaVelocity = velocityChange[d] + 
-                                Athena::Vector3::cross(rotationChange[d], contacts.at(i)->relativeContactPosition[b]);
-                            
-                            contacts.at(i)->contactVelocity += (contacts.at(i)->contactToWorldSpace.transpose() * deltaVelocity) *
-                                (b == 0? 1 : -1);
-                            
-                            contacts.at(i)->calculateDesiredDeltaVelocity(dt);
+                            if(contacts.at(i)->body[b] == contacts.at(index)->body[d])
+                            {
+                                deltaVelocity = velocityChange[d] + 
+                                    Athena::Vector3::cross(rotationChange[d], contacts.at(i)->relativeContactPosition[b]);
+                                
+                                contacts.at(i)->contactVelocity += contacts.at(i)->contactToWorldSpace.transformTranspose(deltaVelocity)
+                                * (b != 0? -1 : 1);
+                                contacts.at(i)->calculateDesiredDeltaVelocity(dt);
+                            }
                         }
                     }
                 }
@@ -177,10 +176,16 @@ namespace Khronos
         }
     }
 
-    void ContactResolver::resolveContacts(std::vector<Contact*> contacts, unsigned int numContacts, Athena::Scalar dt)
+    void ContactResolver::resolveContacts(std::vector<Contact*>& contacts, unsigned int numContacts, Athena::Scalar dt)
     {
         if(numContacts == 0)
             return;
+        
+        if(velocityIterations <= 0)
+            velocityIterations = numContacts * 4;
+
+        if(positionIterations <= 0)
+            positionIterations = numContacts * 4;
 
         if(!isValid())
             return;

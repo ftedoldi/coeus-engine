@@ -5,6 +5,7 @@
 #include <ContactResolver.hpp>
 #include <CollisionGenerator.hpp>
 #include <GravityForce.hpp>
+#include <vector>
 
 namespace Khronos
 {
@@ -15,22 +16,20 @@ namespace Khronos
     */
     class World
     {
-        //void applyForces(Athena::Scalar dt);
 
         // Calls each of the registered contact generators to report
-        // their contacts. Return the number of generated contacts
+        // their contacts. Return the number of generated contacts    
         unsigned int generateContacts();
 
     public:
 
         //Holds a single rigid body in a vector of rigid bodies
-        std::vector<RigidBody*> bodies;
+        std::vector<RigidBody*> bodyList;
 
         // Holds the resolver for sets of contacts
         ContactResolver* resolver;
 
-        // Holds a list of the contact generators
-        //std::vector<CollisionGenerator*> collisionGenerators;
+        // Holds a contact generators
         CollisionGenerator* collisionGenerator;
 
         // Holds an array of contacts

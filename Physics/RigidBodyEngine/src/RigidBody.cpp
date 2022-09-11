@@ -233,6 +233,7 @@ namespace Khronos
     void RigidBody::setOrientation(const Athena::Quaternion& quat)
     {
         this->orientation = quat;
+        orientation.normalize();
     }
 
     void RigidBody::setOrientation(const Athena::Scalar real, const Athena::Scalar x, const Athena::Scalar y, const Athena::Scalar z)
@@ -241,12 +242,14 @@ namespace Khronos
         this->orientation.immaginary.coordinates.x = x;
         this->orientation.immaginary.coordinates.y = y;
         this->orientation.immaginary.coordinates.z = z;
+        orientation.normalize();
     }
 
     void RigidBody::setOrientation(const Athena::Scalar real, const Athena::Vector3& imm)
     {
         this->orientation.real = real;
         this->orientation.immaginary = imm;
+        orientation.normalize();
     }
 
     Athena::Quaternion RigidBody::getOrientation() const
@@ -301,7 +304,7 @@ namespace Khronos
     void RigidBody::calculateDerivedData()
     {
         //At each frame we calculate the transform matrix and transform the inverse inertia tensor into world coordinates
-        this->orientation.normalized();
+        this->orientation.normalize();
 
         //calculate the transform matrix
         calculateTransformMatrix(this->transformMatrix, this->position, this->orientation);
@@ -385,7 +388,7 @@ namespace Khronos
         this->position.addScaledVector(this->velocity, dt);
 
         //update angular position
-        this->rotation.addScaledVector(this->rotation, dt);
+        this->orientation.addScaledVector(this->rotation, dt);
 
         //update the transform matrix and the inertia tensor matrix, based on the newly calculated
         //position and rotation

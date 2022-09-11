@@ -4,40 +4,39 @@ namespace Khronos
 {
 
     World::World(unsigned int maxContacts, unsigned int iterations):
-        bodies(std::vector<RigidBody*>()),
+        bodyList(std::vector<RigidBody*>()),
         gForce(new GravityForce(Athena::Vector3(0.0, -9.81, 0.0))),
         collisionGenerator(new CollisionGenerator()),
         resolver(new ContactResolver(iterations)),
         maxContacts(maxContacts),
         contacts(std::vector<Contact*>(maxContacts))
     {
-        //auto vec = std::vector<Contact*>(maxContacts);
-        //this->contacts = vec;
+        for(unsigned int i = 0; i < this->contacts.size(); ++i)
+        {
+            this->contacts.at(i) = new Contact();
+        }
     }
 
     World::~World()
     {
+        delete this->gForce;
         delete this->resolver;
         delete this->collisionGenerator;
+        for(unsigned int i = 0; i < this->contacts.size(); ++i)
+        {
+            delete this->contacts.at(i);
+        }
     }
 
     void World::startFrame()
     {
-        for(auto body : this->bodies)
+        for(auto body : this->bodyList)
         {
-            //Removes alla forces from the accumulator
+            //Removes all forces from the accumulator
             body->clearAccumulators();
             body->calculateDerivedData();
         }
     }
-
-    /*void World::applyForces(Athena::Scalar dt)
-    {
-        for(auto body : bodies)
-        {
-            this->gForce->updateForce(body, dt);
-        }
-    }*/
 
     unsigned int World::generateContacts()
     {
@@ -45,27 +44,22 @@ namespace Khronos
         unsigned int limit = maxContacts;
         unsigned int nextContact = 0;
 
-        //for(auto gen : this->collisionGenerators)
-        //{
-            unsigned int used = this->collisionGenerator->addContact(this->bodies, this->contacts, nextContact);
-            limit -= used;
-            nextContact += used;
+        unsigned int contactsUsed = this->collisionGenerator->addContact(this->bodyList, this->contacts, nextContact);
+        limit -= contactsUsed;
+        nextContact += contactsUsed;
 
-            //if(limit <= 0)
-            //    break;
-        //}
         return maxContacts - limit;
     }
 
     void World::runPhysics(Athena::Scalar dt)
     {
 
-        for(auto body : bodies)
+        for(auto body : bodyList)
         {
             this->gForce->updateForce(body, dt);
         }
 
-        for(auto body : this->bodies)
+        for(auto body : this->bodyList)
         {
             body->integrate(dt);
         }

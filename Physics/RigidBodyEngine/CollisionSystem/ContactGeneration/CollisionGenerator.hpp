@@ -2,7 +2,7 @@
 #define COLLISIONGENERATOR_HPP
 #include <ContactGenerator.hpp>
 #include <CollisionDetector.hpp>
-#include <vector>
+//#include <vector>
 
 namespace Khronos
 {
@@ -20,13 +20,13 @@ namespace Khronos
 
         CollisionGenerator();
         
-        unsigned int addContact(std::vector<RigidBody*>bodies, std::vector<Contact*> contacts, unsigned int next);
+        unsigned int addContact(std::vector<RigidBody*>& bodies, std::vector<Contact*>& contacts, unsigned int next);
 
     private:
 
-        void detectCollision(CollisionSphere& sphere, CollisionData* data);
+        void detectCollision(CollisionSphere* sphere, CollisionData* data);
 
-        void detectCollision(CollisionBox& box, CollisionData* data);
+        void detectCollision(CollisionBox* box, CollisionData* data);
     };
 }
 
