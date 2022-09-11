@@ -13,6 +13,7 @@
 #include <cmath>
 
 #include <stdexcept>
+//#define DBL_EPSILON 2.2204460492503131e-16
 
 namespace Athena
 {
@@ -103,6 +104,8 @@ namespace Athena
             Vector4 asVector4() const;
 
             Quaternion normalized() const;
+
+            void normalize();
 
             void print() const;
     };

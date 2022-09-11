@@ -395,14 +395,29 @@ namespace Athena {
     {
         Quaternion q(vec.coordinates.x * scale, vec.coordinates.y * scale, vec.coordinates.z * scale, 0);
         q = q * *this;
-        this->immaginary.coordinates.x = q.immaginary.coordinates.x * ((Scalar)0.5);
-        this->immaginary.coordinates.y = q.immaginary.coordinates.y * ((Scalar)0.5);
-        this->immaginary.coordinates.z = q.immaginary.coordinates.z * ((Scalar)0.5);
-        this->real = q.real *((Scalar)0.5);
+        this->immaginary.coordinates.x += q.immaginary.coordinates.x * ((Scalar)0.5);
+        this->immaginary.coordinates.y += q.immaginary.coordinates.y * ((Scalar)0.5);
+        this->immaginary.coordinates.z += q.immaginary.coordinates.z * ((Scalar)0.5);
+        this->real += q.real *((Scalar)0.5);
     }
 
     Quaternion Quaternion::normalized() const {
         return Quaternion(this->immaginary / this->magnitude(), this->real / this->magnitude());
+    }
+
+    void Quaternion::normalize()
+    {
+        //this->immaginary /= this->magnitude();
+        //this->real /= this->magnitude();
+        Scalar d = this->squareMagnitude();
+        if(d < DBL_EPSILON)
+        {
+            this->_real = 1;
+            return;
+        }
+
+        this->immaginary /= d;
+        this->real /= d;
     }
 
     Vector4 Quaternion::asVector4() const {
