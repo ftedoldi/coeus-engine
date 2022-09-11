@@ -78,9 +78,9 @@ class FrontEnd:
         #     self.frame_menu, text="Flip", command=self.flip_action).grid(
         #     row=9, column=0, columnspan=2, padx=5, pady=5, sticky='sw')
 
-        # ttk.Button(
-        #     self.frame_menu, text="Save As", command=self.save_action).grid(
-        #     row=10, column=0, columnspan=2, padx=5, pady=5, sticky='sw')
+        ttk.Button(
+            self.frame_menu, text="Save As", command=self.save_action).grid(
+            row=10, column=0, columnspan=2, padx=5, pady=5, sticky='sw')
         
         self.canvas = Canvas(self.frame_menu, bg="gray", width=300, height=400)
         self.canvas.grid(row=0, column=3, rowspan=10)
@@ -216,6 +216,7 @@ class FrontEnd:
             img = np.reshape(img, original_shape)
             self.display_image(image=img)
             print(time.time() - seconds)
+            self.filtered_image = img
         
         intensityValue = tkinter.IntVar()
         intensitySlider = Scale(
