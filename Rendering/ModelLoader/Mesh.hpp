@@ -13,6 +13,9 @@
 #include <Time.hpp>
 
 #include <PickableObject.hpp>
+//#include <CollisionPlane.hpp>
+//#include <CollisionSphere.hpp>
+#include <RigidPhysicsEngine.hpp>
 
 #include <vector>
 #include <random>
@@ -36,6 +39,9 @@ namespace Odysseus
         std::vector<GLuint> indices;
         PhongMaterial phongMaterial;
         PhysicsMaterial physicsMaterial;
+        Khronos::RigidBody* body;
+        Khronos::CollisionSphere* collisionSphere;
+        Khronos::CollisionBox* collisionBox;
 
         Shader *shader;
         GLuint VAO;
@@ -49,6 +55,7 @@ namespace Odysseus
         void setPhysicsMaterial(PhysicsMaterial &mat);
         void setShader(Shader *shader);
         void setIfPBR(bool isPBR);
+        void setupRigidBody();
 
         virtual void start();
         virtual void update();
@@ -60,6 +67,9 @@ namespace Odysseus
         virtual std::string toString();
 
         virtual void showComponentFieldsInEditor();
+
+        virtual void startRuntime();
+        virtual void updateRuntime();
 
         virtual void serialize(YAML::Emitter& out);
         virtual System::Component* deserialize(YAML::Node& node);

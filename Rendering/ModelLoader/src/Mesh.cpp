@@ -32,6 +32,44 @@ namespace Odysseus
         this->_hasEditorTexture = true;
     }
 
+    void Mesh::setupRigidBody()
+    {
+        auto mass = 1.0;
+        auto damping = 0.9;
+
+        this->body = new Khronos::RigidBody();
+        this->body->setPosition(this->transform->position);
+        this->body->setOrientation(this->transform->rotation);
+        this->body->setVelocity(Athena::Vector3(0.0, 0.0, 0.0));
+        this->body->setRotation(Athena::Vector3(0.0, 0.0, 0.0));
+        this->body->setLinearDamping(damping);
+        this->body->setAngularDamping(damping);
+        this->body->setMass(mass);
+        Athena::Matrix3 it;
+        this->body->setInertiaTensor(it);
+
+        /*this->collisionSphere = new Khronos::CollisionSphere(this->transform->localScale.coordinates.y);
+        
+        collisionSphere->body = this->body;
+        collisionSphere->calculateInternals();*/
+        this->collisionBox = new Khronos::CollisionBox(Athena::Vector3(0.5, 0.5, 0.5));
+        
+        collisionBox->body = this->body;
+        collisionBox->calculateInternals();
+
+    }
+
+    void Mesh::startRuntime()
+    {
+        setupRigidBody();
+    }
+
+    void Mesh::updateRuntime()
+    {
+        this->transform->position = this->body->position;
+        this->transform->rotation = this->body->orientation;
+    }
+
     void Mesh::start()
     {
         this->setupMesh();
@@ -474,6 +512,8 @@ namespace Odysseus
 
     Mesh::~Mesh() noexcept
     {
+        delete this->body;
+        delete this->collisionSphere;
         Mesh::freeGPUresources();
     }
 
