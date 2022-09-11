@@ -171,6 +171,8 @@ namespace EditorLayer
 
                     for (auto derived : componentType.get_derived_classes())
                     {
+                        if(derived.get_name() == "Mesh")
+                            continue;
                         rttr::type t = rttr::type::get_by_name(derived.get_name());
                         rttr::variant v = t.create();
 

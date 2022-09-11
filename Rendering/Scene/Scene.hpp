@@ -3,6 +3,8 @@
 
 #include <SceneObject.hpp>
 #include <Editor.hpp>
+//#include <CollisionPlane.hpp>
+#include <RigidPhysicsEngine.hpp>
 
 #include <vector>
 #include <string>
@@ -10,6 +12,7 @@
 namespace Odysseus
 {
     class SceneObject;
+    class Mesh;
 
     enum SceneState
     {
@@ -23,6 +26,7 @@ namespace Odysseus
     {
         private:
             std::vector<SceneObject*> _objectsInScene;
+            Khronos::RigidPhysicsEngine* physicSimulation;
 
             void deleteChildren(Transform* t);
             int getSceneObjectIndex(SceneObject* obj);

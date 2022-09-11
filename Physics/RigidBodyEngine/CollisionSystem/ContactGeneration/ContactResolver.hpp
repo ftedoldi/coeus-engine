@@ -70,7 +70,7 @@ namespace Khronos
         // Set the tolerance value for velocity and position
         void setEpsilon(Athena::Scalar velocityEpsilon, Athena::Scalar positionEpsilon);
 
-        void resolveContacts(std::vector<Contact*> contacts, unsigned int numContacts, Athena::Scalar dt);
+        void resolveContacts(std::vector<Contact*>& contacts, unsigned int numContacts, Athena::Scalar dt);
 
     protected:
         /**
@@ -78,18 +78,18 @@ namespace Khronos
          * that their internal data is configured correctly and the 
          * correct set of bodies is made alive.
         */
-        void prepareContacts(std::vector<Contact*> contacts, unsigned int numContacts, Athena::Scalar dt);
+        void prepareContacts(std::vector<Contact*>& contacts, unsigned int numContacts, Athena::Scalar dt);
 
         /**
          * Resolves the positional issues by finding the worst penetration,
          * resolving it and updating the remaining contacts.
         */
-        void adjustPositions(std::vector<Contact*> contacts, unsigned int numContacts, Athena::Scalar dt);
+        void adjustPositions(std::vector<Contact*>& contacts, unsigned int numContacts, Athena::Scalar dt);
 
         /**
          * Resolves the velocity issues
         */
-       void adjustVelocities(std::vector<Contact*> contacts, unsigned int numContacts, Athena::Scalar dt);
+       void adjustVelocities(std::vector<Contact*>& contacts, unsigned int numContacts, Athena::Scalar dt);
 
     };
 }

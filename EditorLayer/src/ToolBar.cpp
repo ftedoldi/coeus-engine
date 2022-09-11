@@ -110,6 +110,7 @@ namespace EditorLayer
         _mainStatusBar->addStatus("Starting simulation...");
         Odysseus::Scene* simulationScene = new Odysseus::Scene(Odysseus::SceneManager::activeScene, Odysseus::SceneState::RUNNING, true);
         Odysseus::SceneManager::activeScene = simulationScene;
+        Odysseus::SceneManager::activeScene->initialiseScene();
     }
 
     void ToolBar::pauseScene()

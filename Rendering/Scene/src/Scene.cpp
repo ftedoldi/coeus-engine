@@ -3,6 +3,7 @@
 #include <Window.hpp>
 
 #include <Component.hpp>
+#include <Mesh.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -57,9 +58,9 @@ namespace Odysseus
     {
         for (int i = 0; i < _objectsInScene.size(); i++)
         {
-            for (int j = 0; j < _objectsInScene[i]->_container->components.size(); j++)
+            for (int k = 0; k < _objectsInScene[i]->_container->components.size(); k++)
             {
-                _objectsInScene[i]->_container->components[j]->start();
+                _objectsInScene[i]->_container->components[k]->start();
                 glUseProgram(0);
             }
         }
@@ -68,23 +69,58 @@ namespace Odysseus
     // TODO: Implement me
     void Scene::initialiseRuntimeScene()
     {
+        this->physicSimulation = new Khronos::RigidPhysicsEngine();
+        auto plane = new Khronos::CollisionPlane(Athena::Vector3(0.1, 1, 0), -5);
+        this->physicSimulation->instance->collisionGenerator->planes.push_back(plane);
+        for (int i = 0; i < _objectsInScene.size(); i++)
+        {
+            for (int k = 0; k < _objectsInScene[i]->_container->components.size(); k++)
+            {
+                _objectsInScene[i]->_container->components[k]->startRuntime();
 
+                glUseProgram(0);
+            }
+
+            for (int j = 0; j < _objectsInScene[i]->_container->components.size(); j++)
+            {
+                if(_objectsInScene[i]->_container->components[j]->toString() == "Mesh")
+                {
+                    auto meshComponent = dynamic_cast<Mesh*>(_objectsInScene[i]->_container->components[j]);
+
+                    this->physicSimulation->instance->bodyList.push_back(meshComponent->body);
+                    //this->physicSimulation->instance->collisionGenerator->spheres.push_back(meshComponent->collisionSphere);
+                    this->physicSimulation->instance->collisionGenerator->boxes.push_back(meshComponent->collisionBox);
+                }
+            }
+        }
     }
 
     void Scene::updateEditorScene()
     {
         for (int i = 0; i < _objectsInScene.size(); i++)
+        {
             for (int j = 0; j < _objectsInScene[i]->_container->components.size(); j++)
             {
                 _objectsInScene[i]->_container->components[j]->update();
                 glUseProgram(0);
             }
+        }
     }
 
     // TODO: Implement me
     void Scene::updateRuntimeScene()
     {
+        for (int i = 0; i < _objectsInScene.size(); i++)
+        {
+            for (int j = 0; j < _objectsInScene[i]->_container->components.size(); j++)
+            {
+                _objectsInScene[i]->_container->components[j]->updateRuntime();
+                glUseProgram(0);
+            }
+        }
 
+        physicSimulation->instance->startFrame();
+        physicSimulation->instance->runPhysics(System::Time::deltaTime);
     }
 
     void Scene::initialiseScene()
