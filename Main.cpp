@@ -86,7 +86,7 @@ int main()
     r = Athena::Vector3(result[0], result[1], result[2]);
     r.print();
 
-    std::thread thread(runPythonScript);
+    //std::thread thread(runPythonScript);
 
     // Odysseus::Scene* startScene = new Odysseus::Scene(std::string("Start Scene"));
     // Odysseus::SceneManager::addScene(startScene);
@@ -205,7 +205,7 @@ int main()
         window->update();
     }
 
-    thread.join();
+    //thread.join();
 
     // serializer.serialize(Odysseus::SceneManager::activeScene->path);
 
