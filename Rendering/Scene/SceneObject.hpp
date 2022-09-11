@@ -101,9 +101,13 @@ namespace Odysseus
                 T* instance = new T();
 
                 for (int i = 0; i < _container->_components.size(); i++)
+                {
                     if (_container->_components[i]->toString() == instance->toString())
+                    {
+                        delete instance;
                         return dynamic_cast<T*>(_container->_components[i]);
-
+                    } 
+                }
                 delete instance;
 
                 return nullptr;
