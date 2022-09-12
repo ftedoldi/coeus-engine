@@ -68,7 +68,6 @@ namespace Khronos
         this->positionIterationsUsed = 0;
         while(this->positionIterationsUsed < this->positionIterations)
         {
-            //std::cout << positionIterationsUsed << std::endl;
             // Find the biggest penetration
             max = positionEpsilon;
             index = numContacts;
@@ -135,7 +134,6 @@ namespace Khronos
         velocityIterationsUsed = 0;
         while(velocityIterationsUsed < velocityIterations)
         {
-            //std::cout << velocityIterationsUsed << std::endl;
             Athena::Scalar max = this->velocityEpsilon;
             index = numContacts;
             for(i = 0; i < numContacts; ++i)
