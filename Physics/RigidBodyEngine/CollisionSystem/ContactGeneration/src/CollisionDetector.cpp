@@ -60,7 +60,6 @@ namespace Khronos
         contact->penetration = -sphereDistance;
         contact->contactPoint = spherePosition - plane->direction * (sphereDistance + sphere->radius);
 
-
         contact->body[0] = sphere->body;
         contact->body[1] = nullptr;
         contact->friction = data->friction;
@@ -101,7 +100,6 @@ namespace Khronos
                 contact->contactPoint += vertexPos;
                 contact->contactNormal = plane->direction;
                 contact->penetration = plane->offset - vertexDistance;
-                std::cout << contact->penetration << std::endl;
 
                 contact->body[0] = box->body;
                 // Since the plane has no rigid body
