@@ -1,11 +1,15 @@
+from asyncio import streams
+from itertools import count
 import math
+from statistics import median
 import time
-from tkinter import (ttk,Tk,PhotoImage,Canvas, filedialog, colorchooser,RIDGE,
+from tkinter import (S, Button, Entry, ttk,Tk,PhotoImage,Canvas, filedialog, colorchooser,RIDGE,
                      GROOVE,ROUND,Scale,HORIZONTAL)
 import tkinter
 import cv2
 from PIL import ImageTk, Image
 import numpy as np
+import numba
 from numba import cuda
 import cv2
 
@@ -20,6 +24,7 @@ class FrontEnd:
         
         self.frame_header = ttk.Frame(self.master)
         self.frame_header.pack()
+        self.d = dict()
         
         self.logo = PhotoImage(file='./Icons/logo.png').subsample(2, 2)
         ttk.Label(self.frame_header, image=self.logo).grid(
@@ -46,6 +51,10 @@ class FrontEnd:
             self.frame_menu, text="Gaussian Blur An Image", command=self.gaussianBlurGPU_action).grid(
             row=2, column=0, columnspan=2, padx=5, pady=5, sticky='sw')
 
+        ttk.Button(
+            self.frame_menu, text="Median Blur An Image", command=self.medianBlurGPU_action).grid(
+            row=3, column=0, columnspan=2, padx=5, pady=5, sticky='sw')
+
         # ttk.Button(
         #     self.frame_menu, text="Crop Image", command=self.crop_action).grid(
         #     row=2, column=0, columnspan=2, padx=5, pady=5, sticky='sw')
@@ -62,9 +71,9 @@ class FrontEnd:
         #     self.frame_menu, text="Apply Filters", command=self.filter_action).grid(
         #     row=5, column=0, columnspan=2,  padx=5, pady=5, sticky='sw')
 
-        # ttk.Button(
-        #     self.frame_menu, text="Blur/Smoothening", command=self.blur_action).grid(
-        #     row=6, column=0, columnspan=2, padx=5, pady=5, sticky='sw')
+        ttk.Button(
+            self.frame_menu, text="Blur/Smoothening", command=self.blur_action).grid(
+            row=6, column=0, columnspan=2, padx=5, pady=5, sticky='sw')
 
         # ttk.Button(
         #     self.frame_menu, text="Adjust Levels", command=self.adjust_action).grid(
@@ -112,7 +121,6 @@ class FrontEnd:
         self.display_image(self.edited_image)
     
     ###################################################### MY FUNCTIONS START ############################################################################    
-    #TODO: Improve with streams
     def boxBlurGPU_action(self):
         self.refresh_side_frame()
         
@@ -129,42 +137,61 @@ class FrontEnd:
           
         def sliderChanged(event):
             @cuda.jit
-            def imageProcessing(img, x, y, z, blurIntensity):
-                pos = cuda.grid(1)
-                if pos < img.size:
-                    mult = 0
+            def imageProcessing(img, x, blurIntensity):
+                pos = cuda.grid(2)
+                shape = img.shape
+                
+                if pos[0] < shape[0] and pos[1] < shape[1]:
+                    firstElementPositionX = pos[0]
+                    firstElementPositionY = pos[1]
+                    rowElements = 0
+                    c = 0
+                    for i in range(blurIntensity):
+                        if pos[0] - (i + 1) >= 0:
+                            firstElementPositionX = pos[0] - (i + 1)
+                            firstElementPositionY = pos[1] - (i + 1)
+                            rowElements = 3 + (2 * c)
+                            c += 1
+                            
                     div = 0
+                    r = 0
+                    g = 0
+                    b = 0
+                    
+                    for i in range(rowElements):
+                        for j in range(rowElements):
+                            if firstElementPositionX + i < shape[0] and firstElementPositionY + j < shape[1]:
+                                r += img[firstElementPositionX + i][firstElementPositionY + j][0]
+                                g += img[firstElementPositionX + i][firstElementPositionY + j][1]
+                                b += img[firstElementPositionX + i][firstElementPositionY + j][2]
+                                div += 1
+                                
+                    if div > 0:
+                        img[pos[0]][pos[1]][0] = r // div
+                        img[pos[0]][pos[1]][1] = g // div
+                        img[pos[0]][pos[1]][2] = b // div
+                                
+                #     mult = 0
+                #     div = 0
 
-                    for i in range(1, blurIntensity):
-                        newX = x * i
-                        if pos - newX >= 0:
-                            mult += img[pos - newX]
-                            div += 1
-                        if pos - newX - 1 >= 0:
-                            mult += img[pos - newX - 1]
-                            div += 1
-                        if pos - newX + 1 >= 0:
-                            mult += img[pos - newX + 1]
-                            div += 1
-                        if pos + newX < img.size:
-                            mult += img[pos + newX]
-                            div += 1
-                        if pos + newX + 1 < img.size:
-                            mult += img[pos + newX + 1]
-                            div += 1
-                        if pos + newX - 1 < img.size:
-                            mult += img[pos + newX - 1]
-                            div += 1
-                        if pos - i >= 0:
-                            mult += img[pos - i]
-                            div += 1
-                        if pos + i < img.size:
-                            mult += img[pos + i]
-                            div += 1
+                #     for i in range(1, blurIntensity):
+                #         newX = x * (i * 3)
+                #         if pos - newX >= 0:
+                #             mult += img[pos - newX]
+                #             div += 1
+                #         if pos + newX < img.size:
+                #             mult += img[pos + newX]
+                #             div += 1
+                #         if pos - (i * 3) >= 0:
+                #             mult += img[pos - (i * 3)]
+                #             div += 1
+                #         if pos + (i * 3) < img.size:
+                #             mult += img[pos + (i * 3)]
+                #             div += 1
 
-                    if mult > 0:
-                        img[pos] = mult / div
-                        
+                #     if mult > 0:
+                #         img[pos] = mult / div
+                         
             def CPUFilter(img, x, blurIntensity):
                 for pos in range(img.size):
                     mult = 0
@@ -200,22 +227,51 @@ class FrontEnd:
                     if mult > 0:
                         img[pos] = mult / div
 
-            #TODO: with streams break data in chunks
-            seconds = time.time()
+            # with streams we are have a speedup of ~1.5
             original_shape = self.img.shape
-            img = self.img.flatten()
+            img = self.img
+            
+            sliderValue = intensitySlider.get()
+            
+            n = original_shape[0] * original_shape[1] * original_shape[2]
+            chunks = math.ceil(img.size / n)
+            threadsperblock = 32, 32
+            blockspergrid = n // (threadsperblock[0] * threadsperblock[1]), n // (threadsperblock[0] * threadsperblock[1])
+            
+            stream = []
+            splittedImage = []
+            for i in range(chunks):
+                start = i * n
+                end = start + n
+                splittedImage += [img[start:end]]
+                stream += [cuda.stream()]
+            for i in range(chunks):
+                with stream[i].auto_synchronize():
+                    d_img = cuda.to_device(splittedImage[i], stream=stream[i])
+                    imageProcessing[blockspergrid, threadsperblock, stream[i]](d_img, original_shape[0], sliderValue)
+                    d_img.copy_to_host(splittedImage[i], stream=stream[i])
+            
+            # seconds = time.time()
+            # threadsperblock = 32
+            # blockspergrid = (img.size + (threadsperblock - 1)) // threadsperblock
+            # d1_img = cuda.to_device(img)
+            # imageProcessing[blockspergrid, threadsperblock](d1_img, original_shape[0], intensitySlider.get())
+            # d1_img.copy_to_host(img)
+            # normalTime = time.time() - seconds
+            # print(normalTime)
 
             # ~10 time slower
             # CPUFilter(img, original_shape[0], intensitySlider.get())
-            d_img = cuda.to_device(img)
-            threadsperblock = 32
-            blockspergrid = (img.size + (threadsperblock - 1)) // threadsperblock
-            imageProcessing[blockspergrid, threadsperblock](d_img, original_shape[0], original_shape[1], original_shape[2], intensitySlider.get())
-            img = d_img.copy_to_host()
+            
+            # if streamTime - normalTime < 0:
+            #     print("GAIN:")
+            #     print(streamTime / normalTime)
+            #     print("------------------------------")
+            # else:
+            #     print("NO GAIN")
 
             img = np.reshape(img, original_shape)
             self.display_image(image=img)
-            print(time.time() - seconds)
             self.filtered_image = img
         
         intensityValue = tkinter.IntVar()
@@ -236,16 +292,16 @@ class FrontEnd:
         def sliderChanged(event):
             #TODO: Make it work with colors
             @cuda.jit
-            def imageProcessing(img, x, y, z, blurIntensity, iterations):
+            def imageProcessing(img, blurIntensity, iterations):
                 pos = cuda.grid(1)
                 col = 0
                 sum = 0
                 if pos < img.size:
                     for i in range(iterations):
                         offset = ((i / (iterations - 1)) - 0.5)
-                        if pos + i < img.size:
+                        if pos + (i * 3) < img.size:
                             gaussian = (1 / (math.sqrt(2 * math.pi * blurIntensity * blurIntensity) )) * pow(math.e, -(pow(offset, 2) / (2 * pow(blurIntensity, 2))))
-                            col += img[pos + i] * gaussian
+                            col += img[pos + (i * 3)] * gaussian
                             sum += gaussian
                     img[pos] = col / sum
 
@@ -261,9 +317,8 @@ class FrontEnd:
             blockspergrid = (img.size + (threadsperblock - 1)) // threadsperblock
             blurStrength = intensitySlider.get() / 1280
             iterations = iterationsSlider.get()
-            imageProcessing[blockspergrid, threadsperblock](d_img, original_shape[0], original_shape[1], original_shape[2], blurStrength, iterations)
+            imageProcessing[blockspergrid, threadsperblock](d_img, blurStrength, iterations)
             img = d_img.copy_to_host()
-            print(img)
 
             img = np.reshape(img, original_shape)
             self.display_image(image=img)
@@ -283,6 +338,150 @@ class FrontEnd:
         iterationsSlider = Scale(
             self.side_frame, from_=20, to=500, orient=HORIZONTAL, variable=iterationValue, command=sliderChanged)
         iterationsSlider.grid(row=3, column=2, padx=5,  sticky='sw')
+    
+    def medianBlurGPU_action(self):
+        self.refresh_side_frame()
+        
+        ttk.Label(
+            self.side_frame, text="Blur Intensity").grid(
+            row=0, column=2, padx=5, sticky='sw')
+            
+        # We do that cos transparency is a bit shit
+        self.img = cv2.imread(self.filename, cv2.IMREAD_UNCHANGED)
+        if self.img.shape[2] == 4:     # we have an alpha channel
+          a1 = ~self.img[:,:,3]        # extract and invert that alpha
+          self.img = cv2.add(cv2.merge([a1,a1,a1,a1]), self.img)   # add up values (with clipping)
+          self.img = cv2.cvtColor(self.img, cv2.COLOR_RGBA2RGB)    # strip alpha channel
+          
+        def sliderChanged():
+            @cuda.jit
+            def imageProcessing(img):
+                pos = cuda.grid(2)
+                shape = img.shape
+                if pos[0] < shape[0] and pos[1] < shape[1]:
+                    # rowSize = 3 + (2 * blurIntensity)
+                    # size = rowSize * rowSize
+                    median = cuda.local.array((25 * 3, ), np.int16)
+                    
+                    firstElementPositionX = pos[0]
+                    firstElementPositionY = pos[1]
+                    rowElements = 0
+                    c = 0
+                    for i in range(2):
+                        if pos[0] - (i + 1) >= 0:
+                            firstElementPositionX = pos[0] - (i + 1)
+                            firstElementPositionY = pos[1] - (i + 1)
+                            rowElements = 3 + (2 * c)
+                            c += 1
+
+                    counter = 0
+                    for i in range(rowElements):
+                        for j in range(rowElements):
+                            if firstElementPositionX + i < shape[0] and firstElementPositionY + j < shape[1]:
+                                median[counter] = img[firstElementPositionX + i][firstElementPositionY + j][0]
+                                median[counter + 1] = img[firstElementPositionX + i][firstElementPositionY + j][1]
+                                median[counter + 2] = img[firstElementPositionX + i][firstElementPositionY + j][2]
+                            else:
+                                median[counter] = -1
+                                median[counter + 1] = -1
+                                median[counter + 2] = -1
+                            counter += 3              
+                        
+                    offset = 0
+                    for i in range(0, len(median), 3):
+                        if median[i] == -1:
+                            offset += 3
+                        
+                    for i in range(0, len(median), 3):
+                        for j in range(i + 3, len(median), 3):
+                            first = median[i] + median[i + 1] + median[i + 2]
+                            second = median[j] + median[j + 1] + median[j + 2]
+                            if first > second:
+                                median[i], median[j] = median[j], median[i]
+                                median[i + 1], median[j + 1] = median[j + 1], median[i + 1]
+                                median[i + 2], median[j + 2] = median[j + 2], median[i + 2]
+
+                    mid = ((len(median) - offset) // 3) // 2
+                    normalMid = 0
+                    for i in range(0, mid, 3):
+                        normalMid = i
+                        
+                    if median[normalMid] != -1 and median[normalMid + 1] != -1 and median[normalMid + 2] != -1:
+                        if median[normalMid] != 0 and median[normalMid + 1] != 0 and median[normalMid + 2] != 0:
+                            img[pos[0]][pos[1]][0] = median[normalMid]
+                            img[pos[0]][pos[1]][1] = median[normalMid + 1]
+                            img[pos[0]][pos[1]][2] = median[normalMid + 2]
+                            
+            def CPUFilter(img, x, blurIntensity):
+                for pos in range(img.size):
+                    median = []
+                    
+                    for i in range(1, blurIntensity):
+                        newX = x * i
+                        if pos - newX >= 0:
+                            median += img[pos - newX]
+                        if pos - newX - 1 >= 0:
+                            median += img[pos - newX - 1]
+                        if pos - newX + 1 >= 0:
+                            median += img[pos - newX + 1]
+                        if pos + newX < img.size:
+                            median += img[pos + newX]
+                        if pos + newX + 1 < img.size:
+                            median += img[pos + newX + 1]
+                        if pos + newX - 1 < img.size:
+                            median += img[pos + newX - 1]
+                        if pos - i >= 0:
+                            median += img[pos - i]
+                        if pos + i < img.size:
+                            median += img[pos + i]
+                            
+                    img[pos] = median[len(median) // 2]
+
+            #TODO: with streams break data in chunks
+            #seconds = time.time()
+            img = self.img
+
+            # ~10 time slower
+            # CPUFilter(img, original_shape[0], intensitySlider.get())
+            # seconds = time.time()
+            # stream = []
+            # n = original_shape[0] * original_shape[1] * original_shape[2]
+            # chunks = math.ceil(img.size / n)
+            # threadsperblock = 32, 32
+            # blockspergrid = n // (threadsperblock[0] * 2), n // (threadsperblock[1] * 2)
+            # sliderValue = 1
+            # splittedImage = []
+            # for i in range(chunks):
+            #     start = i * n
+            #     end = start + n
+            #     splittedImage += [img[start:end]]
+            #     stream += [cuda.stream()]
+            # for i in range(chunks):
+            #     d_img = cuda.to_device(splittedImage[i], stream=stream[i])
+            #     imageProcessing[blockspergrid, threadsperblock, stream[i]](d_img)
+            #     d_img.copy_to_host(splittedImage[i], stream=stream[i])
+            seconds = time.time()
+            threadsperblock = 32, 32
+            tpb = threadsperblock[0] * threadsperblock[1]
+            blockspergrid = img.size // (tpb * 2), img.size // (tpb * 2)
+            stream = cuda.stream()
+            d_img = cuda.to_device(img, stream=stream)
+            imageProcessing[blockspergrid, threadsperblock, stream](d_img)
+            d_img.copy_to_host(img, stream=stream)
+
+            # img = np.reshape(img, original_shape)
+            self.display_image(image=img)
+            self.filtered_image = img
+            print(time.time() - seconds)
+        
+        # intensityValue = tkinter.IntVar()
+        # intensityEntry = Entry(self.side_frame)
+        intensityButton = Button(self.side_frame, text="Apply filter", command=sliderChanged)
+        # intensityEntry.grid(row=1, column=2, padx=5,  sticky='sw')
+        intensityButton.grid(row=2, column=2, padx=5,  sticky='sw')
+        # intensitySlider = Scale(
+        #     self.side_frame, from_=0, to=256, orient=HORIZONTAL, variable=intensityValue, command=sliderChanged)
+        # intensitySlider.grid(row=1, column=2, padx=5,  sticky='sw')
     ###################################################### MY FUNCTIONS END ############################################################################
     
     def text_action_1(self):
