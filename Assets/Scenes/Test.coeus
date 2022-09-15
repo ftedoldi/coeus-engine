@@ -180,21 +180,21 @@ Scene Objects:
     Transform:
       Name: Scene Object
       Position:
-        X: 0.102618463
-        Y: 1.67596519
-        Z: -0.913869083
+        X: 0
+        Y: 0
+        Z: 0
       Rotation:
-        X: -0.00136021082
-        Y: 0.00570513401
-        Z: 0.483622462
-        W: 0.875257075
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
       Euler Angles Rotation:
-        X: -0.452589244
-        Y: 0.64757216
-        Z: 57.8408089
+        X: 0
+        Y: 0
+        Z: 45
       Scale:
-        X: 0.999994993
-        Y: 0.999998689
+        X: 0.999995947
+        Y: 0.999999404
         Z: 1
       Parent Scene Object: 18173832557426053557
     Components:

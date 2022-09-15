@@ -407,17 +407,22 @@ namespace Athena {
 
     void Quaternion::normalize()
     {
-        //this->immaginary /= this->magnitude();
-        //this->real /= this->magnitude();
         Scalar d = this->squareMagnitude();
         if(d < DBL_EPSILON)
         {
+            this->_immaginary.coordinates.x = 0;
+            this->_immaginary.coordinates.y = 0;
+            this->_immaginary.coordinates.z = 0;
             this->_real = 1;
             return;
         }
 
-        this->immaginary /= d;
-        this->real /= d;
+        d = 1.0f / this->magnitude();
+        this->_real *= d;
+        this->_immaginary.coordinates.x *= d;
+        this->_immaginary.coordinates.y *= d;
+        this->_immaginary.coordinates.z *= d;
+
     }
 
     Vector4 Quaternion::asVector4() const {

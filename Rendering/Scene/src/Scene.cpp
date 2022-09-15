@@ -70,7 +70,7 @@ namespace Odysseus
     void Scene::initialiseRuntimeScene()
     {
         this->physicSimulation = new Khronos::RigidPhysicsEngine();
-        auto plane = new Khronos::CollisionPlane(Athena::Vector3(0.1, 1, 0), -5);
+        auto plane = new Khronos::CollisionPlane(Athena::Vector3(0, 1.0, 0), -8.0);
         this->physicSimulation->instance->collisionGenerator->planes.push_back(plane);
         for (int i = 0; i < _objectsInScene.size(); i++)
         {

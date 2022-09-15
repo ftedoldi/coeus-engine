@@ -72,17 +72,17 @@ namespace Athena
 
             static Scalar scalarAbs(const Scalar& sc)
             {
-                return fabs(sc);
+                return std::fabs(sc);
             }
 
             static Scalar scalarPow(const Scalar& sc, const Scalar& dt)
             {
-                return powf(sc, dt);
+                return std::powf(sc, dt);
             }
 
             static Scalar scalarSqrt(const Scalar& sc)
             {
-                return sqrtf(sc);
+                return std::sqrtf(sc);
             }
     };
 }

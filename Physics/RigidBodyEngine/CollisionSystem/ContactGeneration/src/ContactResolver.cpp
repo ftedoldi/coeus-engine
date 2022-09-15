@@ -147,7 +147,7 @@ namespace Khronos
 
             if(index == numContacts)
                 break;
-
+            
             contacts.at(index)->applyVelocityChange(velocityChange, rotationChange);
 
             for(i = 0; i < numContacts; ++i)

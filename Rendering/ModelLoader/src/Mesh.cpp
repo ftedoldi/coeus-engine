@@ -48,14 +48,13 @@ namespace Odysseus
         Athena::Matrix3 it;
         this->body->setInertiaTensor(it);
 
-        /*this->collisionSphere = new Khronos::CollisionSphere(this->transform->localScale.coordinates.y);
+        /*this->collisionSphere = new Khronos::CollisionSphere(0.5);
         
         collisionSphere->body = this->body;
         collisionSphere->calculateInternals();*/
         this->collisionBox = new Khronos::CollisionBox(Athena::Vector3(0.5, 0.5, 0.5));
         
         collisionBox->body = this->body;
-        collisionBox->calculateInternals();
 
     }
 

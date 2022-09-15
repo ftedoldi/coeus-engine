@@ -23,8 +23,8 @@ namespace Khronos
             instance->resolver->velocityIterations = iterations;
             instance->resolver->positionEpsilon = epsilon;
             instance->resolver->velocityEpsilon = epsilon;
-            instance->collisionGenerator->restitution = 0;
-            instance->collisionGenerator->friction = 0;
+            instance->collisionGenerator->restitution = 0.2;
+            instance->collisionGenerator->friction = 0.2;
         }
 
         ~RigidPhysicsEngine()

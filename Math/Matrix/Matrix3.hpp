@@ -64,6 +64,8 @@ namespace Athena
         Vector3 transformTranspose(const Vector3& vec);
         
         void setSkewSymmetric(const Vector3& vec);
+        void setBlockInertiaTensor(const Vector3& halfsizes, Scalar mass);
+        void setInertiaTensorCoeffs(Scalar ix, Scalar iy, Scalar iz, Scalar ixy = 0, Scalar ixz = 0, Scalar iyz = 0);
 
         // Sets the matrix columns by the given 3 vectors
         void setComponents(const Vector3& vec1, const Vector3& vec2, const Vector3& vec3);

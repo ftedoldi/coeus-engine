@@ -213,6 +213,27 @@ namespace Athena
         data[7] = vec.coordinates.x;
     }
 
+    void Matrix3::setInertiaTensorCoeffs(Scalar ix, Scalar iy, Scalar iz, Scalar ixy, Scalar ixz, Scalar iyz)
+    {
+        data[0] = ix;
+        data[1] = data[3] = -ixy;
+        data[2] = data[6] = -ixz;
+        data[4] = iy;
+        data[5] = data[7] = -iyz;
+        data[8] = iz;
+    }
+
+    void Matrix3::setBlockInertiaTensor(const Vector3& halfsizes, Scalar mass)
+    {
+        Vector3 square = Vector3(halfsizes.coordinates.x * halfsizes.coordinates.x,
+                                 halfsizes.coordinates.y * halfsizes.coordinates.y,
+                                 halfsizes.coordinates.z * halfsizes.coordinates.z);
+        
+        setInertiaTensorCoeffs(0.3 * mass * (square.coordinates.y + square.coordinates.z),
+                               0.3 * mass * (square.coordinates.x + square.coordinates.z),
+                               0.3 * mass * (square.coordinates.x + square.coordinates.y));
+    }
+
     void Matrix3::setComponents(const Vector3& vec1, const Vector3& vec2, const Vector3& vec3)
     {
         data[0] = vec1.coordinates.x;

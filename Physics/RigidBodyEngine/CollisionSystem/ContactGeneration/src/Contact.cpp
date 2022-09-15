@@ -117,7 +117,7 @@ namespace Khronos
         deltaVelWorld *= -1;
 
         // Check if we need to add body two's data
-        if (body[1])
+        if (body[1] != nullptr)
         {
             // Set the cross product matrix
             impulseToTorque.setSkewSymmetric(relativeContactPosition[1]);
@@ -168,8 +168,9 @@ namespace Khronos
             impulseContact.coordinates.z /= planarImpulse;
 
             impulseContact.coordinates.x = deltaVelocity.data[0] +
-                deltaVelocity.data[1]*friction*impulseContact.coordinates.y +
-                deltaVelocity.data[2]*friction*impulseContact.coordinates.z;
+                deltaVelocity.data[1]* friction * impulseContact.coordinates.y +
+                deltaVelocity.data[2] * friction * impulseContact.coordinates.z;
+            
             impulseContact.coordinates.x = desiredDeltaVelocity / impulseContact.coordinates.x;
             impulseContact.coordinates.y *= friction * impulseContact.coordinates.x;
             impulseContact.coordinates.z *= friction * impulseContact.coordinates.x;
@@ -205,7 +206,6 @@ namespace Khronos
 
         return contactVelocity;
     }
-    // Pag 342(pdf) to see how to calculate the desired velocity change with coefficent of restitution to make bounch harder
 
     void Contact::calculateDesiredDeltaVelocity(Athena::Scalar dt)
     {
@@ -234,8 +234,7 @@ namespace Khronos
         // Combine the bounce velocity with the removed acceleration velocity
         // We need to substract the acceleration velocity to remove the amount
         // of visual vibration for objects resting on the ground
-        this->desiredDeltaVelocity = -contactVelocity.coordinates.x - 
-            thisRestitution * (contactVelocity.coordinates.x - velocityFromAcc);
+        this->desiredDeltaVelocity = -contactVelocity.coordinates.x - thisRestitution * (contactVelocity.coordinates.x - velocityFromAcc);
     }
 
     void Contact::applyPositionChange(Athena::Vector3 linearChange[2], Athena::Vector3 angularChange[2], Athena::Scalar penetration)
@@ -267,7 +266,7 @@ namespace Khronos
                 Athena::Vector3 angularInertiaWorld = Athena::Vector3::cross(relativeContactPosition[i], contactNormal);
                 angularInertiaWorld = inverseInertiaTensor * angularInertiaWorld;
                 angularInertiaWorld = Athena::Vector3::cross(angularInertiaWorld, relativeContactPosition[i]);
-                angularInertia[i] = angularInertiaWorld * contactNormal;
+                angularInertia[i] = Athena::Vector3::dot(angularInertiaWorld, contactNormal);
 
                 // The linear component is the inverse mass
                 linearInertia[i] = body[i]->getInverseMass();
@@ -289,9 +288,8 @@ namespace Khronos
                 // We limit the angular move since when mass is large but inertia
                 // tensor is small angular projections will be too great
                 Athena::Vector3 projection = relativeContactPosition[i];
-                projection.addScaledVector(contactNormal, -relativeContactPosition[i].dot(contactNormal));
+                projection.addScaledVector(contactNormal, Athena::Vector3::dot(-relativeContactPosition[i] , contactNormal));
 
-                //TODO: pag 352 pdf understand
                 Athena::Scalar maxMagnitude = angularLimit * projection.magnitude();
 
                 if(angularMove[i] < -maxMagnitude)
@@ -321,7 +319,6 @@ namespace Khronos
                 {
                     // Work out the direction we'd like to rotate in
                     Athena::Vector3 targetAngularDirection = Athena::Vector3::cross(relativeContactPosition[i], contactNormal);
-                    
                     Athena::Matrix3 inverseInertiaTensor = body[i]->getInverseInertiaTensorWorld();
 
                     // Work out the direction we'd need to rotata to achieve that
@@ -355,7 +352,6 @@ namespace Khronos
         {
             inverseInertiaTensor[1] = body[1]->getInverseInertiaTensorWorld();
         }
-
         // Calculate the impulse for each contact axis
         Athena::Vector3 contactImpulse;
 
