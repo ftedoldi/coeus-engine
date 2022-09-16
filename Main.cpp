@@ -36,7 +36,6 @@
 
 #include "Scripts/CameraMovement.hpp"
 
-
 #include <Python.h>
 
 #include <Test.cuh>

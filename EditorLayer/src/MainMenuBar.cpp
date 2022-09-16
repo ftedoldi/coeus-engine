@@ -5,6 +5,8 @@
 #include <WindowUtils.hpp>
 #include <Folder.hpp>
 
+#include <Python.h>
+
 namespace EditorLayer
 {
     MainMenuBar::MainMenuBar(EditorLayer::StatusBar* mainStatusBar)
@@ -14,6 +16,8 @@ namespace EditorLayer
         this->borderColor = IM_COL32(255, 255, 255, 255);
 
         this->_statusBar = mainStatusBar;
+
+        Py_Initialize();
     }
 
     void MainMenuBar::setMainStatusBar(EditorLayer::StatusBar* mainStatusBar)
@@ -143,6 +147,20 @@ namespace EditorLayer
         this->_statusBar->addStatus("Opening New Scene", EditorLayer::StatusBarTextColor::GREEN);
     }
 
+    void MainMenuBar::runTextureEditor()
+    {
+        char filename[] = "TextureEditor.py";
+        FILE* fp;
+
+        fp = _Py_fopen(filename, "r");
+        PyRun_SimpleFile(fp, filename);
+    }
+
+    void MainMenuBar::openTextureEditor()
+    {
+        this->runTextureEditor();
+    }
+
     void MainMenuBar::draw()
     {
         this->initializeShortcutActions();
@@ -197,6 +215,12 @@ namespace EditorLayer
                     //     *p_open = false;
                     ImGui::EndMenu();
                 }
+                if (ImGui::BeginMenu("Edit"))
+                {
+                    if (ImGui::MenuItem("Texture Editor..."))
+                        this->openTextureEditor();
+                    ImGui::EndMenu();
+                }
                 ImGui::PopStyleColor();
                 ImGui::EndMenuBar();
             }
@@ -207,4 +231,8 @@ namespace EditorLayer
         ImGui::PopStyleColor(3);
     }
 
+    MainMenuBar::~MainMenuBar()
+    {
+        Py_Finalize();
+    }
 } // namespace EditorLayer

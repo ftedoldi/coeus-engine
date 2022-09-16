@@ -1,7 +1,4 @@
-from asyncio import streams
-from itertools import count
 import math
-from statistics import median
 import time
 from tkinter import (S, Button, Entry, ttk,Tk,PhotoImage,Canvas, filedialog, colorchooser,RIDGE,
                      GROOVE,ROUND,Scale,HORIZONTAL)
@@ -11,7 +8,6 @@ from PIL import ImageTk, Image
 import numpy as np
 import numba
 from numba import cuda
-import cv2
 
 class FrontEnd:
     def __init__(self, master):
@@ -479,9 +475,6 @@ class FrontEnd:
         intensityButton = Button(self.side_frame, text="Apply filter", command=sliderChanged)
         # intensityEntry.grid(row=1, column=2, padx=5,  sticky='sw')
         intensityButton.grid(row=2, column=2, padx=5,  sticky='sw')
-        # intensitySlider = Scale(
-        #     self.side_frame, from_=0, to=256, orient=HORIZONTAL, variable=intensityValue, command=sliderChanged)
-        # intensitySlider.grid(row=1, column=2, padx=5,  sticky='sw')
     ###################################################### MY FUNCTIONS END ############################################################################
     
     def text_action_1(self):
@@ -868,7 +861,8 @@ class FrontEnd:
     def display_image(self, image=None):
         self.canvas.delete("all")
         if image is None:
-            image = self.edited_image.copy()
+            if self.edited_image is not None:
+                image = self.edited_image.copy()
         else:
             image = image
 
