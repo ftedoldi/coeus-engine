@@ -32,6 +32,7 @@ namespace Athena
             Vector3(const Scalar& x, const Scalar& y, const Scalar& z);
             Vector3(const Vector2& vector, const Scalar& z);
             Vector3(const Vector3& vector);
+            Vector3(const float*& vector);
         
             static Vector3 cross(const Vector3& vector1, const Vector3& vector2);
 
@@ -81,6 +82,7 @@ namespace Athena
 
             Versor3 asVersor3() const;
             Point3 asPoint3() const;
+            Scalar* asScalarVector() const;
 
             bool areEquals(const Vector3& vector) const;
             void print() const;
