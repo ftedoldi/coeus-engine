@@ -32,7 +32,7 @@ namespace Athena
             Vector3(const Scalar& x, const Scalar& y, const Scalar& z);
             Vector3(const Vector2& vector, const Scalar& z);
             Vector3(const Vector3& vector);
-            Vector3(const float*& vector);
+            Vector3(const float* vector);
         
             static Vector3 cross(const Vector3& vector1, const Vector3& vector2);
 

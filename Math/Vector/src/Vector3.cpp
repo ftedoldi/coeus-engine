@@ -29,7 +29,7 @@ namespace Athena {
         this->coordinates.z = vector.coordinates.z;
     }
 
-    Vector3::Vector3(const float*& vector) {
+    Vector3::Vector3(const float* vector) {
         coordinates = Vector3Coordinates<Scalar>();
         this->coordinates.x = vector[0];
         this->coordinates.y = vector[1];
