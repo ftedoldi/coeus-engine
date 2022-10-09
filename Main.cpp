@@ -21,6 +21,7 @@
 #include <Cubemap.hpp>
 #include <SpotLight.hpp>
 #include <AreaLight.hpp>
+#include <RigidPlane.hpp>
 
 #include <Serializer/Serializer.hpp>
 
@@ -74,7 +75,7 @@ int main()
 
     serializer.deserialize(scenePathToLoad);    
 
-    call();
+    /*call();
     AddVectors();
     Athena::Vector3 test = Athena::Vector3(1, 1, 1);
     Athena::Vector3 test1 = Athena::Vector3(1, 2, 3);
@@ -84,7 +85,7 @@ int main()
     float result[3] = {r[0], r[1], r[2]};
     auto res = AddVector3(t, t1, result);
     r = Athena::Vector3(result[0], result[1], result[2]);
-    r.print();
+    r.print();*/
 
     //std::thread thread(runPythonScript);
 
