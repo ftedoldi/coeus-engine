@@ -39,6 +39,7 @@ namespace Khronos
         //std::vector<GravityForce*> forces;
         GravityForce* gForce;
 
+        // Max number of contacts that can happen each frame
         unsigned int maxContacts;
 
         void clearContacts();
