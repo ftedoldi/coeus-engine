@@ -39,9 +39,6 @@ namespace Odysseus
         std::vector<GLuint> indices;
         PhongMaterial phongMaterial;
         PhysicsMaterial physicsMaterial;
-        Khronos::RigidBody* body;
-        Khronos::CollisionSphere* collisionSphere;
-        Khronos::CollisionBox* collisionBox;
 
         Shader *shader;
         GLuint VAO;
@@ -67,9 +64,6 @@ namespace Odysseus
         virtual std::string toString();
 
         virtual void showComponentFieldsInEditor();
-
-        virtual void startRuntime();
-        virtual void updateRuntime();
 
         virtual void serialize(YAML::Emitter& out);
         virtual System::Component* deserialize(YAML::Node& node);
