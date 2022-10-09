@@ -107,6 +107,9 @@ namespace Athena
 
             void normalize();
 
+            static Vector3 normalizeAngles(Vector3& angles);
+            static Scalar normalizeAngle(Scalar angle);
+
             void print() const;
     };
 
