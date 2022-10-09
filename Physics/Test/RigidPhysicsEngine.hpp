@@ -35,8 +35,8 @@ namespace Khronos
 
         void update()
         {
-            //instance->startFrame();
-            //instance->runPhysics(System::Time::deltaTime);
+            instance->startFrame();
+            instance->runPhysics(System::Time::deltaTime);
         }
     };
 }
