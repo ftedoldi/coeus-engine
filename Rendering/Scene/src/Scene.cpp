@@ -4,6 +4,9 @@
 
 #include <Component.hpp>
 #include <Mesh.hpp>
+#include <RigidBox.hpp>
+#include <RigidPlane.hpp>
+#include <RigidSphere.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -54,6 +57,13 @@ namespace Odysseus
         this->status = state;
     }
 
+    Scene::~Scene()
+    {
+        std::cout << "scene destr called" << std::endl;
+        delete this->physicSimulation;
+        this->physicSimulation = nullptr;
+    }
+
     void Scene::initialiseEditorScene()
     {
         for (int i = 0; i < _objectsInScene.size(); i++)
@@ -70,29 +80,33 @@ namespace Odysseus
     void Scene::initialiseRuntimeScene()
     {
         this->physicSimulation = new Khronos::RigidPhysicsEngine();
-        auto plane = new Khronos::CollisionPlane(Athena::Vector3(0, 1.0, 0), -8.0);
-        this->physicSimulation->instance->collisionGenerator->planes.push_back(plane);
         for (int i = 0; i < _objectsInScene.size(); i++)
         {
             for (int k = 0; k < _objectsInScene[i]->_container->components.size(); k++)
             {
+                if(_objectsInScene[i]->_container->components[k]->toString() == "RigidBox")
+                   {
+                        auto rigidBoxComponent = dynamic_cast<Khronos::RigidBox*>(_objectsInScene[i]->_container->components[k]);
+                        rigidBoxComponent->setPhysicsSimulation(this->physicSimulation);
+                   }
+                if(_objectsInScene[i]->_container->components[k]->toString() == "RigidPlane")
+                    {
+                        auto rigidPlaneComponent = dynamic_cast<Khronos::RigidPlane*>(_objectsInScene[i]->_container->components[k]);
+                        rigidPlaneComponent->setPhysicsSimulation(this->physicSimulation);
+                    }
+                if(_objectsInScene[i]->_container->components[k]->toString() == "RigidSphere")
+                    {
+                        auto rigidSphereComponent = dynamic_cast<Khronos::RigidSphere*>(_objectsInScene[i]->_container->components[k]);
+                        rigidSphereComponent->setPhysicsSimulation(this->physicSimulation);
+                    }
                 _objectsInScene[i]->_container->components[k]->startRuntime();
 
                 glUseProgram(0);
             }
-
-            for (int j = 0; j < _objectsInScene[i]->_container->components.size(); j++)
-            {
-                if(_objectsInScene[i]->_container->components[j]->toString() == "Mesh")
-                {
-                    auto meshComponent = dynamic_cast<Mesh*>(_objectsInScene[i]->_container->components[j]);
-
-                    this->physicSimulation->instance->bodyList.push_back(meshComponent->body);
-                    //this->physicSimulation->instance->collisionGenerator->spheres.push_back(meshComponent->collisionSphere);
-                    this->physicSimulation->instance->collisionGenerator->boxes.push_back(meshComponent->collisionBox);
-                }
-            }
         }
+
+        //Position based dynamics physics
+        // 1- create physics simulation with Particle
     }
 
     void Scene::updateEditorScene()
@@ -118,9 +132,8 @@ namespace Odysseus
                 glUseProgram(0);
             }
         }
-
-        physicSimulation->instance->startFrame();
-        physicSimulation->instance->runPhysics(System::Time::deltaTime);
+        //0.0199999995529652
+        physicSimulation->update();
     }
 
     void Scene::initialiseScene()
