@@ -83,8 +83,8 @@ int main()
     float* t1 = test1.asScalarVector();
     float* result = r.asScalarVector();
     auto res = AddVector3(t, t1, result);
-    //r = Athena::Vector3(result[0], result[1], result[2]);
-    //r.print();
+    r = Athena::Vector3(result[0], result[1], result[2]);
+    r.print();
 
     //std::thread thread(runPythonScript);
 
