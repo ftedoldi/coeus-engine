@@ -59,6 +59,25 @@ namespace Khronos
         //Holds the linear acceleration at last frame of the rigid body
         Athena::Vector3 lastFrameAcceleration;
 
+        // Holds the amount of motion of the body
+        Athena::Scalar motion;
+
+        /**
+         * Holds the awake state of the object.
+         * If the object is sleeping than the simulation of it
+         * is being stopped.
+         * Otherwise, the simulation will continue.
+         */
+        bool isAwake;
+
+        // Holds the information of if the object can sleep.
+        // Some objects (e.g. user controlled ones) can't be put to sleep.
+        bool canSleep;
+
+        // Holds the threshold at which when the motion of an object
+        // drops below it, the body is put to sleep.
+        Athena::Scalar sleepEpsilon = 0.2;
+
         bool hasFiniteMass() const;
         Athena::Scalar getMass() const;
         Athena::Scalar getInverseMass() const;
@@ -116,6 +135,13 @@ namespace Khronos
         void clearAccumulators();
 
         void integrate(Athena::Scalar dt);
+
+        // Sets the awake state of the body
+        void setAwake(const bool awake = true);
+        bool getAwake();
+
+        void setCanSleep(const bool canSleep = true);
+        bool getCanSleep();
 
     };
 }
