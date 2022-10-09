@@ -22,7 +22,7 @@ namespace Athena
             }
 
             static Scalar degreeToRandiansAngle(const Scalar& angle) {
-                return angle * (M_PI) / 180;
+                return angle * ((M_PI) / 180);
             }
             
             static Scalar getAngleInRadiansFromCos(const Scalar& cosine) {
@@ -83,6 +83,11 @@ namespace Athena
             static Scalar scalarSqrt(const Scalar& sc)
             {
                 return std::sqrtf(sc);
+            }
+
+            static Scalar getPI()
+            {
+                return M_PI;
             }
     };
 }
