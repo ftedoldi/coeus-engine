@@ -8,6 +8,9 @@
 
 #include <StatusBar.hpp>
 
+#include <iostream>
+#include <thread>
+
 namespace EditorLayer
 {
     class MainMenuBar
@@ -27,6 +30,9 @@ namespace EditorLayer
             void openNewSceneViaFileDialog();
             void openNewScene();
 
+            void openTextureEditor();
+            void runTextureEditor();
+
         public:
             MainMenuBar(EditorLayer::StatusBar* mainStatusBar);
 
@@ -37,6 +43,8 @@ namespace EditorLayer
             void setMainStatusBar(EditorLayer::StatusBar* mainStatusBar);
 
             void draw();
+
+            ~MainMenuBar();
     };
 } // namespace Editor
 

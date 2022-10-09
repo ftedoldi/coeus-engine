@@ -22,19 +22,26 @@ namespace Athena {
         this->coordinates.z = z;
     }
 
-    Vector3 Vector3::up() { return Vector3(0, +1, 0); }
-    Vector3 Vector3::down() { return Vector3(0, -1, 0); }
-    Vector3 Vector3::right() { return Vector3(+1, 0, 0); }
-    Vector3 Vector3::left() { return Vector3(-1, 0, 0); }
-    Vector3 Vector3::forward() { return Vector3(0, 0, +1); }
-    Vector3 Vector3::backward() { return Vector3(0, 0, -1); }
-
     Vector3::Vector3(const Vector3& vector) {
         coordinates = Vector3Coordinates<Scalar>();
         this->coordinates.x = vector.coordinates.x;
         this->coordinates.y = vector.coordinates.y;
         this->coordinates.z = vector.coordinates.z;
     }
+
+    Vector3::Vector3(const float* vector) {
+        coordinates = Vector3Coordinates<Scalar>();
+        this->coordinates.x = vector[0];
+        this->coordinates.y = vector[1];
+        this->coordinates.z = vector[2];
+    }
+
+    Vector3 Vector3::up() { return Vector3(0, +1, 0); }
+    Vector3 Vector3::down() { return Vector3(0, -1, 0); }
+    Vector3 Vector3::right() { return Vector3(+1, 0, 0); }
+    Vector3 Vector3::left() { return Vector3(-1, 0, 0); }
+    Vector3 Vector3::forward() { return Vector3(0, 0, +1); }
+    Vector3 Vector3::backward() { return Vector3(0, 0, -1); }
 
     Vector3 Vector3::cross(const Vector3& vector1, const Vector3& vector2) {
                 return Vector3(
@@ -217,6 +224,15 @@ namespace Athena {
     Point3 Vector3::asPoint3() const
     {
         return Point3(*this);
+    }
+
+    Scalar* Vector3::asScalarVector() const
+    {
+        Scalar* v = new Scalar[3];
+        v[0] = coordinates.x;
+        v[1] = coordinates.y;
+        v[2] = coordinates.z;
+        return v;
     }
 
     bool Vector3::areEquals(const Vector3& vector) const{

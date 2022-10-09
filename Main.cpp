@@ -37,7 +37,6 @@
 
 #include "Scripts/CameraMovement.hpp"
 
-
 #include <Python.h>
 
 #include <Test.cuh>
@@ -75,17 +74,17 @@ int main()
 
     serializer.deserialize(scenePathToLoad);    
 
-    /*call();
-    AddVectors();
+    //call();
+    //AddVectors();
     Athena::Vector3 test = Athena::Vector3(1, 1, 1);
     Athena::Vector3 test1 = Athena::Vector3(1, 2, 3);
     Athena::Vector3 r = Athena::Vector3();
-    float t[3] = {test[0], test[1], test[2]};
-    float t1[3] = {test1[0], test1[1], test1[2]};
-    float result[3] = {r[0], r[1], r[2]};
+    float* t = test.asScalarVector();
+    float* t1 = test1.asScalarVector();
+    float* result = r.asScalarVector();
     auto res = AddVector3(t, t1, result);
-    r = Athena::Vector3(result[0], result[1], result[2]);
-    r.print();*/
+    //r = Athena::Vector3(result[0], result[1], result[2]);
+    //r.print();
 
     //std::thread thread(runPythonScript);
 
