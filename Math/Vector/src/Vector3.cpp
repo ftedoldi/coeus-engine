@@ -1,5 +1,7 @@
 #include <Vector3.hpp>
 
+#include <VectorOperations.cuh>
+
 namespace Athena {
     Vector3::Vector3() {
         coordinates = Vector3Coordinates<Scalar>();
@@ -129,15 +131,16 @@ namespace Athena {
     }
 
     Vector3 Vector3::operator + (const Vector3& vector) const {
-        return Vector3(this->coordinates.x + vector.coordinates.x, 
-            this->coordinates.y + vector.coordinates.y,
-            this->coordinates.z + vector.coordinates.z);
+        float result[3] = { 0, 0, 0 };
+        AddVectors3(this->asScalarVector(), vector.asScalarVector(), result);
+        return Vector3(result);
     }
 
     Vector3 Vector3::operator - (const Vector3& vector) const {
-            return Vector3(this->coordinates.x - vector.coordinates.x, 
-                this->coordinates.y - vector.coordinates.y,
-                this->coordinates.z - vector.coordinates.z);
+        float result[3] = { 0, 0, 0 };
+        auto tmp = -vector;
+        AddVectors3(this->asScalarVector(), tmp.asScalarVector(), result);
+        return Vector3(result);
     }
 
     bool Vector3::operator == (const Vector3& vector) const {
