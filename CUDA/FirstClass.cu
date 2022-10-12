@@ -88,8 +88,5 @@ int AddVector3(float vector1[3], float vector2[3], float result[3])
     cudaFree(d_b);
     cudaFree(d_c);
 
-    for (int i = 0; i < 3; i++)
-        printf("value of c[%d] is %f \n", i, result[i]);
-
     return 1;
 }
