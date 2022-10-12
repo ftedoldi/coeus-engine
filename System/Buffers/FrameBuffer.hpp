@@ -13,6 +13,11 @@
 
 #include <vector>
 
+namespace CUDA::Interop
+{
+    class CUDAInteroperationManager;
+}
+
 namespace System {
     namespace Buffers {
         struct FrameBufferSize {
@@ -22,11 +27,15 @@ namespace System {
 
         class FrameBuffer {
             private:
+                CUDA::Interop::CUDAInteroperationManager* cudaInterop;
+
                 GLuint _id;
                 GLuint _MSAAid;
                 GLuint _renderBufferObjectID;
                 std::vector<GLuint> _texturesID;
                 std::vector<GLuint> _texturesMultisampledID;
+
+                GLuint _postProcessedTexture;
 
                 GLint _internalTextureFormat;
                 GLenum _textureFormat, _pixelValueType;
@@ -61,6 +70,7 @@ namespace System {
                 const GLenum& textureFormat, pixelValueType;
 
                 const std::vector<GLuint>& texturesID;
+                const GLuint& postProcessedTexture;
 
                 const FrameBufferSize& frameBufferSize;
 
