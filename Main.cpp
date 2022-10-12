@@ -21,6 +21,7 @@
 #include <Cubemap.hpp>
 #include <SpotLight.hpp>
 #include <AreaLight.hpp>
+#include <RigidPlane.hpp>
 
 #include <Serializer/Serializer.hpp>
 

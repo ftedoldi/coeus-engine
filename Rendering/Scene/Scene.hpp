@@ -3,11 +3,17 @@
 
 #include <SceneObject.hpp>
 #include <Editor.hpp>
-//#include <CollisionPlane.hpp>
 #include <RigidPhysicsEngine.hpp>
 
 #include <vector>
 #include <string>
+
+namespace Khronos
+{
+    class RigidBox;
+    class RigidPlane;
+    class RigidSphere;
+}
 
 namespace Odysseus
 {
@@ -50,6 +56,7 @@ namespace Odysseus
             const std::vector<SceneObject*>& objectsInScene;
 
             Scene();
+            ~Scene();
             Scene(const std::string& name);
             Scene(const std::string& path, const std::string& name);
             Scene(Scene* sceneToCopy, SceneState state, bool runtimeScene=false);

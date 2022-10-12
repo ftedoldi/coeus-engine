@@ -106,6 +106,11 @@ namespace Khronos
 
         void calculateInternals(Athena::Scalar dt);
 
+        // Updates the awake state of rigid bodies.
+        // A body will be awake if it is in contact with
+        // another body that is awake
+        void MatchAwakeState();
+
     };
 }
 

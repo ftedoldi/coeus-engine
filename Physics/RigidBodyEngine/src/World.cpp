@@ -25,7 +25,13 @@ namespace Khronos
         for(unsigned int i = 0; i < this->contacts.size(); ++i)
         {
             delete this->contacts.at(i);
+            this->contacts.at(i) = nullptr;
         }
+
+        this->gForce = nullptr;
+        this->resolver = nullptr;
+        this->collisionGenerator = nullptr;
+
     }
 
     void World::startFrame()
@@ -44,7 +50,7 @@ namespace Khronos
         unsigned int limit = maxContacts;
         unsigned int nextContact = 0;
 
-        unsigned int contactsUsed = this->collisionGenerator->addContact(this->bodyList, this->contacts, nextContact);
+        unsigned int contactsUsed = this->collisionGenerator->addContact(this->contacts, nextContact);
         limit -= contactsUsed;
         nextContact += contactsUsed;
 

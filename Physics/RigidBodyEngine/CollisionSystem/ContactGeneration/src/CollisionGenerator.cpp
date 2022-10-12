@@ -7,7 +7,7 @@ namespace Khronos
     }
 
 
-    unsigned int CollisionGenerator::addContact(std::vector<RigidBody*>& bodies, std::vector<Contact*>& contacts, unsigned int next)
+    unsigned int CollisionGenerator::addContact(std::vector<Contact*>& contacts, unsigned int next)
     {
         auto data = new CollisionData();
         data->contactArray = contacts;

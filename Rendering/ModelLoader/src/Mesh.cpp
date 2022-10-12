@@ -32,43 +32,6 @@ namespace Odysseus
         this->_hasEditorTexture = true;
     }
 
-    void Mesh::setupRigidBody()
-    {
-        auto mass = 1.0;
-        auto damping = 0.9;
-
-        this->body = new Khronos::RigidBody();
-        this->body->setPosition(this->transform->position);
-        this->body->setOrientation(this->transform->rotation);
-        this->body->setVelocity(Athena::Vector3(0.0, 0.0, 0.0));
-        this->body->setRotation(Athena::Vector3(0.0, 0.0, 0.0));
-        this->body->setLinearDamping(damping);
-        this->body->setAngularDamping(damping);
-        this->body->setMass(mass);
-        Athena::Matrix3 it;
-        this->body->setInertiaTensor(it);
-
-        /*this->collisionSphere = new Khronos::CollisionSphere(0.5);
-        
-        collisionSphere->body = this->body;
-        collisionSphere->calculateInternals();*/
-        this->collisionBox = new Khronos::CollisionBox(Athena::Vector3(0.5, 0.5, 0.5));
-        
-        collisionBox->body = this->body;
-
-    }
-
-    void Mesh::startRuntime()
-    {
-        setupRigidBody();
-    }
-
-    void Mesh::updateRuntime()
-    {
-        this->transform->position = this->body->position;
-        this->transform->rotation = this->body->orientation;
-    }
-
     void Mesh::start()
     {
         this->setupMesh();
@@ -102,12 +65,13 @@ namespace Odysseus
 
         System::Picking::PickableObject::insertPickableObject(this->_uniqueFloatID, this->sceneObject);
 
-        auto tmp = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->getViewTransform(Transform::GetWorldTransform(this->transform, this->transform));
+        auto worldPosition = Transform::GetWorldTransform(this->transform, this->transform);
+        auto tmp = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->getViewTransform(worldPosition);
 
         this->shader->setVec3("viewPos", Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->transform->position);
-        this->shader->setVec3("WorldPosition", this->transform->position);
-        this->shader->setVec4("WorldRotation", this->transform->rotation.asVector4());
-        this->shader->setVec3("WorldScale", this->transform->localScale);
+        this->shader->setVec3("WorldPosition", worldPosition->position);
+        this->shader->setVec4("WorldRotation", worldPosition->rotation.asVector4());
+        this->shader->setVec3("WorldScale", worldPosition->localScale);
 
         this->shader->setVec3("position", tmp->position);
         this->shader->setVec4("rotation", tmp->rotation.asVector4());
@@ -511,8 +475,6 @@ namespace Odysseus
 
     Mesh::~Mesh() noexcept
     {
-        delete this->body;
-        delete this->collisionSphere;
         Mesh::freeGPUresources();
     }
 

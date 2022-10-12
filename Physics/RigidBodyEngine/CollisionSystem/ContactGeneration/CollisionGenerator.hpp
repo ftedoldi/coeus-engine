@@ -20,7 +20,7 @@ namespace Khronos
 
         CollisionGenerator();
         
-        unsigned int addContact(std::vector<RigidBody*>& bodies, std::vector<Contact*>& contacts, unsigned int next);
+        unsigned int addContact(std::vector<Contact*>& contacts, unsigned int next);
 
     private:
 

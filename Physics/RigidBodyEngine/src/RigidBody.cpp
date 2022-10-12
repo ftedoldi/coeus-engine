@@ -308,6 +308,7 @@ namespace Khronos
 
         //calculate the transform matrix
         calculateTransformMatrix(this->transformMatrix, this->position, this->orientation);
+        //this->transformMatrix.print();
 
         //calculate the inertia tensor in world space
         transformInertiaTensor(this->inverseInertiaTensorWorld, this->orientation, this->inverseInertiaTensor, this->transformMatrix);
@@ -350,6 +351,7 @@ namespace Khronos
 
         this->forceAccum += force;
         this->torqueAccum += Athena::Vector3::cross(pt, force);
+        isAwake = true;
     }
 
     Athena::Vector3 RigidBody::getPointInWorldSpace(const Athena::Vector3& point)
@@ -367,6 +369,9 @@ namespace Khronos
 
     void RigidBody::integrate(Athena::Scalar dt)
     {
+        if(!isAwake)
+            return;
+
         //calculate linear acceleration from force inputs
         this->lastFrameAcceleration = this->acceleration;
         this->lastFrameAcceleration.addScaledVector(this->forceAccum, this->inverseMass);
@@ -380,9 +385,16 @@ namespace Khronos
         //update angular velocity from both acceleration and impulse
         this->rotation.addScaledVector(angularAcceleration, dt);
 
+        //this->rotation.print();
+        //std::cout << angularDamping << std::endl;
+        //std::cout << dt << std::endl;
+
         //impose drag
         this->velocity *= Athena::Math::scalarPow(linearDamping, dt);
         this->rotation *= Athena::Math::scalarPow(angularDamping, dt);
+
+        //velocity.print();
+        //rotation.print();
 
         //update linear position
         this->position.addScaledVector(this->velocity, dt);
@@ -394,5 +406,52 @@ namespace Khronos
         //position and rotation
         calculateDerivedData();
         clearAccumulators();
+
+        if(canSleep)
+        {
+            Athena::Scalar currentMotion = Athena::Vector3::dot(this->velocity, this->velocity) +
+                    Athena::Vector3::dot(this->rotation, this->rotation);
+                
+            Athena::Scalar bias = Athena::Math::scalarPow(0.5, dt);
+            this->motion = bias * this->motion + (1 - bias) * currentMotion;
+            
+            if(motion < sleepEpsilon)
+            {
+                setAwake(false);
+            }
+            else if(motion > 10 * sleepEpsilon)
+                motion = 10 * sleepEpsilon;
+        }
+    }
+
+    void RigidBody::setAwake(const bool awake)
+    {
+        if(awake)
+        {
+            isAwake = true;
+            motion = sleepEpsilon * 2.0f;
+        }
+        else
+        {
+            isAwake = false;
+            velocity.clear();
+            rotation.clear();
+        }
+    }
+
+    bool RigidBody::getAwake()
+    {
+        return this->isAwake;
+    }
+
+    void RigidBody::setCanSleep(const bool canSleep)
+    {
+        this->canSleep = canSleep;
+        if (!canSleep && !isAwake) setAwake();
+    }
+
+    bool RigidBody::getCanSleep()
+    {
+        return this->canSleep;
     }
 }

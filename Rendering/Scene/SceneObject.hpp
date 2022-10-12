@@ -37,6 +37,12 @@ namespace System::Serialize
     class Serializer;
 }
 
+namespace Khronos
+{
+    class RigidBox;
+    class RigidSphere;
+}
+
 namespace Odysseus
 {
     class Container;
@@ -50,6 +56,8 @@ namespace Odysseus
         friend class System::Serialize::Serializer;
         friend class System::Utils::GUI;
         friend class EditorLayer::InspectorWindow;
+        friend class Khronos::RigidBox;
+        friend class Khronos::RigidSphere;
 
         private:
             bool _active;
@@ -148,6 +156,7 @@ namespace Odysseus
                 instance->transform = this->transform;
 
                 _container->_components.push_back(instance);
+                //delete instance;
 
                 return dynamic_cast<T*>(_container->_components[_container->_components.size() - 1]);
             }

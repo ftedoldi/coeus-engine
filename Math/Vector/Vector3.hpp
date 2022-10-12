@@ -71,6 +71,7 @@ namespace Athena
             void operator *= (const Scalar& k);
             void operator /= (const Scalar& k);
 
+            static Scalar distance(const Vector3& vector1, const Vector3& vector2);
             Scalar angleBetween (const Vector3& vector) const;
 
             Vector3 lerp(const Vector3& vector, const Scalar& t) const;

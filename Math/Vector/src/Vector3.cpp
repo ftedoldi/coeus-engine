@@ -187,6 +187,13 @@ namespace Athena {
         this->coordinates.z /= k;
     }
 
+    Scalar Vector3::distance(const Vector3& vector1, const Vector3& vector2)
+    {
+        return(Math::scalarSqrt(Math::scalarPow(vector2.coordinates.x - vector1.coordinates.x, 2) +
+                                Math::scalarPow(vector2.coordinates.y - vector1.coordinates.y, 2) +
+                                Math::scalarPow(vector2.coordinates.z - vector1.coordinates.z, 2)));
+    }
+
     Scalar Vector3::angleBetween (const Vector3& vector) const {
         return Math::radiansToDegreeAngle(std::acos(this->normalized() * vector.normalized()));
     }
