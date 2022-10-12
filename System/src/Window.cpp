@@ -207,7 +207,7 @@ namespace System {
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
         sceneFrameBuffer = new Buffers::FrameBuffer(mode->width * 2, mode->height * 2, true);
-        gameFrameBuffer = new Buffers::FrameBuffer(mode->width * 2, mode->height * 2, true);
+        // gameFrameBuffer = new Buffers::FrameBuffer(mode->width * 2, mode->height * 2, true);
 
         // dockspace = new Dockspace();
 
