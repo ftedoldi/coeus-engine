@@ -38,8 +38,8 @@
 
 #include <Python.h>
 
-#include <Test.cuh>
 #include <FirstClass.cuh>
+// #include <CUDAInteroperationManager.hpp>
 
 void runPythonScript()
 {
@@ -75,15 +75,19 @@ int main()
 
     // call();
     // AddVectors();
-    Athena::Vector3 test = Athena::Vector3(1, 1, 1);
-    Athena::Vector3 test1 = Athena::Vector3(1, 2, 3);
-    Athena::Vector3 r = Athena::Vector3();
-    float* t = test.asScalarVector();
-    float* t1 = test1.asScalarVector();
-    float* result = r.asScalarVector();
-    auto res = AddVector3(t, t1, result);
-    r = Athena::Vector3(result);
-    r.print();
+    // Athena::Vector3 test = Athena::Vector3(1, 1, 1);
+    // Athena::Vector3 test1 = Athena::Vector3(1, 2, 3);
+    // (test + test1).print();
+    // Athena::Vector3 r = Athena::Vector3();
+    // float* t = test.asScalarVector();
+    // float* t1 = test1.asScalarVector();
+    // float* result = r.asScalarVector();
+    // auto res = AddVector3(t, t1, result);
+    // r = Athena::Vector3(result);
+    // r.print();
+
+    // Athena::Quaternion quat = Athena::Quaternion(1, 1, 1, 1);
+    // quat.toMatrix4().print();
 
     //std::thread thread(runPythonScript);
 
@@ -188,6 +192,11 @@ int main()
 
     // //Setup everything before initializeScene call
     Odysseus::SceneManager::initializeActiveScene();
+
+    // Do this after framebuffer creation
+    // CUDA::Interop::CUDARegistration* cudaInterop = new CUDA::Interop::CUDARegistration();
+    // cudaInterop->createCUDATextureResource(cudaInterop->cudaResources[0], GL_COLOR_ATTACHMENT0, cudaGraphicsMapFlagsReadOnly);
+    // cudaInterop->createCUDATextureResource(cudaInterop->cudaResources[1], 0, cudaGraphicsMapFlagsWriteDiscard);
 
     // render loop
     // -----------
