@@ -1,5 +1,7 @@
 #include <Quaternion.hpp>
 
+#include <VectorOperations.cuh>
+
 namespace Athena {
     Quaternion::Quaternion() : immaginary(_immaginary), real(_real) {
         this->_immaginary = Vector3(0, 0, 0);
@@ -272,12 +274,8 @@ namespace Athena {
     Matrix4 Quaternion::toMatrix4() const {
         Matrix3 m3 = Quaternion::QuaternionToMatrx3(*this);
         Matrix4 res(0.0f);
- 
-        res.data[15] = 1;
-
-        for (int i = 0; i < 3; i++)
-            for (int j = 0; j < 3; j++)
-                res.data[j + 4 * i] = m3.data[j + 3 * i];
+        
+        Matrix3ToMatrix4(m3.data, res.data);
 
         return res;
     }
