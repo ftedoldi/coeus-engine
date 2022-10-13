@@ -106,7 +106,7 @@ namespace System::Buffers
 
     void FrameBuffer::initializeStandardBuffer()
     {
-       cudaInterop = new CUDA::Interop::CUDAInteroperationManager();
+        cudaInterop = new CUDA::Interop::CUDAInteroperationManager();
 
         // Generating Post Processing texture
         // ----------------------------------
@@ -245,6 +245,8 @@ namespace System::Buffers
 
     void FrameBuffer::refreshFrameBufferTextureSize()
     {
+        static FrameBufferSize fbSize = this->_frameBufferSize;
+
         // Generating Post Processing texture
         // ----------------------------------
         cudaInterop->deleteCUDATextureResource(cudaInterop->cudaResources[1]);
@@ -264,11 +266,11 @@ namespace System::Buffers
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glBindTexture(GL_TEXTURE_2D, 0);
-        cudaInterop->createCUDATextureResource(cudaInterop->cudaResources[1], _postProcessedTexture, cudaGraphicsMapFlagsWriteDiscard);
+        cudaInterop->createCUDATextureResource(cudaInterop->cudaResources[1], _postProcessedTexture, cudaGraphicsMapFlagsNone);
         // ----------------------------------
 
-        cudaInterop->deleteCUDATextureResource(cudaInterop->cudaResources[0]);
         //----------------------------------------------Clearing Texture Content------------------------------------------------------------------//
+        cudaInterop->deleteCUDATextureResource(cudaInterop->cudaResources[0]);
         for (int i = 0; i < this->_numberOfColorAttachments; i++)
         {
             glBindTexture(GL_TEXTURE_2D, this->_texturesID[i]);
@@ -294,7 +296,10 @@ namespace System::Buffers
             glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
         }
 
-        cudaInterop->applyFilterOverTexture(static_cast<int>(_frameBufferSize.width), static_cast<int>(_frameBufferSize.height), CUDA::Interop::ScreenSpaceFilters::BLUR);
+        if (fbSize.width == this->frameBufferSize.width && fbSize.height == this->frameBufferSize.height)
+            cudaInterop->applyFilterOverTexture(_frameBufferSize.width, _frameBufferSize.height, CUDA::Interop::ScreenSpaceFilters::NONE);
+        else
+            fbSize = this->_frameBufferSize;
     }
 
     void FrameBuffer::bindStandardFrameBuffer()

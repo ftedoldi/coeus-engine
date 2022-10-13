@@ -2,6 +2,16 @@
 
 #include <Window.hpp>
 
+#define checkCudaErrors(call)                                 \
+  do {                                                        \
+    cudaError_t err = call;                                   \
+    if (err != cudaSuccess) {                                 \
+      printf("CUDA error at %s %d: %s\n", __FILE__, __LINE__, \
+             cudaGetErrorString(err));                        \
+      exit(EXIT_FAILURE);                                     \
+    }                                                         \
+  } while (0)
+
 #include <Postprocess.cuh>
 
 namespace CUDA::Interop
@@ -44,14 +54,14 @@ namespace CUDA::Interop
     void CUDAInteroperationManager::createCUDATextureResource(cudaGraphicsResource_t& cudaResource, GLuint GLtexture, cudaGraphicsMapFlags mapFlags)
     {
         // Map the GL texture resource with the CUDA resource
-        cudaGraphicsGLRegisterImage( &cudaResource, GLtexture, GL_TEXTURE_2D, mapFlags );
+        checkCudaErrors(cudaGraphicsGLRegisterImage( &cudaResource, GLtexture, GL_TEXTURE_2D, mapFlags ));
     }
 
     void CUDAInteroperationManager::deleteCUDATextureResource(cudaGraphicsResource_t& cudaResource)
     {
         if ( cudaResource != 0 )
         {
-            cudaGraphicsUnregisterResource( cudaResource );
+            checkCudaErrors(cudaGraphicsUnregisterResource( cudaResource ));
             cudaResource = 0;
         }
     }

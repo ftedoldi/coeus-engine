@@ -191,7 +191,7 @@ Scene Objects:
       Euler Angles Rotation:
         X: 0
         Y: 0
-        Z: 45
+        Z: 0
       Scale:
         X: 0.999995947
         Y: 0.999999404
@@ -219,41 +219,9 @@ Scene Objects:
             []
           Vertex Shader Path: .\Shader\phongShader.vert
           Fragment Shader Path: .\Shader\phongShader.frag
-  - Scene Object ID: 17418809603869690825
-    Transform:
-      Name: PointLight
-      Position:
-        X: 0
-        Y: 2
-        Z: 0
-      Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-        W: 1
-      Euler Angles Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-      Scale:
-        X: 1
-        Y: 1
-        Z: 1
-    Components:
-      - Component: PointLight
-        PointLight:
-          Diffuse:
-            Red: 0.800000012
-            Green: 0.800000012
-            Blue: 0.800000012
-          Ambient:
-            Red: 0.200000003
-            Green: 0.200000003
-            Blue: 0.200000003
-          Specular:
-            Red: 0.300000012
-            Green: 0.300000012
-            Blue: 0.300000012
-          Constant: 1
-          Linear: 0.0900000036
-          Quadratic: 0.0320000015
+      - Component: RigidBox
+        RigidBox:
+          Bounding box: Size
+          ? X: 1.99999189
+            Y: 1.99999881
+            Z: 2
