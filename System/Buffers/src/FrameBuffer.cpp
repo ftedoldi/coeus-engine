@@ -250,7 +250,6 @@ namespace System::Buffers
         // Generating Post Processing texture
         // ----------------------------------
         cudaInterop->deleteCUDATextureResource(cudaInterop->cudaResources[1]);
-        glGenTextures(1, &_postProcessedTexture);
         glBindTexture(GL_TEXTURE_2D, _postProcessedTexture);
         glTexImage2D(
                         GL_TEXTURE_2D, 
