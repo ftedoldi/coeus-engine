@@ -44,12 +44,15 @@ namespace Khronos
         this->rigidBody->setRotation(Athena::Vector3(0.0, 0.0, 0.0));
         this->rigidBody->setMass(this->mass);
         this->rigidBody->setDamping(this->damping, this->damping);
-        this->rigidBody->setInertiaTensor(it);
         this->rigidBody->setAwake(true);
         this->rigidBody->setCanSleep(false);
         this->rigidBody->sleepEpsilon = 0.3;
 
         Athena::Vector3 halfSize(scale.coordinates.x * 0.5, scale.coordinates.y * 0.5 ,scale.coordinates.z * 0.5);
+        /*it.data[0] = 1.0 / 12.0 * this->mass * (halfSize.coordinates.y * halfSize.coordinates.y + halfSize.coordinates.z * halfSize.coordinates.z);
+        it.data[4] = 1.0 / 12.0 * this->mass * (halfSize.coordinates.x * halfSize.coordinates.x + halfSize.coordinates.z * halfSize.coordinates.z);
+        it.data[8] = 1.0 / 12.0 * this->mass * (halfSize.coordinates.x * halfSize.coordinates.x + halfSize.coordinates.y * halfSize.coordinates.y);*/
+        this->rigidBody->setInertiaTensor(it);
         this->cBox = new CollisionBox(halfSize);
         cBox->body = this->rigidBody;
 
