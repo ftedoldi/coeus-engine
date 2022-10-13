@@ -13,21 +13,17 @@ namespace Khronos
 
     RigidPlane::RigidPlane()
     {
-        //this->_uniqueID = 4121;
-        //if(this->transform == nullptr)
-            //this->transform->position.print();
-        //cPlane = new CollisionPlane(Athena::Vector3::up(), this->transform->position.coordinates.y);
-        //this->_hasEditorTexture = false;
+
     }
 
     RigidPlane::~RigidPlane()
     {
-        //delete this->cPlane;
+
     }
 
     void RigidPlane::start()
     {
-        this->cPlane = new CollisionPlane(Athena::Vector3::up(), this->sceneObject->transform->position.coordinates.y);
+        this->cPlane = new CollisionPlane(Athena::Vector3(0.0, 1.0, 0.0).normalized(), this->sceneObject->transform->position.coordinates.y);
     }
     void RigidPlane::update()
     {
@@ -63,19 +59,6 @@ namespace Khronos
     {
         this->physicSimulation = physSim;
     }
-
-    /*void RigidPlane::serialize(YAML::Emitter& out)
-    {
-        out << YAML::Key << this->toString();
-        out << YAML::BeginMap;
-            out << YAML::Key << NAMEOF(asd) << YAML::Value << this->asd;
-            out << YAML::Key << NAMEOF(var) << YAML::Value << this->var;
-        out << YAML::EndMap; 
-    }
-    System::Component* RigidPlane::deserialize(YAML::Node& node)
-    {
-
-    }*/
 
     void RigidPlane::showComponentFieldsInEditor()
     {
