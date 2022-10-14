@@ -154,35 +154,13 @@ Scene Objects:
           Constant: 1
           Linear: 0.0900000036
           Quadratic: 0.0320000015
-  - Scene Object ID: 18173832557426053557
-    Transform:
-      Name: Scene Object
-      Position:
-        X: 0
-        Y: 0
-        Z: 0
-      Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-        W: 1
-      Euler Angles Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-      Scale:
-        X: 1
-        Y: 1
-        Z: 1
-      Children Scene Objects:
-        - 15677139307487324380
   - Scene Object ID: 15677139307487324380
     Transform:
-      Name: Scene Object
+      Name: PhysicalCube
       Position:
         X: 0
-        Y: 0
-        Z: 0
+        Y: 7.05759478
+        Z: -3
       Rotation:
         X: 0
         Y: 0
@@ -196,7 +174,6 @@ Scene Objects:
         X: 0.999995947
         Y: 0.999999404
         Z: 1
-      Parent Scene Object: 18173832557426053557
     Components:
       - Component: Mesh
         Mesh:
@@ -219,12 +196,18 @@ Scene Objects:
             []
           Vertex Shader Path: .\Shader\phongShader.vert
           Fragment Shader Path: .\Shader\phongShader.frag
+      - Component: RigidBox
+        RigidBox:
+          Size:
+            X: 1.99999189
+            Y: 1.99999881
+            Z: 2
   - Scene Object ID: 8049907417494124850
     Transform:
-      Name: Scene Object
+      Name: PhysicalPlane
       Position:
         X: 0
-        Y: 0
+        Y: -1.00822878
         Z: 0
       Rotation:
         X: 0
@@ -239,3 +222,11 @@ Scene Objects:
         X: 1
         Y: 1
         Z: 1
+    Components:
+      - Component: RigidPlane
+        RigidPlane:
+          Direction:
+            X: 0
+            Y: 1
+            Z: 0
+          Offset: -1
