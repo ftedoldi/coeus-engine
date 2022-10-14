@@ -13,7 +13,14 @@ namespace Khronos
 
     RigidPlane::RigidPlane()
     {
+        this->direction = Athena::Vector3(0.0f, 1.0f, 0.0f);
+        this->offset = 0;
+    }
 
+    RigidPlane::RigidPlane(Athena::Vector3& dir, Athena::Scalar off)
+    {
+        this->direction = dir;
+        this->offset = off;
     }
 
     RigidPlane::~RigidPlane()
@@ -23,8 +30,9 @@ namespace Khronos
 
     void RigidPlane::start()
     {
-        this->cPlane = new CollisionPlane(Athena::Vector3(0.0, 1.0, 0.0).normalized(), this->sceneObject->transform->position.coordinates.y);
+        this->cPlane = new CollisionPlane(this->direction.normalized(), this->sceneObject->transform->position.coordinates.y + this->offset);
     }
+
     void RigidPlane::update()
     {
 
@@ -62,31 +70,45 @@ namespace Khronos
 
     void RigidPlane::showComponentFieldsInEditor()
     {
-        ImGui::InputFloat(NAMEOF("Offset"), &this->cPlane->offset);
+        ImGui::InputFloat(NAMEOF("Offset"), &this->offset);
+        this->cPlane->offset = this->offset;
         ImGui::Text("Plane direction:");
-            float planeDir[] = { 
-                                this->cPlane->direction.coordinates.x, 
-                                this->cPlane->direction.coordinates.y, 
-                                this->cPlane->direction.coordinates.z 
-                            };
-            ImGui::InputFloat3("Plane Direction", planeDir);
+        float planeDir[] = { 
+                            this->direction.coordinates.x, 
+                            this->direction.coordinates.y, 
+                            this->direction.coordinates.z 
+                        };
+        ImGui::InputFloat3("Plane Direction", planeDir);
+        this->direction = Athena::Vector3(planeDir);
+        this->cPlane->direction = this->direction;
     }
 
     void RigidPlane::serialize(YAML::Emitter& out)
     {
-        /*out << YAML::Key << this->toString();
+        out << YAML::Key << this->toString();
         out << YAML::BeginMap;
-            out << YAML::Key << "Bounding box";
-            out << YAML::Key << "Size";
+            out << YAML::Key << "Direction";
             out << YAML::BeginMap;
-                out << YAML::Key << "X" << YAML::Value << this->boundingBox.size.coordinates.x;
-                out << YAML::Key << "Y" << YAML::Value << this->boundingBox.size.coordinates.y;
-                out << YAML::Key << "Z" << YAML::Value << this->boundingBox.size.coordinates.z;
-            out << YAML::EndMap;*/
+                out << YAML::Key << "X" << YAML::Value << this->direction.coordinates.x;
+                out << YAML::Key << "Y" << YAML::Value << this->direction.coordinates.y;
+                out << YAML::Key << "Z" << YAML::Value << this->direction.coordinates.z;
+            out << YAML::EndMap;
+            out << YAML::Key << "Offset" << YAML::Value << this->offset;
+        out << YAML::EndMap;
     }
 
     System::Component* RigidPlane::deserialize(YAML::Node& node)
     {
+        auto component = node[this->toString()];
+
+        this->direction = Athena::Vector3();
+
+        this->direction.coordinates.x = component["Direction"]["X"].as<Athena::Scalar>();
+        this->direction.coordinates.y = component["Direction"]["Y"].as<Athena::Scalar>();
+        this->direction.coordinates.z = component["Direction"]["Z"].as<Athena::Scalar>();
+
+        this->offset = component["Offset"].as<Athena::Scalar>();
+
         return this;
     }
 

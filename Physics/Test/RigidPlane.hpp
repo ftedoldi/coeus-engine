@@ -15,12 +15,17 @@ namespace Khronos
     
     class RigidPlane : public System::Component
     {
-        
+    private:
         RigidPhysicsEngine* physicSimulation;
+
+        Athena::Vector3 direction;
+        Athena::Scalar offset;
 
     public:
         CollisionPlane* cPlane;
+
         RigidPlane();
+        RigidPlane(Athena::Vector3& dir, Athena::Scalar off);
 
         virtual void start();
         virtual void update();
