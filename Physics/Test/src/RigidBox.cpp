@@ -196,17 +196,23 @@ namespace Khronos
     {
         out << YAML::Key << this->toString();
         out << YAML::BeginMap;
-            out << YAML::Key << "Bounding box";
             out << YAML::Key << "Size";
             out << YAML::BeginMap;
                 out << YAML::Key << "X" << YAML::Value << this->boundingBox.size.coordinates.x;
                 out << YAML::Key << "Y" << YAML::Value << this->boundingBox.size.coordinates.y;
                 out << YAML::Key << "Z" << YAML::Value << this->boundingBox.size.coordinates.z;
             out << YAML::EndMap;
+        out << YAML::EndMap;
     }
 
     System::Component* RigidBox::deserialize(YAML::Node& node)
     {
+        auto component = node[this->toString()];
+        this->boundingBox.size = Athena::Vector3();
+        this->boundingBox.size.coordinates.x = component["Size"]["X"].as<Athena::Scalar>();
+        this->boundingBox.size.coordinates.y = component["Size"]["Y"].as<Athena::Scalar>();
+        this->boundingBox.size.coordinates.z = component["Size"]["Z"].as<Athena::Scalar>();
+
         return this;
     }
 
@@ -214,6 +220,4 @@ namespace Khronos
     {
         System::SerializableClass::registerClass<RigidBox>("RigidBox");
     }
-
-
 }
