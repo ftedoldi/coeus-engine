@@ -87,11 +87,10 @@ namespace Khronos
             vertexPos.coordinates.y *= box->halfSize.coordinates.y;
             vertexPos.coordinates.z *= box->halfSize.coordinates.z;
             Athena::Vector4 vertexPos4(vertexPos.coordinates.x, vertexPos.coordinates.y, vertexPos.coordinates.z, 1);
-            vertexPos = (box->transform * vertexPos4).xyz();
+            vertexPos = (box->transform * vertexPos4).xyz();        
 
             // Calculate the distance of the vertex from the plane
             Athena::Scalar vertexDistance = vertexPos * plane->direction;
-
             if(vertexDistance <= plane->offset)
             {
                 auto contact = data->getContact();

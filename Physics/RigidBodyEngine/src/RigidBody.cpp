@@ -8,36 +8,36 @@ namespace Khronos
     //then, the last column contains the translation (position) vector
     static inline void calculateTransformMatrix(Athena::Matrix4& transformMatrix, const Athena::Vector3& position, const Athena::Quaternion &orientation)
     {
-        transformMatrix.data[0] = 1 - 2 * orientation.immaginary.coordinates.y * orientation.immaginary.coordinates.y - 
-                                    2 * orientation.immaginary.coordinates.z * orientation.immaginary.coordinates.z;
+        transformMatrix.data[0] = 1.0f - 2.0f * orientation.immaginary.coordinates.y * orientation.immaginary.coordinates.y - 
+                                    2.0f * orientation.immaginary.coordinates.z * orientation.immaginary.coordinates.z;
 
-        transformMatrix.data[1] = 2 * orientation.immaginary.coordinates.x * orientation.immaginary.coordinates.y -
-                                    2 * orientation.real * orientation.immaginary.coordinates.z;
+        transformMatrix.data[1] = 2.0f * orientation.immaginary.coordinates.x * orientation.immaginary.coordinates.y -
+                                    2.0f * orientation.real * orientation.immaginary.coordinates.z;
 
-        transformMatrix.data[2] = 2 * orientation.immaginary.coordinates.x * orientation.immaginary.coordinates.z +
-                                    2 * orientation.real * orientation.immaginary.coordinates.y;
+        transformMatrix.data[2] = 2.0f * orientation.immaginary.coordinates.x * orientation.immaginary.coordinates.z +
+                                    2.0f * orientation.real * orientation.immaginary.coordinates.y;
 
         transformMatrix.data[3] = position.coordinates.x;
 
-        transformMatrix.data[4] = 2 * orientation.immaginary.coordinates.x * orientation.immaginary.coordinates.y +
-                                    2 * orientation.real * orientation.immaginary.coordinates.z;
+        transformMatrix.data[4] = 2.0f * orientation.immaginary.coordinates.x * orientation.immaginary.coordinates.y +
+                                    2.0f * orientation.real * orientation.immaginary.coordinates.z;
 
-        transformMatrix.data[5] = 1 - 2 * orientation.immaginary.coordinates.x * orientation.immaginary.coordinates.x - 
-                                    2 * orientation.immaginary.coordinates.z * orientation.immaginary.coordinates.z;
+        transformMatrix.data[5] = 1.0f - 2.0f * orientation.immaginary.coordinates.x * orientation.immaginary.coordinates.x - 
+                                    2.0f * orientation.immaginary.coordinates.z * orientation.immaginary.coordinates.z;
 
-        transformMatrix.data[6] = 2 * orientation.immaginary.coordinates.y * orientation.immaginary.coordinates.z -
-                                    2 * orientation.real * orientation.immaginary.coordinates.x;
+        transformMatrix.data[6] = 2.0f * orientation.immaginary.coordinates.y * orientation.immaginary.coordinates.z -
+                                    2.0f * orientation.real * orientation.immaginary.coordinates.x;
 
         transformMatrix.data[7] = position.coordinates.y;
 
-        transformMatrix.data[8] = 2 * orientation.immaginary.coordinates.x * orientation.immaginary.coordinates.z -
-                                    2 * orientation.real * orientation.immaginary.coordinates.y;
+        transformMatrix.data[8] = 2.0f * orientation.immaginary.coordinates.x * orientation.immaginary.coordinates.z -
+                                    2.0f * orientation.real * orientation.immaginary.coordinates.y;
 
-        transformMatrix.data[9] = 2 * orientation.immaginary.coordinates.y * orientation.immaginary.coordinates.z +
-                                    2 * orientation.real * orientation.immaginary.coordinates.x;
+        transformMatrix.data[9] = 2.0f * orientation.immaginary.coordinates.y * orientation.immaginary.coordinates.z +
+                                    2.0f * orientation.real * orientation.immaginary.coordinates.x;
 
-        transformMatrix.data[10] = 1 - 2 * orientation.immaginary.coordinates.x * orientation.immaginary.coordinates.x -
-                                    2 * orientation.immaginary.coordinates.y * orientation.immaginary.coordinates.y;
+        transformMatrix.data[10] = 1.0f - 2.0f * orientation.immaginary.coordinates.x * orientation.immaginary.coordinates.x -
+                                    2.0f * orientation.immaginary.coordinates.y * orientation.immaginary.coordinates.y;
 
         transformMatrix.data[11] = position.coordinates.z;
     }
@@ -308,7 +308,6 @@ namespace Khronos
 
         //calculate the transform matrix
         calculateTransformMatrix(this->transformMatrix, this->position, this->orientation);
-        //this->transformMatrix.print();
 
         //calculate the inertia tensor in world space
         transformInertiaTensor(this->inverseInertiaTensorWorld, this->orientation, this->inverseInertiaTensor, this->transformMatrix);
@@ -385,17 +384,9 @@ namespace Khronos
         //update angular velocity from both acceleration and impulse
         this->rotation.addScaledVector(angularAcceleration, dt);
 
-        //this->rotation.print();
-        //std::cout << angularDamping << std::endl;
-        //std::cout << dt << std::endl;
-
         //impose drag
         this->velocity *= Athena::Math::scalarPow(linearDamping, dt);
         this->rotation *= Athena::Math::scalarPow(angularDamping, dt);
-
-        //velocity.print();
-        //rotation.print();
-
         //update linear position
         this->position.addScaledVector(this->velocity, dt);
 

@@ -87,7 +87,6 @@ namespace Khronos
 
             // Resolve the penetration
             contacts.at(index)->applyPositionChange(linearChange, angularChange, max);
-            //contacts.at(index)->relativeContactPosition[0].print();
 
             // Since the penetration resolving may have changed the penetration of
             // other bodies, we update contacts.
@@ -122,7 +121,6 @@ namespace Khronos
                 }
                 this->positionIterationsUsed++;
             }
-            //contacts.at(index)->relativeContactPosition[0].print();
         }
     }
 
@@ -151,9 +149,7 @@ namespace Khronos
                 break;
             
             contacts.at(index)->MatchAwakeState();
-            //contacts.at(index)->relativeContactPosition[0].print();
             contacts.at(index)->applyVelocityChange(velocityChange, rotationChange);
-            //velocityChange[0].print();
 
             for(i = 0; i < numContacts; ++i)
             {

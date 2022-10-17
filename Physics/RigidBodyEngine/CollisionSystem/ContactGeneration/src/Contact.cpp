@@ -107,25 +107,7 @@ namespace Khronos
         // by a skew symmetric matrix - we build the matrix for converting
         // between linear and angular quantities.
         Athena::Matrix3 impulseToTorque;
-        //relativeContactPosition[0].print();
         impulseToTorque.setSkewSymmetric(relativeContactPosition[0]);
-        /*impulseToTorque.data[0] = impulseToTorque.data[4] = impulseToTorque.data[8] = 0;
-        impulseToTorque.data[1] = -relativeContactPosition[0].coordinates.z;
-        impulseToTorque.data[2] = relativeContactPosition[0].coordinates.y;
-        impulseToTorque.data[3] = relativeContactPosition[0].coordinates.z;
-        impulseToTorque.data[5] = -relativeContactPosition[0].coordinates.x;
-        impulseToTorque.data[6] = -relativeContactPosition[0].coordinates.y;
-        impulseToTorque.data[7] = relativeContactPosition[0].coordinates.x;*/
-        //impulseToTorque.setSkewSymmetric(Athena::Vector3(0.2, 0.2, 0.2));
-
-        //relativeContactPosition[0].print();
-
-
-        //relativeContactPosition[0].print();
-        /*std::cout << std::endl;
-        impulseToTorque.print();
-        std::cout << std::endl;
-        std::cout << std::endl;*/
 
         // Build the matrix to convert contact impulse to change in velocity
         // in world coordinates.
@@ -244,7 +226,6 @@ namespace Khronos
 
         // If the velocity is very slow, limit the restitution
         Athena::Scalar thisRestitution = this->restitution;
-        //std::cout << Athena::Math::scalarAbs(contactVelocity.coordinates.x) << std::endl;
         if(Athena::Math::scalarAbs(contactVelocity.coordinates.x) < velocityLimit)
         {
             thisRestitution = (Athena::Scalar)0.0;
@@ -253,7 +234,6 @@ namespace Khronos
         // Combine the bounce velocity with the removed acceleration velocity
         // We need to substract the acceleration velocity to remove the amount
         // of visual vibration for objects resting on the ground
-        //std::cout << contactVelocity.coordinates.x << std::endl;
         this->desiredDeltaVelocity = -contactVelocity.coordinates.x - thisRestitution * (contactVelocity.coordinates.x - velocityFromAcc);
     }
 
@@ -287,8 +267,6 @@ namespace Khronos
                 angularInertiaWorld = inverseInertiaTensor * angularInertiaWorld;
                 angularInertiaWorld = Athena::Vector3::cross(angularInertiaWorld, relativeContactPosition[i]);
                 angularInertia[i] = Athena::Vector3::dot(angularInertiaWorld, contactNormal);
-                //std::cout << angularInertia[i] << std::endl;
-                //relativeContactPosition[i].print();
                 // The linear component is the inverse mass
                 linearInertia[i] = body[i]->getInverseMass();
 
@@ -302,9 +280,9 @@ namespace Khronos
             {
                 Athena::Scalar sign = (i == 0)? 1 : -1;
                 // Angular amount each object needs to move
-                angularMove[i] = sign * this->penetration * (angularInertia[i] / totalInertia);
+                angularMove[i] = sign * penetration * (angularInertia[i] / totalInertia);
                 // Linear amount each object needs to move
-                linearMove[i] = sign * this->penetration * (linearInertia[i] / totalInertia);
+                linearMove[i] = sign * penetration * (linearInertia[i] / totalInertia);
 
                 // We limit the angular move since when mass is large but inertia
                 // tensor is small angular projections will be too great
@@ -360,14 +338,10 @@ namespace Khronos
                 q.normalize();
                 body[i]->setOrientation(q);
 
-                //q.print();
-
                 if(!body[i]->getAwake())
                 {
                     body[i]->calculateDerivedData();
                 }
-                    
-
             }
         }
     }
@@ -385,8 +359,6 @@ namespace Khronos
         // Calculate the impulse for each contact axis
         Athena::Vector3 contactImpulse;
 
-        //relativeContactPosition[0].print();
-
         if(friction == (Athena::Scalar)0.0)
         {
             contactImpulse = calculateFrictionlessImpulse(inverseInertiaTensor);
@@ -398,21 +370,11 @@ namespace Khronos
 
         // Convert impulse to world coordinates
         Athena::Vector3 worldImpulse = this->contactToWorldSpace * contactImpulse;
-        /*std::cout << std::endl;
-        contactToWorldSpace.print();
-        std::cout << std::endl;
-        std::cout << std::endl;*/
-        //contactImpulse.print();
 
         // Split the impulse into linear and angular components
-        //Athena::Vector3 impulsiveTorque = Athena::Vector3::cross(relativeContactPosition[0], worldImpulse);
         Athena::Vector3 impulsiveTorque = Athena::Vector3::cross(relativeContactPosition[0], worldImpulse);
         rotationChange[0] = inverseInertiaTensor[0] * impulsiveTorque;
         velocityChange[0] = worldImpulse * body[0]->getInverseMass();
-        //la z ha il segno sbagliato
-
-        //rotationChange[0].print();
-        //rotationChange->coordinates.z = -rotationChange->coordinates.z;
 
         body[0]->addVelocity(velocityChange[0]);
         body[0]->addRotation(rotationChange[0]);
@@ -456,8 +418,6 @@ namespace Khronos
 
         // Store the relative position of the contact relative to each body
         this->relativeContactPosition[0] = contactPoint - body[0]->getPosition();
-        //contactPoint.print();
-        //this->relativeContactPosition[0].print();
         if(body[1] != nullptr)
         {
             this->relativeContactPosition[1] = contactPoint - body[1]->getPosition();

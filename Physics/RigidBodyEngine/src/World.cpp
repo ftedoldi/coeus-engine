@@ -59,7 +59,9 @@ namespace Khronos
 
     void World::runPhysics(Athena::Scalar dt)
     {
-
+        
+        dt = 0.0199999995529652;
+        //std::cout << dt <<std::endl;
         for(auto body : bodyList)
         {
             this->gForce->updateForce(body, dt);
@@ -71,6 +73,8 @@ namespace Khronos
         }
 
         unsigned int usedContacts = generateContacts();
+
+        //std::cout << usedContacts << std::endl;
 
         if(usedContacts > 0)
         {
