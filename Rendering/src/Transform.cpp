@@ -521,7 +521,8 @@ namespace Odysseus {
             this->localScale.coordinates.z * b.localScale.coordinates.z
         );
 
-        Athena::Quaternion newRotation = b.rotation * this->rotation;
+        //Athena::Quaternion newRotation = b.rotation * this->rotation ;
+        Athena::Quaternion newRotation = this->rotation * b.rotation;
 
         Athena::Vector3 newPosition = this->position + this->rotation.rotateVectorByThisQuaternion(Athena::Vector3(
             this->localScale.coordinates.x * b.position.coordinates.x,
