@@ -321,21 +321,21 @@ namespace Athena
         result.data[0] = this->data[0];
         result.data[1] = this->data[4];
         result.data[2] = this->data[8];
-        result.data[3] = this->data[12];
+        result.data[3] = this->data[3];
 
         result.data[4] = this->data[1];
         result.data[5] = this->data[5];
         result.data[6] = this->data[9];
-        result.data[7] = this->data[13];
+        result.data[7] = this->data[7];
 
         result.data[8] = this->data[2];
         result.data[9] = this->data[6];
         result.data[10] = this->data[10];
-        result.data[11] = this->data[14];
+        result.data[11] = this->data[11];
 
-        result.data[12] = this->data[3];
-        result.data[13] = this->data[7];
-        result.data[14] = this->data[11];
+        result.data[12] = this->data[12];
+        result.data[13] = this->data[13];
+        result.data[14] = this->data[14];
         result.data[15] = this->data[15];
 
         return result;
@@ -374,11 +374,26 @@ namespace Athena
     }
 
     Vector4 Matrix4::operator*(const Vector4& vec) const
-    {
-        return Vector4(data[0] * vec[0] + data[1] * vec[1] + data[2] * vec[2] + data[3] * vec[3],
-                       data[4] * vec[0] + data[5] * vec[1] + data[6] * vec[2] + data[7] * vec[3],
-                       data[8] * vec[0] + data[9] * vec[1] + data[10] * vec[2] + data[11] * vec[3],
-                       data[12] * vec[0] + data[13] * vec[1] + data[14] * vec[2] + data[15] * vec[3]);
+    {  
+        return Vector4(vec.coordinates.x * data[0] +
+                       vec.coordinates.y * data[1] + 
+                       vec.coordinates.z * data[2] +
+                       vec.coordinates.w * data[3],
+                       
+                       vec.coordinates.x * data[4] +
+                       vec.coordinates.y * data[5] + 
+                       vec.coordinates.z * data[6] +
+                       vec.coordinates.w * data[7],
+
+                       vec.coordinates.x * data[8] +
+                       vec.coordinates.y * data[9] + 
+                       vec.coordinates.z * data[10] +
+                       vec.coordinates.w * data[11],
+                       
+                       vec.coordinates.x * data[12] +
+                       vec.coordinates.y * data[13] + 
+                       vec.coordinates.z * data[14] +
+                       vec.coordinates.w * data[15]);
     }
 
     Vector3 Matrix4::transformDirection(const Vector3& vec) const
