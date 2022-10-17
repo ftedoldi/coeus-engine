@@ -107,6 +107,7 @@ namespace Odysseus
 
         //Position based dynamics physics
         // 1- create physics simulation with Particle
+        // 2- initialize particles positions, velocities(to 0), inverse masses
     }
 
     void Scene::updateEditorScene()
@@ -132,7 +133,6 @@ namespace Odysseus
                 glUseProgram(0);
             }
         }
-        //0.0199999995529652
         physicSimulation->update();
     }
 
