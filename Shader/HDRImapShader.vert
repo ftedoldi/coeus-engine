@@ -8,16 +8,21 @@ uniform mat4 projection;
 
 void main()
 {
-	//TODO make comments
     localPos = aPos;
 	vec4 conj = vec4(-rotation.x, -rotation.y, -rotation.z, rotation.w);
 	vec4 posQuaternion = vec4(aPos, 0.0);
-	vec4 inverseRotation = vec4((conj.w * posQuaternion.xyz + conj.xyz * posQuaternion.w + cross(conj.xyz, posQuaternion.xyz)).xyz,
-		conj.w * posQuaternion.w - dot(conj.xyz, posQuaternion.xyz));
-	vec4 rotatedVector = vec4((inverseRotation.w * rotation.xyz + inverseRotation.xyz * rotation.w + cross(inverseRotation.xyz, rotation.xyz)).xyz,
-		inverseRotation.w * rotation.w - dot(inverseRotation.xyz, rotation.xyz));
 
-	vec3 viewPos = rotatedVector.xyz;
+	vec4 firstRotation = vec4(rotation.w * posQuaternion.x + rotation.x * posQuaternion.w + rotation.y * posQuaternion.z - rotation.z * posQuaternion.y,
+							  rotation.w * posQuaternion.y + rotation.y * posQuaternion.w + rotation.z * posQuaternion.x - rotation.x * posQuaternion.z,
+							  rotation.w * posQuaternion.z + rotation.z * posQuaternion.w + rotation.x * posQuaternion.y - rotation.y * posQuaternion.x,
+							  rotation.w * posQuaternion.w - rotation.x * posQuaternion.x - rotation.y * posQuaternion.y - rotation.z * posQuaternion.z);
+	
+	vec4 inverseRotation = vec4(firstRotation.w * conj.x + firstRotation.x * conj.w + firstRotation.y * conj.z - firstRotation.z * conj.y,
+								firstRotation.w * conj.y + firstRotation.y * conj.w + firstRotation.z * conj.x - firstRotation.x * conj.z,
+								firstRotation.w * conj.z + firstRotation.z * conj.w + firstRotation.x * conj.y - firstRotation.y * conj.x,
+								firstRotation.w * conj.w - firstRotation.x * conj.x - firstRotation.y * conj.y - firstRotation.z * conj.z);
+
+	vec3 viewPos = inverseRotation.xyz;
 
     gl_Position = projection * vec4(viewPos, 1.0);
 }  

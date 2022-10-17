@@ -30,7 +30,6 @@ vec4 calcWorldPosition(vec3 vector, vec4 worldConj);
 
 void main()
 {
-	//TODO make comments
 	//Calculate texture coordinates
 	vs_out.TexCoords = aTexCoords;
 	vID = ID;
@@ -60,21 +59,34 @@ void main()
 vec4 calcViewPosition(vec3 vector, vec4 conj)
 {
 	vec4 scaledQuaternion = vec4(vector, 0.0);
-	vec4 inverseRotation = vec4((conj.w * scaledQuaternion.xyz + conj.xyz * scaledQuaternion.w + cross(conj.xyz, scaledQuaternion.xyz)).xyz,
-		conj.w * scaledQuaternion.w - dot(conj.xyz, scaledQuaternion.xyz));
-	vec4 rotatedVector = vec4((inverseRotation.w * rotation.xyz + inverseRotation.xyz * rotation.w + cross(inverseRotation.xyz, rotation.xyz)).xyz,
-		inverseRotation.w * rotation.w - dot(inverseRotation.xyz, rotation.xyz));
+	//first hamilton product between quaternion and point quaternion
+	//second hamilton product between result and conj
+	vec4 firstRotation = vec4(rotation.w * scaledQuaternion.x + rotation.x * scaledQuaternion.w + rotation.y * scaledQuaternion.z - rotation.z * scaledQuaternion.y,
+							  rotation.w * scaledQuaternion.y + rotation.y * scaledQuaternion.w + rotation.z * scaledQuaternion.x - rotation.x * scaledQuaternion.z,
+							  rotation.w * scaledQuaternion.z + rotation.z * scaledQuaternion.w + rotation.x * scaledQuaternion.y - rotation.y * scaledQuaternion.x,
+							  rotation.w * scaledQuaternion.w - rotation.x * scaledQuaternion.x - rotation.y * scaledQuaternion.y - rotation.z * scaledQuaternion.z);
+	
+	vec4 inverseRotation = vec4(firstRotation.w * conj.x + firstRotation.x * conj.w + firstRotation.y * conj.z - firstRotation.z * conj.y,
+							  firstRotation.w * conj.y + firstRotation.y * conj.w + firstRotation.z * conj.x - firstRotation.x * conj.z,
+							  firstRotation.w * conj.z + firstRotation.z * conj.w + firstRotation.x * conj.y - firstRotation.y * conj.x,
+							  firstRotation.w * conj.w - firstRotation.x * conj.x - firstRotation.y * conj.y - firstRotation.z * conj.z);
 
-	return rotatedVector;
+	return inverseRotation;
 }
 
 vec4 calcWorldPosition(vec3 vector, vec4 worldConj)
 {
 	vec4 scaledQuaternion = vec4(vector, 0.0);
-	vec4 inverseRotation = vec4((worldConj.w * scaledQuaternion.xyz + worldConj.xyz * scaledQuaternion.w + cross(worldConj.xyz, scaledQuaternion.xyz)).xyz,
-		worldConj.w * scaledQuaternion.w - dot(worldConj.xyz, scaledQuaternion.xyz));
-	vec4 rotatedVector = vec4((inverseRotation.w * WorldRotation.xyz + inverseRotation.xyz * WorldRotation.w + cross(inverseRotation.xyz, WorldRotation.xyz)).xyz,
-		inverseRotation.w * WorldRotation.w - dot(inverseRotation.xyz, WorldRotation.xyz));
 
-	return rotatedVector;
+	vec4 firstRotation = vec4(WorldRotation.w * scaledQuaternion.x + WorldRotation.x * scaledQuaternion.w + WorldRotation.y * scaledQuaternion.z - WorldRotation.z * scaledQuaternion.y,
+							  WorldRotation.w * scaledQuaternion.y + WorldRotation.y * scaledQuaternion.w + WorldRotation.z * scaledQuaternion.x - WorldRotation.x * scaledQuaternion.z,
+							  WorldRotation.w * scaledQuaternion.z + WorldRotation.z * scaledQuaternion.w + WorldRotation.x * scaledQuaternion.y - WorldRotation.y * scaledQuaternion.x,
+							  WorldRotation.w * scaledQuaternion.w - WorldRotation.x * scaledQuaternion.x - WorldRotation.y * scaledQuaternion.y - WorldRotation.z * scaledQuaternion.z);
+	
+	vec4 inverseRotation = vec4(firstRotation.w * worldConj.x + firstRotation.x * worldConj.w + firstRotation.y * worldConj.z - firstRotation.z * worldConj.y,
+							  firstRotation.w * worldConj.y + firstRotation.y * worldConj.w + firstRotation.z * worldConj.x - firstRotation.x * worldConj.z,
+							  firstRotation.w * worldConj.z + firstRotation.z * worldConj.w + firstRotation.x * worldConj.y - firstRotation.y * worldConj.x,
+							  firstRotation.w * worldConj.w - firstRotation.x * worldConj.x - firstRotation.y * worldConj.y - firstRotation.z * worldConj.z);
+
+	return inverseRotation;
 }
