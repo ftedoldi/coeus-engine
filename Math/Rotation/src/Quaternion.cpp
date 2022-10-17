@@ -64,13 +64,9 @@ namespace Athena {
 
     Quaternion Quaternion::EulerAnglesToQuaternion(const Vector3& eulerAngles) {
 
-        //x = yaw
-        //y = pitch
-        //z = roll
-
-        Scalar yaw = eulerAngles.coordinates.z;
-        Scalar pitch = eulerAngles.coordinates.x;
-        Scalar roll = eulerAngles.coordinates.y;
+        Scalar yaw = eulerAngles.coordinates.x;
+        Scalar pitch = eulerAngles.coordinates.y;
+        Scalar roll = eulerAngles.coordinates.z;
 
         yaw = Math::degreeToRandiansAngle(yaw);
         pitch = Math::degreeToRandiansAngle(pitch);
@@ -88,52 +84,12 @@ namespace Athena {
         Quaternion result;
 
         result.real = cosYawOver2 * cosPitchOver2 * cosRollOver2 + sinYawOver2 * sinPitchOver2 * sinRollOver2;
-        result.immaginary.coordinates.x = cosYawOver2 * sinPitchOver2 * cosRollOver2 + sinYawOver2 * cosPitchOver2 * sinRollOver2;
-        result.immaginary.coordinates.y = sinYawOver2 * cosPitchOver2 * cosRollOver2 - cosYawOver2 * sinPitchOver2 * sinRollOver2;
+
+        result.immaginary.coordinates.x = sinYawOver2 * cosPitchOver2 * cosRollOver2 + cosYawOver2 * sinPitchOver2 * sinRollOver2;
+        result.immaginary.coordinates.y = cosYawOver2 * sinPitchOver2 * cosRollOver2 - sinYawOver2* cosPitchOver2 * sinRollOver2;
         result.immaginary.coordinates.z = cosYawOver2 * cosPitchOver2 * sinRollOver2 - sinYawOver2 * sinPitchOver2 * cosRollOver2;
 
         return result;
-        /*Vector3 angles = Vector3(eulerAngles);
-
-        angles.coordinates.x = Math::degreeToRandiansAngle(eulerAngles.coordinates.x);
-        angles.coordinates.y = Math::degreeToRandiansAngle(eulerAngles.coordinates.y);
-        angles.coordinates.z = Math::degreeToRandiansAngle(eulerAngles.coordinates.z);
-        Scalar yaw = angles.coordinates.y;
-        Scalar pitch = angles.coordinates.x;
-        Scalar roll = angles.coordinates.z;
-        Quaternion q;
-        q.immaginary.coordinates.x = std::sin(roll / 2) * std::cos(pitch / 2) * std::cos(yaw / 2) - 
-                                     std::cos(roll / 2) * std::sin(pitch / 2) * std::sin(yaw / 2);
-
-        q.immaginary.coordinates.y = std::cos(roll / 2) * std::sin(pitch / 2) * std::cos(yaw / 2) +
-                                     std::sin(roll / 2) * std::cos(pitch / 2) * std::sin(yaw / 2);
-
-        q.immaginary.coordinates.z = std::cos(roll / 2) * std::cos(pitch / 2) * std::sin(yaw / 2) -
-                                     std::sin(roll / 2) * std::sin(pitch / 2) * std::cos(yaw / 2);
-        
-        q.real =                     std::cos(roll / 2) * std::cos(pitch / 2) * std::cos(yaw / 2) +
-                                     std::sin(roll / 2) * std::sin(pitch / 2) * std::sin(yaw / 2);
-
-        return q;*/
-
-        /*Scalar c1 = std::cos(angles.coordinates.y * 0.5);
-        Scalar s1 = std::sin(angles.coordinates.y * 0.5);
-        Scalar c2 = std::cos(angles.coordinates.z * 0.5);
-        Scalar s2 = std::sin(angles.coordinates.z * 0.5);
-        Scalar c3 = std::cos(angles.coordinates.x * 0.5);
-        Scalar s3 = std::sin(angles.coordinates.x * 0.5);
-
-        Scalar c1c2 = c1 * c2;
-        Scalar s1s2 = s1 * s2;
-
-        Quaternion q = Quaternion(
-            c1c2 * s3 + s1s2 * c3,
-            s1 * c2 * c3 + c1 * s2 * s3,
-            c1 * s2 * c3 - s1 * c2 * s3,
-            c1c2 * c3 - s1s2 * s3
-        );
-
-        return q;*/
     }
 
     Vector3 Quaternion::QuaternionToEulerAngles(const Quaternion& quaternion) {
@@ -167,55 +123,14 @@ namespace Athena {
         }
 
         Quaternion q(qw, qz, qx, qy);
-        v.coordinates.y = Math::radiansToDegreeAngle(std::atan2f(2.0f * qx * qw + 2.0f * qy * qz, 1 - 2.0f * (qz * qz + qw * qw)));
-        v.coordinates.x = Math::radiansToDegreeAngle(std::asin(2.0f * (qx * qz - qw * qy)));
-        v.coordinates.z = Math::radiansToDegreeAngle(std::atan2f(2.0f * qx * qy + 2.0f * qz * qw, 1 - 2.0f * (qy * qy + qz * qz)));
+        Scalar newQx = q.immaginary.coordinates.x;
+        Scalar newQy = q.immaginary.coordinates.y;
+        Scalar newQz = q.immaginary.coordinates.z;
+        Scalar newQw = q.real;
+        v.coordinates.y = Math::radiansToDegreeAngle(std::atan2f(2.0f * newQx * newQw + 2.0f * newQy * newQz, 1 - 2.0f * (newQz * newQz + newQw * newQw)));
+        v.coordinates.x = Math::radiansToDegreeAngle(std::asinf(2.0f * (newQx * newQz - newQw * newQy)));
+        v.coordinates.z = Math::radiansToDegreeAngle(std::atan2f(2.0f * newQx * newQy + 2.0f * newQz * newQw, 1 - 2.0f * (newQy * newQy + newQz * newQz)));
         return normalizeAngles(v);
-
-        /*Vector3 result = Vector3();
-        Vector4 quat = Vector4(quaternion.immaginary.coordinates.x, quaternion.immaginary.coordinates.y, quaternion.immaginary.coordinates.z, quaternion.real);
-
-        auto q = quat.coordinates;
-        
-        double singularityAtNorthPole = 0.499;
-        double singularityAtSouthPole = -0.499;
-
-        double test = q.x * q.y + q.z * q.w;
-
-        if (test > singularityAtNorthPole)
-            return Vector3(Math::radiansToDegreeAngle(0), Math::radiansToDegreeAngle(2 * std::atan2(q.x, q.w)), Math::radiansToDegreeAngle(M_PI / 2));
-        
-        if (test < singularityAtSouthPole)
-            return Vector3(Math::radiansToDegreeAngle(0), Math::radiansToDegreeAngle(-2 * std::atan2(q.x, q.w)), Math::radiansToDegreeAngle(-M_PI / 2));
-
-        double squaredX = q.x * q.x;
-        double squaredY = q.y * q.y;
-        double squaredZ = q.z * q.z;
-
-        result.coordinates.y = Math::radiansToDegreeAngle(std::atan2(2.f * q.y * q.w - 2.f * q.x * q.z, 1 - 2.f * (squaredY * squaredZ)));
-        result.coordinates.z = Math::radiansToDegreeAngle(std::asin(2.f * test));
-        result.coordinates.x = Math::radiansToDegreeAngle(std::atan2(2.f * q.x * q.w - 2.f * q.y * q.z, 1 - 2.f * (squaredX * squaredZ)));
-
-        return result;*/
-
-        /*Scalar x = quaternion.immaginary.coordinates.x;
-        Scalar y = quaternion.immaginary.coordinates.y;
-        Scalar z = quaternion.immaginary.coordinates.z;
-        Scalar w = quaternion.real;
-
-        Scalar t0 = 2.0 * ( w * x + y + z);
-        Scalar t1 = 1.0 - 2.0 * (x * x + y * y);
-        Scalar roll = std::atan2(t0, t1);
-        Scalar t2 = 2.0 * (w * y - z * x);
-        t2 = t2 > 1.0? 1.0 : t2;
-        t2 = t2 < -1.0? -1.0 : t2;
-        Scalar pitch = std::asin(t2);
-        Scalar t3 = 2.0 * (w * z + x * y);
-        Scalar t4 = 1.0 - 2.0 * (y * y + z * z);
-        Scalar yaw = std::atan2(t3, t4);
-
-        return Athena::Vector3(yaw, pitch, roll);*/
-
     }
 
     Vector3 Quaternion::normalizeAngles(Vector3& angles)
@@ -228,10 +143,10 @@ namespace Athena {
 
     Scalar Quaternion::normalizeAngle(Scalar angle)
     {
-        while(angle > 180)
-            angle -= 180;
+        while(angle > 360)
+            angle -= 360;
         while(angle < 0)
-            angle += 180;
+            angle += 360;
         return angle;
     }
 
@@ -293,7 +208,7 @@ namespace Athena {
 			biggestIndex = 3;
 		}
 
-        Scalar biggestVal = sqrt(fourBiggestSquaredMinus1 + static_cast<Scalar>(1)) * static_cast<Scalar>(0.5);
+        Scalar biggestVal = Math::scalarSqrt(fourBiggestSquaredMinus1 + static_cast<Scalar>(1)) * static_cast<Scalar>(0.5);
 		Scalar mult = static_cast<Scalar>(0.25) / biggestVal;
 
         switch(biggestIndex)
@@ -315,7 +230,8 @@ namespace Athena {
     Quaternion Quaternion::matToQuatCast(Matrix4& matrix)
     {
         Matrix3 mat = Matrix4::toMatrix3(matrix);
-        return matToQuatCast(mat);
+        //return matToQuatCast(mat);
+        return Matrix4ToQuaternion(matrix);
     }
 
     Matrix3 Quaternion::QuaternionToMatrx3(const Quaternion& quaternion) {
@@ -502,7 +418,8 @@ namespace Athena {
     }
 
     Vector3 Quaternion::rotateVectorByThisQuaternion(const Vector3& vectorToRotate) const {
-        Quaternion* result = new Quaternion(this->conjugated() * Quaternion(vectorToRotate, 0.0) * (*this));
+        //Quaternion* result = new Quaternion(this->conjugated() * Quaternion(vectorToRotate, 0.0) * (*this));
+        Quaternion* result = new Quaternion(((*this) * Quaternion(vectorToRotate, 0.0)) * this->conjugated());
 
         return result->immaginary;
     }
@@ -547,12 +464,21 @@ namespace Athena {
             << this->_immaginary.coordinates.z << ", " << this->_real << " )" << std::endl;
     }
 
-    Quaternion operator *(const Quaternion& a, const Quaternion& b) {
+    Quaternion operator*(const Quaternion& a, const Quaternion& b) {
+        Scalar q1x = a.immaginary.coordinates.x;
+        Scalar q1y = a.immaginary.coordinates.y;
+        Scalar q1z = a.immaginary.coordinates.z;
+        Scalar q1r = a.real;
+
+        Scalar q2x = b.immaginary.coordinates.x;
+        Scalar q2y = b.immaginary.coordinates.y;
+        Scalar q2z = b.immaginary.coordinates.z;
+        Scalar q2r = b.real;
         return Quaternion(
-            b.real * a.immaginary.coordinates.x + b.immaginary.coordinates.x * a.real - b.immaginary.coordinates.y * a.immaginary.coordinates.z + b.immaginary.coordinates.z * a.immaginary.coordinates.y,
-            b.real * a.immaginary.coordinates.y + b.immaginary.coordinates.x * a.immaginary.coordinates.z + b.immaginary.coordinates.y * a.real - b.immaginary.coordinates.z * a.immaginary.coordinates.x,
-            b.real * a.immaginary.coordinates.z - b.immaginary.coordinates.x * a.immaginary.coordinates.y + b.immaginary.coordinates.y * a.immaginary.coordinates.x + b.immaginary.coordinates.z * a.real,
-            b.real * a.real - b.immaginary.coordinates.x * a.immaginary.coordinates.x - b.immaginary.coordinates.y * a.immaginary.coordinates.y - b.immaginary.coordinates.z * a.immaginary.coordinates.z
+            q1r * q2x + q1x * q2r + q1y * q2z - q1z * q2y,
+            q1r * q2y + q1y * q2r + q1z * q2x - q1x * q2z,
+            q1r * q2z + q1z * q2r + q1x * q2y - q1y * q2x,
+            q1r * q2r - q1x * q2x - q1y * q2y - q1z * q2z
         );
     }
 }
