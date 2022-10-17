@@ -7,6 +7,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <Vector3.hpp>
 
 namespace Athena
 {
@@ -18,7 +19,7 @@ namespace Athena
     {
         public:
             static Scalar radiansToDegreeAngle(const Scalar& angle) {
-                return angle * 180 / (M_PI);
+                return angle * (180 / (M_PI));
             }
 
             static Scalar degreeToRandiansAngle(const Scalar& angle) {
@@ -88,6 +89,29 @@ namespace Athena
             static Scalar getPI()
             {
                 return M_PI;
+            }
+
+            static Scalar sign(const Scalar& sc)
+            {
+                return (sc > 0.0f) ? 1.0f : ((sc < 0.0f) ? -1.0f : 0.0f);
+            }
+
+            static Scalar inverseScalarSqrt(const Scalar& sc)
+            {
+                union
+                {
+                    Scalar f;
+                    uint32_t i;
+                } conv;
+                Scalar x2;
+                const Scalar threehalfs = 1.5f;
+
+                x2 = sc * 0.5f;
+                conv.f = sc;
+                conv.i  = 0x5f3759df - ( conv.i >> 1 );
+                conv.f  = conv.f * ( threehalfs - ( x2 * conv.f * conv.f ) );
+                return conv.f;
+                
             }
     };
 }
