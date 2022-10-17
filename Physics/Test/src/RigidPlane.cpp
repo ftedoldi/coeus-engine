@@ -14,7 +14,6 @@ namespace Khronos
     RigidPlane::RigidPlane()
     {
         this->direction = Athena::Vector3(0.0f, 1.0f, 0.0f);
-        this->offset = 0;
     }
 
     RigidPlane::RigidPlane(Athena::Vector3& dir, Athena::Scalar off)
@@ -30,7 +29,7 @@ namespace Khronos
 
     void RigidPlane::start()
     {
-        this->cPlane = new CollisionPlane(this->direction.normalized(), this->sceneObject->transform->position.coordinates.y + this->offset);
+        this->cPlane = new CollisionPlane(this->direction.normalized(), this->sceneObject->transform->position.coordinates.y);
     }
 
     void RigidPlane::update()
@@ -70,8 +69,6 @@ namespace Khronos
 
     void RigidPlane::showComponentFieldsInEditor()
     {
-        ImGui::InputFloat(NAMEOF("Offset"), &this->offset);
-        this->cPlane->offset = this->offset;
         ImGui::Text("Plane direction:");
         float planeDir[] = { 
                             this->direction.coordinates.x, 
