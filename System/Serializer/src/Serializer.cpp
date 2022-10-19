@@ -307,14 +307,12 @@ namespace System::Serialize
 
         std::string sceneName = data["Scene"].as<std::string>();
         std::string scenePath = data["Scene Path"].as<std::string>();
-        std::cout << "Deserializing scene: " << sceneName << std::endl;
 
         try
         {
                 Odysseus::Scene* deserializedScene = new Odysseus::Scene(scenePath, sceneName);
                 Odysseus::SceneManager::addScene(deserializedScene);
                 Odysseus::SceneManager::activeScene = deserializedScene;
-                std::cout << "Scene Name: " << Odysseus::SceneManager::activeScene->name << std::endl;
         }
         catch(const std::exception& e)
         {
@@ -369,8 +367,6 @@ namespace System::Serialize
 
                     if (name == "ModelBase")
                         continue;
-
-                    std::cout << name << std::endl;
 
                     rttr::type t = rttr::type::get_by_name(name);
                     rttr::variant v = t.create();

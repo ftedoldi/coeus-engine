@@ -59,7 +59,6 @@ namespace Odysseus
 
     Scene::~Scene()
     {
-        std::cout << "scene destr called" << std::endl;
         delete this->physicSimulation;
         this->physicSimulation = nullptr;
     }

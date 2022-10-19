@@ -15,8 +15,6 @@ namespace Odysseus
 {
     Mesh::Mesh()
     {
-        std::cout << "Mesh created" << std::endl;
-
         // TODO: Generate random int
         std::random_device rd;
         std::mt19937 rng(rd());
@@ -438,7 +436,6 @@ namespace Odysseus
                 std::string textureDirectory = t["Directory"].as<std::string>();
                 std::string texturePath = t["Path"].as<std::string>();
                 aiTextureType textureType = static_cast<aiTextureType>(t["Type"].as<int>());
-                std::cout << "TEXTURE TYPE: " << textureType << std::endl;
 
                 Texture2D phongMaterialTexture = Texture2D(textureDirectory, texturePath, textureType);
                 phongMaterialTexture.loadTextureFromFile(true);

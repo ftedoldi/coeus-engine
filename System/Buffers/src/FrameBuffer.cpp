@@ -295,10 +295,10 @@ namespace System::Buffers
             glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
         }
 
-        if (fbSize.width == this->frameBufferSize.width && fbSize.height == this->frameBufferSize.height)
-            cudaInterop->applyFilterOverTexture(_frameBufferSize.width, _frameBufferSize.height, CUDA::Interop::ScreenSpaceFilters::NONE);
-        else
-            fbSize = this->_frameBufferSize;
+        // if (fbSize.width == this->frameBufferSize.width && fbSize.height == this->frameBufferSize.height)
+            // cudaInterop->applyFilterOverTexture(_frameBufferSize.width, _frameBufferSize.height, CUDA::Interop::ScreenSpaceFilters::NONE);
+        // else
+            // fbSize = this->_frameBufferSize;
     }
 
     void FrameBuffer::bindStandardFrameBuffer()

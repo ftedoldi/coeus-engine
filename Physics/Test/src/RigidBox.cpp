@@ -28,7 +28,6 @@ namespace Khronos
         {
             if (this->sceneObject->_container->components[i]->toString() == "Mesh")
             {
-                std::cout << "has component mesh" << std::endl;
                 this->meshComponent = dynamic_cast<Odysseus::Mesh*>(this->sceneObject->_container->components[i]);
             } 
         }
@@ -76,7 +75,7 @@ namespace Khronos
     {
         this->sceneObject->transform->position = this->rigidBody->position;
         this->sceneObject->transform->rotation = this->rigidBody->orientation;
-        std::cout << "rotation: "; this->rigidBody->orientation.asVector4().print();
+        // std::cout << "rotation: "; this->rigidBody->orientation.asVector4().print();
     }
 
     void RigidBox::setOrderOfExecution(const short& newOrderOfExecution)

@@ -136,7 +136,6 @@ namespace EditorLayer
 
                 if (shouldDeleteComponent)
                 {
-                    std::cout << "Deleting: " << System::Utils::GUI::inspectorParameters[i]->toString() << std::endl;
                     Odysseus::SceneManager::activeScene->sceneEditor->selectedTransform->sceneObject->removeComponentWithIndex(i);
                     System::Utils::GUI::loadInspectorParameters(Odysseus::SceneManager::activeScene->sceneEditor->selectedTransform);
                 }
