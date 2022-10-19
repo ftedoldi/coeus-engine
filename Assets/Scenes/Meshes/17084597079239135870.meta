@@ -1,0 +1,795 @@
+Scene Object: 17084597079239135870
+Vertices:
+  - Position:
+      X: -15.9958935
+      Y: 0.919972003
+      Z: 3.72306705
+    Normal:
+      X: -1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 1.1923172e-06
+      Z: 1
+    Texture Coordinates:
+      X: 1.78445899
+      Y: 0.347550988
+  - Position:
+      X: -15.9958935
+      Y: 1.13472998
+      Z: 3.72306705
+    Normal:
+      X: -1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: -1.19142067e-06
+      Z: 1
+    Texture Coordinates:
+      X: 1.78445899
+      Y: 0.322688997
+  - Position:
+      X: -15.9958935
+      Y: 1.13472998
+      Z: -3.61845303
+    Normal:
+      X: -1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 1.1923172e-06
+      Z: 1
+    Texture Coordinates:
+      X: 0.934575021
+      Y: 0.32269001
+  - Position:
+      X: -15.9958935
+      Y: 0.919972003
+      Z: -3.61845303
+    Normal:
+      X: -1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 1.1923172e-06
+      Z: 1
+    Texture Coordinates:
+      X: 0.934575021
+      Y: 0.347549975
+  - Position:
+      X: -15.9958935
+      Y: 0.919972003
+      Z: -3.61845303
+    Normal:
+      X: 0
+      Y: 0
+      Z: -1
+    Tangent:
+      X: 0
+      Y: 1
+      Z: 0
+    Texture Coordinates:
+      X: 0.959435999
+      Y: 1.40930998
+  - Position:
+      X: -15.9958935
+      Y: 1.13472998
+      Z: -3.61845303
+    Normal:
+      X: 0
+      Y: 0
+      Z: -1
+    Tangent:
+      X: 0
+      Y: 1
+      Z: 0
+    Texture Coordinates:
+      X: 0.984296978
+      Y: 1.40930998
+  - Position:
+      X: -6.82413197
+      Y: 1.13472998
+      Z: -3.61845303
+    Normal:
+      X: 0
+      Y: 0
+      Z: -1
+    Tangent:
+      X: 0
+      Y: 1
+      Z: 0
+    Texture Coordinates:
+      X: 0.984296978
+      Y: 0.347550988
+  - Position:
+      X: -6.82413197
+      Y: 0.919972003
+      Z: -3.61845303
+    Normal:
+      X: 0
+      Y: 0
+      Z: -1
+    Tangent:
+      X: 0
+      Y: 1
+      Z: 0
+    Texture Coordinates:
+      X: 0.959437013
+      Y: 0.347550988
+  - Position:
+      X: -6.82413197
+      Y: 0.919972003
+      Z: -3.61845303
+    Normal:
+      X: 1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 0
+      Z: -1
+    Texture Coordinates:
+      X: 1.78445899
+      Y: 0.322688997
+  - Position:
+      X: -6.82413197
+      Y: 1.13472998
+      Z: -3.61845303
+    Normal:
+      X: 1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: -1.1225834e-06
+      Z: -1
+    Texture Coordinates:
+      X: 1.78445899
+      Y: 0.297828019
+  - Position:
+      X: -6.82413197
+      Y: 1.13472998
+      Z: 3.72306705
+    Normal:
+      X: 1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 0
+      Z: -1
+    Texture Coordinates:
+      X: 0.934575021
+      Y: 0.297828972
+  - Position:
+      X: -6.82413197
+      Y: 0.919972003
+      Z: 3.72306705
+    Normal:
+      X: 1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 0
+      Z: -1
+    Texture Coordinates:
+      X: 0.934575021
+      Y: 0.322688997
+  - Position:
+      X: -6.82413197
+      Y: 0.919972003
+      Z: 3.72306705
+    Normal:
+      X: 0
+      Y: 0
+      Z: 1
+    Tangent:
+      X: 0
+      Y: -1
+      Z: 0
+    Texture Coordinates:
+      X: 0.959435999
+      Y: 0.347550988
+  - Position:
+      X: -6.82413197
+      Y: 1.13472998
+      Z: 3.72306705
+    Normal:
+      X: 0
+      Y: 0
+      Z: 1
+    Tangent:
+      X: 0
+      Y: -1
+      Z: 0
+    Texture Coordinates:
+      X: 0.934575021
+      Y: 0.347550988
+  - Position:
+      X: -15.9958935
+      Y: 1.13472998
+      Z: 3.72306705
+    Normal:
+      X: 0
+      Y: 0
+      Z: 1
+    Tangent:
+      X: 0
+      Y: -1
+      Z: 0
+    Texture Coordinates:
+      X: 0.934575975
+      Y: 1.40930998
+  - Position:
+      X: -15.9958935
+      Y: 0.919972003
+      Z: 3.72306705
+    Normal:
+      X: 0
+      Y: 0
+      Z: 1
+    Tangent:
+      X: 0
+      Y: -1
+      Z: 0
+    Texture Coordinates:
+      X: 0.959435999
+      Y: 1.40930998
+  - Position:
+      X: -15.9958935
+      Y: 0.919972003
+      Z: -3.61845303
+    Normal:
+      X: 0
+      Y: -1
+      Z: 0
+    Tangent:
+      X: 1
+      Y: 0
+      Z: 0
+    Texture Coordinates:
+      X: -0.127176002
+      Y: 1.40930998
+  - Position:
+      X: -6.82413197
+      Y: 0.919972003
+      Z: -3.61845303
+    Normal:
+      X: 0
+      Y: -1
+      Z: 0
+    Tangent:
+      X: 1
+      Y: 0
+      Z: 0
+    Texture Coordinates:
+      X: 0.934575021
+      Y: 1.40930998
+  - Position:
+      X: -6.82413197
+      Y: 0.919972003
+      Z: 3.72306705
+    Normal:
+      X: 0
+      Y: -1
+      Z: 0
+    Tangent:
+      X: 1
+      Y: 0
+      Z: 0
+    Texture Coordinates:
+      X: 0.934575021
+      Y: 0.559432983
+  - Position:
+      X: -15.9958935
+      Y: 0.919972003
+      Z: 3.72306705
+    Normal:
+      X: 0
+      Y: -1
+      Z: 0
+    Tangent:
+      X: 1
+      Y: 0
+      Z: 0
+    Texture Coordinates:
+      X: -0.127176002
+      Y: 0.559432983
+  - Position:
+      X: -6.82413197
+      Y: 1.13472998
+      Z: -3.61845303
+    Normal:
+      X: 0
+      Y: 1
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 0
+      Z: -1
+    Texture Coordinates:
+      X: 0.7227
+      Y: 0.559432983
+  - Position:
+      X: -15.9958935
+      Y: 1.13472998
+      Z: -3.61845303
+    Normal:
+      X: 0
+      Y: 1
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 0
+      Z: -1
+    Texture Coordinates:
+      X: 0.7227
+      Y: -0.502318025
+  - Position:
+      X: -15.9958935
+      Y: 1.13472998
+      Z: 3.72306705
+    Normal:
+      X: 0
+      Y: 1
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 0
+      Z: -1
+    Texture Coordinates:
+      X: -0.127176002
+      Y: -0.502318025
+  - Position:
+      X: -6.82413197
+      Y: 1.13472998
+      Z: 3.72306705
+    Normal:
+      X: 0
+      Y: 1
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 0
+      Z: -1
+    Texture Coordinates:
+      X: -0.127176002
+      Y: 0.559432983
+  - Position:
+      X: -16.0345612
+      Y: 5.47224903
+      Z: 3.77174902
+    Normal:
+      X: -1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 0
+      Z: 1
+    Texture Coordinates:
+      X: 0.800881028
+      Y: -0.338474035
+  - Position:
+      X: -16.0345612
+      Y: 5.7081728
+      Z: 3.77174902
+    Normal:
+      X: -1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 0
+      Z: 1
+    Texture Coordinates:
+      X: 0.800881028
+      Y: -0.364848971
+  - Position:
+      X: -16.0345612
+      Y: 5.7081728
+      Z: -3.673002
+    Normal:
+      X: -1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 0
+      Z: 1
+    Texture Coordinates:
+      X: -0.0313909985
+      Y: -0.364848971
+  - Position:
+      X: -16.0345612
+      Y: 5.47224903
+      Z: -3.673002
+    Normal:
+      X: -1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 0
+      Z: 1
+    Texture Coordinates:
+      X: -0.0313909985
+      Y: -0.338474035
+  - Position:
+      X: -16.0345612
+      Y: 5.47224903
+      Z: -3.673002
+    Normal:
+      X: 0
+      Y: 0
+      Z: -1
+    Tangent:
+      X: -1
+      Y: 0
+      Z: 0
+    Texture Coordinates:
+      X: 0.996442974
+      Y: -0.31209898
+  - Position:
+      X: -16.0345612
+      Y: 5.7081728
+      Z: -3.673002
+    Normal:
+      X: 0
+      Y: 0
+      Z: -1
+    Tangent:
+      X: -1
+      Y: -1.97219561e-06
+      Z: 0
+    Texture Coordinates:
+      X: 0.996442974
+      Y: -0.338474035
+  - Position:
+      X: -6.84071589
+      Y: 5.7081728
+      Z: -3.673002
+    Normal:
+      X: 0
+      Y: 0
+      Z: -1
+    Tangent:
+      X: -1
+      Y: 0
+      Z: 0
+    Texture Coordinates:
+      X: -0.0313909985
+      Y: -0.338472009
+  - Position:
+      X: -6.84071589
+      Y: 5.47224903
+      Z: -3.673002
+    Normal:
+      X: 0
+      Y: 0
+      Z: -1
+    Tangent:
+      X: -1
+      Y: 0
+      Z: 0
+    Texture Coordinates:
+      X: -0.0313909985
+      Y: -0.31209898
+  - Position:
+      X: -6.84071589
+      Y: 5.47224903
+      Z: -3.673002
+    Normal:
+      X: 1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 0
+      Z: 1
+    Texture Coordinates:
+      X: 0.800881028
+      Y: -0.364848971
+  - Position:
+      X: -6.84071589
+      Y: 5.7081728
+      Z: -3.673002
+    Normal:
+      X: 1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 0
+      Z: 1
+    Texture Coordinates:
+      X: 0.800881028
+      Y: -0.338474035
+  - Position:
+      X: -6.84071589
+      Y: 5.7081728
+      Z: 3.77174902
+    Normal:
+      X: 1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 0
+      Z: 1
+    Texture Coordinates:
+      X: 1.63315296
+      Y: -0.338474035
+  - Position:
+      X: -6.84071589
+      Y: 5.47224903
+      Z: 3.77174902
+    Normal:
+      X: 1
+      Y: 0
+      Z: 0
+    Tangent:
+      X: 0
+      Y: 0
+      Z: 1
+    Texture Coordinates:
+      X: 1.63315296
+      Y: -0.364848971
+  - Position:
+      X: -6.84071589
+      Y: 5.47224903
+      Z: 3.77174902
+    Normal:
+      X: 0
+      Y: 0
+      Z: 1
+    Tangent:
+      X: -3.53954892e-05
+      Y: -1
+      Z: 0
+    Texture Coordinates:
+      X: 1.02279401
+      Y: 0.324612975
+  - Position:
+      X: -6.84071589
+      Y: 5.7081728
+      Z: 3.77174902
+    Normal:
+      X: 0
+      Y: 0
+      Z: 1
+    Tangent:
+      X: 0
+      Y: -1
+      Z: 0
+    Texture Coordinates:
+      X: 0.996419013
+      Y: 0.324612975
+  - Position:
+      X: -16.0345612
+      Y: 5.7081728
+      Z: 3.77174902
+    Normal:
+      X: 0
+      Y: 0
+      Z: 1
+    Tangent:
+      X: -3.53954892e-05
+      Y: -1
+      Z: 0
+    Texture Coordinates:
+      X: 0.996420979
+      Y: 1.35244799
+  - Position:
+      X: -16.0345612
+      Y: 5.47224903
+      Z: 3.77174902
+    Normal:
+      X: 0
+      Y: 0
+      Z: 1
+    Tangent:
+      X: -3.53954892e-05
+      Y: -1
+      Z: 0
+    Texture Coordinates:
+      X: 1.02279401
+      Y: 1.35244703
+  - Position:
+      X: -16.0345612
+      Y: 5.47224903
+      Z: -3.673002
+    Normal:
+      X: 0
+      Y: -1
+      Z: 0
+    Tangent:
+      X: -1
+      Y: 0
+      Z: 0
+    Texture Coordinates:
+      X: 0.996442974
+      Y: -0.31209898
+  - Position:
+      X: -6.84071589
+      Y: 5.47224903
+      Z: -3.673002
+    Normal:
+      X: 0
+      Y: -1
+      Z: 0
+    Tangent:
+      X: -1
+      Y: 0
+      Z: 0
+    Texture Coordinates:
+      X: -0.0313909985
+      Y: -0.31209898
+  - Position:
+      X: -6.84071589
+      Y: 5.47224903
+      Z: 3.77174902
+    Normal:
+      X: 0
+      Y: -1
+      Z: 0
+    Tangent:
+      X: -1
+      Y: 0
+      Z: 0
+    Texture Coordinates:
+      X: -0.0313909985
+      Y: 0.520174026
+  - Position:
+      X: -16.0345612
+      Y: 5.47224903
+      Z: 3.77174902
+    Normal:
+      X: 0
+      Y: -1
+      Z: 0
+    Tangent:
+      X: -1
+      Y: 0
+      Z: 0
+    Texture Coordinates:
+      X: 0.996417999
+      Y: 0.520174026
+  - Position:
+      X: -6.84071589
+      Y: 5.7081728
+      Z: -3.673002
+    Normal:
+      X: 0
+      Y: 1
+      Z: 0
+    Tangent:
+      X: -1
+      Y: 0
+      Z: 0
+    Texture Coordinates:
+      X: -0.0313909985
+      Y: 1.35244799
+  - Position:
+      X: -16.0345612
+      Y: 5.7081728
+      Z: -3.673002
+    Normal:
+      X: 0
+      Y: 1
+      Z: 0
+    Tangent:
+      X: -1
+      Y: 0
+      Z: -9.27870246e-07
+    Texture Coordinates:
+      X: 0.996419013
+      Y: 1.35244703
+  - Position:
+      X: -16.0345612
+      Y: 5.7081728
+      Z: 3.77174902
+    Normal:
+      X: 0
+      Y: 1
+      Z: 0
+    Tangent:
+      X: -1
+      Y: 0
+      Z: 0
+    Texture Coordinates:
+      X: 0.996419013
+      Y: 0.520174026
+  - Position:
+      X: -6.84071589
+      Y: 5.7081728
+      Z: 3.77174902
+    Normal:
+      X: 0
+      Y: 1
+      Z: 0
+    Tangent:
+      X: -1
+      Y: 0
+      Z: 0
+    Texture Coordinates:
+      X: -0.0313909985
+      Y: 0.520174026
+Indices:
+  - Index: 0
+  - Index: 1
+  - Index: 2
+  - Index: 0
+  - Index: 2
+  - Index: 3
+  - Index: 4
+  - Index: 5
+  - Index: 6
+  - Index: 4
+  - Index: 6
+  - Index: 7
+  - Index: 8
+  - Index: 9
+  - Index: 10
+  - Index: 8
+  - Index: 10
+  - Index: 11
+  - Index: 12
+  - Index: 13
+  - Index: 14
+  - Index: 12
+  - Index: 14
+  - Index: 15
+  - Index: 16
+  - Index: 17
+  - Index: 18
+  - Index: 16
+  - Index: 18
+  - Index: 19
+  - Index: 20
+  - Index: 21
+  - Index: 22
+  - Index: 20
+  - Index: 22
+  - Index: 23
+  - Index: 24
+  - Index: 25
+  - Index: 26
+  - Index: 24
+  - Index: 26
+  - Index: 27
+  - Index: 28
+  - Index: 29
+  - Index: 30
+  - Index: 28
+  - Index: 30
+  - Index: 31
+  - Index: 32
+  - Index: 33
+  - Index: 34
+  - Index: 32
+  - Index: 34
+  - Index: 35
+  - Index: 36
+  - Index: 37
+  - Index: 38
+  - Index: 36
+  - Index: 38
+  - Index: 39
+  - Index: 40
+  - Index: 41
+  - Index: 42
+  - Index: 40
+  - Index: 42
+  - Index: 43
+  - Index: 44
+  - Index: 45
+  - Index: 46
+  - Index: 44
+  - Index: 46
+  - Index: 47
