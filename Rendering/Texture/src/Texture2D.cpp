@@ -77,7 +77,7 @@ namespace Odysseus
     void Texture2D::loadTextureFromFile(bool gamma)
     {
         int width, height, nrChannels;
-        unsigned char* data = stbi_load((this->directory + "/" + "Textures" + "/" + this->path).c_str(), &width, &height, &nrChannels, 0);
+        unsigned char* data = stbi_load((this->directory + "\\" + "Textures" + "\\" + this->path).c_str(), &width, &height, &nrChannels, 0);
 
         if(data)
         {
