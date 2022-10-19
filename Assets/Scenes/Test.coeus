@@ -207,9 +207,9 @@ Scene Objects:
     Transform:
       Name: Scene Object
       Position:
-        X: -1.49011612e-08
-        Y: 3
-        Z: 0
+        X: 0.125574753
+        Y: 3.28765392
+        Z: -0.0543212891
       Rotation:
         X: 0
         Y: 0
@@ -251,3 +251,56 @@ Scene Objects:
             X: 1
             Y: 1
             Z: 1
+  - Scene Object ID: 15875702743969203296
+    Transform:
+      Name: Scene Object
+      Position:
+        X: -2.76991081
+        Y: 2.48703051
+        Z: -0.173019409
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: Mesh
+        Mesh:
+          Vertices Path: ./Assets/Scenes/Meshes/15875702743969203296.meta
+          Is PBR: false
+          Diffuse:
+            Red: 0.0299999993
+            Green: 0.800000012
+            Blue: 0.100000001
+          Specular:
+            Red: 0.5
+            Green: 0.5
+            Blue: 0.5
+          Ambient:
+            Red: 1
+            Green: 1
+            Blue: 1
+          Shininess: 324
+          Textures:
+            - Directory: C:\Users\david\OneDrive\Desktop\Workspaces\C++\coeus-engine\Assets\Models\PBRcube\
+              Path: gold-scuffed_basecolor-boosted.png
+              Type: 1
+            - Directory: C:\Users\david\OneDrive\Desktop\Workspaces\C++\coeus-engine\Assets\Models\PBRcube\
+              Path: gold-scuffed_normal.png
+              Type: 6
+          Vertex Shader Path: .\Shader\phongShader.vert
+          Fragment Shader Path: .\Shader\phongShader.frag
+      - Component: RigidBox
+        RigidBox:
+          Size:
+            X: 2
+            Y: 2
+            Z: 2
