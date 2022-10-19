@@ -29,8 +29,6 @@ namespace EditorLayer
 
         ImGuiWindow *w = ImGui::GetCurrentWindow();
 
-        // std::cout << "Mouse Relative Position: ( " << mousePosRelativeToWindow.x << ", " << mousePosRelativeToWindow.y << " )" << std::endl;
-
         auto initialFrameBufferWidth = System::Window::sceneFrameBuffer->frameBufferSize.width;
         auto initialFrameBufferHeight = System::Window::sceneFrameBuffer->frameBufferSize.height;
 
@@ -65,7 +63,8 @@ namespace EditorLayer
 #pragma warning(push)
 #pragma warning(disable : 4312)
         ImGui::Image(
-            (ImTextureID)System::Window::sceneFrameBuffer->postProcessedTexture,
+            // (ImTextureID)System::Window::sceneFrameBuffer->postProcessedTexture,
+            (ImTextureID)System::Window::sceneFrameBuffer->texturesID[0],
             {(float)System::Window::sceneFrameBuffer->frameBufferSize.width,
              (float)System::Window::sceneFrameBuffer->frameBufferSize.height},
             ImVec2(0, 1),
