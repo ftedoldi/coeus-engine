@@ -22,7 +22,7 @@ namespace Odysseus
             std::cout << "ASSIMP SCENE ERROR: " << importer.GetErrorString() << std::endl;
             return;
         }
-        this->directory = path.substr(0, path.find_last_of('/'));
+        this->directory = path.substr(0, path.find_last_of('\\'));
         std::cout << "Path at loadModel: " << path << std::endl;
         std::cout << "Directory at loadModel: " << directory << std::endl;
 
