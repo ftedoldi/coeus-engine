@@ -22,16 +22,12 @@ namespace Odysseus
             std::cout << "ASSIMP SCENE ERROR: " << importer.GetErrorString() << std::endl;
             return;
         }
-        this->directory = path.substr(0, path.find_last_of('/'));
+
+        this->directory = path.substr(0, path.find_last_of('\\'));
+        auto name = path.substr(path.find_last_of('\\') + 1);
+        name = name.substr(0, name.find_last_of('.'));
 
         processNode(scene->mRootNode, scene);
-
-        auto modelBase = objectsCreated[0]->addComponent<ModelBase>();
-
-        modelBase->isPBR = this->_isPBR;
-        modelBase->modelPath = path;
-        modelBase->vertexShaderPath = shader->vertexShaderPath;
-        modelBase->fragmentShaderPath = shader->fragmentShaderPath;
     }
 
     //process a node recursively and for each node processed, process his meshes
