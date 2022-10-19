@@ -106,7 +106,7 @@ namespace System::Buffers
 
     void FrameBuffer::initializeStandardBuffer()
     {
-        cudaInterop = new CUDA::Interop::CUDAInteroperationManager();
+        // cudaInterop = new CUDA::Interop::CUDAInteroperationManager();
 
         // Generating Post Processing texture
         // ----------------------------------
@@ -126,7 +126,7 @@ namespace System::Buffers
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glBindTexture(GL_TEXTURE_2D, 0);
-        cudaInterop->createCUDATextureResource(cudaInterop->cudaResources[1], _postProcessedTexture, cudaGraphicsMapFlagsWriteDiscard);
+        // cudaInterop->createCUDATextureResource(cudaInterop->cudaResources[1], _postProcessedTexture, cudaGraphicsMapFlagsWriteDiscard);
         // ----------------------------------
 
         // framebuffer configuration
@@ -170,7 +170,7 @@ namespace System::Buffers
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         // Creating texture reference inside CUDA with my screen texture of COLOR_ATTACHMENT_0
-        cudaInterop->createCUDATextureResource(cudaInterop->cudaResources[0], _texturesID[0], cudaGraphicsMapFlagsReadOnly);
+        // cudaInterop->createCUDATextureResource(cudaInterop->cudaResources[0], _texturesID[0], cudaGraphicsMapFlagsReadOnly);
 
         _frameBufferShader->use();
         _frameBufferShader->setInt("screenTexture", 0);
@@ -249,7 +249,7 @@ namespace System::Buffers
 
         // Generating Post Processing texture
         // ----------------------------------
-        cudaInterop->deleteCUDATextureResource(cudaInterop->cudaResources[1]);
+        // cudaInterop->deleteCUDATextureResource(cudaInterop->cudaResources[1]);
         glBindTexture(GL_TEXTURE_2D, _postProcessedTexture);
         glTexImage2D(
                         GL_TEXTURE_2D, 
@@ -265,11 +265,11 @@ namespace System::Buffers
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glBindTexture(GL_TEXTURE_2D, 0);
-        cudaInterop->createCUDATextureResource(cudaInterop->cudaResources[1], _postProcessedTexture, cudaGraphicsMapFlagsNone);
+        // cudaInterop->createCUDATextureResource(cudaInterop->cudaResources[1], _postProcessedTexture, cudaGraphicsMapFlagsNone);
         // ----------------------------------
 
         //----------------------------------------------Clearing Texture Content------------------------------------------------------------------//
-        cudaInterop->deleteCUDATextureResource(cudaInterop->cudaResources[0]);
+        // cudaInterop->deleteCUDATextureResource(cudaInterop->cudaResources[0]);
         for (int i = 0; i < this->_numberOfColorAttachments; i++)
         {
             glBindTexture(GL_TEXTURE_2D, this->_texturesID[i]);
@@ -286,7 +286,7 @@ namespace System::Buffers
                         );
             glBindTexture(GL_TEXTURE_2D, 0);
         }
-        cudaInterop->createCUDATextureResource(cudaInterop->cudaResources[0], _texturesID[0], cudaGraphicsMapFlagsReadOnly);
+        // cudaInterop->createCUDATextureResource(cudaInterop->cudaResources[0], _texturesID[0], cudaGraphicsMapFlagsReadOnly);
 
         for (int i = 0; i < this->_numberOfColorAttachments; i++)
         {
