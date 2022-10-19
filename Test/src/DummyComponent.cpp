@@ -22,12 +22,12 @@ DummyComponent::DummyComponent()
 
 void DummyComponent::start()
 {
-    std::cout << "Dummy component Created!";
+
 }
 
 void DummyComponent::update()
 {
-    // std::cout << "Dummy component is running!";
+    
 }
 
 void DummyComponent::setOrderOfExecution(const short& newOrderOfExecution)

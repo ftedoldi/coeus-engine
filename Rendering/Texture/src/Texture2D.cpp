@@ -79,11 +79,6 @@ namespace Odysseus
         int width, height, nrChannels;
         unsigned char* data = stbi_load((this->directory + "/" + "Textures" + "/" + this->path).c_str(), &width, &height, &nrChannels, 0);
 
-        std::cout << std::endl;
-        std::cout << "Directory: " << this->directory << std::endl;
-        std::cout << "Path: " << this->path << std::endl;
-        std::cout << "Directory + path: " << this->directory + "/" + "Textures" + "/" + this->path << std::endl;
-
         if(data)
         {
             if (nrChannels == 1)

@@ -23,8 +23,6 @@ namespace Odysseus
             return;
         }
         this->directory = path.substr(0, path.find_last_of('/'));
-        std::cout << "Path at loadModel: " << path << std::endl;
-        std::cout << "Directory at loadModel: " << directory << std::endl;
 
         processNode(scene->mRootNode, scene);
 
@@ -50,10 +48,6 @@ namespace Odysseus
                 //local transformation matrix of the node
                 aiMatrix4x4 transform =  node->mTransformation;
                 position = Athena::Vector3((float)transform.a4, (float)transform.b4, (float)transform.c4);
-                std::cout << transform.a4 << " ";
-                std::cout << transform.b4 << " ";
-                std::cout << transform.c4 << " ";
-                std::cout << std::endl;
             }
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
             
@@ -91,7 +85,6 @@ namespace Odysseus
         {
             this->_gammaCorrect = false;
             std::vector<Texture2D> specularMaps = loadTexture(material, aiTextureType_SPECULAR, this->_gammaCorrect);
-            std::cout << "Has texture specular" << std::endl;
             mat.Textures.insert(mat.Textures.end(), specularMaps.begin(), specularMaps.end());
         }
 
@@ -99,10 +92,8 @@ namespace Odysseus
         {
             this->_gammaCorrect = false;
             std::vector<Texture2D> normalMap = loadTexture(material, aiTextureType_NORMALS, this->_gammaCorrect);
-            std::cout << "Has texture NORMAL" << std::endl;
             mat.Textures.insert(mat.Textures.end(), normalMap.begin(), normalMap.end());
         }
-        std::cout <<"Textures size: "<< mat.Textures.size() << std::endl;
     }
 
     void Model::setMeshMaterials(aiMaterial* material, PhongMaterial& mat)
@@ -128,7 +119,6 @@ namespace Odysseus
         if(material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
         {
             this->_gammaCorrect = true;
-            std::cout << "Has texture albedo" << std::endl;
             std::vector<Texture2D> albedoMap = loadTexture(material, aiTextureType_DIFFUSE, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), albedoMap.begin(), albedoMap.end());
         }
@@ -136,7 +126,6 @@ namespace Odysseus
         if(material->GetTextureCount(aiTextureType_NORMALS) > 0)
         {
             this->_gammaCorrect = false;
-            std::cout << "Has texture normal" << std::endl;
             std::vector<Texture2D> normalMap = loadTexture(material, aiTextureType_NORMALS, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), normalMap.begin(), normalMap.end());
         }
@@ -144,7 +133,6 @@ namespace Odysseus
         if(material->GetTextureCount(aiTextureType_METALNESS) > 0)
         {
             this->_gammaCorrect = false;
-            std::cout << "Has texture metalness" << std::endl;
             std::vector<Texture2D> metalnessMap = loadTexture(material, aiTextureType_METALNESS, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), metalnessMap.begin(), metalnessMap.end());
         }
@@ -152,7 +140,6 @@ namespace Odysseus
         if(material->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS) > 0)
         {
             this->_gammaCorrect = false;
-            std::cout << "Has texture roughness" << std::endl;
             std::vector<Texture2D> roughnessMap = loadTexture(material, aiTextureType_DIFFUSE_ROUGHNESS, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), roughnessMap.begin(), roughnessMap.end());
         }
@@ -160,7 +147,6 @@ namespace Odysseus
         if(material->GetTextureCount(aiTextureType_AMBIENT_OCCLUSION) > 0)
         {
             this->_gammaCorrect = false;
-            std::cout << "Has texture AO" << std::endl;
             std::vector<Texture2D> AOMap = loadTexture(material, aiTextureType_AMBIENT_OCCLUSION, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), AOMap.begin(), AOMap.end());
         }
@@ -174,19 +160,16 @@ namespace Odysseus
 
         if(AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, color))
         {
-            std::cout << "Has MATERIAL COLOR" << std::endl;
             mat.albedo = Athena::Vector3(color.r, color.g, color.b);
         }
         
         if(AI_SUCCESS == material->Get(AI_MATKEY_METALLIC_FACTOR, metallic))
         {
-            std::cout << "Has MATERIAL METALLIC" << std::endl;
             mat.metallic = metallic;
         }
             
         if(AI_SUCCESS == material->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughness))
         {
-            std::cout << "Has MATERIAL ROUGHNESS" << std::endl;
             mat.roughness = roughness;
         }
     }

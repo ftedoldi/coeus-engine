@@ -27,7 +27,6 @@ namespace Khronos
         {
             if (this->sceneObject->_container->components[i]->toString() == "Mesh")
             {
-                std::cout << "has component mesh" << std::endl;
                 this->meshComponent = dynamic_cast<Odysseus::Mesh*>(this->sceneObject->_container->components[i]);
             } 
         }
