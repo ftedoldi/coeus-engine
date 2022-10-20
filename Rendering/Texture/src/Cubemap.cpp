@@ -8,33 +8,8 @@ namespace Odysseus
 {
     Cubemap::Cubemap()
     {
-        //this->setupCubemap();
         setupHDRImap();
     }
-
-    /*void Cubemap::setupCubemap()
-    {
-        stbi_set_flip_vertically_on_load(false);
-        generateCube();
-
-        this->cubemapShader.assignShadersPath(".\\Shader\\cubemapShader.vert", ".\\Shader\\cubemapShader.frag");
-        cubemapShader.use();
-        cubemapShader.setInt("skybox", 0);
-
-        std::vector<std::string> faces
-        {
-            ".\\Assets\\Models\\cubemap\\right.jpg",
-            ".\\Assets\\Models\\cubemap\\left.jpg",
-            ".\\Assets\\Models\\cubemap\\top.jpg",
-            ".\\Assets\\Models\\cubemap\\bottom.jpg",
-            ".\\Assets\\Models\\cubemap\\front.jpg",
-            ".\\Assets\\Models\\cubemap\\back.jpg",
-        };
-
-        this->cubemapTexture = this->loadCubemap(faces);
-        stbi_set_flip_vertically_on_load(true);
-        
-    }*/
 
     void Cubemap::setupShaders()
     {
@@ -269,12 +244,12 @@ namespace Odysseus
         Athena::Matrix4 captureProjection = Odysseus::EditorCamera::perspective(90.0f, 1.0f, 0.1f, 10.0f);
         Athena::Quaternion captureQuatViews[] = 
         {
-            Athena::Quaternion::matToQuatCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(1.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, -1.0f, 0.0f))),
-            Athena::Quaternion::matToQuatCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(-1.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, -1.0f, 0.0f))),
-            Athena::Quaternion::matToQuatCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, 1.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, 1.0f))),
-            Athena::Quaternion::matToQuatCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, -1.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, -1.0f))),
-            Athena::Quaternion::matToQuatCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, 1.0f), Athena::Vector3(0.0f, -1.0f, 0.0f))),
-            Athena::Quaternion::matToQuatCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, -1.0f), Athena::Vector3(0.0f, -1.0f, 0.0f)))
+            Athena::Quaternion::matToQuatCubemapCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(1.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, -1.0f, 0.0f))),
+            Athena::Quaternion::matToQuatCubemapCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(-1.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, -1.0f, 0.0f))),
+            Athena::Quaternion::matToQuatCubemapCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, -1.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, -1.0f))),
+            Athena::Quaternion::matToQuatCubemapCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, 1.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, 1.0f))),
+            Athena::Quaternion::matToQuatCubemapCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, 1.0f), Athena::Vector3(0.0f, -1.0f, 0.0f))),
+            Athena::Quaternion::matToQuatCubemapCast(Odysseus::EditorCamera::lookAt(Athena::Vector3(0.0f, 0.0f, 0.0f), Athena::Vector3(0.0f, 0.0f, -1.0f), Athena::Vector3(0.0f, -1.0f, 0.0f)))
         };
 
         convertToCubemap(captureProjection, captureQuatViews);
@@ -290,38 +265,6 @@ namespace Odysseus
         glfwGetFramebufferSize(System::Window::window, &SRCwidth, &SRCheight);
         glViewport(0, 0, SRCwidth, SRCheight);
     }
-
-    /*unsigned int Cubemap::loadCubemap(std::vector<std::string>& faces)
-    {
-        unsigned int textureID;
-        glGenTextures(1, &textureID);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-        int width, height, nrChannels;
-        for (unsigned int i = 0; i < faces.size(); ++i)
-        {
-            unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-            if (data)
-            {
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
-                            0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
-                );
-                stbi_image_free(data);
-            }
-            else
-            {
-                std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
-                stbi_image_free(data);
-            }
-        }
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-        return textureID;
-    }*/
 
     void Cubemap::update()
     {

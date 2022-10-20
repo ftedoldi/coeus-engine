@@ -188,8 +188,8 @@ int main()
     stbi_set_flip_vertically_on_load(true);
     
     // HDR map setup
-    //Odysseus::Cubemap* HDRImap = new Odysseus::Cubemap();
-    //HDRImap->setPBRshader(PBRshader);
+    Odysseus::Cubemap* HDRImap = new Odysseus::Cubemap();
+    HDRImap->setPBRshader(PBRshader);
 
     // //Setup everything before initializeScene call
     Odysseus::SceneManager::initializeActiveScene();
@@ -209,7 +209,7 @@ int main()
         
         Odysseus::SceneManager::drawActiveScene();
 
-        //HDRImap->update();
+        HDRImap->update();
         
         window->update();
     }

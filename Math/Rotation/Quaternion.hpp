@@ -54,6 +54,7 @@ namespace Athena
             static Quaternion matToQuatCast(Matrix4& matrix);
 
             static Quaternion matToQuatCast(Matrix3& matrix);
+            static Quaternion matToQuatCubemapCast(Matrix4& matrix);
 
             static Matrix3 QuaternionToMatrx3(const Quaternion& quaternion);
 

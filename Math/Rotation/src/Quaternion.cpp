@@ -230,8 +230,13 @@ namespace Athena {
     Quaternion Quaternion::matToQuatCast(Matrix4& matrix)
     {
         Matrix3 mat = Matrix4::toMatrix3(matrix);
-        //return matToQuatCast(mat);
         return Matrix4ToQuaternion(matrix);
+    }
+
+    Quaternion Quaternion::matToQuatCubemapCast(Matrix4& matrix)
+    {
+        Matrix3 mat = Matrix4::toMatrix3(matrix);
+        return matToQuatCast(mat);
     }
 
     Matrix3 Quaternion::QuaternionToMatrx3(const Quaternion& quaternion) {
