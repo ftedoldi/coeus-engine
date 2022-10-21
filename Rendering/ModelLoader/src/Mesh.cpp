@@ -9,6 +9,8 @@
 #include <Folder.hpp>
 
 #include <LightInfo.hpp>
+#include <CUDAInteroperationManager.hpp>
+#include <VertexMove.cuh>
 
 // TODO: Test if everythin works with PBR Materials
 namespace Odysseus
@@ -171,8 +173,8 @@ namespace Odysseus
 
     void Mesh::showComponentFieldsInEditor()
     {
-        std::string numOfVertices("Number of Vertices: " + std::to_string(this->vertices.size()));
-        ImGui::Text(numOfVertices.c_str());
+        /*std::string numOfVertices("Number of Vertices: " + std::to_string(this->vertices.size()));
+        ImGui::Text(numOfVertices.c_str());*/
         if (this->_isPBR)
         {
             ImGui::Text("Physics Material Properties:");
@@ -221,7 +223,7 @@ namespace Odysseus
     {
         YAML::Emitter vert;
 
-        vert << YAML::BeginMap;
+        /*vert << YAML::BeginMap;
             vert << YAML::Key << "Scene Object" << YAML::Value << this->sceneObject->ID;
             vert << YAML::Key << "Vertices";
             vert << YAML::BeginSeq;
@@ -230,30 +232,30 @@ namespace Odysseus
                     vert << YAML::BeginMap;
                         vert << YAML::Key << "Position";
                         vert << YAML::BeginMap;
-                            vert << YAML::Key << "X" << YAML::Value << vertex.Position.coordinates.x;
-                            vert << YAML::Key << "Y" << YAML::Value << vertex.Position.coordinates.y;
-                            vert << YAML::Key << "Z" << YAML::Value << vertex.Position.coordinates.z;
+                            //vert << YAML::Key << "X" << YAML::Value << vertex.Position.coordinates.x;
+                            //vert << YAML::Key << "Y" << YAML::Value << vertex.Position.coordinates.y;
+                           // vert << YAML::Key << "Z" << YAML::Value << vertex.Position.coordinates.z;
                         vert << YAML::EndMap;
                         vert << YAML::Key << "Normal";
                         vert << YAML::BeginMap;
-                            vert << YAML::Key << "X" << YAML::Value << vertex.Normal.coordinates.x;
-                            vert << YAML::Key << "Y" << YAML::Value << vertex.Normal.coordinates.y;
-                            vert << YAML::Key << "Z" << YAML::Value << vertex.Normal.coordinates.z;
+                            //vert << YAML::Key << "X" << YAML::Value << vertex.Normal.coordinates.x;
+                           // vert << YAML::Key << "Y" << YAML::Value << vertex.Normal.coordinates.y;
+                            //vert << YAML::Key << "Z" << YAML::Value << vertex.Normal.coordinates.z;
                         vert << YAML::EndMap;
                         vert << YAML::Key << "Tangent";
-                        vert << YAML::BeginMap;
-                            vert << YAML::Key << "X" << YAML::Value << vertex.Tangent.coordinates.x;
-                            vert << YAML::Key << "Y" << YAML::Value << vertex.Tangent.coordinates.y;
-                            vert << YAML::Key << "Z" << YAML::Value << vertex.Tangent.coordinates.z;
-                        vert << YAML::EndMap;
+                        //vert << YAML::BeginMap;
+                        //    vert << YAML::Key << "X" << YAML::Value << vertex.Tangent.coordinates.x;
+                        //    vert << YAML::Key << "Y" << YAML::Value << vertex.Tangent.coordinates.y;
+                        //    vert << YAML::Key << "Z" << YAML::Value << vertex.Tangent.coordinates.z;
+                        //vert << YAML::EndMap;
                         vert << YAML::Key << "Texture Coordinates";
                         vert << YAML::BeginMap;
-                            vert << YAML::Key << "X" << YAML::Value << vertex.TexCoords.coordinates.x;
-                            vert << YAML::Key << "Y" << YAML::Value << vertex.TexCoords.coordinates.y;
+                            //vert << YAML::Key << "X" << YAML::Value << vertex.TexCoords.coordinates.x;
+                            //vert << YAML::Key << "Y" << YAML::Value << vertex.TexCoords.coordinates.y;
                         vert << YAML::EndMap;
                     vert << YAML::EndMap;
                 }
-            vert << YAML::EndSeq;
+            vert << YAML::EndSeq;*/
             vert << YAML::Key << "Indices";
             vert << YAML::BeginSeq;
                 for (auto idx : this->indices)
@@ -446,10 +448,11 @@ namespace Odysseus
         return this;
     }
 
-    void Mesh::setVertices(std::vector<Vertex>& vertices)
+    void Mesh::setVertices(Vertices& vertices)
     {
         this->vertices = vertices;
     }
+
     void Mesh::setIndices(std::vector<GLuint>& indices)
     {
         this->indices = indices;
@@ -477,34 +480,45 @@ namespace Odysseus
 
     void Mesh::setupMesh()
     {
+        cudaInterop = new CUDA::Interop::CUDAInteroperationManager();
+        cudaGraphicsResource *cuda_vbo_resource;
+        cudaGraphicsResource *cuda_ebo_resource;
+
         //creating buffers
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
         glGenBuffers(1, &EBO);
-    
-        //bind the active VAO and VBO buffer
+        //bind the active VAO buffer
         glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        GLuint positionSize = this->vertices.Positions.size() * sizeof(Athena::Vector3);
+        GLuint normalSize = this->vertices.Normals.size() * sizeof(Athena::Vector3);
+        GLuint texCoordsSize = this->vertices.TexCoords.size() * sizeof(Athena::Vector2);
+        GLuint totalSize = positionSize + normalSize + texCoordsSize;
 
-        //allocates memory inside the currently active buffer object (VBO)
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);  
-        
+        //bind the active VBO buffer
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, totalSize, NULL, GL_DYNAMIC_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, positionSize, &vertices.Positions[0]);
+        glBufferSubData(GL_ARRAY_BUFFER, positionSize, normalSize, &vertices.Normals[0]);
+        glBufferSubData(GL_ARRAY_BUFFER, positionSize + normalSize, texCoordsSize, &vertices.TexCoords[0]);
+
+        //register VBO on CUDA and call CUDA methods to process vertices
+        cudaInterop->createCUDABufferResource(cuda_vbo_resource, VBO, cudaGraphicsMapFlagsNone);
+        MoveVertices(cuda_vbo_resource, vertices.Positions.size());
+        cudaInterop->deleteCUDABufferResource(cuda_vbo_resource);
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), 
                     &indices[0], GL_STATIC_DRAW);
 
-        // vertex positions
         glEnableVertexAttribArray(0);	
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-        // vertex normals
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Athena::Vector3), (void*)0);
+
         glEnableVertexAttribArray(1);	
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
-        // vertex texture coords
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Athena::Vector3), (void*)positionSize);
+
         glEnableVertexAttribArray(2);	
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
-        // vertex tangent
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Athena::Vector2), (void*)(positionSize + normalSize));
 
         glBindVertexArray(0);
     }

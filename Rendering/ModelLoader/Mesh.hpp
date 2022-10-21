@@ -13,32 +13,61 @@
 #include <Time.hpp>
 
 #include <PickableObject.hpp>
-//#include <CollisionPlane.hpp>
-//#include <CollisionSphere.hpp>
 #include <RigidPhysicsEngine.hpp>
 
 #include <vector>
 #include <random>
 
+namespace CUDA::Interop
+{
+    class CUDAInteroperationManager;
+}
+
 namespace Odysseus
 {
     class EditorCamera;
 
-    struct Vertex
+    struct Vertices
     {
-        Athena::Vector3 Position;
-        Athena::Vector3 Normal;
-        Athena::Vector2 TexCoords;
-        Athena::Vector3 Tangent;
+        std::vector<Athena::Vector3> Positions;
+        std::vector<Athena::Vector3> Normals;
+        std::vector<Athena::Vector2> TexCoords;
+    };
+
+    //TODO: change the location of it
+    struct Particle
+    {
+        //Vertex vertex;
+        Athena::Vector3 position;
+        Athena::Vector3 positionPredicted;
+        Athena::Vector3 velocity;
+        Athena::Scalar inverseMass;
+    };
+
+    struct Edge
+    {
+        Particle particles[2];
+    };
+
+    struct Triangle
+    {
+        Edge edges[3];
+    };
+
+    struct TriangleAdj
+    {
+        Triangle triangle;
+        std::vector<Triangle*> triangleAdjs;
     };
 
     class Mesh : public System::Component
     {
     public:
-        std::vector<Vertex> vertices;
+        Vertices vertices;
         std::vector<GLuint> indices;
         PhongMaterial phongMaterial;
         PhysicsMaterial physicsMaterial;
+        CUDA::Interop::CUDAInteroperationManager* cudaInterop;
 
         Shader *shader;
         GLuint VAO;
@@ -46,7 +75,7 @@ namespace Odysseus
         Mesh();
         ~Mesh() noexcept;
 
-        void setVertices(std::vector<Vertex> &vertices);
+        void setVertices(Vertices& vertices);
         void setIndices(std::vector<GLuint> &indices);
         void setPhongMaterial(PhongMaterial &mat);
         void setPhysicsMaterial(PhysicsMaterial &mat);
