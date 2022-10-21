@@ -89,19 +89,19 @@ namespace Khronos
         auto localScale = this->sceneObject->transform->localScale;
 
         Athena::Scalar min_x, max_x, min_y, max_y, min_z, max_z;
-        min_x = max_x = meshComponent->vertices.at(0).Position.coordinates.x;
-        min_y = max_y = meshComponent->vertices.at(0).Position.coordinates.y;
-        min_z = max_z = meshComponent->vertices.at(0).Position.coordinates.z;
+        min_x = max_x = meshComponent->vertices.Positions.at(0).coordinates.x;
+        min_y = max_y = meshComponent->vertices.Positions.at(0).coordinates.y;
+        min_z = max_z = meshComponent->vertices.Positions.at(0).coordinates.z;
 
-        for(int i = 1; i < meshComponent->vertices.size(); ++i)
+        for(int i = 1; i < meshComponent->vertices.Positions.size(); ++i)
         {
-            if(meshComponent->vertices.at(i).Position.coordinates.x < min_x) min_x = meshComponent->vertices.at(i).Position.coordinates.x;
-            if(meshComponent->vertices.at(i).Position.coordinates.y < min_y) min_y = meshComponent->vertices.at(i).Position.coordinates.y;
-            if(meshComponent->vertices.at(i).Position.coordinates.z < min_z) min_z = meshComponent->vertices.at(i).Position.coordinates.z;
+            if(meshComponent->vertices.Positions.at(i).coordinates.x < min_x) min_x = meshComponent->vertices.Positions.at(i).coordinates.x;
+            if(meshComponent->vertices.Positions.at(i).coordinates.y < min_y) min_y = meshComponent->vertices.Positions.at(i).coordinates.y;
+            if(meshComponent->vertices.Positions.at(i).coordinates.z < min_z) min_z = meshComponent->vertices.Positions.at(i).coordinates.z;
 
-            if(meshComponent->vertices.at(i).Position.coordinates.x > max_x) max_x = meshComponent->vertices.at(i).Position.coordinates.x;
-            if(meshComponent->vertices.at(i).Position.coordinates.y > max_y) max_y = meshComponent->vertices.at(i).Position.coordinates.y;
-            if(meshComponent->vertices.at(i).Position.coordinates.z > max_z) max_z = meshComponent->vertices.at(i).Position.coordinates.z;
+            if(meshComponent->vertices.Positions.at(i).coordinates.x > max_x) max_x = meshComponent->vertices.Positions.at(i).coordinates.x;
+            if(meshComponent->vertices.Positions.at(i).coordinates.y > max_y) max_y = meshComponent->vertices.Positions.at(i).coordinates.y;
+            if(meshComponent->vertices.Positions.at(i).coordinates.z > max_z) max_z = meshComponent->vertices.Positions.at(i).coordinates.z;
         }
 
         auto scaleX = this->sceneObject->transform->localScale.coordinates.x;
