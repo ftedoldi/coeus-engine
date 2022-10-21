@@ -6,13 +6,21 @@
 
 namespace Odysseus
 {
+    Cubemap* Cubemap::currentCubemap;
     Cubemap::Cubemap()
     {
         setupHDRImap();
+
+        this->PBRshader = new Odysseus::Shader(".\\Shader\\PBRshader.vert", ".\\Shader\\PBRshader.frag");
+        this->PBRshader->use();
+        this->PBRshader->setInt("irradianceMap", 0);
+        this->PBRshader->setInt("prefilterMap", 1);
+        this->PBRshader->setInt("brdfLUT", 2);
     }
 
     void Cubemap::setupShaders()
     {
+        // TODO: Set pbr shader of this as global accessible
         this->cubemapShader.assignShadersPath(".\\Shader\\cubemapShader.vert", ".\\Shader\\cubemapShader.frag");
         this->equirectangularToCubemapShader.assignShadersPath(".\\Shader\\HDRImapShader.vert", ".\\Shader\\HDRImapShader.frag");
         this->irradianceShader.assignShadersPath(".\\Shader\\HDRImapShader.vert", ".\\Shader\\irradianceShader.frag");
@@ -369,11 +377,7 @@ namespace Odysseus
 
     void Cubemap::setPBRshader(Shader* shader)
     {
-        this->PBRshader = shader;
-        this->PBRshader->use();
-        this->PBRshader->setInt("irradianceMap", 0);
-        this->PBRshader->setInt("prefilterMap", 1);
-        this->PBRshader->setInt("brdfLUT", 2);
+        
     }
 
     void Cubemap::generateQuad()
