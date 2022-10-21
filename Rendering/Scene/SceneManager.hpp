@@ -2,7 +2,6 @@
 #define __SCENEGRAPH_H__
 
 #include <Scalar.hpp>
-#include <SceneObject.hpp>
 #include <Scene.hpp>
 #include <Time.hpp>
 

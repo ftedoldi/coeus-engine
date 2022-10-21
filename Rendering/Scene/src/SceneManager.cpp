@@ -1,6 +1,8 @@
-#include <SceneManager.hpp>
-
 #include <Window.hpp>
+
+#include <SceneManager.hpp>
+#include <SceneObject.hpp>
+#include <Scene.hpp>
 
 #include <Editor.hpp>
 
