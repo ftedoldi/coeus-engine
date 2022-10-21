@@ -358,7 +358,7 @@ namespace Odysseus
             return nullptr;
         }
 
-        auto verticesData = data["Vertices"];
+        /*auto verticesData = data["Vertices"];
         for (auto v : verticesData)
         {
             Vertex deserializedVertex = {};
@@ -368,7 +368,7 @@ namespace Odysseus
             deserializedVertex.TexCoords = Athena::Vector2(v["Texture Coordinates"]["X"].as<double>(), v["Texture Coordinates"]["Y"].as<double>());
 
             this->vertices.push_back(deserializedVertex);
-        }
+        }*/
 
         auto indicesData = data["Indices"];
         for (auto i : indicesData)
@@ -526,7 +526,7 @@ namespace Odysseus
         glBindVertexArray(0);
     }
 
-    bool Mesh::operator == (const Mesh &m) const
+    /*bool Mesh::operator == (const Mesh &m) const
     {
         if (m.vertices.size() != this->vertices.size())
         {
@@ -571,7 +571,7 @@ namespace Odysseus
         }
 
         return true;
-    }
+    }*/
 
     void Mesh::setIfPBR(bool isPBR)
     {
