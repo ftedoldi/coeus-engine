@@ -66,4 +66,18 @@ namespace CUDA::Interop
         }
     }
 
+    void CUDAInteroperationManager::createCUDABufferResource( cudaGraphicsResource_t& cudaResource, GLuint buffer, cudaGraphicsMapFlags mapFlags )
+    {
+        checkCudaErrors(cudaGraphicsGLRegisterBuffer(&cudaResource, buffer, mapFlags));
+    }
+
+    void CUDAInteroperationManager::deleteCUDABufferResource(cudaGraphicsResource_t& cudaResource)
+    {
+        if ( cudaResource != 0 )
+        {
+            checkCudaErrors(cudaGraphicsUnregisterResource( cudaResource ));
+            cudaResource = 0;
+        }
+    }
+
 } // namespace CUDA::Interop

@@ -151,6 +151,9 @@ namespace CUDA
 
                 void createCUDATextureResource( cudaGraphicsResource_t& cudaResource, GLuint GLtexture, cudaGraphicsMapFlags mapFlags );
                 void deleteCUDATextureResource( cudaGraphicsResource_t& cudaResource );
+
+                void createCUDABufferResource( cudaGraphicsResource_t& cudaResource, GLuint buffer, cudaGraphicsMapFlags mapFlags );
+                void deleteCUDABufferResource( cudaGraphicsResource_t& cudaResource );
         };
 
     } // namespace Interop
