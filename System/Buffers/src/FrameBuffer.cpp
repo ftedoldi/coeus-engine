@@ -389,20 +389,6 @@ namespace System::Buffers
 
         glReadBuffer(GL_NONE);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
-
-        glUseProgram(0);
-        
-        this->_frameBufferShader->use();
-        glBindVertexArray(this->_screenQuadVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, this->_texturesID[0]);
-
-                    
-        glBindTexture(GL_TEXTURE_2D, this->_postProcessedTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glUseProgram(0);
     }
 
     void FrameBuffer::copyAnotherFrameBuffer(const GLuint& idToCopy)
