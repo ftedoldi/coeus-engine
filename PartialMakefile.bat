@@ -9,6 +9,8 @@ IF EXIST "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxi
 
 @REM python ./findAllObjs.py %* > a.txt
 
+python .\Assets\Scenes\cleanMetafiles.py
+
 make partial ARGS=%*
 
 python ./moveObjs.py
