@@ -1,13 +1,13 @@
 Scene: Start Scene
-Scene Path: ./Assets/Scenes/EmptyScene.coeus
+Scene Path: ./Assets/Scenes/Test.coeus
 Scene Objects:
-  - Scene Object ID: 5228180916899197899
+  - Scene Object ID: 16961462977533525045
     Transform:
-      Name: SceneObj1
+      Name: PointLight
       Position:
-        X: -0.336086392
-        Y: 3.30950165
-        Z: -0.336086392
+        X: 2.20379543
+        Y: -0.325372308
+        Z: 2.43985844
       Rotation:
         X: 0
         Y: 0
@@ -22,10 +22,6 @@ Scene Objects:
         Y: 1
         Z: 1
     Components:
-      - Component: DummyComponent
-        DummyComponent:
-          asd: 0
-          var: 13
       - Component: PointLight
         PointLight:
           Diffuse:
@@ -43,5 +39,385 @@ Scene Objects:
           Constant: 0.100000001
           Linear: 0.100000001
           Quadratic: 0.100000001
+  - Scene Object ID: 15637199354414536701
+    Transform:
+      Name: DirectionalLight
+      Position:
+        X: -6.99582672
+        Y: 6.72266817
+        Z: -6.99582672
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: DirectionalLight
+        DirectionalLight:
+          Diffuse:
+            Red: 0.5
+            Green: 0.5
+            Blue: 0.5
+          Ambient:
+            Red: 0
+            Green: 0
+            Blue: 0
+          Specular:
+            Red: 0.577350259
+            Green: 0.577350259
+            Blue: 0.577350259
+          Direction:
+            X: 0.577350259
+            Y: 0.577350259
+            Z: 0.577350259
+  - Scene Object ID: 15811587013976240538
+    Transform:
+      Name: PointLight
+      Position:
+        X: 0
+        Y: 2
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: PointLight
+        PointLight:
+          Diffuse:
+            Red: 0.800000012
+            Green: 0.800000012
+            Blue: 0.800000012
+          Ambient:
+            Red: 0.200000003
+            Green: 0.200000003
+            Blue: 0.200000003
+          Specular:
+            Red: 0.300000012
+            Green: 0.300000012
+            Blue: 0.300000012
+          Constant: 1
+          Linear: 0.0900000036
+          Quadratic: 0.0320000015
+  - Scene Object ID: 17077945977894237923
+    Transform:
+      Name: PointLight
+      Position:
+        X: 0
+        Y: 3
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: PointLight
+        PointLight:
+          Diffuse:
+            Red: 0.800000012
+            Green: 0.800000012
+            Blue: 0.800000012
+          Ambient:
+            Red: 0.200000003
+            Green: 0.200000003
+            Blue: 0.200000003
+          Specular:
+            Red: 0.300000012
+            Green: 0.300000012
+            Blue: 0.300000012
+          Constant: 1
+          Linear: 0.0900000036
+          Quadratic: 0.0320000015
+  - Scene Object ID: 18294811292775108298
+    Transform:
+      Name: Scene Object
+      Position:
+        X: 0
+        Y: -4
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: Mesh
+        Mesh:
+          Vertices Path: ./Assets/Scenes/Meshes/18294811292775108298.meta
+          Is PBR: false
+          Diffuse:
+            Red: 0.0129669998
+            Green: 0
+            Blue: 0.800000012
+          Specular:
+            Red: 0.5
+            Green: 0.5
+            Blue: 0.5
+          Ambient:
+            Red: 1
+            Green: 1
+            Blue: 1
+          Shininess: 225
+          Textures:
+            []
           Vertex Shader Path: .\Shader\phongShader.vert
           Fragment Shader Path: .\Shader\phongShader.frag
+      - Component: RigidPlane
+        RigidPlane:
+          Direction:
+            X: 0
+            Y: 1
+            Z: 0
+          Offset: 0
+  - Scene Object ID: 10688939414483656153
+    Transform:
+      Name: Scene Object
+      Position:
+        X: 0.125574753
+        Y: 3.28765392
+        Z: -0.0543212891
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: Mesh
+        Mesh:
+          Vertices Path: ./Assets/Scenes/Meshes/10688939414483656153.meta
+          Is PBR: false
+          Diffuse:
+            Red: 0.0321919993
+            Green: 0.800000012
+            Blue: 0.110404
+          Specular:
+            Red: 0.5
+            Green: 0.5
+            Blue: 0.5
+          Ambient:
+            Red: 1
+            Green: 1
+            Blue: 1
+          Shininess: 324
+          Textures:
+            []
+          Vertex Shader Path: .\Shader\phongShader.vert
+          Fragment Shader Path: .\Shader\phongShader.frag
+      - Component: RigidBox
+        RigidBox:
+          Size:
+            X: 1
+            Y: 1
+            Z: 1
+  - Scene Object ID: 15875702743969203296
+    Transform:
+      Name: Scene Object
+      Position:
+        X: -2.76991081
+        Y: 2.48703051
+        Z: -0.173019409
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: Mesh
+        Mesh:
+          Vertices Path: ./Assets/Scenes/Meshes/15875702743969203296.meta
+          Is PBR: false
+          Diffuse:
+            Red: 0.0299999993
+            Green: 0.800000012
+            Blue: 0.100000001
+          Specular:
+            Red: 0.5
+            Green: 0.5
+            Blue: 0.5
+          Ambient:
+            Red: 1
+            Green: 1
+            Blue: 1
+          Shininess: 324
+          Textures:
+            - Directory: C:\Users\david\OneDrive\Desktop\Workspaces\C++\coeus-engine\Assets\Models\PBRcube\
+              Path: gold-scuffed_basecolor-boosted.png
+              Type: 1
+            - Directory: C:\Users\david\OneDrive\Desktop\Workspaces\C++\coeus-engine\Assets\Models\PBRcube\
+              Path: gold-scuffed_normal.png
+              Type: 6
+          Vertex Shader Path: .\Shader\phongShader.vert
+          Fragment Shader Path: .\Shader\phongShader.frag
+      - Component: RigidBox
+        RigidBox:
+          Size:
+            X: 2
+            Y: 2
+            Z: 2
+  - Scene Object ID: 9860329326021837381
+    Transform:
+      Name: SavedSphere
+      Position:
+        X: 0
+        Y: 0
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: Mesh
+        Mesh:
+          Vertices Path: ./Assets/Scenes/Meshes/9860329326021837381.meta
+          Is PBR: true
+          Albedo:
+            Red: 0.800000012
+            Green: 0.800000012
+            Blue: 0.800000012
+          Metallic: 0
+          Roughness: 0
+          Ambient Occlusion: 0
+          PBR Textures:
+            - Directory: Assets/Models/PBRsphere
+              Path: rustediron2_basecolor.png
+              Type: 1
+            - Directory: Assets/Models/PBRsphere
+              Path: rustediron2_normal.png
+              Type: 6
+            - Directory: Assets/Models/PBRsphere
+              Path: rustediron2_metallic.png
+              Type: 15
+            - Directory: Assets/Models/PBRsphere
+              Path: rustediron2_roughness.png
+              Type: 16
+          Vertex Shader Path: .\Shader\PBRshader.vert
+          Fragment Shader Path: .\Shader\PBRshader.frag
+  - Scene Object ID: 6782571102670623394
+    Transform:
+      Name: Scene Object
+      Position:
+        X: 0
+        Y: 0
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+      Children Scene Objects:
+        - 8030224676736733427
+  - Scene Object ID: 8030224676736733427
+    Transform:
+      Name: Scene Object
+      Position:
+        X: -2.31892276
+        Y: -0.168037668
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+      Parent Scene Object: 6782571102670623394
+    Components:
+      - Component: Mesh
+        Mesh:
+          Vertices Path: ./Assets/Scenes/Meshes/8030224676736733427.meta
+          Is PBR: true
+          Albedo:
+            Red: 0.800000012
+            Green: 0.800000012
+            Blue: 0.800000012
+          Metallic: 0
+          Roughness: 0
+          Ambient Occlusion: 0
+          PBR Textures:
+            - Directory: Assets/Models/PBRsphere
+              Path: rustediron2_basecolor.png
+              Type: 1
+            - Directory: Assets/Models/PBRsphere
+              Path: rustediron2_normal.png
+              Type: 6
+            - Directory: Assets/Models/PBRsphere
+              Path: rustediron2_metallic.png
+              Type: 15
+            - Directory: Assets/Models/PBRsphere
+              Path: rustediron2_roughness.png
+              Type: 16
+          Vertex Shader Path: .\Shader\PBRshader.vert
+          Fragment Shader Path: .\Shader\PBRshader.frag
