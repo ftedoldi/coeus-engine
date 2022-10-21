@@ -8,6 +8,8 @@
 #include <Texture2D.hpp>
 #include <Folder.hpp>
 
+#include <Cubemap.hpp>
+
 #include <LightInfo.hpp>
 
 // TODO: Test if everythin works with PBR Materials
@@ -337,6 +339,7 @@ namespace Odysseus
 
     System::Component* Mesh::deserialize(YAML::Node& node)
     {
+        //TODO: Stop keeping track of shaders path
         auto component = node[this->toString()];
 
         auto verticesPath = component["Vertices Path"].as<std::string>();
@@ -353,16 +356,14 @@ namespace Odysseus
             return nullptr;
         }
 
-        // this->sceneObject->ID = data["Scene Object"].as<uint64_t>();
-
         auto verticesData = data["Vertices"];
         for (auto v : verticesData)
         {
-            Vertex deserializedVertex;
-            deserializedVertex.Position = Athena::Vector3(v["Position"]["X"].as<float>(), v["Position"]["Y"].as<float>(), v["Position"]["Z"].as<float>());
-            deserializedVertex.Normal = Athena::Vector3(v["Normal"]["X"].as<float>(), v["Normal"]["Y"].as<float>(), v["Normal"]["Z"].as<float>());
-            deserializedVertex.Tangent = Athena::Vector3(v["Tangent"]["X"].as<float>(), v["Tangent"]["Y"].as<float>(), v["Tangent"]["Z"].as<float>());
-            deserializedVertex.TexCoords = Athena::Vector2(v["Texture Coordinates"]["X"].as<float>(), v["Texture Coordinates"]["Y"].as<float>());
+            Vertex deserializedVertex = {};
+            deserializedVertex.Position = Athena::Vector3(v["Position"]["X"].as<double>(), v["Position"]["Y"].as<double>(), v["Position"]["Z"].as<double>());
+            deserializedVertex.Normal = Athena::Vector3(v["Normal"]["X"].as<double>(), v["Normal"]["Y"].as<double>(), v["Normal"]["Z"].as<double>()).normalized();
+            deserializedVertex.Tangent = Athena::Vector3(v["Tangent"]["X"].as<double>(), v["Tangent"]["Y"].as<double>(), v["Tangent"]["Z"].as<double>());
+            deserializedVertex.TexCoords = Athena::Vector2(v["Texture Coordinates"]["X"].as<double>(), v["Texture Coordinates"]["Y"].as<double>());
 
             this->vertices.push_back(deserializedVertex);
         }
@@ -375,10 +376,7 @@ namespace Odysseus
             this->indices.push_back(deserializedIndex);
         }
 
-        auto vShaderPath = component["Vertex Shader Path"].as<std::string>();
-        auto fShaderPath = component["Fragment Shader Path"].as<std::string>();
-
-        this->shader = new Odysseus::Shader(vShaderPath.c_str(), fShaderPath.c_str());
+        this->shader = Odysseus::Cubemap::currentCubemap->PBRshader;
 
         this->_isPBR = component["Is PBR"].as<bool>();
 
@@ -404,7 +402,12 @@ namespace Odysseus
                 aiTextureType textureType = static_cast<aiTextureType>(t["Type"].as<int>());
 
                 Texture2D physicsMaterialTexture = Texture2D(textureDirectory, texturePath, textureType);
-                physicsMaterialTexture.loadTextureFromFile(true);
+
+                if (textureType == aiTextureType_DIFFUSE)
+                    physicsMaterialTexture.loadTextureFromFile(true);
+                else
+                    physicsMaterialTexture.loadTextureFromFile(false);
+
                 this->physicsMaterial.PBR_textures.push_back(physicsMaterialTexture);
             }
         }
@@ -507,6 +510,53 @@ namespace Odysseus
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
 
         glBindVertexArray(0);
+    }
+
+    bool Mesh::operator == (const Mesh &m) const
+    {
+        if (m.vertices.size() != this->vertices.size())
+        {
+            std::cout << "Meshes are not of the same size" << std::endl;
+            return false;
+        }
+
+        for (int i = 0; i < this->vertices.size(); i++)
+        {
+            bool a = (this->vertices[i].Position - m.vertices[i].Position).magnitude() < 0.1f;
+            bool b = (this->vertices[i].Normal - m.vertices[i].Normal).magnitude() < 0.1f;
+            bool c = (this->vertices[i].Tangent - m.vertices[i].Tangent).magnitude() < 0.1f;
+            bool d = (this->vertices[i].TexCoords - m.vertices[i].TexCoords).magnitude() < 0.1f;
+
+            if (!a)
+            {
+                this->vertices[i].Position.print();
+                m.vertices[i].Position.print();
+                return false;
+            }
+
+            if (!b)
+            {
+                this->vertices[i].Normal.print();
+                m.vertices[i].Normal.print();
+                return false;
+            }
+
+            if (!c)
+            {
+                this->vertices[i].Tangent.print();
+                m.vertices[i].Tangent.print();
+                return false;
+            }
+
+            if (!d)
+            {
+                this->vertices[i].TexCoords.print();
+                m.vertices[i].TexCoords.print();
+                return false;
+            }
+        }
+
+        return true;
     }
 
     void Mesh::setIfPBR(bool isPBR)

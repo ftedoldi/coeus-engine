@@ -40,6 +40,8 @@ namespace Odysseus
         PhongMaterial phongMaterial;
         PhysicsMaterial physicsMaterial;
 
+        std::string path;
+
         Shader *shader;
         GLuint VAO;
 
@@ -53,6 +55,8 @@ namespace Odysseus
         void setShader(Shader *shader);
         void setIfPBR(bool isPBR);
         void setupRigidBody();
+
+        bool operator == (const Mesh& m) const;
 
         virtual void start();
         virtual void update();
