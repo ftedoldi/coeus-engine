@@ -115,7 +115,7 @@ namespace YAML
         }
     };
 
-    template<>
+    /*template<>
     struct convert<std::vector<Odysseus::Vertex>>
     {
         // TODO: Implement me
@@ -142,7 +142,7 @@ namespace YAML
 
             return true;
         }
-    };
+    };*/
 }
 
 namespace System::Serialize
