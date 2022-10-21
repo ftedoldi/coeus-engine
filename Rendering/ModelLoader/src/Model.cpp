@@ -176,32 +176,31 @@ namespace Odysseus
     void Model::processMesh(aiMesh *mesh, const aiScene *scene, SceneObject* obj, Athena::Vector3& position)
     {
         // data to fill
-        std::vector<Vertex> vertices;
+        Vertices vertices;
         std::vector<GLuint> indices;
         //Athena::Vector3 avg;
 
         // walk through each of the mesh's vertices
         for(GLuint i = 0; i < mesh->mNumVertices; ++i)
         {
-            Vertex vertex;
             Athena::Vector3 vector;
             // positions
             vector.coordinates.x = mesh->mVertices[i].x;
             vector.coordinates.y = mesh->mVertices[i].y;
             vector.coordinates.z = mesh->mVertices[i].z;
-
+                
             //Get average vertex position
             //avg.coordinates.x += mesh->mVertices[i].x;
             //avg.coordinates.y += mesh->mVertices[i].y;
             //avg.coordinates.z += mesh->mVertices[i].z;
-            vertex.Position = vector;
+            vertices.Positions.push_back(vector);
             // normals
             if (mesh->HasNormals())
             {
                 vector.coordinates.x = mesh->mNormals[i].x;
                 vector.coordinates.y = mesh->mNormals[i].y;
                 vector.coordinates.z = mesh->mNormals[i].z;
-                vertex.Normal = vector;
+                vertices.Normals.push_back(vector);
             }
             // texture coordinates
             if(mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
@@ -211,17 +210,11 @@ namespace Odysseus
                 // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
                 vec.coordinates.x = mesh->mTextureCoords[0][i].x; 
                 vec.coordinates.y = mesh->mTextureCoords[0][i].y;
-                vertex.TexCoords = vec;
-                // tangent
-                vector.coordinates.x = mesh->mTangents[i].x;
-                vector.coordinates.y = mesh->mTangents[i].y;
-                vector.coordinates.z = mesh->mTangents[i].z;
-                vertex.Tangent = vector;
+                vertices.TexCoords.push_back(vec);
             }
             else{
-                vertex.TexCoords = Athena::Vector2(0.0f, 0.0f);
+                vertices.TexCoords.push_back(Athena::Vector2(0.0f, 0.0f));
             }
-            vertices.push_back(vertex);
         }
         //Getting the indices from each mesh face
         for(GLuint i = 0; i < mesh->mNumFaces; ++i)
