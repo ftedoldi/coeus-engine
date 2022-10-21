@@ -102,7 +102,11 @@
       "registration": "cpp",
       "any": "cpp",
       "__functional_base_03": "cpp",
-      "regex": "cpp"
+      "regex": "cpp",
+      "charconv": "cpp",
+      "format": "cpp",
+      "forward_list": "cpp",
+      "stop_token": "cpp"
     },
     "terminal.integrated.profiles.windows": {
         "my-pwsh": {

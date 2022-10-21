@@ -7,6 +7,8 @@ IF EXIST "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxi
     call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
 )
 
+python .\Assets\Scenes\cleanMetafiles.py
+
 if [%1%]==[] (
     make all
 ) else (

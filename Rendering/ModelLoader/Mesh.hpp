@@ -69,6 +69,8 @@ namespace Odysseus
         PhysicsMaterial physicsMaterial;
         CUDA::Interop::CUDAInteroperationManager* cudaInterop;
 
+        std::string path;
+
         Shader *shader;
         GLuint VAO;
 
@@ -82,6 +84,8 @@ namespace Odysseus
         void setShader(Shader *shader);
         void setIfPBR(bool isPBR);
         void setupRigidBody();
+
+        bool operator == (const Mesh& m) const;
 
         virtual void start();
         virtual void update();

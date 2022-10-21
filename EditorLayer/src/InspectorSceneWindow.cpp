@@ -9,6 +9,8 @@
 #include <GUI.hpp>
 #include <Debug.hpp>
 
+#include <Cubemap.hpp>
+
 #include <EditorCamera.hpp>
 
 namespace EditorLayer
@@ -100,8 +102,7 @@ namespace EditorLayer
             else if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("MODEL_FILE"))
             {
                 const char *pathToLoad = static_cast<const char *>(payload->Data);
-                Odysseus::Shader *modelShader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
-                Odysseus::Model myModel(pathToLoad, modelShader, false);
+                Odysseus::Model myModel(pathToLoad, Odysseus::Cubemap::currentCubemap->PBRshader, true);
                 Odysseus::SceneManager::initializeActiveScene();
             }
 

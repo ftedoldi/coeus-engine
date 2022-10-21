@@ -48,6 +48,7 @@ namespace Odysseus
                         break;
                     case aiTextureType_NORMALS:
                         name = "normalMap";
+                        break;
                     default:
                         break;
                 }

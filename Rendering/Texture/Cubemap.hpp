@@ -1,15 +1,12 @@
 #ifndef CUBEMAP_HPP
 #define CUBEMAP_HPP
-#include <Shader.hpp>
-#include <vector>
 
 #include <Window.hpp>
+#include <Shader.hpp>
 #include <Matrix4.hpp>
 #include <Quaternion.hpp>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include <vector>
 
 namespace Odysseus
 {
@@ -34,7 +31,6 @@ namespace Odysseus
             Shader irradianceShader;
             Shader prefilterShader;
             Shader brdfShader;
-            Shader* PBRshader;
 
             void generateCube();
             void generateQuad();
@@ -47,7 +43,11 @@ namespace Odysseus
             void createPrefilterMap(Athena::Matrix4& captureProjection, Athena::Quaternion* captureQuatViews);
 
             void createLUTtexture();
+
         public:
+            Shader* PBRshader;
+
+            static Cubemap* currentCubemap;
 
             Cubemap();
             //unsigned int loadCubemap(std::vector<std::string>& faces);
