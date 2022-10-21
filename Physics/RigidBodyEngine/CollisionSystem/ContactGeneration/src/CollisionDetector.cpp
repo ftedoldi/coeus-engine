@@ -1,4 +1,5 @@
 #include "../CollisionDetector.hpp"
+#include <CollisionUtility.hpp>
 
 namespace Khronos
 {
@@ -118,6 +119,8 @@ namespace Khronos
          * Firstly we need to transform the center of the sphere into the box coordinates
          * to be able to do next calculus
         */
+       if(!data->hasContactsLeft())
+        return;
        Athena::Vector3 center = sphere->getAxis(3);
        Athena::Vector3 relativeSphereCenter = box->transform.transformInverse(center);
 
@@ -139,7 +142,7 @@ namespace Khronos
          * center of the sphere is less than the radius of the sphere.
          * If so the two objects are touching
         */
-        Athena::Vector3 closestPoint(0.0, 0.0, 0.0);
+        Athena::Vector3 closestPoint;
         Athena::Scalar distance;
 
         // Now we check for the closest point for each axis
@@ -171,7 +174,7 @@ namespace Khronos
        Athena::Vector3 closestPointWS = box->transform.transform(closestPoint);
 
        auto contact = data->getContact();
-       contact->contactNormal = closestPoint - center;
+       contact->contactNormal = closestPointWS - center;
        contact->contactNormal.normalize();
        contact->contactPoint = closestPointWS;
        contact->penetration = sphere->radius - Athena::Math::scalarSqrt(distance);
@@ -230,5 +233,197 @@ namespace Khronos
         contact->body[1] = nullptr;
         contact->friction = data->friction;
         contact->restitution = data->restitution;
+    }
+
+    static inline bool TryAxis(const CollisionBox* box1, const CollisionBox* box2,
+                               Athena::Vector3& axis, Athena::Vector3& toCenter,
+                               unsigned int index, Athena::Scalar& smallestPenetration,
+                               int& smallestCase)
+    {
+        if(axis.squareMagnitude() < 0.0001)
+            return true;
+        axis.normalize();
+
+        Athena::Scalar penetration = CollisionUtility::penetrationOnAxis(box1, box2, axis, toCenter);
+
+        if(penetration < 0)
+            return false;
+        
+        if(penetration < smallestPenetration)
+        {
+            smallestPenetration = penetration;
+            smallestCase = index;
+        }
+        return true;
+    }
+
+    void CollisionDetector::fillPointFaceBoxBox(const CollisionBox* box1, const CollisionBox* box2,
+                                                const Athena::Vector3& toCenter, CollisionData* data,
+                                                unsigned int best, Athena::Scalar penetration)
+    {
+        // This method is called when a vertex from box2 is in contact with box1
+        auto contact = data->getContact();
+
+        Athena::Vector3 normal = box1->getAxis(best);
+        if(Athena::Vector3::dot(box1->getAxis(best), toCenter) > 0)
+            normal = normal * -1.0f;
+
+        // Work out which vertex of box2 we're colliding with
+        Athena::Vector3 vertex = box2->halfSize;
+        if(Athena::Vector3::dot(box2->getAxis(0), normal) < 0)
+            vertex.coordinates.x = -vertex.coordinates.x;
+        
+        if(Athena::Vector3::dot(box2->getAxis(1), normal) < 0)
+            vertex.coordinates.y = -vertex.coordinates.y;
+        
+        if(Athena::Vector3::dot(box2->getAxis(2), normal) < 0)
+            vertex.coordinates.z = -vertex.coordinates.z;
+
+        contact->contactNormal = normal;
+        contact->penetration = penetration;
+        contact->contactPoint = box2->transform.transform(vertex);
+
+        //contact->contactPoint.print();
+
+        contact->body[0] = box1->body;
+        contact->body[1] = box2->body;
+        contact->friction = data->friction;
+        contact->restitution = data->restitution;
+
+    }
+
+    Athena::Vector3 CollisionDetector::contactPoint(const Athena::Vector3& pOne, const Athena::Vector3& dOne,
+                                    Athena::Scalar oneSize, const Athena::Vector3& pTwo, const Athena::Vector3& dTwo,
+                                    Athena::Scalar twoSize, bool useOne)
+    {
+        // If useOne is true, and the contact point is outside
+        // the edge (in the case of an edge-face contact) then
+        // we use one's midpoint, otherwise we use two's.
+
+        Athena::Vector3 toSt, cOne, cTwo;
+        Athena::Scalar dpStaOne, dpStaTwo, dpOneTwo, smOne, smTwo;
+        Athena::Scalar denom, mua, mub;
+
+        smOne = dOne.squareMagnitude();
+        smTwo = dTwo.squareMagnitude();
+        dpOneTwo = Athena::Vector3::dot(dTwo, dOne);
+
+        toSt = pOne - pTwo;
+        dpStaOne = Athena::Vector3::dot(dOne, toSt);
+        dpStaTwo = Athena::Vector3::dot(dTwo, toSt);
+
+        denom = smOne * smTwo - dpOneTwo * dpOneTwo;
+
+        if(Athena::Math::scalarAbs(denom) < 0.00001)
+            return useOne ? pOne : pTwo;
+        
+        mua = (dpOneTwo * dpStaTwo - smTwo * dpStaOne) / denom;
+        mub = (smOne * dpStaTwo - dpOneTwo * dpStaOne) / denom;
+
+        if(mua > oneSize || mua < -oneSize || mub > twoSize || mub < -twoSize)
+            return useOne ? pOne : pTwo;
+        else
+        {
+            cOne = pOne + dOne * mua;
+            cTwo = pTwo + dTwo * mub;
+            return cOne * 0.5 + cTwo * 0.5;
+        }
+    }
+
+
+    void CollisionDetector::boxAndBox(const CollisionBox* box1, const CollisionBox* box2, CollisionData* data)
+    {
+        if(!data->hasContactsLeft())
+            return;
+
+        //if(!IntersectionTests::boxAndBox(box1, box2))
+        //    return;
+        
+        // Vector between the two boxes centers
+        Athena::Vector3 toCenter = box2->getAxis(3) - box1->getAxis(3);
+
+        Athena::Scalar penetration = SCALAR_MAX;
+        int best = 0xffffff;
+
+        // We check each axis, if the projections of the boxes on at least one
+        // axis doesn't intersect, we don't have a collision, otherwise, we can have it
+        // and we keep track of the axis with the smallest penetration
+        if(!TryAxis(box1, box2, box1->getAxis(0), toCenter, 0, penetration, best)) return;
+        if(!TryAxis(box1, box2, box1->getAxis(1), toCenter, 1, penetration, best)) return;
+        if(!TryAxis(box1, box2, box1->getAxis(2), toCenter, 2, penetration, best)) return;
+
+        if(!TryAxis(box1, box2, box2->getAxis(0), toCenter, 3, penetration, best)) return;
+        if(!TryAxis(box1, box2, box2->getAxis(1), toCenter, 4, penetration, best)) return;
+        if(!TryAxis(box1, box2, box2->getAxis(2), toCenter, 5, penetration, best)) return;
+
+        int bestSingleAxis = best;
+
+        if(!TryAxis(box1, box2, Athena::Vector3::cross(box1->getAxis(0), box2->getAxis(0)), toCenter, 6, penetration, best)) return;
+        if(!TryAxis(box1, box2, Athena::Vector3::cross(box1->getAxis(0), box2->getAxis(1)), toCenter, 7, penetration, best)) return;
+        if(!TryAxis(box1, box2, Athena::Vector3::cross(box1->getAxis(0), box2->getAxis(2)), toCenter, 8, penetration, best)) return;
+        if(!TryAxis(box1, box2, Athena::Vector3::cross(box1->getAxis(1), box2->getAxis(0)), toCenter, 9, penetration, best)) return;
+        if(!TryAxis(box1, box2, Athena::Vector3::cross(box1->getAxis(1), box2->getAxis(1)), toCenter, 10, penetration, best)) return;
+        if(!TryAxis(box1, box2, Athena::Vector3::cross(box1->getAxis(1), box2->getAxis(2)), toCenter, 11, penetration, best)) return;
+        if(!TryAxis(box1, box2, Athena::Vector3::cross(box1->getAxis(2), box2->getAxis(0)), toCenter, 12, penetration, best)) return;
+        if(!TryAxis(box1, box2, Athena::Vector3::cross(box1->getAxis(2), box2->getAxis(1)), toCenter, 13, penetration, best)) return;
+        if(!TryAxis(box1, box2, Athena::Vector3::cross(box1->getAxis(2), box2->getAxis(2)), toCenter, 14, penetration, best)) return;
+
+        assert(best != 0xffffff);
+        
+        if(best < 3)
+        {
+            fillPointFaceBoxBox(box1, box2, toCenter, data, best, penetration);
+        }
+        else if (best < 6)
+        {
+            fillPointFaceBoxBox(box2, box1, toCenter * -1.0f, data, best - 3, penetration);
+        }
+        else
+        {
+            best -=6;
+            int box1AxisIndex = best / 3;
+            int box2AxisIndex = best % 3;
+            Athena::Vector3 box1Axis = box1->getAxis(box1AxisIndex);
+            Athena::Vector3 box2Axis = box2->getAxis(box2AxisIndex);
+            Athena::Vector3 axis = Athena::Vector3::cross(box1Axis, box2Axis);
+            axis.normalize();
+
+            if(Athena::Vector3::dot(axis, toCenter) > 0)
+                axis *= -1.0f;
+            
+            Athena::Vector3 ptOnBox1Edge = box1->halfSize;
+            Athena::Vector3 ptOnBox2Edge = box2->halfSize;
+
+            for(unsigned int i = 0; i < 3; ++i)
+            {
+                if(i == box1AxisIndex) ptOnBox1Edge[i] = 0;
+                else if(Athena::Vector3::dot(box1->getAxis(i), axis) > 0) ptOnBox1Edge[i] = -ptOnBox1Edge[i];
+
+                if(i == box2AxisIndex) ptOnBox2Edge[i] = 0;
+                else if(Athena::Vector3::dot(box2->getAxis(i), axis) > 0) ptOnBox2Edge[i] = -ptOnBox2Edge[i];
+            }
+
+            ptOnBox1Edge = box1->transform.transform(ptOnBox1Edge);
+            ptOnBox2Edge = box2->transform.transform(ptOnBox2Edge);
+
+            Athena::Vector3 vertex = contactPoint(
+                ptOnBox1Edge, box1Axis, box1->halfSize[box1AxisIndex],
+                ptOnBox2Edge, box2Axis, box2->halfSize[box2AxisIndex],
+                bestSingleAxis > 2
+            );
+
+            auto contact = data->getContact();
+
+            contact->penetration = penetration;
+            contact->contactNormal = axis;
+            contact->contactPoint = vertex;
+
+            contact->body[0] = box1->body;
+            contact->body[1] = box2->body;
+            contact->friction = data->friction;
+            contact->restitution = data->restitution;
+
+        }
+
     }
 }

@@ -11,6 +11,13 @@ namespace Khronos
 {
     class CollisionDetector
     {
+        static void fillPointFaceBoxBox(const CollisionBox* box1, const CollisionBox* box2,
+                                 const Athena::Vector3& toCenter, CollisionData* data,
+                                 unsigned int best, Athena::Scalar penetration);
+
+        static Athena::Vector3 contactPoint(const Athena::Vector3& pOne, const Athena::Vector3& dOne,
+                                    Athena::Scalar oneSize, const Athena::Vector3& pTwo, const Athena::Vector3& dTwo,
+                                    Athena::Scalar twoSize, bool useOne);
     public:
 
         static void sphereAndSphere(const CollisionSphere* firstSphere, const CollisionSphere* secondSphere, CollisionData* data);
@@ -40,6 +47,8 @@ namespace Khronos
          * between a point of a box and a face of the other
         */
         static void boxAndPoint(const CollisionBox& box, const Athena::Vector3& point, CollisionData* data);
+
+        static void boxAndBox(const CollisionBox* box1, const CollisionBox* box2, CollisionData* data);
     };
 }
 

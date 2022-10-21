@@ -23,6 +23,8 @@ namespace Khronos
         static bool sphereAndHalfSpace(const CollisionSphere* sphere, const CollisionPlane* plane);
 
         static bool boxAndHalfSpace(const CollisionBox* box, const CollisionPlane* plane);
+
+        static bool boxAndBox(const CollisionBox* box1, const CollisionBox* box2);
     };
 }
 

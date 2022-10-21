@@ -36,13 +36,30 @@ namespace Khronos
                                              const Athena::Vector3& axis,
                                              const Athena::Vector3& toCentre)
             {
+                // Project the halfsizes of the two boxes on the given axis
                 Athena::Scalar firstBoxProjection = transformToAxis(firstBox, axis);
                 Athena::Scalar secondBoxProjection = transformToAxis(secondBox, axis);
 
-                Athena::Scalar distance = Athena::Math::scalarAbs(toCentre * axis);
+                Athena::Scalar distance = Athena::Math::scalarAbs(Athena::Vector3::dot(toCentre, axis));
 
                 // Check for overlap
                 return (distance < firstBoxProjection + secondBoxProjection);
+            }
+
+            static inline Athena::Scalar penetrationOnAxis(const CollisionBox* firstBox,
+                                             const CollisionBox* secondBox,
+                                             const Athena::Vector3& axis,
+                                             const Athena::Vector3& toCentre)
+            {
+                // Project the halfsizes of the two boxes on the given axis
+                Athena::Scalar firstBoxProjection = transformToAxis(firstBox, axis);
+                Athena::Scalar secondBoxProjection = transformToAxis(secondBox, axis);
+
+                Athena::Scalar distance = Athena::Math::scalarAbs(Athena::Vector3::dot(toCentre, axis));
+
+                // Return the amount of overlap (positive number
+                // indicates overlap, negative separation)
+                return firstBoxProjection + secondBoxProjection - distance;
             }
     };
 }

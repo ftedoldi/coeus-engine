@@ -68,20 +68,22 @@ namespace Khronos
             CollisionDetector::boxAndHalfSpace(box, plane, data);
         }
 
-        for(auto sphere : this->spheres)
+        /*for(auto sphere : this->spheres)
         {
             if(!data->hasContactsLeft())
                 return;
             
             CollisionDetector::boxAndSphere(box, sphere, data);
-        }
-
-        // TODO:implement box-box collision detection
-        /*for(auto box : *this->boxes)
-        {
-            if(!data->hasContactsLeft());
-
-            CollisionDetector::boxAndSphere(box, sphere, data);
         }*/
+
+        for(auto box2 : this->boxes)
+        {
+            if(box == box2)
+                continue;
+            if(!data->hasContactsLeft())
+                break;
+            
+            CollisionDetector::boxAndBox(box, box2, data);
+        }
     }
 }

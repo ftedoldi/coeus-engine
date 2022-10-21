@@ -442,8 +442,6 @@ namespace Khronos
 
         bool body0awake = body[0]->getAwake();
         bool body1awake = body[1]->getAwake();
-        std::cout << "body0awake: " << body0awake << std::endl;
-        std::cout << "body1awake: " << body1awake << std::endl;
         
         //Compute the XOR, so wakes up only the sleeping one
         if(body0awake ^ body1awake)
