@@ -1,6 +1,8 @@
-#version 420 core
+#version 450 core
 
-out vec4 FragColor;
+layout(location=0) out vec4 FragColor;
+layout(location=1) out vec4 idColor;
+
 in vec3 Normal;
 
 // material parameters
@@ -37,6 +39,8 @@ in VS_OUT
     vec2 TexCoords;
     vec3 FragPos;
 } fs_in;
+
+flat in float vID;
 
 const float PI = 3.14159265359;
 const float nMaxLights = 1;
@@ -212,7 +216,7 @@ void main()
     vec3 color = ambient + Lo;
 
     // we do HDR Reinhard tonemapping and gamma correction in post processing
-
-    FragColor = vec4(color, 1.0);
+    idColor = vec4(vID);
+    FragColor = vec4(color, 1.0); // TODO: Irradiance Map is fucked up
 }
 
