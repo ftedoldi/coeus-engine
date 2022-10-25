@@ -10,7 +10,7 @@ void main()
 {
     localPos = aPos;
 	vec4 conj = vec4(-rotation.x, -rotation.y, -rotation.z, rotation.w);
-	vec4 posQuaternion = vec4(aPos, 0.0);
+	vec4 posQuaternion = vec4(localPos, 0.0);
 
 	vec4 firstRotation = vec4(rotation.w * posQuaternion.x + rotation.x * posQuaternion.w + rotation.y * posQuaternion.z - rotation.z * posQuaternion.y,
 							  rotation.w * posQuaternion.y + rotation.y * posQuaternion.w + rotation.z * posQuaternion.x - rotation.x * posQuaternion.z,
