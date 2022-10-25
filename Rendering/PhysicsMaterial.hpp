@@ -10,14 +10,17 @@ namespace Odysseus
     class PhysicsMaterial {
 
         public:
-            Athena::Vector3 albedo;
+            Athena::Vector4 albedo;
             float metallic;
             float roughness;
             float AO;
             std::vector<Texture2D> PBR_textures;
+            bool hasAlbedoTexture;
+            bool hasMetallicTexture;
+            bool hasRoughnessTexture;
 
         PhysicsMaterial();
-        PhysicsMaterial(Athena::Vector3& color, float metallic, float roughness);
+        PhysicsMaterial(Athena::Vector4& color, float metallic, float roughness);
         PhysicsMaterial(std::vector<Texture2D>& PBR_textures);
 
         void loadShaderMaterial(Odysseus::Shader* shader);
