@@ -11,13 +11,13 @@ namespace Odysseus
 {
     SpotLight::SpotLight()
     {
-        _ambient = Athena::Vector3();
+        _ambient = Athena::Vector3(0.1f, 0.1f, 0.1f);
         _diffuse = Athena::Vector3(0.5f, 0.5f, 0.5f);
         _specular = Athena::Vector3();
 
-        _direction = Athena::Vector3(0.5f, 0.5f, 0.5f).normalized();
-        _spotExponent = 0.1f;
-        _cutOff = 0.1f;
+        _direction = Athena::Vector3(0.0f, -1.0f, 0.0f).normalized();
+        _spotExponent = 30.0f;
+        _cutOff = 40.0f;
         
         this->ID = System::UUID();
 
@@ -199,7 +199,7 @@ namespace Odysseus
         shader->setVec3("spotLights[" + std::to_string(index) + "].ambient", this->_ambient);
         shader->setVec3("spotLights[" + std::to_string(index) + "].position", worldPosition->position);
         shader->setVec3("spotLights[" + std::to_string(index) + "].direction", this->_direction);
-        shader->setFloat("spotLights[" + std::to_string(index) + "].cutOff", this->_cutOff);
+        shader->setFloat("spotLights[" + std::to_string(index) + "].cutOff", std::cos(Athena::Math::degreeToRandiansAngle(this->_cutOff)));
         shader->setFloat("spotLights[" + std::to_string(index) + "].spotExponent", this->_spotExponent);
     }
 

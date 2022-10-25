@@ -12,11 +12,11 @@ namespace Odysseus
 
     DirectionalLight::DirectionalLight()
     {
-        _ambient = Athena::Vector3();
+        _ambient = Athena::Vector3(0.1f, 0.1f, 0.1f);
         _diffuse = Athena::Vector3(0.5f, 0.5f, 0.5f);
         _specular = Athena::Vector3();
 
-        _direction = Athena::Vector3(0.5f, 0.5f, 0.5f).normalized();
+        _direction = Athena::Vector3(0.0f, -1.0f, 0.0f).normalized();
         
         this->ID = System::UUID();
 
@@ -155,7 +155,6 @@ namespace Odysseus
         shader->setVec3("directionalLights[" + std::to_string(index) + "].diffuse", this->_diffuse);
         shader->setVec3("directionalLights[" + std::to_string(index) + "].specular", this->_specular);
         shader->setVec3("directionalLights[" + std::to_string(index) + "].ambient", this->_ambient);
-        shader->setVec3("directionalLights[" + std::to_string(index) + "].position", worldPosition->position);
         shader->setVec3("directionalLights[" + std::to_string(index) + "].direction", this->_direction);
     }
 
