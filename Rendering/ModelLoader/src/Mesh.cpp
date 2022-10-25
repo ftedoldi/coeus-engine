@@ -124,7 +124,7 @@ namespace Odysseus
         auto worldPosition = Transform::GetWorldTransform(this->transform, this->transform);
         auto tmp = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->getViewTransform(worldPosition);
 
-        this->shader->setVec3("viewPos", Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->transform->position);
+        this->shader->setVec3("cameraPos", Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->transform->position);
         this->shader->setVec3("WorldPosition", worldPosition->position);
         this->shader->setVec4("WorldRotation", worldPosition->rotation.asVector4());
         this->shader->setVec3("WorldScale", worldPosition->localScale);
@@ -153,6 +153,7 @@ namespace Odysseus
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, static_cast<GLuint>(this->indices.size()), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
+        glUseProgram(0);
 
         // set everything back to default
         glActiveTexture(GL_TEXTURE0);
@@ -186,7 +187,7 @@ namespace Odysseus
                                 physicsMaterial.albedo.coordinates.z 
                             };
             ImGui::InputFloat3("Albedo", albedo);
-            physicsMaterial.albedo = Athena::Vector3(albedo[0], albedo[1], albedo[2]);
+            physicsMaterial.albedo = Athena::Vector4(albedo[0], albedo[1], albedo[2], albedo[3]);
             ImGui::InputFloat("Metallic", &physicsMaterial.metallic);
             ImGui::InputFloat("Roughness", &physicsMaterial.roughness);
             ImGui::InputFloat("Ambient Occlusion Factor", &physicsMaterial.AO);
@@ -378,7 +379,7 @@ namespace Odysseus
             this->indices.push_back(deserializedIndex);
         }
 
-        this->shader = Odysseus::Cubemap::currentCubemap->PBRshader;
+        this->shader = Odysseus::Cubemap::currentCubemap->PBRTextureShader;
 
         this->_isPBR = component["Is PBR"].as<bool>();
 
@@ -387,10 +388,11 @@ namespace Odysseus
         {
             this->physicsMaterial = PhysicsMaterial();
 
-            this->physicsMaterial.albedo = Athena::Vector3(
+            this->physicsMaterial.albedo = Athena::Vector4(
                                                             component["Albedo"]["Red"].as<float>(),
                                                             component["Albedo"]["Green"].as<float>(),
-                                                            component["Albedo"]["Blue"].as<float>()
+                                                            component["Albedo"]["Blue"].as<float>(),
+                                                            component["Albedo"]["Alpha"].as<float>()
                                                         );
             this->physicsMaterial.metallic = component["Metallic"].as<float>();
             this->physicsMaterial.roughness = component["Roughness"].as<float>();
@@ -496,7 +498,8 @@ namespace Odysseus
         GLuint positionSize = this->vertices.Positions.size() * sizeof(Athena::Vector3);
         GLuint normalSize = this->vertices.Normals.size() * sizeof(Athena::Vector3);
         GLuint texCoordsSize = this->vertices.TexCoords.size() * sizeof(Athena::Vector2);
-        GLuint totalSize = positionSize + normalSize + texCoordsSize;
+        GLuint tangentSize = this->vertices.Tangents.size() * sizeof(Athena::Vector3);
+        GLuint totalSize = positionSize + normalSize + texCoordsSize + tangentSize;
 
         //bind the active VBO buffer
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -504,11 +507,12 @@ namespace Odysseus
         glBufferSubData(GL_ARRAY_BUFFER, 0, positionSize, &vertices.Positions[0]);
         glBufferSubData(GL_ARRAY_BUFFER, positionSize, normalSize, &vertices.Normals[0]);
         glBufferSubData(GL_ARRAY_BUFFER, positionSize + normalSize, texCoordsSize, &vertices.TexCoords[0]);
+        glBufferSubData(GL_ARRAY_BUFFER, positionSize + normalSize + texCoordsSize, tangentSize, &vertices.Tangents[0]);
 
         //register VBO on CUDA and call CUDA methods to process vertices
-        cudaInterop->createCUDABufferResource(cuda_vbo_resource, VBO, cudaGraphicsMapFlagsNone);
+        /*cudaInterop->createCUDABufferResource(cuda_vbo_resource, VBO, cudaGraphicsMapFlagsNone);
         MoveVertices(cuda_vbo_resource, vertices.Positions.size());
-        cudaInterop->deleteCUDABufferResource(cuda_vbo_resource);
+        cudaInterop->deleteCUDABufferResource(cuda_vbo_resource);*/
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), 
@@ -522,6 +526,9 @@ namespace Odysseus
 
         glEnableVertexAttribArray(2);	
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Athena::Vector2), (void*)(positionSize + normalSize));
+
+        glEnableVertexAttribArray(3);	
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Athena::Vector3), (void*)(positionSize + normalSize + texCoordsSize));
 
         glBindVertexArray(0);
     }

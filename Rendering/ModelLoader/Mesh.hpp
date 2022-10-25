@@ -32,6 +32,7 @@ namespace Odysseus
         std::vector<Athena::Vector3> Positions;
         std::vector<Athena::Vector3> Normals;
         std::vector<Athena::Vector2> TexCoords;
+        std::vector<Athena::Vector3> Tangents;
     };
 
     //TODO: change the location of it

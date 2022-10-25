@@ -5,7 +5,7 @@
 namespace Odysseus
 {
 
-    Model::Model(const std::string& path, Shader* shader, bool isPBR) : shader(shader)
+    Model::Model(const std::string& path, Shader* textureShader, Shader* materialShader, bool isPBR) : textureShader(textureShader), materialShader(materialShader)
     {
         this->_isPBR = isPBR;
         loadModel(path);
@@ -15,7 +15,7 @@ namespace Odysseus
     void Model::loadModel(const std::string& path)
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace | aiProcess_FlipUVs);
+        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace /*| aiProcess_FlipUVs*/);
         //checking for errors in the scene creation
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
@@ -115,13 +115,24 @@ namespace Odysseus
     {
         if(material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
         {
+            std::cout << "Has texture albedo" << std::endl;
+            mat.hasAlbedoTexture = true;
             this->_gammaCorrect = true;
             std::vector<Texture2D> albedoMap = loadTexture(material, aiTextureType_DIFFUSE, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), albedoMap.begin(), albedoMap.end());
+        } else
+        {
+            aiColor4D color;
+            if(AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, color))
+            {
+                std::cout << "has material albedo" << std::endl;
+                mat.albedo = Athena::Vector4(color.r, color.g, color.b, color.a);
+            }
         }
 
         if(material->GetTextureCount(aiTextureType_NORMALS) > 0)
         {
+            std::cout << "Has texture normal" << std::endl;
             this->_gammaCorrect = false;
             std::vector<Texture2D> normalMap = loadTexture(material, aiTextureType_NORMALS, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), normalMap.begin(), normalMap.end());
@@ -129,48 +140,49 @@ namespace Odysseus
 
         if(material->GetTextureCount(aiTextureType_METALNESS) > 0)
         {
+            mat.hasMetallicTexture = true;
+            std::cout << "Has texture metallic" << std::endl;
             this->_gammaCorrect = false;
             std::vector<Texture2D> metalnessMap = loadTexture(material, aiTextureType_METALNESS, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), metalnessMap.begin(), metalnessMap.end());
+        } 
+        else
+        {
+            float metallic;
+            if(AI_SUCCESS == material->Get(AI_MATKEY_METALLIC_FACTOR, metallic))
+            {
+                std::cout << "has material metallic" << std::endl;
+                mat.metallic = metallic;
+            }
         }
 
         if(material->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS) > 0)
         {
+            mat.hasRoughnessTexture = true;
+            std::cout << "Has texture roughness" << std::endl;
             this->_gammaCorrect = false;
             std::vector<Texture2D> roughnessMap = loadTexture(material, aiTextureType_DIFFUSE_ROUGHNESS, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), roughnessMap.begin(), roughnessMap.end());
         }
+        else
+        {
+            float roughness;
+            if(AI_SUCCESS == material->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughness))
+            {
+                std::cout << "has material roughness" << std::endl;
+                mat.roughness = roughness;
+            }
+        }
 
         if(material->GetTextureCount(aiTextureType_AMBIENT_OCCLUSION) > 0)
         {
+            std::cout << "Has texture ao" << std::endl;
             this->_gammaCorrect = false;
             std::vector<Texture2D> AOMap = loadTexture(material, aiTextureType_AMBIENT_OCCLUSION, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), AOMap.begin(), AOMap.end());
         }
     }
-
-    void Model::setMeshPBRmaterial(aiMaterial* material, PhysicsMaterial& mat)
-    {
-        aiColor3D color;
-        float metallic;
-        float roughness;
-
-        if(AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, color))
-        {
-            mat.albedo = Athena::Vector3(color.r, color.g, color.b);
-        }
-        
-        if(AI_SUCCESS == material->Get(AI_MATKEY_METALLIC_FACTOR, metallic))
-        {
-            mat.metallic = metallic;
-        }
-            
-        if(AI_SUCCESS == material->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughness))
-        {
-            mat.roughness = roughness;
-        }
-    }
-
+    
     void Model::processMesh(aiMesh *mesh, const aiScene *scene, SceneObject* obj, Athena::Vector3& position)
     {
         // data to fill
@@ -209,6 +221,11 @@ namespace Odysseus
                 vec.coordinates.x = mesh->mTextureCoords[0][i].x; 
                 vec.coordinates.y = mesh->mTextureCoords[0][i].y;
                 vertices.TexCoords.push_back(vec);
+                // tangent
+                vector.coordinates.x = mesh->mTangents[i].x;
+                vector.coordinates.y = mesh->mTangents[i].y;
+                vector.coordinates.z = mesh->mTangents[i].z;
+                vertices.Tangents.push_back(vector);
             }
             else{
                 vertices.TexCoords.push_back(Athena::Vector2(0.0f, 0.0f));
@@ -244,7 +261,6 @@ namespace Odysseus
         //objMesh->transform->position.coordinates.x = avg.coordinates.x / mesh->mNumVertices;
         //objMesh->transform->position.coordinates.y = avg.coordinates.y / mesh->mNumVertices;
         //objMesh->transform->position.coordinates.z = avg.coordinates.z / mesh->mNumVertices;
-        objMesh->setShader(this->shader);
         objMesh->setVertices(vertices);
         objMesh->setIndices(indices);
         objMesh->setIfPBR(_isPBR);
@@ -252,7 +268,10 @@ namespace Odysseus
         {
             PhysicsMaterial physMat;
             setMeshPBRtextures(material, physMat);
-            setMeshPBRmaterial(material, physMat);
+            if(physMat.PBR_textures.size() > 0)
+                objMesh->setShader(this->textureShader);
+            else
+                objMesh->setShader(this->materialShader);
             objMesh->setPhysicsMaterial(physMat);
         }else
         {
