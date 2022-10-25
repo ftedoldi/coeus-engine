@@ -45,13 +45,12 @@ namespace Odysseus
             void createLUTtexture();
 
         public:
-            Shader* PBRshader;
+            Shader* PBRTextureShader;
+            Shader* PBRMaterialShader;
 
             static Cubemap* currentCubemap;
 
             Cubemap();
-            //unsigned int loadCubemap(std::vector<std::string>& faces);
-            //void setupCubemap();
             void setupHDRImap();
             
             void setPBRshader(Shader* shader);
