@@ -272,7 +272,7 @@ namespace EditorLayer
                     else
                         currentPath = "";
                 }
-                else if (lowercaseFilenameString.find(".obj") != std::string::npos || lowercaseFilenameString.find(".fbx") != std::string::npos)
+                else if (lowercaseFilenameString.find(".obj") != std::string::npos || lowercaseFilenameString.find(".fbx") != std::string::npos || lowercaseFilenameString.find(".gltf") != std::string::npos)
                 {
 #pragma warning(push)
 #pragma warning(disable : 4312)
@@ -293,7 +293,7 @@ namespace EditorLayer
                     if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                     {
                         Odysseus::Shader *modelShader = new Odysseus::Shader(".\\Shader\\phongShader.vert", ".\\Shader\\phongShader.frag");
-                        Odysseus::Model myModel(path.string(), modelShader, false);
+                        //Odysseus::Model myModel(path.string(), modelShader, false);
                         Odysseus::SceneManager::initializeActiveScene();
                     }
 
