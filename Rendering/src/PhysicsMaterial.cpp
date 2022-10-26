@@ -35,7 +35,7 @@ namespace Odysseus
             //GL_TEXTURE0 is reserved to irradiance map
             //GL_TEXTURE1 is reserved to prefilter map
             //GL_TEXTURE2 is reserved to brdfLUT map
-            glActiveTexture(GL_TEXTURE3 + i);
+            glActiveTexture(GL_TEXTURE4 + i);
 
             //retreive texture infos
             std::string name;
@@ -58,7 +58,7 @@ namespace Odysseus
                     break;
             }
             //set shader uniform
-            textureShader->setInt(name.c_str(), i + 3);
+            textureShader->setInt(name.c_str(), i + 4);
             //bind texture
             this->PBR_textures[i].BindTexture();
         }

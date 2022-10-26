@@ -14,15 +14,15 @@ namespace Odysseus
         setupShaders();
         this->PBRTextureShader = new Odysseus::Shader(".\\Shader\\PBRshader.vert", ".\\Shader\\PBRTextureShader.frag");
         this->PBRTextureShader->use();
-        this->PBRTextureShader->setInt("irradianceMap", 0);
-        this->PBRTextureShader->setInt("prefilterMap", 1);
-        this->PBRTextureShader->setInt("brdfLUT", 2);
+        this->PBRTextureShader->setInt("irradianceMap", 1);
+        this->PBRTextureShader->setInt("prefilterMap", 2);
+        this->PBRTextureShader->setInt("brdfLUT", 3);
 
         this->PBRMaterialShader = new Odysseus::Shader(".\\Shader\\PBRshader.vert", ".\\Shader\\PBRMaterialShader.frag");
         this->PBRMaterialShader->use();
-        this->PBRMaterialShader->setInt("irradianceMap", 0);
-        this->PBRMaterialShader->setInt("prefilterMap", 1);
-        this->PBRMaterialShader->setInt("brdfLUT", 2);
+        this->PBRMaterialShader->setInt("irradianceMap", 1);
+        this->PBRMaterialShader->setInt("prefilterMap", 2);
+        this->PBRMaterialShader->setInt("brdfLUT", 3);
         setupHDRImap();
 
     }
@@ -286,24 +286,24 @@ namespace Odysseus
     {
         this->PBRTextureShader->use();
         
-        glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_CUBE_MAP, this->irradianceMap);
 
-        glActiveTexture(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_CUBE_MAP, this->prefilterMap);
 
-        glActiveTexture(GL_TEXTURE2);
+        glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, this->brdfLUTtexture);
 
         this->PBRMaterialShader->use();
 
-        glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_CUBE_MAP, this->irradianceMap);
 
-        glActiveTexture(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_CUBE_MAP, this->prefilterMap);
 
-        glActiveTexture(GL_TEXTURE2);
+        glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, this->brdfLUTtexture);
 
         cubemapShader.use();
@@ -314,15 +314,18 @@ namespace Odysseus
 
         // skybox cube
         glActiveTexture(GL_TEXTURE0);
-        //glBindTexture(GL_TEXTURE_CUBE_MAP, this->envCubemap);
+        //glBindTexture(GL_TEXTURE_CUBE_MAP, this->irradianceMap);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, this->envCubemap);
         //glBindTexture(GL_TEXTURE_CUBE_MAP, this->prefilterMap);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, this->irradianceMap);
+        //
         generateCube();
         //glDepthFunc(GL_LESS); // set depth function back to default
         //glDisable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
         //brdfShader.use();
         //generateQuad();
+        glUseProgram(0);
+        
     }
 
     void Cubemap::generateCube()
