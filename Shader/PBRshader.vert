@@ -33,6 +33,8 @@ vec4 calcWorldPosition(vec3 vector, vec4 worldConj);
 
 void main()
 {
+	vID=ID;
+	
 	//Calculate world position 
 	vs_out.TexCoords = aTexCoords;
 	vec4 worldConj = vec4(-WorldRotation.x, -WorldRotation.y, -WorldRotation.z, WorldRotation.w);

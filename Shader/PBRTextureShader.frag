@@ -1,10 +1,9 @@
 #version 450 core
 //TODO USE UBOs
-layout(location=0) out vec4 FragColor;
-layout(location=1) out vec4 idColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec4 idColor;
 
 in vec3 Normal;
-
 
 // material parameters
 struct PBRmaterial
