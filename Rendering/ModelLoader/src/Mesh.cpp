@@ -226,39 +226,59 @@ namespace Odysseus
     {
         YAML::Emitter vert;
 
-        /*vert << YAML::BeginMap;
+        vert << YAML::BeginMap;
             vert << YAML::Key << "Scene Object" << YAML::Value << this->sceneObject->ID;
             vert << YAML::Key << "Vertices";
-            vert << YAML::BeginSeq;
-                for (auto vertex : this->vertices)
+            vert << YAML::BeginMap;
+
+                vert << YAML::Key << "Positions";
+                vert << YAML::BeginSeq;
+                for (auto vertex : this->vertices.Positions)
                 {
                     vert << YAML::BeginMap;
-                        vert << YAML::Key << "Position";
-                        vert << YAML::BeginMap;
-                            //vert << YAML::Key << "X" << YAML::Value << vertex.Position.coordinates.x;
-                            //vert << YAML::Key << "Y" << YAML::Value << vertex.Position.coordinates.y;
-                           // vert << YAML::Key << "Z" << YAML::Value << vertex.Position.coordinates.z;
-                        vert << YAML::EndMap;
-                        vert << YAML::Key << "Normal";
-                        vert << YAML::BeginMap;
-                            //vert << YAML::Key << "X" << YAML::Value << vertex.Normal.coordinates.x;
-                           // vert << YAML::Key << "Y" << YAML::Value << vertex.Normal.coordinates.y;
-                            //vert << YAML::Key << "Z" << YAML::Value << vertex.Normal.coordinates.z;
-                        vert << YAML::EndMap;
-                        vert << YAML::Key << "Tangent";
-                        //vert << YAML::BeginMap;
-                        //    vert << YAML::Key << "X" << YAML::Value << vertex.Tangent.coordinates.x;
-                        //    vert << YAML::Key << "Y" << YAML::Value << vertex.Tangent.coordinates.y;
-                        //    vert << YAML::Key << "Z" << YAML::Value << vertex.Tangent.coordinates.z;
-                        //vert << YAML::EndMap;
-                        vert << YAML::Key << "Texture Coordinates";
-                        vert << YAML::BeginMap;
-                            //vert << YAML::Key << "X" << YAML::Value << vertex.TexCoords.coordinates.x;
-                            //vert << YAML::Key << "Y" << YAML::Value << vertex.TexCoords.coordinates.y;
-                        vert << YAML::EndMap;
+                        vert << YAML::Key << "X" << YAML::Value << vertex.coordinates.x;
+                        vert << YAML::Key << "Y" << YAML::Value << vertex.coordinates.y;
+                        vert << YAML::Key << "Z" << YAML::Value << vertex.coordinates.z;
                     vert << YAML::EndMap;
                 }
-            vert << YAML::EndSeq;*/
+                vert << YAML::EndSeq;
+
+                vert << YAML::Key << "Normals";
+                vert << YAML::BeginSeq;
+                for (auto vertex : this->vertices.Normals)
+                {
+                    vert << YAML::BeginMap;
+                        vert << YAML::Key << "X" << YAML::Value << vertex.coordinates.x;
+                        vert << YAML::Key << "Y" << YAML::Value << vertex.coordinates.y;
+                        vert << YAML::Key << "Z" << YAML::Value << vertex.coordinates.z;
+                    vert << YAML::EndMap;
+                }
+                vert << YAML::EndSeq;         
+
+                vert << YAML::Key << "Tangents";
+                vert << YAML::BeginSeq;
+                for (auto vertex : this->vertices.Tangents)
+                {
+                    vert << YAML::BeginMap;
+                        vert << YAML::Key << "X" << YAML::Value << vertex.coordinates.x;
+                        vert << YAML::Key << "Y" << YAML::Value << vertex.coordinates.y;
+                        vert << YAML::Key << "Z" << YAML::Value << vertex.coordinates.z;
+                    vert << YAML::EndMap;
+                }
+                vert << YAML::EndSeq; 
+
+                vert << YAML::Key << "Texture Coordinates";
+                vert << YAML::BeginSeq;
+                for (auto vertex : this->vertices.TexCoords)
+                {
+                    vert << YAML::BeginMap;
+                        vert << YAML::Key << "X" << YAML::Value << vertex.coordinates.x;
+                        vert << YAML::Key << "Y" << YAML::Value << vertex.coordinates.y;
+                    vert << YAML::EndMap;
+                }
+                vert << YAML::EndSeq;
+            vert << YAML::EndMap;
+
             vert << YAML::Key << "Indices";
             vert << YAML::BeginSeq;
                 for (auto idx : this->indices)
@@ -286,6 +306,7 @@ namespace Odysseus
                     out << YAML::Key << "Red" << YAML::Value << physicsMaterial.albedo.coordinates.x;
                     out << YAML::Key << "Green" << YAML::Value << physicsMaterial.albedo.coordinates.y;
                     out << YAML::Key << "Blue" << YAML::Value << physicsMaterial.albedo.coordinates.z;
+                    out << YAML::Key << "Alpha" << YAML::Value << physicsMaterial.albedo.coordinates.w;
                 out << YAML::EndMap;
                 out << YAML::Key << "Metallic" << YAML::Value << physicsMaterial.metallic;
                 out << YAML::Key << "Roughness" << YAML::Value << physicsMaterial.roughness;
@@ -359,17 +380,27 @@ namespace Odysseus
             return nullptr;
         }
 
-        /*auto verticesData = data["Vertices"];
-        for (auto v : verticesData)
-        {
-            Vertex deserializedVertex = {};
-            deserializedVertex.Position = Athena::Vector3(v["Position"]["X"].as<double>(), v["Position"]["Y"].as<double>(), v["Position"]["Z"].as<double>());
-            deserializedVertex.Normal = Athena::Vector3(v["Normal"]["X"].as<double>(), v["Normal"]["Y"].as<double>(), v["Normal"]["Z"].as<double>()).normalized();
-            deserializedVertex.Tangent = Athena::Vector3(v["Tangent"]["X"].as<double>(), v["Tangent"]["Y"].as<double>(), v["Tangent"]["Z"].as<double>());
-            deserializedVertex.TexCoords = Athena::Vector2(v["Texture Coordinates"]["X"].as<double>(), v["Texture Coordinates"]["Y"].as<double>());
+        auto verticesData = data["Vertices"];
+        auto positions = verticesData["Positions"];
+        auto normals = verticesData["Normals"];
+        auto tangents = verticesData["Tangents"];
+        auto texCoords = verticesData["Texture Coordinates"];
 
-            this->vertices.push_back(deserializedVertex);
-        }*/
+        Vertices deserializedVertices = Vertices();
+
+        for (auto v : positions)
+            deserializedVertices.Positions.push_back(Athena::Vector3(v["X"].as<float>(), v["Y"].as<float>(), v["Z"].as<float>()));
+
+        for (auto v : normals)
+            deserializedVertices.Normals.push_back(Athena::Vector3(v["X"].as<float>(), v["Y"].as<float>(), v["Z"].as<float>()).normalized());
+
+        for (auto v : tangents)
+            deserializedVertices.Tangents.push_back(Athena::Vector3(v["X"].as<float>(), v["Y"].as<float>(), v["Z"].as<float>()));
+
+        for (auto v : texCoords)
+            deserializedVertices.TexCoords.push_back(Athena::Vector2(v["X"].as<float>(), v["Y"].as<float>()));
+
+        this->vertices = deserializedVertices;
 
         auto indicesData = data["Indices"];
         for (auto i : indicesData)
