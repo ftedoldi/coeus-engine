@@ -414,7 +414,6 @@ namespace Odysseus
 
         this->_isPBR = component["Is PBR"].as<bool>();
 
-        // TODO: Deserializa materials
         if (this->_isPBR)
         {
             this->physicsMaterial = PhysicsMaterial();
