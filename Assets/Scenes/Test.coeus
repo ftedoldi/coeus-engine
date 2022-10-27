@@ -154,3 +154,74 @@ Scene Objects:
           Constant: 1
           Linear: 0.0900000036
           Quadratic: 0.0320000015
+  - Scene Object ID: 933523258472564974
+    Transform:
+      Name: Scene Object
+      Position:
+        X: 0
+        Y: 0
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+      Children Scene Objects:
+        - 7091281916194742909
+  - Scene Object ID: 7091281916194742909
+    Transform:
+      Name: Scene Object
+      Position:
+        X: 0
+        Y: 0
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+      Parent Scene Object: 933523258472564974
+    Components:
+      - Component: Mesh
+        Mesh:
+          Vertices Path: ./Assets/Scenes/Meshes/7091281916194742909.meta
+          Is PBR: true
+          Albedo:
+            Red: 0
+            Green: 0
+            Blue: 0
+            Alpha: 0
+          Metallic: 0.0500000007
+          Roughness: 0.300000012
+          Ambient Occlusion: 0
+          PBR Textures:
+            - Directory: C:\Users\david\OneDrive\Desktop\Workspaces\C++\coeus-engine\Assets\Models\!sferamattoni
+              Path: dirty-red-bricks_albedo.png
+              Type: 1
+            - Directory: C:\Users\david\OneDrive\Desktop\Workspaces\C++\coeus-engine\Assets\Models\!sferamattoni
+              Path: dirty-red-bricks_normal-ogl.png
+              Type: 6
+            - Directory: C:\Users\david\OneDrive\Desktop\Workspaces\C++\coeus-engine\Assets\Models\!sferamattoni
+              Path: dirty-red-bricks_metallic.png
+              Type: 15
+            - Directory: C:\Users\david\OneDrive\Desktop\Workspaces\C++\coeus-engine\Assets\Models\!sferamattoni
+              Path: dirty-red-bricks_roughness.png
+              Type: 16
+          Vertex Shader Path: .\Shader\PBRshader.vert
+          Fragment Shader Path: .\Shader\PBRTextureShader.frag
