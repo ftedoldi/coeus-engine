@@ -203,13 +203,13 @@ Scene Objects:
           Vertices Path: ./Assets/Scenes/Meshes/7091281916194742909.meta
           Is PBR: true
           Albedo:
-            Red: 0
-            Green: 0
-            Blue: 0
-            Alpha: 0
-          Metallic: 0.0500000007
-          Roughness: 0.300000012
-          Ambient Occlusion: 0
+            Red: 0.100000001
+            Green: 0.100000001
+            Blue: 0.100000001
+            Alpha: 1.5554413e-43
+          Metallic: 0.100000001
+          Roughness: 0.100000001
+          Ambient Occlusion: 1
           PBR Textures:
             - Directory: C:\Users\david\OneDrive\Desktop\Workspaces\C++\coeus-engine\Assets\Models\!sferamattoni
               Path: dirty-red-bricks_albedo.png
