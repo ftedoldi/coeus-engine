@@ -296,7 +296,7 @@ namespace System::Buffers
         }
 
         if (fbSize.width == this->frameBufferSize.width && fbSize.height == this->frameBufferSize.height)
-            cudaInterop->applyFilterOverTexture(_frameBufferSize.width, _frameBufferSize.height, CUDA::Interop::ScreenSpaceFilters::BLUR);
+            cudaInterop->applyFilterOverTexture(_frameBufferSize.width, _frameBufferSize.height, CUDA::Interop::ScreenSpaceFilters::NONE);
         else
             fbSize = this->_frameBufferSize;
     }
