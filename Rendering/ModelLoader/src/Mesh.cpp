@@ -37,12 +37,33 @@ namespace Odysseus
     void Mesh::start()
     {
         this->setupMesh();
+        
+        System::Picking::PickableObject::insertPickableObject(this->_uniqueFloatID, this->sceneObject);
 
+       this->updateMeshComponent();
+    }
+
+    void Mesh::update()
+    {
+        this->updateMeshComponent();
+        
+        // draw mesh
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, static_cast<GLuint>(this->indices.size()), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+        glUseProgram(0);
+
+        // set everything back to default
+        glActiveTexture(GL_TEXTURE0);
+    }
+
+    void Mesh::updateMeshComponent()
+    {
         this->shader->use();
 
-        if(this->_isPBR)
+        if (this->_isPBR)
         {
-            if(this->physicsMaterial.PBR_textures.size() > 0)
+            if (this->physicsMaterial.PBR_textures.size() > 0)
             {
                 physicsMaterial.loadShaderTexture(this->shader);
             }
@@ -53,63 +74,7 @@ namespace Odysseus
         }
         else
         {
-            if(this->phongMaterial.Textures.size() > 0)
-            {
-                phongMaterial.loadShaderTexture(this->shader);
-            }
-            else
-            {
-                phongMaterial.loadShaderMaterial(this->shader);
-            }
-        }
-        
-        LightInfo::computeLighting(this->shader);
-
-        System::Picking::PickableObject::insertPickableObject(this->_uniqueFloatID, this->sceneObject);
-
-        auto worldPosition = Transform::GetWorldTransform(this->transform, this->transform);
-        auto tmp = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->getViewTransform(worldPosition);
-
-        this->shader->setVec3("viewPos", Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->transform->position);
-        this->shader->setVec3("WorldPosition", worldPosition->position);
-        this->shader->setVec4("WorldRotation", worldPosition->rotation.asVector4());
-        this->shader->setVec3("WorldScale", worldPosition->localScale);
-
-        this->shader->setVec3("position", tmp->position);
-        this->shader->setVec4("rotation", tmp->rotation.asVector4());
-        this->shader->setVec3("scale", tmp->localScale);
-
-        this->shader->setFloat("ID", this->_uniqueFloatID);
-
-        Athena::Matrix4 projection = Odysseus::EditorCamera::perspective(
-                                                                    45.0f, 
-                                                                    System::Window::sceneFrameBuffer->frameBufferSize.width / System::Window::sceneFrameBuffer->frameBufferSize.height, 
-                                                                    0.1f, 
-                                                                    100.0f
-                                                                );
-        projection.data[0] = projection.data[0] / (System::Window::sceneFrameBuffer->frameBufferSize.width / (float)System::Window::sceneFrameBuffer->frameBufferSize.height);
-        projection.data[5] = projection.data[0];
-
-        this->shader->setMat4("projection", projection);
-    }
-
-    void Mesh::update()
-    {
-        this->shader->use();
-
-        if(this->_isPBR)
-        {
-            if(this->physicsMaterial.PBR_textures.size() > 0)
-            {
-                physicsMaterial.loadShaderTexture(this->shader);
-            }
-            else
-            {
-                physicsMaterial.loadShaderMaterial(this->shader);
-            }
-        }else
-        {
-            if(this->phongMaterial.Textures.size() > 0)
+            if (this->phongMaterial.Textures.size() > 0)
             {
                 phongMaterial.loadShaderTexture(this->shader);
             }
@@ -135,30 +100,20 @@ namespace Odysseus
         this->shader->setVec4("rotation", tmp->rotation.asVector4());
         this->shader->setVec3("scale", tmp->localScale);
 
-        //TODO: Swap uniform set with attribute set -> ID is more an attribute than a Uniform variable
-        //TODO: Find a way to pass the UUID instead of this useless value
+        // TODO: Swap uniform set with attribute set -> ID is more an attribute than a Uniform variable
+        // TODO: Find a way to pass the UUID instead of this useless value
         this->shader->setFloat("ID", this->_uniqueFloatID);
 
-        //TODO: call this inside framebuffer callback to avoid creating a perspective even if not needed
+        // TODO: call this inside framebuffer callback to avoid creating a perspective even if not needed
         Athena::Matrix4 projection = Odysseus::EditorCamera::perspective(
-                                                                    45.0f, 
-                                                                    System::Window::sceneFrameBuffer->frameBufferSize.width / System::Window::sceneFrameBuffer->frameBufferSize.height, 
-                                                                    0.1f, 
-                                                                    100.0f
-                                                                );
+            45.0f,
+            System::Window::sceneFrameBuffer->frameBufferSize.width / System::Window::sceneFrameBuffer->frameBufferSize.height,
+            0.1f,
+            100.0f);
         projection.data[0] = projection.data[0] / (System::Window::sceneFrameBuffer->frameBufferSize.width / (float)System::Window::sceneFrameBuffer->frameBufferSize.height);
         projection.data[5] = projection.data[0];
 
         this->shader->setMat4("projection", projection);
-        
-        // draw mesh
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, static_cast<GLuint>(this->indices.size()), GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
-        glUseProgram(0);
-
-        // set everything back to default
-        glActiveTexture(GL_TEXTURE0);
     }
 
     void Mesh::setOrderOfExecution(const short& newOrderOfExecution)
@@ -228,39 +183,59 @@ namespace Odysseus
     {
         YAML::Emitter vert;
 
-        /*vert << YAML::BeginMap;
+        vert << YAML::BeginMap;
             vert << YAML::Key << "Scene Object" << YAML::Value << this->sceneObject->ID;
             vert << YAML::Key << "Vertices";
-            vert << YAML::BeginSeq;
-                for (auto vertex : this->vertices)
+            vert << YAML::BeginMap;
+
+                vert << YAML::Key << "Positions";
+                vert << YAML::BeginSeq;
+                for (auto vertex : this->vertices.Positions)
                 {
                     vert << YAML::BeginMap;
-                        vert << YAML::Key << "Position";
-                        vert << YAML::BeginMap;
-                            //vert << YAML::Key << "X" << YAML::Value << vertex.Position.coordinates.x;
-                            //vert << YAML::Key << "Y" << YAML::Value << vertex.Position.coordinates.y;
-                           // vert << YAML::Key << "Z" << YAML::Value << vertex.Position.coordinates.z;
-                        vert << YAML::EndMap;
-                        vert << YAML::Key << "Normal";
-                        vert << YAML::BeginMap;
-                            //vert << YAML::Key << "X" << YAML::Value << vertex.Normal.coordinates.x;
-                           // vert << YAML::Key << "Y" << YAML::Value << vertex.Normal.coordinates.y;
-                            //vert << YAML::Key << "Z" << YAML::Value << vertex.Normal.coordinates.z;
-                        vert << YAML::EndMap;
-                        vert << YAML::Key << "Tangent";
-                        //vert << YAML::BeginMap;
-                        //    vert << YAML::Key << "X" << YAML::Value << vertex.Tangent.coordinates.x;
-                        //    vert << YAML::Key << "Y" << YAML::Value << vertex.Tangent.coordinates.y;
-                        //    vert << YAML::Key << "Z" << YAML::Value << vertex.Tangent.coordinates.z;
-                        //vert << YAML::EndMap;
-                        vert << YAML::Key << "Texture Coordinates";
-                        vert << YAML::BeginMap;
-                            //vert << YAML::Key << "X" << YAML::Value << vertex.TexCoords.coordinates.x;
-                            //vert << YAML::Key << "Y" << YAML::Value << vertex.TexCoords.coordinates.y;
-                        vert << YAML::EndMap;
+                        vert << YAML::Key << "X" << YAML::Value << vertex.coordinates.x;
+                        vert << YAML::Key << "Y" << YAML::Value << vertex.coordinates.y;
+                        vert << YAML::Key << "Z" << YAML::Value << vertex.coordinates.z;
                     vert << YAML::EndMap;
                 }
-            vert << YAML::EndSeq;*/
+                vert << YAML::EndSeq;
+
+                vert << YAML::Key << "Normals";
+                vert << YAML::BeginSeq;
+                for (auto vertex : this->vertices.Normals)
+                {
+                    vert << YAML::BeginMap;
+                        vert << YAML::Key << "X" << YAML::Value << vertex.coordinates.x;
+                        vert << YAML::Key << "Y" << YAML::Value << vertex.coordinates.y;
+                        vert << YAML::Key << "Z" << YAML::Value << vertex.coordinates.z;
+                    vert << YAML::EndMap;
+                }
+                vert << YAML::EndSeq;         
+
+                vert << YAML::Key << "Tangents";
+                vert << YAML::BeginSeq;
+                for (auto vertex : this->vertices.Tangents)
+                {
+                    vert << YAML::BeginMap;
+                        vert << YAML::Key << "X" << YAML::Value << vertex.coordinates.x;
+                        vert << YAML::Key << "Y" << YAML::Value << vertex.coordinates.y;
+                        vert << YAML::Key << "Z" << YAML::Value << vertex.coordinates.z;
+                    vert << YAML::EndMap;
+                }
+                vert << YAML::EndSeq; 
+
+                vert << YAML::Key << "Texture Coordinates";
+                vert << YAML::BeginSeq;
+                for (auto vertex : this->vertices.TexCoords)
+                {
+                    vert << YAML::BeginMap;
+                        vert << YAML::Key << "X" << YAML::Value << vertex.coordinates.x;
+                        vert << YAML::Key << "Y" << YAML::Value << vertex.coordinates.y;
+                    vert << YAML::EndMap;
+                }
+                vert << YAML::EndSeq;
+            vert << YAML::EndMap;
+
             vert << YAML::Key << "Indices";
             vert << YAML::BeginSeq;
                 for (auto idx : this->indices)
@@ -288,6 +263,7 @@ namespace Odysseus
                     out << YAML::Key << "Red" << YAML::Value << physicsMaterial.albedo.coordinates.x;
                     out << YAML::Key << "Green" << YAML::Value << physicsMaterial.albedo.coordinates.y;
                     out << YAML::Key << "Blue" << YAML::Value << physicsMaterial.albedo.coordinates.z;
+                    out << YAML::Key << "Alpha" << YAML::Value << physicsMaterial.albedo.coordinates.w;
                 out << YAML::EndMap;
                 out << YAML::Key << "Metallic" << YAML::Value << physicsMaterial.metallic;
                 out << YAML::Key << "Roughness" << YAML::Value << physicsMaterial.roughness;
@@ -361,17 +337,27 @@ namespace Odysseus
             return nullptr;
         }
 
-        /*auto verticesData = data["Vertices"];
-        for (auto v : verticesData)
-        {
-            Vertex deserializedVertex = {};
-            deserializedVertex.Position = Athena::Vector3(v["Position"]["X"].as<double>(), v["Position"]["Y"].as<double>(), v["Position"]["Z"].as<double>());
-            deserializedVertex.Normal = Athena::Vector3(v["Normal"]["X"].as<double>(), v["Normal"]["Y"].as<double>(), v["Normal"]["Z"].as<double>()).normalized();
-            deserializedVertex.Tangent = Athena::Vector3(v["Tangent"]["X"].as<double>(), v["Tangent"]["Y"].as<double>(), v["Tangent"]["Z"].as<double>());
-            deserializedVertex.TexCoords = Athena::Vector2(v["Texture Coordinates"]["X"].as<double>(), v["Texture Coordinates"]["Y"].as<double>());
+        auto verticesData = data["Vertices"];
+        auto positions = verticesData["Positions"];
+        auto normals = verticesData["Normals"];
+        auto tangents = verticesData["Tangents"];
+        auto texCoords = verticesData["Texture Coordinates"];
 
-            this->vertices.push_back(deserializedVertex);
-        }*/
+        Vertices deserializedVertices = Vertices();
+
+        for (auto v : positions)
+            deserializedVertices.Positions.push_back(Athena::Vector3(v["X"].as<float>(), v["Y"].as<float>(), v["Z"].as<float>()));
+
+        for (auto v : normals)
+            deserializedVertices.Normals.push_back(Athena::Vector3(v["X"].as<float>(), v["Y"].as<float>(), v["Z"].as<float>()).normalized());
+
+        for (auto v : tangents)
+            deserializedVertices.Tangents.push_back(Athena::Vector3(v["X"].as<float>(), v["Y"].as<float>(), v["Z"].as<float>()));
+
+        for (auto v : texCoords)
+            deserializedVertices.TexCoords.push_back(Athena::Vector2(v["X"].as<float>(), v["Y"].as<float>()));
+
+        this->vertices = deserializedVertices;
 
         auto indicesData = data["Indices"];
         for (auto i : indicesData)
@@ -385,7 +371,6 @@ namespace Odysseus
 
         this->_isPBR = component["Is PBR"].as<bool>();
 
-        // TODO: Deserializa materials
         if (this->_isPBR)
         {
             this->physicsMaterial = PhysicsMaterial();

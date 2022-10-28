@@ -65,8 +65,7 @@ namespace EditorLayer
 #pragma warning(push)
 #pragma warning(disable : 4312)
         ImGui::Image(
-            // (ImTextureID)System::Window::sceneFrameBuffer->postProcessedTexture,
-            (ImTextureID)System::Window::sceneFrameBuffer->texturesID[0],
+            (ImTextureID)System::Window::sceneFrameBuffer->postProcessedTexture,
             {(float)System::Window::sceneFrameBuffer->frameBufferSize.width,
              (float)System::Window::sceneFrameBuffer->frameBufferSize.height},
             ImVec2(0, 1),
