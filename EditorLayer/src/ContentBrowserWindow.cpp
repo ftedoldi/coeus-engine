@@ -272,7 +272,9 @@ namespace EditorLayer
                     else
                         currentPath = "";
                 }
-                else if (lowercaseFilenameString.find(".obj") != std::string::npos || lowercaseFilenameString.find(".fbx") != std::string::npos || lowercaseFilenameString.find(".gltf") != std::string::npos)
+                else if (lowercaseFilenameString.find(".obj")  != std::string::npos ||
+                         lowercaseFilenameString.find(".fbx")  != std::string::npos ||
+                         lowercaseFilenameString.find(".gltf") != std::string::npos)
                 {
 #pragma warning(push)
 #pragma warning(disable : 4312)
