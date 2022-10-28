@@ -102,7 +102,11 @@ namespace EditorLayer
             else if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("MODEL_FILE"))
             {
                 const char *pathToLoad = static_cast<const char *>(payload->Data);
-                Odysseus::Model myModel(pathToLoad, Odysseus::Cubemap::currentCubemap->PBRTextureShader, Odysseus::Cubemap::currentCubemap->PBRMaterialShader, true);
+
+                std::string objectType = pathToLoad;
+                objectType = objectType.substr(objectType.find_last_of(".") + 1);
+
+                Odysseus::Model myModel(pathToLoad, Odysseus::Cubemap::currentCubemap->PBRTextureShader, Odysseus::Cubemap::currentCubemap->PBRMaterialShader, true, objectType);
                 Odysseus::SceneManager::initializeActiveScene();
             }
 
