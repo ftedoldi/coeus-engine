@@ -119,6 +119,8 @@ namespace Odysseus
             }
         }
 
+        MoveVertices(cuda_vbo_resource, vertices.Positions.size(), glfwGetTime()/100.0);
+
         LightInfo::computeLighting(this->shader);
 
         auto worldPosition = Transform::GetWorldTransform(this->transform, this->transform);
@@ -481,13 +483,12 @@ namespace Odysseus
     Mesh::~Mesh() noexcept
     {
         Mesh::freeGPUresources();
+        cudaInterop->deleteCUDABufferResource(cuda_vbo_resource);
     }
 
     void Mesh::setupMesh()
     {
         cudaInterop = new CUDA::Interop::CUDAInteroperationManager();
-        cudaGraphicsResource *cuda_vbo_resource;
-        cudaGraphicsResource *cuda_ebo_resource;
 
         //creating buffers
         glGenVertexArrays(1, &VAO);
@@ -510,9 +511,9 @@ namespace Odysseus
         glBufferSubData(GL_ARRAY_BUFFER, positionSize + normalSize + texCoordsSize, tangentSize, &vertices.Tangents[0]);
 
         //register VBO on CUDA and call CUDA methods to process vertices
-        /*cudaInterop->createCUDABufferResource(cuda_vbo_resource, VBO, cudaGraphicsMapFlagsNone);
-        MoveVertices(cuda_vbo_resource, vertices.Positions.size());
-        cudaInterop->deleteCUDABufferResource(cuda_vbo_resource);*/
+        cudaInterop->createCUDABufferResource(cuda_vbo_resource, VBO, cudaGraphicsMapFlagsNone);
+        //MoveVertices(cuda_vbo_resource, vertices.Positions.size());
+        //cudaInterop->deleteCUDABufferResource(cuda_vbo_resource);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), 

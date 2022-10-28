@@ -14,6 +14,7 @@
 
 #include <PickableObject.hpp>
 #include <RigidPhysicsEngine.hpp>
+#include <CUDAInteroperationManager.hpp>
 
 #include <vector>
 #include <random>
@@ -69,6 +70,7 @@ namespace Odysseus
         PhongMaterial phongMaterial;
         PhysicsMaterial physicsMaterial;
         CUDA::Interop::CUDAInteroperationManager* cudaInterop;
+        cudaGraphicsResource *cuda_vbo_resource;
 
         std::string path;
 
