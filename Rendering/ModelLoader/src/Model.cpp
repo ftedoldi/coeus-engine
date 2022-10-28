@@ -5,7 +5,8 @@
 namespace Odysseus
 {
 
-    Model::Model(const std::string& path, Shader* textureShader, Shader* materialShader, bool isPBR) : textureShader(textureShader), materialShader(materialShader)
+    Model::Model(const std::string& path, Shader* textureShader, Shader* materialShader, bool isPBR, const std::string& objectType) :
+            textureShader(textureShader), materialShader(materialShader), objectType(objectType)
     {
         this->_isPBR = isPBR;
         loadModel(path);
@@ -28,43 +29,60 @@ namespace Odysseus
         auto name = path.substr(path.find_last_of('\\') + 1);
         name = name.substr(0, name.find_last_of('.'));
 
-        processNode(scene->mRootNode, scene);
+        processNode(scene->mRootNode, scene, name);
+    }
+
+    void Model::processMeshNode(aiNode* node, const aiScene* scene, Transform* parent)
+    {
+        if(node->mNumMeshes != 0)
+        {
+            Odysseus::SceneObject* obj = new SceneObject();
+            objectsCreated.push_back(obj);
+
+            for(GLuint i = 0; i < node->mNumMeshes; ++i)
+            {
+                obj->transform->name = "Mesh";
+                Athena::Vector3 scale;
+                Athena::Vector3 position;
+                Athena::Quaternion rotation;
+                if(node->mParent != nullptr)
+                {
+                    //local transformation matrix of the node
+                    aiMatrix4x4 transform =  node->mTransformation;
+                    
+                    Athena::Matrix4 AthenaTransform((Athena::Scalar)transform.a1, (Athena::Scalar)transform.a2, (Athena::Scalar)transform.a3, (Athena::Scalar)transform.d1,
+                                                    (Athena::Scalar)transform.b1, (Athena::Scalar)transform.b2, (Athena::Scalar)transform.b3, (Athena::Scalar)transform.d2,
+                                                    (Athena::Scalar)transform.c1, (Athena::Scalar)transform.c2, (Athena::Scalar)transform.c3, (Athena::Scalar)transform.d3,
+                                                    (Athena::Scalar)transform.a4, (Athena::Scalar)transform.b4, (Athena::Scalar)transform.c4, (Athena::Scalar)transform.d4);
+                    
+                    Athena::Matrix4::DecomposeMatrixInScaleRotateTranslateComponents(AthenaTransform, scale, rotation, position);
+                }
+                aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+                
+                processMesh(mesh, scene, obj, position, scale, rotation);
+            }
+
+            obj->transform->parent = parent;
+            if (parent != nullptr)
+                parent->children.push_back(obj->transform);
+        }
+        
+        for(GLuint i = 0; i < node->mNumChildren; ++i)
+        {
+            processMeshNode(node->mChildren[i], scene, nullptr);
+        }
     }
 
     //process a node recursively and for each node processed, process his meshes
-    void Model::processNode(aiNode* node, const aiScene* scene, Transform* parent)
+    void Model::processNode(aiNode* node, const aiScene* scene, const std::string& name, Transform* parent)
     {
-        Odysseus::SceneObject* obj = new SceneObject();
-        objectsCreated.push_back(obj);
-
-        for(GLuint i = 0; i < node->mNumMeshes; ++i)
+        if(node == scene->mRootNode)
         {
-            Athena::Vector3 position;
-            if(node->mParent != nullptr)
+            Odysseus::SceneObject* obj = new SceneObject(name);
+            for(GLuint i = 0; i < node->mNumChildren; ++i)
             {
-                //local transformation matrix of the node
-                aiMatrix4x4 transform =  node->mTransformation;
-                position = Athena::Vector3((float)transform.a4, (float)transform.b4, (float)transform.c4);
+                processMeshNode(node->mChildren[i], scene, obj->transform);
             }
-            aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            
-            processMesh(mesh, scene, obj, position);
-        }
-
-        obj->transform->parent = parent;
-        if (parent != nullptr)
-            parent->children.push_back(obj->transform);
-
-        // for(GLuint i = 0; i < node->mNumMeshes; ++i)
-        // {
-        //     Odysseus::SceneObject* obj = new SceneObject();
-        //     aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        //     processMesh(mesh, scene, obj);
-        // }
-
-        for(GLuint i = 0; i < node->mNumChildren; ++i)
-        {
-            processNode(node->mChildren[i], scene, obj->transform);
         }
     }
 
@@ -116,7 +134,6 @@ namespace Odysseus
         if(material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
         {
             std::cout << "Has texture albedo" << std::endl;
-            mat.hasAlbedoTexture = true;
             this->_gammaCorrect = true;
             std::vector<Texture2D> albedoMap = loadTexture(material, aiTextureType_DIFFUSE, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), albedoMap.begin(), albedoMap.end());
@@ -140,7 +157,6 @@ namespace Odysseus
 
         if(material->GetTextureCount(aiTextureType_METALNESS) > 0)
         {
-            mat.hasMetallicTexture = true;
             std::cout << "Has texture metallic" << std::endl;
             this->_gammaCorrect = false;
             std::vector<Texture2D> metalnessMap = loadTexture(material, aiTextureType_METALNESS, this->_gammaCorrect);
@@ -158,7 +174,6 @@ namespace Odysseus
 
         if(material->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS) > 0)
         {
-            mat.hasRoughnessTexture = true;
             std::cout << "Has texture roughness" << std::endl;
             this->_gammaCorrect = false;
             std::vector<Texture2D> roughnessMap = loadTexture(material, aiTextureType_DIFFUSE_ROUGHNESS, this->_gammaCorrect);
@@ -183,26 +198,41 @@ namespace Odysseus
         }
     }
     
-    void Model::processMesh(aiMesh *mesh, const aiScene *scene, SceneObject* obj, Athena::Vector3& position)
+    void Model::processMesh(aiMesh *mesh, const aiScene *scene, SceneObject* obj, Athena::Vector3& position, Athena::Vector3& scale, Athena::Quaternion& rotation)
     {
         // data to fill
         Vertices vertices;
         std::vector<GLuint> indices;
-        //Athena::Vector3 avg;
+        Athena::Vector3 avg;
+
+        if(objectType == "obj")
+        {
+            for(GLuint i = 0; i < mesh->mNumVertices; ++i)
+            {
+                avg.coordinates.x += mesh->mVertices[i].x;
+                avg.coordinates.y += mesh->mVertices[i].y;
+                avg.coordinates.z += mesh->mVertices[i].z;
+            }
+        }
 
         // walk through each of the mesh's vertices
         for(GLuint i = 0; i < mesh->mNumVertices; ++i)
         {
             Athena::Vector3 vector;
+            if(objectType == "obj")
+            {
+                // positions
+                vector.coordinates.x = mesh->mVertices[i].x - (avg.coordinates.x / mesh->mNumVertices);
+                vector.coordinates.y = mesh->mVertices[i].y - (avg.coordinates.y / mesh->mNumVertices);
+                vector.coordinates.z = mesh->mVertices[i].z - (avg.coordinates.z / mesh->mNumVertices);
+            }
+            else
+            {
             // positions
             vector.coordinates.x = mesh->mVertices[i].x;
             vector.coordinates.y = mesh->mVertices[i].y;
             vector.coordinates.z = mesh->mVertices[i].z;
-                
-            //Get average vertex position
-            //avg.coordinates.x += mesh->mVertices[i].x;
-            //avg.coordinates.y += mesh->mVertices[i].y;
-            //avg.coordinates.z += mesh->mVertices[i].z;
+            }
             vertices.Positions.push_back(vector);
             // normals
             if (mesh->HasNormals())
@@ -239,28 +269,36 @@ namespace Odysseus
                 indices.push_back(face.mIndices[j]);        
         } 
 
-        //in the shaders, each texture must be named as 'texturetypeN' where N is a number ranging from 1 to the maximum number of the type of texture considered
-        //and texturetype is the type of the texture e.g. diffuse, specular
-        //for example, multiple diffuse textures will be written as diffuse1, diffuse2, diffuse3, ecc.
-
         //process materials
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
         auto objMesh = obj->addComponent<Odysseus::Mesh>();
 
+        if(objectType == "gltf")
+        {
         //GLTF positions
-        //objMesh->transform->position.coordinates.x = position.coordinates.x;
-        //objMesh->transform->position.coordinates.y = position.coordinates.y;
-        //objMesh->transform->position.coordinates.z = position.coordinates.z;
+            objMesh->transform->position = position;
+            objMesh->transform->rotation = rotation.inverse();
+            objMesh->transform->localScale = scale;
+        }
 
+        if(objectType == "fbx")
+        {
         //FBX positions
-        //objMesh->transform->position.coordinates.x = position.coordinates.x / 100;
-        //objMesh->transform->position.coordinates.y = position.coordinates.y / 100;
-        //objMesh->transform->position.coordinates.z = position.coordinates.z / 100;
+            objMesh->transform->position.coordinates.x = position.coordinates.x / 100;
+            objMesh->transform->position.coordinates.y = position.coordinates.y / 100;
+            objMesh->transform->position.coordinates.z = position.coordinates.z / 100;
+            objMesh->transform->rotation = rotation;
+            objMesh->transform->localScale = scale / 100;
+        }
 
+        if(objectType == "obj")
+        {
         //OBJ positions
-        //objMesh->transform->position.coordinates.x = avg.coordinates.x / mesh->mNumVertices;
-        //objMesh->transform->position.coordinates.y = avg.coordinates.y / mesh->mNumVertices;
-        //objMesh->transform->position.coordinates.z = avg.coordinates.z / mesh->mNumVertices;
+        objMesh->transform->position.coordinates.x = avg.coordinates.x / mesh->mNumVertices;
+        objMesh->transform->position.coordinates.y = avg.coordinates.y / mesh->mNumVertices;
+        objMesh->transform->position.coordinates.z = avg.coordinates.z / mesh->mNumVertices;
+        }
+        
         objMesh->setVertices(vertices);
         objMesh->setIndices(indices);
         objMesh->setIfPBR(_isPBR);

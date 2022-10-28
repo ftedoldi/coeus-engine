@@ -12,6 +12,7 @@
 
 #include "Mesh.hpp"
 #include "../Texture/Texture2D.hpp"
+#include <filesystem>
 
 namespace Odysseus
 {
@@ -23,6 +24,7 @@ namespace Odysseus
         std::vector<Texture2D> textures_loaded;
         std::vector<Mesh> meshes;
         std::string directory;
+        std::string objectType;
         Odysseus::Shader* textureShader;
         Odysseus::Shader* materialShader;
 
@@ -35,7 +37,7 @@ namespace Odysseus
         Model(Model&& model) = default;
 
         //Creating a default constructor
-        Model(const std::string& path, Shader* textureShader, Shader* materialShader, bool isPBR);
+        Model(const std::string& path, Shader* textureShader, Shader* materialShader, bool isPBR, const std::string& objectType);
 
     private:
 
@@ -48,8 +50,9 @@ namespace Odysseus
         void setMeshMaterials(aiMaterial* material, PhongMaterial& mat);
 
         void setMeshPBRtextures(aiMaterial* material, PhysicsMaterial& mat);
-        void processMesh(aiMesh* mesh, const aiScene* scene, SceneObject* sceneObject, Athena::Vector3& transform);
-        void processNode(aiNode* node, const aiScene* scene, Transform* parent=nullptr);
+        void processMesh(aiMesh* mesh, const aiScene* scene, SceneObject* sceneObject, Athena::Vector3& position, Athena::Vector3& scale, Athena::Quaternion& rotation);
+        void processNode(aiNode* node, const aiScene* scene, const std::string& name, Transform* parent=nullptr);
+        void processMeshNode(aiNode* node, const aiScene* scene, Transform* parent);
         void processTransformations(aiNode* node, aiMatrix4x4& transformation); 
 
     };
