@@ -37,12 +37,33 @@ namespace Odysseus
     void Mesh::start()
     {
         this->setupMesh();
+        
+        System::Picking::PickableObject::insertPickableObject(this->_uniqueFloatID, this->sceneObject);
 
+       this->updateMeshComponent();
+    }
+
+    void Mesh::update()
+    {
+        this->updateMeshComponent();
+        
+        // draw mesh
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, static_cast<GLuint>(this->indices.size()), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+        glUseProgram(0);
+
+        // set everything back to default
+        glActiveTexture(GL_TEXTURE0);
+    }
+
+    void Mesh::updateMeshComponent()
+    {
         this->shader->use();
 
-        if(this->_isPBR)
+        if (this->_isPBR)
         {
-            if(this->physicsMaterial.PBR_textures.size() > 0)
+            if (this->physicsMaterial.PBR_textures.size() > 0)
             {
                 physicsMaterial.loadShaderTexture(this->shader);
             }
@@ -53,63 +74,7 @@ namespace Odysseus
         }
         else
         {
-            if(this->phongMaterial.Textures.size() > 0)
-            {
-                phongMaterial.loadShaderTexture(this->shader);
-            }
-            else
-            {
-                phongMaterial.loadShaderMaterial(this->shader);
-            }
-        }
-        
-        LightInfo::computeLighting(this->shader);
-
-        System::Picking::PickableObject::insertPickableObject(this->_uniqueFloatID, this->sceneObject);
-
-        auto worldPosition = Transform::GetWorldTransform(this->transform, this->transform);
-        auto tmp = Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->getViewTransform(worldPosition);
-
-        this->shader->setVec3("viewPos", Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->transform->position);
-        this->shader->setVec3("WorldPosition", worldPosition->position);
-        this->shader->setVec4("WorldRotation", worldPosition->rotation.asVector4());
-        this->shader->setVec3("WorldScale", worldPosition->localScale);
-
-        this->shader->setVec3("position", tmp->position);
-        this->shader->setVec4("rotation", tmp->rotation.asVector4());
-        this->shader->setVec3("scale", tmp->localScale);
-
-        this->shader->setFloat("ID", this->_uniqueFloatID);
-
-        Athena::Matrix4 projection = Odysseus::EditorCamera::perspective(
-                                                                    45.0f, 
-                                                                    System::Window::sceneFrameBuffer->frameBufferSize.width / System::Window::sceneFrameBuffer->frameBufferSize.height, 
-                                                                    0.1f, 
-                                                                    100.0f
-                                                                );
-        projection.data[0] = projection.data[0] / (System::Window::sceneFrameBuffer->frameBufferSize.width / (float)System::Window::sceneFrameBuffer->frameBufferSize.height);
-        projection.data[5] = projection.data[0];
-
-        this->shader->setMat4("projection", projection);
-    }
-
-    void Mesh::update()
-    {
-        this->shader->use();
-
-        if(this->_isPBR)
-        {
-            if(this->physicsMaterial.PBR_textures.size() > 0)
-            {
-                physicsMaterial.loadShaderTexture(this->shader);
-            }
-            else
-            {
-                physicsMaterial.loadShaderMaterial(this->shader);
-            }
-        }else
-        {
-            if(this->phongMaterial.Textures.size() > 0)
+            if (this->phongMaterial.Textures.size() > 0)
             {
                 phongMaterial.loadShaderTexture(this->shader);
             }
@@ -133,30 +98,20 @@ namespace Odysseus
         this->shader->setVec4("rotation", tmp->rotation.asVector4());
         this->shader->setVec3("scale", tmp->localScale);
 
-        //TODO: Swap uniform set with attribute set -> ID is more an attribute than a Uniform variable
-        //TODO: Find a way to pass the UUID instead of this useless value
+        // TODO: Swap uniform set with attribute set -> ID is more an attribute than a Uniform variable
+        // TODO: Find a way to pass the UUID instead of this useless value
         this->shader->setFloat("ID", this->_uniqueFloatID);
 
-        //TODO: call this inside framebuffer callback to avoid creating a perspective even if not needed
+        // TODO: call this inside framebuffer callback to avoid creating a perspective even if not needed
         Athena::Matrix4 projection = Odysseus::EditorCamera::perspective(
-                                                                    45.0f, 
-                                                                    System::Window::sceneFrameBuffer->frameBufferSize.width / System::Window::sceneFrameBuffer->frameBufferSize.height, 
-                                                                    0.1f, 
-                                                                    100.0f
-                                                                );
+            45.0f,
+            System::Window::sceneFrameBuffer->frameBufferSize.width / System::Window::sceneFrameBuffer->frameBufferSize.height,
+            0.1f,
+            100.0f);
         projection.data[0] = projection.data[0] / (System::Window::sceneFrameBuffer->frameBufferSize.width / (float)System::Window::sceneFrameBuffer->frameBufferSize.height);
         projection.data[5] = projection.data[0];
 
         this->shader->setMat4("projection", projection);
-        
-        // draw mesh
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, static_cast<GLuint>(this->indices.size()), GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
-        glUseProgram(0);
-
-        // set everything back to default
-        glActiveTexture(GL_TEXTURE0);
     }
 
     void Mesh::setOrderOfExecution(const short& newOrderOfExecution)

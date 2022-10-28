@@ -63,46 +63,46 @@ namespace Odysseus
 
     class Mesh : public System::Component
     {
-    public:
-        Vertices vertices;
-        std::vector<GLuint> indices;
-        PhongMaterial phongMaterial;
-        PhysicsMaterial physicsMaterial;
-        CUDA::Interop::CUDAInteroperationManager* cudaInterop;
+        public:
+            Vertices vertices;
+            std::vector<GLuint> indices;
+            PhongMaterial phongMaterial;
+            PhysicsMaterial physicsMaterial;
+            CUDA::Interop::CUDAInteroperationManager* cudaInterop;
 
-        std::string path;
+            std::string path;
 
-        Shader *shader;
-        GLuint VAO;
+            Shader *shader;
+            GLuint VAO;
 
-        Mesh();
-        ~Mesh() noexcept;
+            Mesh();
+            ~Mesh() noexcept;
 
-        void setVertices(Vertices& vertices);
-        void setIndices(std::vector<GLuint> &indices);
-        void setPhongMaterial(PhongMaterial &mat);
-        void setPhysicsMaterial(PhysicsMaterial &mat);
-        void setShader(Shader *shader);
-        void setIfPBR(bool isPBR);
-        void setupRigidBody();
+            void setVertices(Vertices& vertices);
+            void setIndices(std::vector<GLuint> &indices);
+            void setPhongMaterial(PhongMaterial &mat);
+            void setPhysicsMaterial(PhysicsMaterial &mat);
+            void setShader(Shader *shader);
+            void setIfPBR(bool isPBR);
+            void setupRigidBody();
 
-        bool operator == (const Mesh& m) const;
+            bool operator == (const Mesh& m) const;
 
-        virtual void start();
-        virtual void update();
+            virtual void start();
+            virtual void update();
 
-        virtual void setOrderOfExecution(const short &newOrderOfExecution);
+            virtual void setOrderOfExecution(const short &newOrderOfExecution);
 
-        virtual int getUniqueID();
+            virtual int getUniqueID();
 
-        virtual std::string toString();
+            virtual std::string toString();
 
-        virtual void showComponentFieldsInEditor();
+            virtual void showComponentFieldsInEditor();
 
-        virtual void serialize(YAML::Emitter& out);
-        virtual System::Component* deserialize(YAML::Node& node);
+            virtual void serialize(YAML::Emitter& out);
+            virtual System::Component* deserialize(YAML::Node& node);
 
-        SERIALIZABLE_CLASS(System::Component);
+            SERIALIZABLE_CLASS(System::Component);
 
     private:
         GLuint VBO, EBO;
@@ -114,6 +114,7 @@ namespace Odysseus
 
         // Inizialize VAO, VBO, EBO
         void setupMesh();
+        void updateMeshComponent();
 
         void freeGPUresources();
     };
