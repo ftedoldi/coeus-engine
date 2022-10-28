@@ -27,7 +27,12 @@ namespace Odysseus
 
     void PhysicsMaterial::loadShaderTexture(Odysseus::Shader* textureShader)
     {
+        textureShader->setVec4("material.albedoColor", this->albedo);
+        textureShader->setFloat("material.metallicColor", this->metallic);
+        textureShader->setFloat("material.roughnessColor", this->roughness);
+
         textureShader->setBool("hasNormalMap", false);
+        
         for(GLuint i = 0; i < this->PBR_textures.size(); ++i)
         {
             //activate texture
