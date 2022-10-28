@@ -4,17 +4,18 @@
 
 #include <stdio.h>
 
-__global__ void kernelMoveVertices(float3* dptr, size_t numVertices)
+__global__ void kernelMoveVertices(float3* dptr, size_t numVertices, double dt)
 {
     int tid = blockIdx.x * blockDim.x + threadIdx.x;
-    dptr[tid].x += 1.0f;
+    if(tid < numVertices)
+        dptr[tid].x += dt;
     
 }
 
-void MoveVertices(cudaGraphicsResource_t& vbo, size_t numVertices)
+void MoveVertices(cudaGraphicsResource_t& vbo, size_t numVertices, double dt)
 {
-    dim3 block(8, 1, 1);
-    dim3 grid(numVertices/block.x, 1, 1);
+    dim3 block(16, 1, 1);
+    dim3 grid((numVertices + block.x - 1) / block.x, 1, 1);
     float3* dptr;
     size_t vs_dst;
 
@@ -24,7 +25,7 @@ void MoveVertices(cudaGraphicsResource_t& vbo, size_t numVertices)
     cudaGraphicsResourceGetMappedPointer((void**)&dptr, &vs_dst, vbo);
 
     //Kernel call
-    kernelMoveVertices<<<block, grid>>>(dptr, numVertices);
+    kernelMoveVertices<<<block, grid>>>(dptr, numVertices, dt);
 
     cudaGraphicsUnmapResources(1, &vbo);
 }

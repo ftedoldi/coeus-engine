@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-void __declspec(dllexport) MoveVertices(cudaGraphicsResource_t& vbo, size_t numVertices);
+void __declspec(dllexport) MoveVertices(cudaGraphicsResource_t& vbo, size_t numVertices, double dt);
 
 #ifdef __cplusplus
 }
