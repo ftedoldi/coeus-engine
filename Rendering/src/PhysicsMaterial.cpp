@@ -53,6 +53,7 @@ namespace Odysseus
                     break;
                 case aiTextureType_DIFFUSE_ROUGHNESS:
                     textureShader->setBool("material.hasRoughnessTexture", true);
+                    this->roughness = 0.0f;
                     name = "material.roughnessMap";
                     break;
                 case aiTextureType_NORMALS:
