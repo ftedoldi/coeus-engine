@@ -23,6 +23,8 @@ namespace Odysseus {
         this->transform = new Transform();
         this->_container = new Container(*this, *this->transform);
 
+        this->transform->name = name;
+
         this->transform->sceneObject = this;
  
         this->ID = System::UUID();
