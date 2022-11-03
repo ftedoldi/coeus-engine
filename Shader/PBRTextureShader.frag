@@ -12,16 +12,18 @@ struct PBRmaterial
     sampler2D normalMap;
     sampler2D metallicMap;
     sampler2D roughnessMap;
-    sampler2D aoMap;
+    sampler2D AOMap;
 
     bool hasAlbedoTexture;
     bool hasMetallicTexture;
     bool hasRoughnessTexture;
+    bool hasAOTexture;
     bool hasNormalMap;
 
     vec4 albedoColor;
     float metallicColor;
     float roughnessColor;
+    float AOColor;
 };
 
 uniform PBRmaterial material;
@@ -151,6 +153,7 @@ void main()
     float roughness = material.hasRoughnessTexture ? texture(material.roughnessMap, fs_in.TexCoords).r + material.roughnessColor : material.roughnessColor;
     roughness = max(roughness, 0.04);
     float metallic = material.hasMetallicTexture ? texture(material.metallicMap, fs_in.TexCoords).r + material.metallicColor : material.metallicColor;
+    float ao = material.hasAOTexture ? texture(material.AOMap, fs_in.TexCoords).r + material.AOColor : material.AOColor;
 
     vec3 N = vec3(0.0);
     if(material.hasNormalMap)
@@ -178,8 +181,6 @@ void main()
     Lo += CalculateDirectionalLight(albedo, N, metallic, roughness, V, F0);
     Lo += CalculatePointLight(albedo, N, metallic, roughness, V, F0);
     Lo += CalculateSpotLight(albedo, N, metallic, roughness, V, F0);
-    
-    float ao = 1.0;
 
     vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
 

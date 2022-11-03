@@ -15,9 +15,6 @@ namespace Odysseus
             float roughness;
             float AO;
             std::vector<Texture2D> PBR_textures;
-            bool hasAlbedoTexture;
-            bool hasMetallicTexture;
-            bool hasRoughnessTexture;
 
         PhysicsMaterial();
         PhysicsMaterial(Athena::Vector4& color, float metallic, float roughness);

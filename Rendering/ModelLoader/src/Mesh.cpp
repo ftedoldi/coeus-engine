@@ -126,8 +126,8 @@ namespace Odysseus
 
     void Mesh::showComponentFieldsInEditor()
     {
-        /*std::string numOfVertices("Number of Vertices: " + std::to_string(this->vertices.size()));
-        ImGui::Text(numOfVertices.c_str());*/
+        std::string numOfVertices("Number of Vertices: " + std::to_string(this->vertices.Positions.size()));
+        ImGui::Text(numOfVertices.c_str());
         if (this->_isPBR)
         {
             ImGui::Text("Physics Material Properties:");

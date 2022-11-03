@@ -2,8 +2,7 @@
 
 namespace Odysseus
 {
-    PhysicsMaterial::PhysicsMaterial(): albedo(Athena::Vector4(0.0f, 0.0f, 0.0f, 0.0f)), metallic(0.0f), roughness(0.0f), AO(0.0f), 
-                                        hasAlbedoTexture(false), hasMetallicTexture(false), hasRoughnessTexture(false)
+    PhysicsMaterial::PhysicsMaterial(): albedo(Athena::Vector4(0.0f, 0.0f, 0.0f, 0.0f)), metallic(0.0f), roughness(0.0f), AO(1.0f)
     {
     }
 
@@ -23,10 +22,12 @@ namespace Odysseus
         textureShader->setVec4("material.albedoColor", this->albedo);
         textureShader->setFloat("material.metallicColor", this->metallic);
         textureShader->setFloat("material.roughnessColor", this->roughness);
+        textureShader->setFloat("material.AOColor", this->AO);
 
         textureShader->setBool("material.hasAlbedoTexture", false);
         textureShader->setBool("material.hasMetallicTexture", false);
         textureShader->setBool("material.hasRoughnessTexture", false);
+        textureShader->setBool("material.hasAOTexture", false);
         textureShader->setBool("material.hasNormalMap", false);
         
         for(GLuint i = 0; i < this->PBR_textures.size(); ++i)
@@ -58,6 +59,9 @@ namespace Odysseus
                     textureShader->setBool("material.hasNormalMap", true);
                     name = "material.normalMap";
                     break;
+                case aiTextureType_AMBIENT_OCCLUSION:
+                    textureShader->setBool("material.hasAOTexture", true);
+                    name = "material.AOMap";
                 default:
                     break;
             }
