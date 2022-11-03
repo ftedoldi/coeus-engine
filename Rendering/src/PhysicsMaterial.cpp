@@ -2,7 +2,7 @@
 
 namespace Odysseus
 {
-    PhysicsMaterial::PhysicsMaterial(): albedo(Athena::Vector4(0.0f, 0.0f, 0.0f, 0.0f)), metallic(0.0f), roughness(0.0f), AO(1.0f)
+    PhysicsMaterial::PhysicsMaterial(): albedo(Athena::Vector4(0.0f, 0.0f, 0.0f, 0.0f)), metallic(0.0f), roughness(1.0f), AO(1.0f)
     {
     }
 
