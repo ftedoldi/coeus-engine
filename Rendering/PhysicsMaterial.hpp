@@ -23,7 +23,6 @@ namespace Odysseus
         PhysicsMaterial(Athena::Vector4& color, float metallic, float roughness);
         PhysicsMaterial(std::vector<Texture2D>& PBR_textures);
 
-        void loadShaderMaterial(Odysseus::Shader* shader);
         void loadShaderTexture(Odysseus::Shader* shader);
     };
 } // namespace Odysseus

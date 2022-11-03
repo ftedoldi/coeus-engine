@@ -2,7 +2,7 @@
 
 namespace Odysseus
 {
-    PhysicsMaterial::PhysicsMaterial(): albedo(Athena::Vector4(0.0f, 0.0f, 0.0f, 0.0)), metallic(0.0f), roughness(0.0f), AO(0.0f), 
+    PhysicsMaterial::PhysicsMaterial(): albedo(Athena::Vector4(0.0f, 0.0f, 0.0f, 0.0f)), metallic(0.0f), roughness(0.0f), AO(0.0f), 
                                         hasAlbedoTexture(false), hasMetallicTexture(false), hasRoughnessTexture(false)
     {
     }
@@ -18,20 +18,16 @@ namespace Odysseus
 
     }
 
-    void PhysicsMaterial::loadShaderMaterial(Odysseus::Shader* materialShader)
-    {
-        materialShader->setVec4("material.albedoColor", this->albedo);
-        materialShader->setFloat("material.metallicColor", this->metallic);
-        materialShader->setFloat("material.roughnessColor", this->roughness);
-    }
-
     void PhysicsMaterial::loadShaderTexture(Odysseus::Shader* textureShader)
     {
         textureShader->setVec4("material.albedoColor", this->albedo);
         textureShader->setFloat("material.metallicColor", this->metallic);
         textureShader->setFloat("material.roughnessColor", this->roughness);
 
-        textureShader->setBool("hasNormalMap", false);
+        textureShader->setBool("material.hasAlbedoTexture", false);
+        textureShader->setBool("material.hasMetallicTexture", false);
+        textureShader->setBool("material.hasRoughnessTexture", false);
+        textureShader->setBool("material.hasNormalMap", false);
         
         for(GLuint i = 0; i < this->PBR_textures.size(); ++i)
         {
@@ -47,12 +43,15 @@ namespace Odysseus
             switch(this->PBR_textures[i].type)
             {
                 case aiTextureType_DIFFUSE:
+                    textureShader->setBool("material.hasAlbedoTexture", true);
                     name = "material.albedoMap";
                     break;
                 case aiTextureType_METALNESS:
+                    textureShader->setBool("material.hasMetallicTexture", true);
                     name = "material.metallicMap";
                     break;
                 case aiTextureType_DIFFUSE_ROUGHNESS:
+                    textureShader->setBool("material.hasRoughnessTexture", true);
                     name = "material.roughnessMap";
                     break;
                 case aiTextureType_NORMALS:
