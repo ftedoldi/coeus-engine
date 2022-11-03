@@ -8,7 +8,7 @@ FILENAME = Main
 CC = cl.exe
 
 # Include path
-IDIR = /I./Includes /I./Includes/CUDA /I./Math /I./CUDA /I./CUDA/Shared /I./CUDA/Interop /I./Math/Vector /I./Math/Versor /I./Math/Point /I./Rendering/Scene /I./Math/Rotation /I./Math/Matrix /I./Rendering /I./Rendering/Texture /I./Rendering/ModelLoader /I./DataStructs /I./Test /I./System /I./System/Utils/ /I./Includes/imgui /I./Includes/imguizmo /I./Rendering/Light /I./Includes/yaml /I./Includes/EmbeddedPython3 /I./Scripts /I./Physics/ParticleEngine /I./Physics/ParticleEngine/Forces /I./Physics/RigidBodyEngine /I./Physics/RigidBodyEngine/CollisionSystem /I./Physics/RigidBodyEngine/CollisionSystem/ContactGeneration /I./Physics/RigidBodyEngine/Forces /I./EditorLayer/ /I./Physics/Test
+IDIR = /I./Includes /I./Includes/CUDA /I./Math /I./CUDA /I./CUDA/Shared /I./CUDA/Interop /I./Math/Vector /I./Math/Versor /I./Math/Point /I./Rendering/Scene /I./Math/Rotation /I./Math/Matrix /I./Rendering /I./Rendering/Texture /I./Rendering/ModelLoader /I./DataStructs /I./Test /I./System /I./System/Utils/ /I./Includes/imgui /I./Includes/imguizmo /I./Rendering/Light /I./Includes/yaml /I./Includes/EmbeddedPython3 /I./Scripts /I./Physics/RigidBodyEngine /I./Physics/RigidBodyEngine/CollisionSystem /I./Physics/RigidBodyEngine/CollisionSystem/ContactGeneration /I./Physics/RigidBodyEngine/Forces /I./EditorLayer/ /I./Physics/Test
 
 
 # compiler flags:
