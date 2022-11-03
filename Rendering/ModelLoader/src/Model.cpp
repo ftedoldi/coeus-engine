@@ -172,6 +172,7 @@ namespace Odysseus
             this->_gammaCorrect = false;
             std::vector<Texture2D> roughnessMap = loadTexture(material, aiTextureType_DIFFUSE_ROUGHNESS, this->_gammaCorrect);
             mat.PBR_textures.insert(mat.PBR_textures.end(), roughnessMap.begin(), roughnessMap.end());
+            mat.roughness = 0.0f;
         }
         else
         {
@@ -179,6 +180,10 @@ namespace Odysseus
             if(AI_SUCCESS == material->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughness))
             {
                 mat.roughness = roughness;
+            }
+            else
+            {
+                mat.roughness = 1.0f;
             }
         }
 

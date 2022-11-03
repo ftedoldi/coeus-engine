@@ -33,10 +33,10 @@ namespace Odysseus
         for(GLuint i = 0; i < this->PBR_textures.size(); ++i)
         {
             //activate texture
-            //we start from GL_TEXTURE3 because:
-            //GL_TEXTURE0 is reserved to irradiance map
-            //GL_TEXTURE1 is reserved to prefilter map
-            //GL_TEXTURE2 is reserved to brdfLUT map
+            //we start from GL_TEXTURE4 because:
+            //GL_TEXTURE1 is reserved to irradiance map
+            //GL_TEXTURE2 is reserved to prefilter map
+            //GL_TEXTURE3 is reserved to brdfLUT map
             glActiveTexture(GL_TEXTURE4 + i);
 
             //retreive texture infos
@@ -53,7 +53,6 @@ namespace Odysseus
                     break;
                 case aiTextureType_DIFFUSE_ROUGHNESS:
                     textureShader->setBool("material.hasRoughnessTexture", true);
-                    this->roughness = 0.0f;
                     name = "material.roughnessMap";
                     break;
                 case aiTextureType_NORMALS:
