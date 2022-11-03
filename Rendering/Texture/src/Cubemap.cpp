@@ -17,12 +17,6 @@ namespace Odysseus
         this->PBRTextureShader->setInt("irradianceMap", 1);
         this->PBRTextureShader->setInt("prefilterMap", 2);
         this->PBRTextureShader->setInt("brdfLUT", 3);
-
-        this->PBRMaterialShader = new Odysseus::Shader(".\\Shader\\PBRshader.vert", ".\\Shader\\PBRMaterialShader.frag");
-        this->PBRMaterialShader->use();
-        this->PBRMaterialShader->setInt("irradianceMap", 1);
-        this->PBRMaterialShader->setInt("prefilterMap", 2);
-        this->PBRMaterialShader->setInt("brdfLUT", 3);
         setupHDRImap();
 
     }
@@ -286,17 +280,6 @@ namespace Odysseus
     {
         this->PBRTextureShader->use();
         
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, this->irradianceMap);
-
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, this->prefilterMap);
-
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, this->brdfLUTtexture);
-
-        this->PBRMaterialShader->use();
-
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_CUBE_MAP, this->irradianceMap);
 

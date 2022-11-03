@@ -26,7 +26,6 @@ namespace Odysseus
         std::string directory;
         std::string objectType;
         Odysseus::Shader* textureShader;
-        Odysseus::Shader* materialShader;
 
         //Deleting the possibility to use a copy constructor and copy operator=
         Model(const Model& model) = delete;
@@ -37,7 +36,7 @@ namespace Odysseus
         Model(Model&& model) = default;
 
         //Creating a default constructor
-        Model(const std::string& path, Shader* textureShader, Shader* materialShader, bool isPBR, const std::string& objectType);
+        Model(const std::string& path, Shader* textureShader, bool isPBR, const std::string& objectType);
 
     private:
 

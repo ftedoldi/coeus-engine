@@ -21,7 +21,7 @@ namespace Odysseus
 
     void PhongMaterial::loadShaderTexture(Odysseus::Shader* shader)
     {
-        bool hasNormalTexture = false;
+        /*bool hasNormalTexture = false;
         shader->setFloat("material.shininess", this->Shininess);
         for(GLuint i = 0; i < this->Textures.size(); ++i)
             {
@@ -53,7 +53,7 @@ namespace Odysseus
                 shader->setBool("hasNormalTexture", hasNormalTexture);
                 //bind texture
                 this->Textures[i].BindTexture();
-            }
+            }*/
     }
 
 }

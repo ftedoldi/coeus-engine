@@ -46,7 +46,6 @@ namespace Odysseus
 
         public:
             Shader* PBRTextureShader;
-            Shader* PBRMaterialShader;
 
             static Cubemap* currentCubemap;
 

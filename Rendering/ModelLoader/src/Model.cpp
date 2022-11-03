@@ -5,8 +5,8 @@
 namespace Odysseus
 {
 
-    Model::Model(const std::string& path, Shader* textureShader, Shader* materialShader, bool isPBR, const std::string& objectType) :
-            textureShader(textureShader), materialShader(materialShader), objectType(objectType)
+    Model::Model(const std::string& path, Shader* textureShader, bool isPBR, const std::string& objectType) :
+            textureShader(textureShader), objectType(objectType)
     {
         this->_isPBR = isPBR;
         loadModel(path);
@@ -16,7 +16,7 @@ namespace Odysseus
     void Model::loadModel(const std::string& path)
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace /*| aiProcess_FlipUVs*/);
+        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace | aiProcess_FlipUVs);
         //checking for errors in the scene creation
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
@@ -306,10 +306,7 @@ namespace Odysseus
         {
             PhysicsMaterial physMat;
             setMeshPBRtextures(material, physMat);
-            if(physMat.PBR_textures.size() > 0)
-                objMesh->setShader(this->textureShader);
-            else
-                objMesh->setShader(this->materialShader);
+            objMesh->setShader(this->textureShader);
             objMesh->setPhysicsMaterial(physMat);
         }else
         {

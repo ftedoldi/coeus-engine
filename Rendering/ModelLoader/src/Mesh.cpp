@@ -63,14 +63,7 @@ namespace Odysseus
 
         if (this->_isPBR)
         {
-            if (this->physicsMaterial.PBR_textures.size() > 0)
-            {
-                physicsMaterial.loadShaderTexture(this->shader);
-            }
-            else
-            {
-                physicsMaterial.loadShaderMaterial(this->shader);
-            }
+            physicsMaterial.loadShaderTexture(this->shader);
         }
         else
         {
@@ -84,7 +77,7 @@ namespace Odysseus
             }
         }
 
-        MoveVertices(cuda_vbo_resource, vertices.Positions.size(), glfwGetTime()/100.0);
+        //MoveVertices(cuda_vbo_resource, vertices.Positions.size(), glfwGetTime()/100.0);
 
         LightInfo::computeLighting(this->shader);
 
