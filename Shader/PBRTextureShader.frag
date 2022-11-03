@@ -146,11 +146,11 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 void main()
 {
     vec4 completeAlbedo = texture(material.albedoMap, fs_in.TexCoords).rgba;
-    vec3 albedo = completeAlbedo.rgb + material.albedoColor.rgb;
+    vec3 albedo = material.hasAlbedoTexture ? completeAlbedo.rgb + material.albedoColor.rgb : material.albedoColor.rgb;
     float albedoAlpha = max(completeAlbedo.a, material.albedoColor.a);
-    float roughness = texture(material.roughnessMap, fs_in.TexCoords).r + material.roughnessColor;
+    float roughness = material.hasRoughnessTexture ? texture(material.roughnessMap, fs_in.TexCoords).r + material.roughnessColor : material.roughnessColor;
     roughness = max(roughness, 0.04);
-    float metallic =texture(material.metallicMap, fs_in.TexCoords).r + material.metallicColor;
+    float metallic = material.hasMetallicTexture ? texture(material.metallicMap, fs_in.TexCoords).r + material.metallicColor : material.metallicColor;
 
     vec3 N = vec3(0.0);
     if(material.hasNormalMap)
