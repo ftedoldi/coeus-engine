@@ -31,12 +31,22 @@ namespace CUDA::Interop
             currentFilter = this->filters.unfilter;
         else if (filterType == ScreenSpaceFilters::BLUR)
             currentFilter = this->filters.blur;
-        else if (filterType == ScreenSpaceFilters::EDGE)
-            currentFilter = this->filters.edge;
+        else if (filterType == ScreenSpaceFilters::LAPLACIAN)
+            currentFilter = this->filters.laplacian;
         else if (filterType == ScreenSpaceFilters::EMBOSS)
             currentFilter = this->filters.emboss;
         else if (filterType == ScreenSpaceFilters::INVERT)
             currentFilter = this->filters.invert;
+        else if (filterType == ScreenSpaceFilters::PREWITT_H)
+            currentFilter = this->filters.prewittH;
+        else if (filterType == ScreenSpaceFilters::PREWITT_V)
+            currentFilter = this->filters.prewittV;
+        else if (filterType == ScreenSpaceFilters::SOBEL_H)
+            currentFilter = this->filters.sobelH;
+        else if (filterType == ScreenSpaceFilters::SOBEL_V)
+            currentFilter = this->filters.sobelV;
+        else if (filterType == ScreenSpaceFilters::DITHER)
+            currentFilter = this->filters.dither;
         else
             currentFilter = this->filters.sharpen;
         
