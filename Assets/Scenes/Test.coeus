@@ -154,34 +154,12 @@ Scene Objects:
           Constant: 1
           Linear: 0.0900000036
           Quadratic: 0.0320000015
-  - Scene Object ID: 933523258472564974
-    Transform:
-      Name: Scene Object
-      Position:
-        X: 0
-        Y: 0
-        Z: 0
-      Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-        W: 1
-      Euler Angles Rotation:
-        X: 0
-        Y: 0
-        Z: 0
-      Scale:
-        X: 1
-        Y: 1
-        Z: 1
-      Children Scene Objects:
-        - 7091281916194742909
   - Scene Object ID: 7091281916194742909
     Transform:
-      Name: Scene Object
+      Name: Sphere
       Position:
         X: 0
-        Y: 0
+        Y: 5.10835457
         Z: 0
       Rotation:
         X: 0
@@ -196,7 +174,6 @@ Scene Objects:
         X: 1
         Y: 1
         Z: 1
-      Parent Scene Object: 933523258472564974
     Components:
       - Component: Mesh
         Mesh:
@@ -206,7 +183,7 @@ Scene Objects:
             Red: 0.100000001
             Green: 0.100000001
             Blue: 0.100000001
-            Alpha: 1.5554413e-43
+            Alpha: 2.07392173e-43
           Metallic: 0.100000001
           Roughness: 0.100000001
           Ambient Occlusion: 1
@@ -225,3 +202,75 @@ Scene Objects:
               Type: 16
           Vertex Shader Path: .\Shader\PBRshader.vert
           Fragment Shader Path: .\Shader\PBRTextureShader.frag
+      - Component: RigidSphere
+  - Scene Object ID: 11579639413596830784
+    Transform:
+      Name: Plane
+      Position:
+        X: 0
+        Y: 0
+        Z: 0
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: RigidPlane
+        RigidPlane:
+          Direction:
+            X: 0
+            Y: 1
+            Z: 0
+          Offset: 7.34280395e-43
+  - Scene Object ID: 3139875172038146545
+    Transform:
+      Name: Cube
+      Position:
+        X: -3.3775053
+        Y: 5.57885742
+        Z: 4.96705388e-09
+      Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+        W: 1
+      Euler Angles Rotation:
+        X: 0
+        Y: 0
+        Z: 0
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+    Components:
+      - Component: Mesh
+        Mesh:
+          Vertices Path: ./Assets/Scenes/Meshes/3139875172038146545.meta
+          Is PBR: true
+          Albedo:
+            Red: 0.800000012
+            Green: 0.0144290002
+            Blue: 0.139382005
+            Alpha: 2.07392173e-43
+          Metallic: 0
+          Roughness: 1
+          Ambient Occlusion: 1
+          PBR Textures:
+            []
+          Vertex Shader Path: .\Shader\PBRshader.vert
+          Fragment Shader Path: .\Shader\PBRTextureShader.frag
+      - Component: RigidBox
+        RigidBox:
+          Size:
+            X: 1.15270197
+            Y: 1.15270197
+            Z: 1.15270197
