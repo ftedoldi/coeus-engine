@@ -162,6 +162,126 @@ vec4 distortion()
 }
 // ------------------------------------------------------------------------------------------------------------
 
+// ----------------------------------------RGB SHIFT-----------------------------------------------------------
+vec4 RGBShift()
+{
+    float gamma=2.2;
+    float exposure=1.;
+    vec2 _ShiftPower = vec2(2);
+
+    vec2 shiftpow =_ShiftPower * (1./493);
+    float r = texture(screenTexture, Frag_UV.st - shiftpow).r;
+    vec2 ga = texture(screenTexture, Frag_UV.st).ga;
+    float b = texture(screenTexture, Frag_UV.st + shiftpow).b;
+
+    vec4 color = vec4(r, ga.x, b, ga.y);
+    // HDR tonemapping
+    color.rgb=vec3(1.)-exp(-color.rgb*exposure);
+    // gamma correction
+    color.rgb=pow(color.rgb,vec3(1./gamma));
+
+    return color;
+}
+// ------------------------------------------------------------------------------------------------------------
+
+// -----------------------------------RANDOM INVERT------------------------------------------------------------
+float hash11(float p){
+    vec2 p2=fract(p*vec2(443.8975,397.2973));
+    p2+=dot(p2.xy,p2.yx+19.19);
+    return fract(p2.x*p2.y);
+}
+
+float hash13(vec3 p){
+    p=fract(p*vec3(443.8975,397.2973,491.1871));
+    p+=dot(p.xyz,p.yzx+19.19);
+    return fract(p.x*p.y*p.z);
+}
+
+vec2 hash21(float p){
+    vec3 p3=fract(p*vec3(443.8975,397.2973,491.1871));
+    p3+=dot(p3.xyz,p3.yzx+19.19);
+    return fract(vec2(p3.x*p3.y,p3.z*p3.x));
+}
+
+float random(in float x){
+    return fract(sin(x)*1e4);
+}
+
+float random(vec2 _st){
+    return fract(sin(dot(_st.xy,vec2(12.9898,78.233)))*43758.5453123);
+}
+
+float random(vec3 _st){
+    return fract(sin(dot(_st.xyz,vec3(12.9898,78.233,56.787)))*43758.5453123);
+}
+
+// Based on Morgan McGuire @morgan3d
+// https://www.shadertoy.com/view/4dS3Wd
+float noise(vec2 _st){
+    vec2 i=floor(_st);
+    vec2 f=fract(_st);
+    
+    // Four corners in 2D of a tile
+    float a=random(i);
+    float b=random(i+vec2(1.,0.));
+    float c=random(i+vec2(0.,1.));
+    float d=random(i+vec2(1.,1.));
+    
+    vec2 u=f*f*(3.-2.*f);
+    
+    return mix(a,b,u.x)+
+    (c-a)*u.y*(1.-u.x)+
+    (d-b)*u.x*u.y;
+}
+
+vec4 RandomInvert()
+{
+    float gamma=2.2;
+    float exposure=1.;
+
+    float _Threshold = 1;
+    int _Invert = 0;
+    float _StartTime = 0;
+    float _Scale = 2;
+
+    vec4 color=texture(screenTexture,Frag_UV.st);
+    // HDR tonemapping
+    color.rgb=vec3(1.)-exp(-color.rgb*exposure);
+    // gamma correction
+    color.rgb=pow(color.rgb,vec3(1./gamma));
+
+    float r=noise(vec2(Frag_UV.st.y,_StartTime)*_Scale);
+
+    color.rgb=(r>=_Threshold)?color.rgb:1-color.rgb;
+
+    color.rgb=(_Invert==1)?1-color.rgb:color.rgb;
+
+    return color;
+}
+// ------------------------------------------------------------------------------------------------------------
+
+// ---------------------------------------------REFLECTION-----------------------------------------------------
+vec4 Reflection()
+{
+    float gamma=2.2;
+    float exposure=1.;
+    int _Horizontal = 1;
+    int _Vertical = 1;
+
+    vec2 uv;
+    uv.x=((_Horizontal == 1 && Frag_UV.st.x>.5)?1-Frag_UV.st.x:Frag_UV.st.x);
+    uv.y=((_Vertical == 1 && Frag_UV.st.y>.5)?1-Frag_UV.st.y:Frag_UV.st.y);
+
+    vec4 col=texture(screenTexture,uv);
+    // HDR tonemapping
+    col.rgb=vec3(1.)-exp(-col.rgb*exposure);
+    // gamma correction
+    col.rgb=pow(col.rgb,vec3(1./gamma));
+
+    return col;
+}
+// ------------------------------------------------------------------------------------------------------------
+
 void main()
 { 
     float gamma = 2.2;
@@ -173,5 +293,5 @@ void main()
     // gamma correction
     color.rgb = pow(color.rgb, vec3(1.0 / gamma));
     // f_objectID = ObjectID;
-    fragColor = vec4(color.rgb, 1);
+    fragColor = color.rgba;
 }
