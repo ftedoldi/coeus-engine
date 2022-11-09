@@ -96,6 +96,9 @@ int main()
     //                        true
     //                    );
 
+    Odysseus::Shader* myShader = new Odysseus::Shader("Shader\\phongShader.vert", "Shader\\toonShader.frag");
+    Odysseus::Model model("Assets\\Models\\PBRsphere\\PBRsphere.obj", myShader, true, "obj");
+
     //Setup everything before initializeScene call
     Odysseus::SceneManager::initializeActiveScene();
 
