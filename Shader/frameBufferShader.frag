@@ -282,6 +282,26 @@ vec4 Reflection()
 }
 // ------------------------------------------------------------------------------------------------------------
 
+// ---------------------------------------PIXELIZE-------------------------------------------------------------
+vec4 Pixelize()
+{
+    float gamma = 2.2;
+    float exposure = 1.0;
+    
+    float dx = 15.*(1./512.);
+    float dy = 10.*(1./512.);
+    vec2 coord = vec2(dx*floor(Frag_UV.x/dx),
+                   dy*floor(Frag_UV.y/dy));
+    vec4 color = texture(screenTexture, coord);
+    // HDR tonemapping
+    color.rgb = vec3(1.0) - exp(-color.rgb * exposure);
+    // gamma correction
+    color.rgb = pow(color.rgb, vec3(1.0 / gamma));
+
+    return color;
+}
+// ------------------------------------------------------------------------------------------------------------
+
 void main()
 { 
     float gamma = 2.2;
