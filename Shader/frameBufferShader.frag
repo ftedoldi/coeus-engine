@@ -302,6 +302,114 @@ vec4 Pixelize()
 }
 // ------------------------------------------------------------------------------------------------------------
 
+// ---------------------------------------------GAUSSIAN BLUR-----------------------------------------------------
+vec4 gaussianBlur()
+{
+    float gamma = 2.2;
+    float exposure = 1.0;
+    float Pi = 6.28318530718; // Pi*2
+    
+    float Directions = 16.0; 
+    float Quality = 3.0;
+    float Size = 8.0;
+   
+    vec2 Radius = Size/ vec2(800, 600);
+
+    vec4 color = texture(screenTexture, Frag_UV.st);
+    // Blur calculations
+    for( float d=0.0; d<Pi; d+=Pi/Directions)
+    {
+		for(float i=1.0/Quality; i<=1.0; i+=1.0/Quality)
+        {
+			color += texture( screenTexture, Frag_UV + vec2(cos(d),sin(d)) * Radius * i);		
+        }
+    } 
+    // Output to screen
+    color /= Quality * Directions - 15.0;
+    color.rgb = vec3(1.0) - exp(-color.rgb * exposure);
+    color.rgb = pow(color.rgb, vec3(1.0 / gamma));
+    return color;
+}
+// ------------------------------------------------------------------------------------------------------------
+
+// ---------------------------------------------MEDIAN FILTER + SOBEL EDGE DETECTION-----------------------------------------------------
+mat3 sx = mat3( 
+    1.0, 2.0, 1.0, 
+    0.0, 0.0, 0.0, 
+   -1.0, -2.0, -1.0 
+);
+mat3 sy = mat3( 
+    1.0, 0.0, -1.0, 
+    2.0, 0.0, -2.0, 
+    1.0, 0.0, -1.0 
+);
+
+#define s2(a, b)				temp = a; a = min(a, b); b = max(temp, b);
+#define mn3(a, b, c)			s2(a, b); s2(a, c);
+#define mx3(a, b, c)			s2(b, c); s2(a, c);
+
+#define mnmx3(a, b, c)			mx3(a, b, c); s2(a, b);                                   // 3 exchanges
+#define mnmx4(a, b, c, d)		s2(a, b); s2(c, d); s2(a, c); s2(b, d);                   // 4 exchanges
+#define mnmx5(a, b, c, d, e)	s2(a, b); s2(c, d); mn3(a, c, e); mx3(b, d, e);           // 6 exchanges
+#define mnmx6(a, b, c, d, e, f) s2(a, d); s2(b, e); s2(c, f); mn3(a, b, c); mx3(d, e, f); // 7 exchanges
+
+// TODO: change hard coded resolution (800,600) with the framebuffer one
+vec3 median() {
+
+    float gamma = 2.2;
+    float exposure = 1.0;
+
+    vec3 v[9];
+    mat3 I; 
+
+    for(int dX = -1; dX <= 1; ++dX) {
+        for(int dY = -1; dY <= 1; ++dY) {
+            vec2 offset = vec2(float(dX), float(dY));
+            vec3 c = vec3(texture2D(screenTexture, Frag_UV + offset * (1. / vec2(800, 600))));
+            c.rgb = vec3(1.0) - exp(-c.rgb * exposure);
+            c.rgb = pow(c.rgb, vec3(1.0 / gamma));
+            v[(dX + 1) * 3 + (dY + 1)] = c;
+            I[dX + 1][dY + 1] = c.x * c.y * c.z;
+        }
+    }
+
+    vec3 temp;
+    vec3 orig = v[4];
+
+    // Starting with a subset of size 6, remove the min and max each time
+    mnmx6(v[0], v[1], v[2], v[3], v[4], v[5]);
+    mnmx5(v[1], v[2], v[3], v[4], v[6]);
+    mnmx4(v[2], v[3], v[4], v[7]);
+    mnmx3(v[3], v[4], v[8]);
+
+    float gx = dot(sx[0], I[0]) + dot(sx[1], I[1]) + dot(sx[2], I[2]); 
+    float gy = dot(sy[0], I[0]) + dot(sy[1], I[1]) + dot(sy[2], I[2]);
+
+    float g = sqrt(pow(gx, 2.0)+pow(gy, 2.0));
+
+    vec3 edgeColor = vec3(0.,0.,0.);
+    return mix(v[4], edgeColor, g) - g;
+}
+// ------------------------------------------------------------------------------------------------------------
+
+// ---------------------------------------------VIGNETTE-----------------------------------------------------
+vec4 vignette(float falloff, float amount)
+{
+    float gamma = 2.2;
+    float exposure = 1.0;
+    vec4 color = texture(screenTexture, Frag_UV);
+
+    float dist = distance(Frag_UV, vec2(0.5, 0.5));
+    color.rgb *= smoothstep(0.8, falloff * 0.799, dist * (amount + falloff));
+
+    color.rgb = vec3(1.0) - exp(-color.rgb * exposure);
+    color.rgb = pow(color.rgb, vec3(1.0 / gamma));
+
+    return color;
+}
+// ------------------------------------------------------------------------------------------------------------
+
+
 void main()
 { 
     float gamma = 2.2;
