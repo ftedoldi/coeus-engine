@@ -22,6 +22,7 @@
 #include <SpotLight.hpp>
 #include <AreaLight.hpp>
 #include <RigidPlane.hpp>
+#include <BasicCubemap.hpp>
 
 #include <Serializer/Serializer.hpp>
 
@@ -60,10 +61,12 @@ int main()
     else
         scenePathToLoad = data["Default Scene"].as<std::string>();
 
-    stbi_set_flip_vertically_on_load(true);
-    Odysseus::Cubemap* mainCubemap = new Odysseus::Cubemap();
-    Odysseus::Cubemap::currentCubemap = mainCubemap;
-    stbi_set_flip_vertically_on_load(false);
+    //stbi_set_flip_vertically_on_load(true);
+    //Odysseus::Cubemap* mainCubemap = new Odysseus::Cubemap();
+    //Odysseus::Cubemap::currentCubemap = mainCubemap;
+    //stbi_set_flip_vertically_on_load(false);
+
+    Odysseus::BasicCubemap* phongCubemap = new Odysseus::BasicCubemap();
     
     serializer.deserialize(scenePathToLoad);
 
@@ -96,9 +99,6 @@ int main()
     //                        true
     //                    );
 
-    Odysseus::Shader* myShader = new Odysseus::Shader("Shader\\phongShader.vert", "Shader\\toonShader.frag");
-    Odysseus::Model model("Assets\\Models\\PBRsphere\\PBRsphere.obj", myShader, true, "obj");
-
     //Setup everything before initializeScene call
     Odysseus::SceneManager::initializeActiveScene();
 
@@ -111,7 +111,8 @@ int main()
         window->clear();
         
         Odysseus::SceneManager::drawActiveScene();
-        mainCubemap->update();
+        phongCubemap->update();
+        //mainCubemap->update();
 
         window->update();
     }
