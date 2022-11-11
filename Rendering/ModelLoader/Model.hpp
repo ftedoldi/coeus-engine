@@ -46,7 +46,6 @@ namespace Odysseus
         std::vector<Texture2D> loadTexture(aiMaterial *mat, aiTextureType type, bool gammaCorrect);
 
         void setMeshTextures(aiMaterial* material, PhongMaterial& mat);
-        void setMeshMaterials(aiMaterial* material, PhongMaterial& mat);
 
         void setMeshPBRtextures(aiMaterial* material, PhysicsMaterial& mat);
         void processMesh(aiMesh* mesh, const aiScene* scene, SceneObject* sceneObject, Athena::Vector3& position, Athena::Vector3& scale, Athena::Quaternion& rotation);

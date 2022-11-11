@@ -21,6 +21,7 @@ out VS_OUT
 	vec3 Normal;
 	vec2 TexCoords;
 	vec3 FragPos;
+	mat3 TBN;
 } vs_out;
 
 flat out float vID;
@@ -44,7 +45,16 @@ void main()
 
 	//Calculate world object normals
 	vec4 rotatedNormal = calcWorldPosition(aNormal.xyz, worldConj);
-	vs_out.Normal = normalize(rotatedNormal.xyz);
+	vs_out.Normal = rotatedNormal.xyz;
+
+	//Calculate world object tangents
+	vec4 rotatedTangent = calcWorldPosition(aTangent.xyz, worldConj);
+
+	vec3 T = normalize(rotatedTangent.xyz);
+	vec3 N = normalize(rotatedNormal.xyz);
+	T = normalize(T - dot(T, N) * N);
+	vec3 B = cross(N, T);
+	vs_out.TBN = mat3(T, B, N);
 
 	//Calculate view position
 	vec4 conj = vec4(-rotation.x, -rotation.y, -rotation.z, rotation.w);

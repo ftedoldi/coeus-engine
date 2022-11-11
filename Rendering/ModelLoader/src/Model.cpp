@@ -94,6 +94,11 @@ namespace Odysseus
             this->_gammaCorrect = true;
             std::vector<Texture2D> diffuseMaps = loadTexture(material, aiTextureType_DIFFUSE, this->_gammaCorrect);
             mat.Textures.insert(mat.Textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+        }else
+        {
+            aiColor3D diffuse;
+            if(AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse))
+                mat.Diffuse = Athena::Vector3(diffuse.r, diffuse.g, diffuse.b);
         }
         //specular
         if(material->GetTextureCount(aiTextureType_SPECULAR) > 0)
@@ -101,6 +106,11 @@ namespace Odysseus
             this->_gammaCorrect = false;
             std::vector<Texture2D> specularMaps = loadTexture(material, aiTextureType_SPECULAR, this->_gammaCorrect);
             mat.Textures.insert(mat.Textures.end(), specularMaps.begin(), specularMaps.end());
+        }else
+        {
+            aiColor3D specular;
+           if(AI_SUCCESS == material->Get(AI_MATKEY_COLOR_SPECULAR, specular))
+                mat.Specular = Athena::Vector3(specular.r, specular.g, specular.b);    
         }
 
         if(material->GetTextureCount(aiTextureType_NORMALS) > 0)
@@ -109,24 +119,6 @@ namespace Odysseus
             std::vector<Texture2D> normalMap = loadTexture(material, aiTextureType_NORMALS, this->_gammaCorrect);
             mat.Textures.insert(mat.Textures.end(), normalMap.begin(), normalMap.end());
         }
-    }
-
-    void Model::setMeshMaterials(aiMaterial* material, PhongMaterial& mat)
-    {
-        aiColor3D diffuse, ambient, specular;
-        float shininess;
-
-        if(AI_SUCCESS == material->Get(AI_MATKEY_SHININESS, shininess))
-            mat.Shininess = shininess;
-        
-        if(AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse))
-            mat.Diffuse = Athena::Vector3(diffuse.r, diffuse.g, diffuse.b);
-        
-        if(AI_SUCCESS == material->Get(AI_MATKEY_COLOR_AMBIENT, ambient))
-            mat.Ambient = Athena::Vector3(ambient.r, ambient.g, ambient.b);
-
-        if(AI_SUCCESS == material->Get(AI_MATKEY_COLOR_SPECULAR, specular))
-            mat.Specular = Athena::Vector3(specular.r, specular.g, specular.b);
     }
 
     void Model::setMeshPBRtextures(aiMaterial* material, PhysicsMaterial& mat)
@@ -309,7 +301,7 @@ namespace Odysseus
         {
             PhongMaterial phongMat;
             setMeshTextures(material, phongMat);
-            setMeshMaterials(material, phongMat);
+            objMesh->setShader(this->textureShader);
             objMesh->setPhongMaterial(phongMat);
         }
         

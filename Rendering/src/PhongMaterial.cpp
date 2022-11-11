@@ -2,27 +2,20 @@
 
 namespace Odysseus
 {
-    PhongMaterial::PhongMaterial(): Diffuse(Athena::Vector3(0.0f, 0.0f, 0.0f)), Specular(Athena::Vector3(0.0f, 0.0f, 0.0f)),
-                        Ambient(Athena::Vector3(0.0f, 0.0f, 0.0f)), Shininess(0.0f){}
+    PhongMaterial::PhongMaterial(): Diffuse(Athena::Vector3(0.8f, 0.8f, 0.8f)), Specular(Athena::Vector3(0.1f, 0.1f, 0.1f)),
+                        Ambient(Athena::Vector3(0.2f, 0.2f, 0.2f)), Shininess(32.0f){}
 
-    PhongMaterial::PhongMaterial(Athena::Vector3& diffuse, Athena::Vector3& specular, Athena::Vector3& ambient, float shininess) :
-    Diffuse(diffuse), Specular(specular), Ambient(ambient), Shininess(shininess) {}
-
-    PhongMaterial::PhongMaterial(std::vector<Texture2D>& textures) : Textures(textures)
-    {}
-
-    void PhongMaterial::loadShaderMaterial(Odysseus::Shader* shader)
+    void PhongMaterial::loadShaderTexture(Odysseus::Shader* shader)
     {
         shader->setVec3("material.diffuse", this->Diffuse);
         shader->setVec3("material.specular", this->Specular);
         shader->setFloat("material.shininess", this->Shininess);
-        shader->setBool("hasTexture", false);
-    }
+        //this->Diffuse.print();
 
-    void PhongMaterial::loadShaderTexture(Odysseus::Shader* shader)
-    {
-        /*bool hasNormalTexture = false;
-        shader->setFloat("material.shininess", this->Shininess);
+        shader->setBool("material.hasDiffuseTexture", false);
+        shader->setBool("material.hasSpecularTexture", false);
+        shader->setBool("material.hasNormalTexture", false);
+
         for(GLuint i = 0; i < this->Textures.size(); ++i)
             {
                 //activate texture
@@ -34,26 +27,24 @@ namespace Odysseus
                 {
                     case aiTextureType_DIFFUSE:
                         name = "material.diffuseTex";
+                        shader->setBool("material.hasDiffuseTexture", true);
                         break;
                     case aiTextureType_SPECULAR:
                         name = "material.specularTex";
+                        shader->setBool("material.hasSpecularTexture", true);
                         break;
                     case aiTextureType_NORMALS:
-                        {
-                            name = "material.normalTex";
-                            hasNormalTexture = true;
-                        }
+                        name = "material.normalTex";
+                        shader->setBool("material.hasNormalTexture", true);
                         break;
                     default:
                         break;
                 }
                 //set shader uniform
                 shader->setInt(name.c_str(), i);
-                shader->setBool("hasTexture", true);
-                shader->setBool("hasNormalTexture", hasNormalTexture);
                 //bind texture
                 this->Textures[i].BindTexture();
-            }*/
+            }
     }
 
 }

@@ -105,7 +105,9 @@ namespace EditorLayer
                 std::string objectType = pathToLoad;
                 objectType = objectType.substr(objectType.find_last_of(".") + 1);
 
-                Odysseus::Model myModel(pathToLoad, Odysseus::Cubemap::currentCubemap->PBRTextureShader, true, objectType);
+                //Odysseus::Model myModel(pathToLoad, Odysseus::Cubemap::currentCubemap->PBRTextureShader, true, objectType);
+                Odysseus::Shader* myShader = new Odysseus::Shader("Shader\\phongShader.vert", "Shader\\phongShader.frag");
+                Odysseus::Model myModel(pathToLoad, myShader, false, objectType);
                 Odysseus::SceneManager::initializeActiveScene();
             }
 

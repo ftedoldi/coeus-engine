@@ -62,20 +62,9 @@ namespace Odysseus
         this->shader->use();
 
         if (this->_isPBR)
-        {
             physicsMaterial.loadShaderTexture(this->shader);
-        }
         else
-        {
-            if (this->phongMaterial.Textures.size() > 0)
-            {
-                phongMaterial.loadShaderTexture(this->shader);
-            }
-            else
-            {
-                phongMaterial.loadShaderMaterial(this->shader);
-            }
-        }
+            phongMaterial.loadShaderTexture(this->shader);
 
         //MoveVertices(cuda_vbo_resource, vertices.Positions.size(), glfwGetTime()/100.0);
 
