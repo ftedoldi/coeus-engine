@@ -12,9 +12,9 @@ namespace Odysseus
 
     DirectionalLight::DirectionalLight()
     {
-        _ambient = Athena::Vector3(0.1f, 0.1f, 0.1f);
-        _diffuse = Athena::Vector3(0.5f, 0.5f, 0.5f);
-        _specular = Athena::Vector3();
+        _ambient = Athena::Vector3(0.05f, 0.05f, 0.05f);
+        _diffuse = Athena::Vector3(0.4f, 0.4f, 0.4f);
+        _specular = Athena::Vector3(0.5f,0.5f,0.5f);
 
         _direction = Athena::Vector3(0.0f, -1.0f, 0.0f).normalized();
         

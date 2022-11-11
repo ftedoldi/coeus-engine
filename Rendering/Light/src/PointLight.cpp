@@ -14,13 +14,13 @@ namespace Odysseus
 {
     PointLight::PointLight()
     {
-        _ambient = Athena::Vector3();
-        _diffuse = Athena::Vector3(0.5f, 0.5f, 0.5f);
-        _specular = Athena::Vector3();
+        _ambient = Athena::Vector3(0.05f, 0.05f, 0.05f);
+        _diffuse = Athena::Vector3(0.8f, 0.8f, 0.8f);
+        _specular = Athena::Vector3(1.0f, 1.0f, 1.0f);
 
-        _constant = 0.1f;
-        _linear = 0.1f;
-        _quadratic = 0.1f;
+        _constant = 1.0f;
+        _linear = 0.09f;
+        _quadratic = 0.032f;
 
         this->ID = System::UUID();
 
