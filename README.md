@@ -67,3 +67,5 @@ System::Component* DummyComponent::deserialize(YAML::Node& node)
 ```
 
 > In order to Serialize and Deserialize you should be aware of the syntax of the [YAML-cpp](https://github.com/jbeder/yaml-cpp/) library.
+
+This project is licensed under the terms of the MIT license.
