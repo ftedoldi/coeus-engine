@@ -11,8 +11,8 @@ namespace Odysseus
 {
     SpotLight::SpotLight()
     {
-        _ambient = Athena::Vector3(0.0f, 0.0f, 0.0f);
-        _diffuse = Athena::Vector3(1.0f, 1.0f, 1.0f);
+        _ambient = Athena::Vector3(0.05f, 0.05f, 0.05f);
+        _diffuse = Athena::Vector3(0.8f, 0.8f, 0.8f);
         _specular = Athena::Vector3(1.0f, 1.0f, 1.0f);
 
         _direction = Athena::Vector3(0.0f, -1.0f, 0.0f).normalized();

@@ -23,7 +23,6 @@ namespace Odysseus
 
     void Cubemap::setupShaders()
     {
-        // TODO: Set pbr shader of this as global accessible
         this->cubemapShader.assignShadersPath(".\\Shader\\cubemapShader.vert", ".\\Shader\\cubemapShader.frag");
         this->equirectangularToCubemapShader.assignShadersPath(".\\Shader\\HDRImapShader.vert", ".\\Shader\\HDRImapShader.frag");
         this->irradianceShader.assignShadersPath(".\\Shader\\HDRImapShader.vert", ".\\Shader\\irradianceShader.frag");
@@ -47,10 +46,9 @@ namespace Odysseus
 
     void Cubemap::loadHDRImap()
     {
-        //stbi_set_flip_vertically_on_load(true);
         int width, height, nrComponents;
-        float *data = stbi_loadf(".\\Assets\\Models\\HDRImap\\PaperMill_A_3k.hdr", &width, &height, &nrComponents, 0);
-        //float *data = stbi_loadf(".\\Assets\\Models\\HDRImap\\lilienstein_8k.hdr", &width, &height, &nrComponents, 0);
+        //float *data = stbi_loadf(".\\Assets\\Models\\HDRImap\\PaperMill_A_3k.hdr", &width, &height, &nrComponents, 0);
+        float *data = stbi_loadf(".\\Assets\\Models\\HDRImap\\lilienstein_4k.hdr", &width, &height, &nrComponents, 0);
         if (data)
         {
             glGenTextures(1, &this->hdrTexture);
@@ -292,19 +290,15 @@ namespace Odysseus
         cubemapShader.use();
         
         cubemapShader.setVec4("rotation", Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->transform->rotation.inverse().asVector4());
-        //cubemapShader.setMat4("projection", Odysseus::SceneManager::activeScene->sceneEditor->editorCamera->perspective(45.0f, System::Window::screen.width / System::Window::screen.height, 0.1f, 100.0f));
-        //cubemapShader.setInt("environmentMap", 0);
 
         // skybox cube
         glActiveTexture(GL_TEXTURE0);
         //glBindTexture(GL_TEXTURE_CUBE_MAP, this->irradianceMap);
         glBindTexture(GL_TEXTURE_CUBE_MAP, this->envCubemap);
         //glBindTexture(GL_TEXTURE_CUBE_MAP, this->prefilterMap);
-        //
         generateCube();
-        //glDepthFunc(GL_LESS); // set depth function back to default
-        //glDisable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
+        // To show brdf map
         //brdfShader.use();
         //generateQuad();
         glUseProgram(0);
@@ -375,8 +369,6 @@ namespace Odysseus
         // render Cube
         glBindVertexArray(this->cubemapVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-        //glBindVertexArray(0);
-        //glUseProgram(0);
     }
 
     void Cubemap::setPBRshader(Shader* shader)
@@ -405,8 +397,6 @@ namespace Odysseus
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
         glBindVertexArray(this->quadVAO);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        //glBindVertexArray(0);
-        //glUseProgram(0);
     }
     
 }

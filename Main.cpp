@@ -61,43 +61,15 @@ int main()
     else
         scenePathToLoad = data["Default Scene"].as<std::string>();
 
-    //stbi_set_flip_vertically_on_load(true);
-    //Odysseus::Cubemap* mainCubemap = new Odysseus::Cubemap();
-    //Odysseus::Cubemap::currentCubemap = mainCubemap;
-    //stbi_set_flip_vertically_on_load(false);
+    // PBR cubemap creation
+    stbi_set_flip_vertically_on_load(true);
+    Odysseus::Cubemap* mainCubemap = new Odysseus::Cubemap();
+    Odysseus::Cubemap::currentCubemap = mainCubemap;
+    stbi_set_flip_vertically_on_load(false);
 
-    Odysseus::BasicCubemap* phongCubemap = new Odysseus::BasicCubemap();
+    //Odysseus::BasicCubemap* phongCubemap = new Odysseus::BasicCubemap();
     
     serializer.deserialize(scenePathToLoad);
-
-    // call();
-    // AddVectors();
-    // Athena::Vector3 test = Athena::Vector3(1, 1, 1);
-    // Athena::Vector3 test1 = Athena::Vector3(1, 2, 3);
-    // (test + test1).print();
-    // Athena::Vector3 r = Athena::Vector3();
-    // float* t = test.asScalarVector();
-    // float* t1 = test1.asScalarVector();
-    // float* result = r.asScalarVector();
-    // auto res = AddVector3(t, t1, result);
-    // r = Athena::Vector3(result);
-    // r.print();
-
-
-    //stbi_set_flip_vertically_on_load(true);
-
-    //auto m1 = Odysseus::SceneManager::activeScene->objectsInScene[4]->getComponent<Odysseus::Mesh>();
-    //auto m2 = myModel.objectsCreated[1]->getComponent<Odysseus::Mesh>();
-
-    //m1->vertices = m2->vertices;
-    //m1->indices = m2->indices;
-    //m1->shader = m2->shader;
-
-    // Odysseus::Model myModel(
-    //                        "Assets\\Models\\PBRsphere\\PBRsphere.obj",
-    //                        mainCubemap->PBRshader,
-    //                        true
-    //                    );
 
     //Setup everything before initializeScene call
     Odysseus::SceneManager::initializeActiveScene();
@@ -111,8 +83,8 @@ int main()
         window->clear();
         
         Odysseus::SceneManager::drawActiveScene();
-        phongCubemap->update();
-        //mainCubemap->update();
+        //phongCubemap->update();
+        mainCubemap->update();
 
         window->update();
     }

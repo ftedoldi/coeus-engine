@@ -14,7 +14,6 @@
 #include <Time.hpp>
 
 #include <stdexcept>
-//#define DBL_EPSILON 2.2204460492503131e-16
 
 namespace Athena
 {

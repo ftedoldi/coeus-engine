@@ -423,7 +423,6 @@ namespace Athena {
     }
 
     Vector3 Quaternion::rotateVectorByThisQuaternion(const Vector3& vectorToRotate) const {
-        //Quaternion* result = new Quaternion(this->conjugated() * Quaternion(vectorToRotate, 0.0) * (*this));
         Quaternion* result = new Quaternion(((*this) * Quaternion(vectorToRotate, 0.0)) * this->conjugated());
 
         return result->immaginary;

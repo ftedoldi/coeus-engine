@@ -259,36 +259,6 @@ namespace Odysseus {
         return Transform(this->position, rotationQuaternion, this->localScale);
     }
 
-    // TODO: Test this function
-    Transform Transform::lookAt(const Athena::Vector3& position) const
-    {
-        Athena::Vector3 direction = (position - this->position).normalized();
-        Athena::Quaternion newRotation = Athena::Quaternion::RotationBetweenVectors(forward(), direction);
-
-        Athena::Vector3 r = Athena::Vector3::cross(direction, up());
-        Athena::Vector3 desiredUp = Athena::Vector3::cross(r, direction);
-
-        Athena::Vector3 newUp = newRotation.rotateVectorByThisQuaternion(up());
-        Athena::Quaternion finalRotation = Athena::Quaternion::RotationBetweenVectors(newUp, desiredUp);
-
-        return Transform(this->position, finalRotation, this->localScale);
-    }
-
-    // TODO: Test this function
-    Transform Transform::lookAt(const Transform& target) const
-    {
-        Athena::Vector3 direction = (target.position - this->position).normalized();
-        Athena::Quaternion newRotation = Athena::Quaternion::RotationBetweenVectors(forward(), direction);
-
-        Athena::Vector3 r = Athena::Vector3::cross(direction, up());
-        Athena::Vector3 desiredUp = Athena::Vector3::cross(r, direction);
-
-        Athena::Vector3 newUp = newRotation.rotateVectorByThisQuaternion(up());
-        Athena::Quaternion finalRotation = Athena::Quaternion::RotationBetweenVectors(newUp, desiredUp);
-
-        return Transform(this->position, finalRotation, this->localScale);
-    }
-
     void Transform::translate(const Athena::Vector3& destination)
     {
         this->position += destination;
@@ -336,34 +306,6 @@ namespace Odysseus {
     void Transform::rotate(const Athena::Quaternion& rotationQuaternion)
     {
         this->_rotation = rotationQuaternion;
-    }
-
-    void Transform::lookAt(const Athena::Vector3& position)
-    {
-        Athena::Vector3 direction = (position - this->position).normalized();
-        Athena::Quaternion newRotation = Athena::Quaternion::RotationBetweenVectors(forward(), direction);
-
-        Athena::Vector3 r = Athena::Vector3::cross(direction, up());
-        Athena::Vector3 desiredUp = Athena::Vector3::cross(r, direction);
-
-        Athena::Vector3 newUp = newRotation.rotateVectorByThisQuaternion(up());
-        Athena::Quaternion finalRotation = Athena::Quaternion::RotationBetweenVectors(newUp, desiredUp);
-
-        this->_rotation = finalRotation;
-    }
-
-    void Transform::lookAt(const Transform& target)
-    {
-        Athena::Vector3 direction = (target.position - this->position).normalized();
-        Athena::Quaternion newRotation = Athena::Quaternion::RotationBetweenVectors(forward(), direction);
-
-        Athena::Vector3 r = Athena::Vector3::cross(direction, up());
-        Athena::Vector3 desiredUp = Athena::Vector3::cross(r, direction);
-
-        Athena::Vector3 newUp = newRotation.rotateVectorByThisQuaternion(up());
-        Athena::Quaternion finalRotation = Athena::Quaternion::RotationBetweenVectors(newUp, desiredUp);
-
-        this->_rotation = finalRotation;
     }
 
     Athena::Versor2 Transform::transformDirection(const Athena::Versor2& versor) const
@@ -521,7 +463,6 @@ namespace Odysseus {
             this->localScale.coordinates.z * b.localScale.coordinates.z
         );
 
-        //Athena::Quaternion newRotation = b.rotation * this->rotation ;
         Athena::Quaternion newRotation = this->rotation * b.rotation;
 
         Athena::Vector3 newPosition = this->position + this->rotation.rotateVectorByThisQuaternion(Athena::Vector3(

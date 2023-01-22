@@ -55,14 +55,12 @@ namespace Khronos
         this->cBox = new CollisionBox(halfSize);
         cBox->body = this->rigidBody;
 
-        //setupBox();
 
     }
 
     void RigidBox::update()
     {
-        createBBox();
-        //drawBox();
+
     }
 
     void RigidBox::startRuntime()
@@ -75,7 +73,6 @@ namespace Khronos
     {
         this->sceneObject->transform->position = this->rigidBody->position;
         this->sceneObject->transform->rotation = this->rigidBody->orientation;
-        // std::cout << "rotation: "; this->rigidBody->orientation.asVector4().print();
     }
 
     void RigidBox::setOrderOfExecution(const short& newOrderOfExecution)
@@ -118,7 +115,7 @@ namespace Khronos
                                                  (max_z - min_z) * localScale.coordinates.z);
     }
 
-    void RigidBox::setupBox()
+    /*void RigidBox::setupBox()
     {
         //this->bboxShader = new Odysseus::Shader(".\\Shader\\bboxShader.vert", ".\\Shader\\bboxShader.frag");
         //bboxShader->use();
@@ -184,7 +181,7 @@ namespace Khronos
         bboxShader->setVec3("position", this->transform->position);
         bboxShader->setVec3("scale", this->transform->localScale);
         bboxShader->setVec4("rotation", this->transform->rotation.asVector4());
-    }
+    }*/
 
     void RigidBox::setPhysicsSimulation(RigidPhysicsEngine* physSim)
     {

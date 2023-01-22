@@ -75,7 +75,6 @@ namespace Odysseus
         }
     }
 
-    // TODO: Implement me
     void Scene::initialiseRuntimeScene()
     {
         this->physicSimulation = new Khronos::RigidPhysicsEngine();
@@ -103,10 +102,6 @@ namespace Odysseus
                 glUseProgram(0);
             }
         }
-
-        //Position based dynamics physics
-        // 1- create physics simulation with Particle
-        // 2- initialize particles positions, velocities(to 0), inverse masses
     }
 
     void Scene::updateEditorScene()
@@ -121,7 +116,6 @@ namespace Odysseus
         }
     }
 
-    // TODO: Implement me
     void Scene::updateRuntimeScene()
     {
         for (int i = 0; i < _objectsInScene.size(); i++)
@@ -152,7 +146,6 @@ namespace Odysseus
         return _objectsInScene.size() < size;
     }
 
-    // TODO: Implement me
     bool Scene::deleteSceneObject(SceneObject* obj)
     {
         for (int i = 0; i < _objectsInScene.size(); i++)
@@ -216,7 +209,6 @@ namespace Odysseus
     {
         this->updateEditorScene();
 
-        // TODO: Find a way to stop the scene when paused -> probably by using SceneManager time & SceneState or by creating some other funcitons
         if (this->isRuntimeScene && this->status == SceneState::RUNNING)
             this->updateRuntimeScene();
     }

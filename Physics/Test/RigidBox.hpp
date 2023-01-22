@@ -53,14 +53,14 @@ namespace Khronos
         virtual void updateRuntime();
 
         void createBBox();
-        void setupBox();
-        void drawBox();
+        // void setupBox();
+        // void drawBox();
         void setPhysicsSimulation(RigidPhysicsEngine* physSim);
 
         virtual void serialize(YAML::Emitter& out);
         virtual System::Component* deserialize(YAML::Node& node);
 
-        virtual ~RigidBox();
+        ~RigidBox();
 
         SERIALIZABLE_CLASS(System::Component);
     };

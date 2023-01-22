@@ -3,10 +3,8 @@
 layout (location = 0) out vec4 fragColor;
   
 in vec2 Frag_UV;
-// flat in int ObjectID;
 
 uniform sampler2D screenTexture;
-// uniform int ObjectID;
 
 // ------------------------------------------ MOSAIC EFFECT -----------------------------------------------------
 vec4 mosaicEffect()
@@ -496,5 +494,5 @@ void main()
     color.rgb = pow(color.rgb, vec3(1.0 / gamma));
     // f_objectID = ObjectID;
     fragColor = color.rgba;
-    //fragColor = kuwahara();
+   // fragColor = kuwahara();
 }

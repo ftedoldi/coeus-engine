@@ -6,6 +6,26 @@ namespace Khronos
     {
     }
 
+    CollisionGenerator::~CollisionGenerator()
+    {
+        for(unsigned int i = 0; i < this->planes.size(); ++i)
+        {
+            delete planes.at(i);
+            planes.at(i) = nullptr;
+        }
+
+        for(unsigned int i = 0; i < this->boxes.size(); ++i)
+        {
+            delete boxes.at(i);
+            boxes.at(i) = nullptr;
+        }
+
+        for(unsigned int i = 0; i < this->spheres.size(); ++i)
+        {
+            delete spheres.at(i);
+            spheres.at(i) = nullptr;
+        }
+    }
 
     unsigned int CollisionGenerator::addContact(std::vector<Contact*>& contacts, unsigned int next)
     {

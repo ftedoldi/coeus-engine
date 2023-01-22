@@ -83,9 +83,6 @@ namespace Odysseus
             Transform rotatedOfMatrix3(const Athena::Matrix3 matrix) const;
             Transform rotated(const Athena::Quaternion& rotationQuaternion) const;
 
-            Transform lookAt(const Athena::Vector3& pos) const;
-            Transform lookAt(const Transform& target) const;
-
             void translate(const Athena::Vector3& destination);
             void nonUniformScaleBy(const Athena::Vector3& scale);
             void uniformScaleBy(const Athena::Scalar& uniformScale);
@@ -94,9 +91,6 @@ namespace Odysseus
             void rotateOfEulerAngles(const Athena::Vector3 eulerAngles);
             void rotateOfMatrix3(const Athena::Matrix3 matrix);
             void rotate(const Athena::Quaternion& rotationQuaternion);
-
-            void lookAt(const Athena::Vector3& pos);
-            void lookAt(const Transform& target);
 
             Athena::Versor2 transformDirection(const Athena::Versor2& versor) const;
             Athena::Versor3 transformDirection(const Athena::Versor3& versor) const;

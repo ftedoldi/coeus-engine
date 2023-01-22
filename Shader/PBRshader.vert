@@ -14,7 +14,6 @@ uniform mat4 projection;
 uniform vec3 WorldPosition;
 uniform vec3 WorldScale;
 uniform vec4 WorldRotation;
-//uniform vec3 cameraPos;
 
 uniform float ID;
 

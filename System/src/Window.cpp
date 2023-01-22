@@ -11,8 +11,8 @@ namespace System {
 
     Window::Window(std::string name, bool cursorDisabled)
     {
-        screen.width = 800;
-        screen.height = 600;
+        screen.width = 1920;
+        screen.height = 1080;
 
         if(!glfwInit())
             std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -207,9 +207,6 @@ namespace System {
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
         sceneFrameBuffer = new Buffers::FrameBuffer(mode->width * 2, mode->height * 2, true);
-        // gameFrameBuffer = new Buffers::FrameBuffer(mode->width * 2, mode->height * 2, true);
-
-        // dockspace = new Dockspace();
 
         Input::keyboard = new Keyboard();
     }
@@ -232,11 +229,6 @@ namespace System {
     void Window::update()
     {
         sceneFrameBuffer->blit();
-
-        // gameFrameBuffer->copyAnotherFrameBuffer(this->sceneFrameBuffer->ID);
-
-        // ImGui::ShowDemoWindow();
-        // dockspace->createDockspace();
         Odysseus::SceneManager::activeScene->sceneEditor->onEditorUpdate();
 
         ImGui::Render();

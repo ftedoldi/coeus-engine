@@ -105,9 +105,10 @@ namespace EditorLayer
                 std::string objectType = pathToLoad;
                 objectType = objectType.substr(objectType.find_last_of(".") + 1);
 
-                //Odysseus::Model myModel(pathToLoad, Odysseus::Cubemap::currentCubemap->PBRTextureShader, true, objectType);
-                Odysseus::Shader* myShader = new Odysseus::Shader("Shader\\phongShader.vert", "Shader\\phongShader.frag");
-                Odysseus::Model myModel(pathToLoad, myShader, false, objectType);
+                Odysseus::Model myModel(pathToLoad, Odysseus::Cubemap::currentCubemap->PBRTextureShader, true, objectType);
+                //Odysseus::Shader* myShader = new Odysseus::Shader("Shader\\phongShader.vert", "Shader\\phongShader.frag");
+                //Odysseus::Shader* myShader = new Odysseus::Shader("Shader\\phongShader.vert", "Shader\\toonShader.frag");
+                //Odysseus::Model myModel(pathToLoad, myShader, false, objectType);
                 Odysseus::SceneManager::initializeActiveScene();
             }
 
@@ -143,7 +144,6 @@ namespace EditorLayer
                                                                         Odysseus::SceneManager::activeScene->sceneEditor->selectedTransform
                                                                     );
 
-        // TODO: Make a method in Matrix4 in order to generate a transform matrix from position, scale and rotation
         Athena::Matrix4 translateMatrix(
             Athena::Vector4(1, 0, 0, 0),
             Athena::Vector4(0, 1, 0, 0),
