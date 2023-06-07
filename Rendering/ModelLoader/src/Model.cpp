@@ -65,11 +65,11 @@ namespace Odysseus
             obj->transform->parent = parent;
             if (parent != nullptr)
                 parent->children.push_back(obj->transform);
-        }
-        
-        for(GLuint i = 0; i < node->mNumChildren; ++i)
-        {
-            processMeshNode(node->mChildren[i], scene, nullptr);
+
+            for(GLuint i = 0; i < node->mNumChildren; ++i)
+            {
+                processMeshNode(node->mChildren[i], scene, obj->transform);
+            }
         }
     }
 
