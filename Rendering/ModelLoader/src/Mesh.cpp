@@ -14,12 +14,10 @@
 #include <CUDAInteroperationManager.hpp>
 #include <VertexMove.cuh>
 
-// TODO: Test if everythin works with PBR Materials
 namespace Odysseus
 {
     Mesh::Mesh()
     {
-        // TODO: Generate random int
         std::random_device rd;
         std::mt19937 rng(rd());
         std::uniform_int_distribution<int> uni;
@@ -130,7 +128,6 @@ namespace Odysseus
             ImGui::InputFloat("Metallic", &physicsMaterial.metallic);
             ImGui::InputFloat("Roughness", &physicsMaterial.roughness);
             ImGui::InputFloat("Ambient Occlusion Factor", &physicsMaterial.AO);
-            // TODO: Add a way to add PBR textures to the textures array
         }
         else
         {
@@ -157,7 +154,6 @@ namespace Odysseus
             ImGui::InputFloat3("Ambient Color", ambient);
             phongMaterial.Ambient = Athena::Vector3(ambient[0], ambient[1], ambient[2]);
             ImGui::InputFloat("Shininess", &phongMaterial.Shininess);
-            // TODO: Add a way to add PBR textures to the textures array
         }
     }
 

@@ -36,32 +36,6 @@ namespace Odysseus
         std::vector<Athena::Vector3> Tangents;
     };
 
-    //TODO: change the location of it
-    struct Particle
-    {
-        //Vertex vertex;
-        Athena::Vector3 position;
-        Athena::Vector3 positionPredicted;
-        Athena::Vector3 velocity;
-        Athena::Scalar inverseMass;
-    };
-
-    struct Edge
-    {
-        Particle particles[2];
-    };
-
-    struct Triangle
-    {
-        Edge edges[3];
-    };
-
-    struct TriangleAdj
-    {
-        Triangle triangle;
-        std::vector<Triangle*> triangleAdjs;
-    };
-
     class Mesh : public System::Component
     {
     public:
@@ -86,7 +60,6 @@ namespace Odysseus
             void setPhysicsMaterial(PhysicsMaterial &mat);
             void setShader(Shader *shader);
             void setIfPBR(bool isPBR);
-            void setupRigidBody();
 
             bool operator == (const Mesh& m) const;
 

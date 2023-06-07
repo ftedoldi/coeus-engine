@@ -16,7 +16,6 @@
 
 namespace Odysseus
 {
-    std::vector<Texture2D> loadTexture(aiMaterial *mat, aiTextureType type);
     class Model 
     {
     public:
@@ -39,7 +38,6 @@ namespace Odysseus
         Model(const std::string& path, Shader* textureShader, bool isPBR, const std::string& objectType);
 
     private:
-
         bool _gammaCorrect;
         bool _isPBR;
         void loadModel(const std::string& path);
@@ -51,7 +49,6 @@ namespace Odysseus
         void processMesh(aiMesh* mesh, const aiScene* scene, SceneObject* sceneObject, Athena::Vector3& position, Athena::Vector3& scale, Athena::Quaternion& rotation);
         void processNode(aiNode* node, const aiScene* scene, const std::string& name, Transform* parent=nullptr);
         void processMeshNode(aiNode* node, const aiScene* scene, Transform* parent);
-        void processTransformations(aiNode* node, aiMatrix4x4& transformation); 
 
     };
 }

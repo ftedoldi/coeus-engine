@@ -67,8 +67,6 @@ namespace CUDA
 {
     namespace Interop
     {
-        // TODO: Implement more filter matrices
-        // FIXME: GPU crash due to too many memory leaks
 
         enum ScreenSpaceFilters
         {

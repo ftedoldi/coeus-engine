@@ -3,10 +3,8 @@
 layout (location = 0) out vec4 fragColor;
   
 in vec2 Frag_UV;
-// flat in int ObjectID;
 
 uniform sampler2D screenTexture;
-// uniform int ObjectID;
 
 // ------------------------------------------ MOSAIC EFFECT -----------------------------------------------------
 vec4 mosaicEffect()
@@ -353,7 +351,6 @@ mat3 sy = mat3(
 #define mnmx5(a, b, c, d, e)	s2(a, b); s2(c, d); mn3(a, c, e); mx3(b, d, e);           // 6 exchanges
 #define mnmx6(a, b, c, d, e, f) s2(a, d); s2(b, e); s2(c, f); mn3(a, b, c); mx3(d, e, f); // 7 exchanges
 
-// TODO: change hard coded resolution (800,600) with the framebuffer one
 vec3 median() {
 
     float gamma = 2.2;
@@ -365,7 +362,7 @@ vec3 median() {
     for(int dX = -1; dX <= 1; ++dX) {
         for(int dY = -1; dY <= 1; ++dY) {
             vec2 offset = vec2(float(dX), float(dY));
-            vec3 c = vec3(texture2D(screenTexture, Frag_UV + offset * (1. / vec2(800, 600))));
+            vec3 c = vec3(texture2D(screenTexture, Frag_UV + offset * (1. / textureSize(screenTexture, 0))));
             c.rgb = vec3(1.0) - exp(-c.rgb * exposure);
             c.rgb = pow(c.rgb, vec3(1.0 / gamma));
             v[(dX + 1) * 3 + (dY + 1)] = c;
@@ -409,6 +406,81 @@ vec4 vignette(float falloff, float amount)
 }
 // ------------------------------------------------------------------------------------------------------------
 
+// ------------------------------------------------OIL PAINTING-----------------------------------------------------------
+// ------------------------------------------------STANDARD KUWAHARA FILTERING-----------------------------------------------------------
+
+vec4 kuwahara()
+{   
+    vec4 fCol;
+    float gamma = 2.2;
+    float exposure = 1.0;
+    int radius = 5;
+    // Screen size
+    vec2 scr_size = textureSize(screenTexture, 0);
+
+    // Matrix subregions size
+    float n = float((radius + 1) * (radius + 1));
+
+    // Initialize the means and standard deviations to 0
+    vec3 mean[4];
+    vec3 s_dev[4];
+    for(int i = 0; i < 4; ++i)
+    {
+        mean[i] = vec3(0.0);
+        s_dev[i] = vec3(0.0);
+    }
+
+    // Get the subregions smaller and bigger coordinates
+    struct SubRegion 
+    {
+        int x1, y1, x2, y2;
+    };
+
+    SubRegion S[4] = SubRegion[4](
+        SubRegion(-radius, -radius, 0, 0),
+        SubRegion(0, -radius, radius, 0),
+        SubRegion(0, 0, radius, radius),
+        SubRegion(-radius, 0, 0, radius)
+    );
+    
+    // Compute the mean and standard deviation of each subregion
+    for(int k = 0; k < 4; ++k)
+    {
+        for(int j = S[k].y1; j <= S[k].y2; ++j)
+        {
+            for(int i = S[k].x1; i <= S[k].x2; ++i)
+            {
+                vec3 c = texture(screenTexture, Frag_UV + vec2(i, j) / scr_size).rgb;
+                // HDR tonemapping
+                c = vec3(1.0) - exp(-c * exposure);
+                // gamma correction
+                c = pow(c, vec3(1.0 / gamma));
+                mean[k] += c;
+                s_dev[k] += c * c;
+            }
+        }
+    }
+
+    float min_sigma2 = 1e+1;
+    for(int i = 0; i < 4; ++i)
+    {
+        // The last thing to do to compute the mean is to divide the value calculated before to the number of pixels in the subregion
+        mean[i] /= n;
+
+        // Similar thing is done for the standard deviation
+        s_dev[i] = abs(s_dev[i] / n - mean[i] * mean[i]);
+
+        float sigma2 = s_dev[i].r + s_dev[i].g + s_dev[i].b;
+        // The output is the mean of a subregion with minimum variance
+        if(sigma2 < min_sigma2)
+        {
+            min_sigma2 = sigma2;
+            fCol = vec4(mean[i], 1.0);
+        }
+    }
+    return fCol;
+}
+// ------------------------------------------------------------------------------------------------------------
 
 void main()
 { 
@@ -422,4 +494,5 @@ void main()
     color.rgb = pow(color.rgb, vec3(1.0 / gamma));
     // f_objectID = ObjectID;
     fragColor = color.rgba;
+   // fragColor = kuwahara();
 }

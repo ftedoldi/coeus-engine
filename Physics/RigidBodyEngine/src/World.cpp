@@ -31,6 +31,11 @@ namespace Khronos
         this->gForce = nullptr;
         this->resolver = nullptr;
         this->collisionGenerator = nullptr;
+        for(unsigned int i = 0; i < bodyList.size(); ++i)
+        {
+            delete bodyList.at(i);
+            bodyList.at(i) = nullptr;
+        }
 
     }
 

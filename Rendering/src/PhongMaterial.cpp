@@ -2,7 +2,7 @@
 
 namespace Odysseus
 {
-    PhongMaterial::PhongMaterial(): Diffuse(Athena::Vector3(0.8f, 0.8f, 0.8f)), Specular(Athena::Vector3(0.1f, 0.1f, 0.1f)),
+    PhongMaterial::PhongMaterial(): Diffuse(Athena::Vector3(0.8f, 0.8f, 0.8f)), Specular(Athena::Vector3(0.0f, 0.0f, 0.0f)),
                         Ambient(Athena::Vector3(0.2f, 0.2f, 0.2f)), Shininess(32.0f){}
 
     void PhongMaterial::loadShaderTexture(Odysseus::Shader* shader)
@@ -10,7 +10,6 @@ namespace Odysseus
         shader->setVec3("material.diffuse", this->Diffuse);
         shader->setVec3("material.specular", this->Specular);
         shader->setFloat("material.shininess", this->Shininess);
-        //this->Diffuse.print();
 
         shader->setBool("material.hasDiffuseTexture", false);
         shader->setBool("material.hasSpecularTexture", false);

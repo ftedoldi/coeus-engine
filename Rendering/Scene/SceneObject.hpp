@@ -143,7 +143,6 @@ namespace Odysseus
 
                 component->sceneObject = this;
                 component->transform = this->transform;
-
                 _container->_components.push_back(component);
 
                 return dynamic_cast<T*>(_container->_components[_container->_components.size() - 1]);
@@ -156,7 +155,6 @@ namespace Odysseus
                 instance->transform = this->transform;
 
                 _container->_components.push_back(instance);
-                //delete instance;
 
                 return dynamic_cast<T*>(_container->_components[_container->_components.size() - 1]);
             }

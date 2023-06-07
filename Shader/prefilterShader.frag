@@ -102,6 +102,5 @@ void main()
     }
 
     prefilteredColor = prefilteredColor / totalWeight;
-    //prefilteredColor = textureLod(environmentMap, localPos, 1.2).rgb;
     FragColor = vec4(prefilteredColor, 1.0);
 }

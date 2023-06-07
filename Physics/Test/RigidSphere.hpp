@@ -43,7 +43,7 @@ namespace Khronos
         virtual void serialize(YAML::Emitter& out);
         virtual System::Component* deserialize(YAML::Node& node);
 
-        virtual ~RigidSphere();
+        ~RigidSphere();
 
         SERIALIZABLE_CLASS(System::Component);
 

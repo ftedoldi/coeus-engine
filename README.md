@@ -1,6 +1,18 @@
-# coeus engine
+# Coeus Engine
 
 CUDA-based rendering and physics engine.
+
+# External Dependencies
+
+- CUDA &rarr; [CUDA Developement Kit v.11](https://developer.nvidia.com/cuda-downloads)
+- Python &rarr; [EmbeddedPython3](https://docs.python.org/3.9/c-api/index.html#c-api-index)
+- OpenGL &rarr; [GLFW](https://www.glfw.org/) & [GLAD](https://glad.dav1d.de/) & [GLM](https://github.com/g-truc/glm)
+- Open Asset Import Library &rarr; [Assimp](https://github.com/assimp/assimp)
+- Dear ImGui &rarr; [ImGUI](https://github.com/ocornut/imgui)
+- ImGuizmo &rarr; [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo)
+- Run Time Type Reflection &rarr; [RTTR](https://github.com/rttrorg/rttr)
+- Image Loader &rarr; [stb_image](https://github.com/nothings/stb)
+- Yet Another Markup Language &rarr; [YAML cpp](https://github.com/jbeder/yaml-cpp)
 
 # Import Models
 
@@ -67,3 +79,5 @@ System::Component* DummyComponent::deserialize(YAML::Node& node)
 ```
 
 > In order to Serialize and Deserialize you should be aware of the syntax of the [YAML-cpp](https://github.com/jbeder/yaml-cpp/) library.
+
+This project is licensed under the terms of the MIT license.

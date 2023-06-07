@@ -19,6 +19,8 @@ namespace Khronos
         std::vector<CollisionSphere*> spheres;
 
         CollisionGenerator();
+
+        ~CollisionGenerator();
         
         unsigned int addContact(std::vector<Contact*>& contacts, unsigned int next);
 
